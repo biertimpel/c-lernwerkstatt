@@ -3,180 +3,246 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>C-Lernwerkstatt · Home</title>
-
-  <style>
-    body {
-      max-width: 1050px;
-      margin: 40px auto;
-      padding: 0 20px;
-      font: 16px/1.6 system-ui, sans-serif;
-      color: #17253b;
-      background: #f5f6f9;
-    }
-
-    a { color: #244bcc; }
-    li { margin-bottom: 8px; }
-
-    .tabelle { overflow-x: auto; }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-    }
-
-    th, td {
-      padding: 12px;
-      border: 1px solid #d9dfe9;
-      text-align: left;
-      vertical-align: top;
-    }
-
-    thead { background: #e8ecf6; }
-    caption { text-align: left; margin-bottom: 12px; }
-  </style>
+  <title>C-Lernwerkstatt · Kursübersicht</title>
+  <link rel="stylesheet" href="kurs.css">
 </head>
-
 <body>
-  <main>
-    <h1>C-Lernwerkstatt</h1>
-
-    <p>
-      Hier findest du die Themen des Kurses und die geplanten
-      Zwischenstände. Du arbeitest überwiegend selbstständig an
-      Aufgaben und erhältst während der Termine Unterstützung.
-    </p>
-
-    <p><strong>ENTWURF</strong></p>
-
-    <h2>Themen und Aufgaben</h2>
-
-    <ul>
-      <li><a href="index.html">Aufgabe 1: Dein erstes Programm in C</a></li>
-      <li><a href="warum-c.html">Warum C?</a></li>
-      <li><a href="variablen.html">Variablen, Datentypen und Berechnungen</a></li>
-      <li><a href="kontrollfluss.html">Bedingungen und Schleifen</a></li>
-      <li><a href="funktionen.html">Funktionen und Programmzerlegung</a></li>
-      <li><a href="arrays-strings.html">Arrays und Zeichenketten</a></li>
-      <li><a href="pointer.html">Pointer und Datenaustausch</a></li>
-      <li><a href="speicher-strukturen.html">Dynamischer Speicher und Strukturen</a></li>
-      <li><a href="header-make.html">Header, Quelldateien und Makefiles</a></li>
-      <li><a href="fehler-pruefen.html">Fehlerbehandlung und Programme prüfen</a></li>
-      <li><a href="projekt.html">Projekt</a></li>
-    </ul>
-
-    <h2>Geplante Zwischenstände</h2>
-
-    <p>
-      Die Wochenangabe zählt Lehrwochen, welche aus Termin 1 und Termin 2 bestehen.
-    </p>
-
-    <div class="tabelle">
-      <table>
-        <caption>Da dieser Kurs durch begleitetes Lernen gekennzeichnet ist, wollen wir hier eine Übersicht bereitstellen, 
-          welcher Stand bis zu welcher Woche erreicht sein sollte.</caption>
-
-        <thead>
-          <tr>
-            <th scope="col">Bis wann?</th>
-            <th scope="col">Erwarteter Arbeitsstand</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <tr>
-            <th scope="row">Woche 1, Termin 2</th>
-            <td>Ein kleines Programm selbst kompilieren und starten.
-                Variablen, Berechnungen und Ausgabe verwenden.</td>
-          </tr>
-
-          <tr>
-            <th scope="row">Woche 2, Termin 2</th>
-            <td>Bedingungen und Schleifen selbst schreiben und
-                ihren Ablauf erklären.</td>
-          </tr>
-
-          <tr>
-            <th scope="row">Woche 3, Termin 2</th>
-            <td>Erster Lernstandspunkt:
-                Variablen, Bedingungen, Schleifen und Funktionen
-                in einer 90-Minuten-Aufgabe eigenständig verbinden.</td>
-          </tr>
-
-          <tr>
-            <th scope="row">Woche 4, Termin 2</th>
-            <td>Arrays und Zeichenketten verwenden.
-                Länge, Kapazität, gültige Indizes und
-                String-Terminierung unterscheiden.</td>
-          </tr>
-
-          <tr>
-            <th scope="row">Woche 5, Termin 2</th>
-            <td>Wert, Adresse und Pointer unterscheiden.
-                Arrays mit ihrer Länge an Funktionen übergeben.</td>
-          </tr>
-
-          <tr>
-            <th scope="row">Woche 6, Termin 2</th>
-            <td>Daten mit Strukturen modellieren.
-                Dynamischen Speicher anfordern, initialisieren
-                und wieder freigeben.</td>
-          </tr>
-
-          <tr>
-            <th scope="row">Woche 7, Termin 2</th>
-            <td>Ein Programm auf mehrere Dateien verteilen,
-                mit make bauen und Fehlerfälle systematisch prüfen.</td>
-          </tr>
-
-          <tr>
-            <th scope="row">Woche 8, Termin 2</th>
-            <td>Zweiter Lernstandspunkt:
-                Funktionen, Arrays, Strukturen und dynamischen
-                Speicher in einer 90-Minuten-Aufgabe eigenständig anwenden.</td>
-          </tr>
-
-          <tr>
-            <th scope="row">Ende Woche 9</th>
-            <td>Projektidee, Datenmodell und Aufgabenverteilung festlegen.
-                Mit einem kleinen funktionsfähigen Kern beginnen.</td>
-          </tr>
-
-          <tr>
-            <th scope="row">Ende Woche 10</th>
-            <td>Den vereinbarten technischen Grundumfang
-                des Projekts funktionsfähig umsetzen und prüfen.</td>
-          </tr>
-
-          <tr>
-            <th scope="row">Wochen 11–12</th>
-            <td>Projekt verbessern und erweitern.
-                Ergebnisse prüfen und Probleme nachvollziehbar dokumentieren.</td>
-          </tr>
-
-          <tr>
-            <th scope="row">Woche 13</th>
-            <td>Verbleibende Probleme bearbeiten und die
-                Präsentation vorbereiten.</td>
-          </tr>
-
-          <tr>
-            <th scope="row">Wochen 14–15</th>
-            <td>Projekt präsentieren, Entscheidungen erklären
-                und den Kurs abschließen.
-                Woche 15 dient auch als Reserve.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <p>
-      Die Lernstandspunkte dienen zunächst der Standortbestimmung.
-      Der technische Projektgrundumfang ersetzt die Präsentation
-      und weitere vereinbarte Prüfungsanforderungen nicht.
-      Die genauen Projekt- und Bewertungskriterien werden gesondert festgelegt.
-    </p>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <header>
+      <p class="eyebrow">C-Programmierkurs · Wintersemester 2026/27</p>
+      <h1>C-Lernwerkstatt</h1>
+      <p class="intro">Hier findest du die Themen, Materialien und Aufgaben des Kurses. Du arbeitest überwiegend selbstständig im eigenen Tempo und erhältst während der Termine Unterstützung. Der Wochenplan zeigt die gemeinsamen Zwischenziele.</p>
+      <ul class="facts" aria-label="Kursrahmen">
+        <li>Start: 19. Oktober 2026</li>
+        <li>Zwei Termine à 90 Minuten pro Woche</li>
+        <li>Abschluss bis 11. Februar 2027</li>
+        <li>Unbenoteter Abschluss</li>
+      </ul>
+      <nav aria-label="Kursabschnitte">
+        <ul class="navlinks">
+          <li><a href="#woche-1">Start</a></li>
+          <li><a href="#woche-4">Daten und Speicher</a></li>
+          <li><a href="#woche-7">Build und Module</a></li>
+          <li><a href="#woche-9">Projekt</a></li>
+          <li><a href="#woche-14–15">Präsentationen</a></li>
+        </ul>
+      </nav>
+    </header>
+    <aside class="notice">
+      <p><strong>Die Materialien werden schrittweise ergänzt.</strong> Die Aufgaben zu „Mein erstes Programm“ sind bereits erreichbar. Weitere Kapitel enthalten zunächst Lernziele und vorbereitete Bereiche für Materialien, Aufgaben und Hinweise.</p>
+    </aside>
+    <section class="course-week" id="woche-1" aria-labelledby="titel-1">
+      <h2 id="titel-1">Woche 1 · Einstieg<span class="week-date">Kurswoche ab 19. Oktober 2026</span></h2>
+      <div class="cards">
+      <article class="card">
+        <span class="number">Termin 1.1</span>
+        <h3><a href="start/index.html">Start</a></h3>
+        <ol>
+          <li><a href="start/mein-erstes-programm.html">Mein erstes Programm</a><small>Hello World und Rechnen · etwa 20–25 Minuten · vorhandene Aufgaben</small></li>
+          <li><a href="start/warum-c.html">Warum C?</a><small>Einführung · etwa 40–45 Minuten · Material in Vorbereitung</small></li>
+          <li><a href="start/code-lesen.html">Code lesen</a><small>Aufgabe für den verbleibenden Teil des Termins · in Vorbereitung</small></li>
+        </ol>
+      </article>
+      <article class="card">
+        <span class="number">Termin 1.2</span>
+        <h3><a href="variablen/index.html">Variablen, Datentypen und Berechnungen</a></h3>
+        <p>Lokale und globale Variablen unterscheiden.</p>
+        <span class="status">Material in Vorbereitung</span>
+      </article>
+      </div>
+    </section>
+    <section class="course-week" id="woche-2" aria-labelledby="titel-2">
+      <h2 id="titel-2">Woche 2 · Kontrollfluss<span class="week-date">Kurswoche ab 26. Oktober 2026</span></h2>
+      <div class="cards">
+      <article class="card">
+        <span class="number">Termin 2.1</span>
+        <h3><a href="kontrollfluss/index.html">Bedingungen und Schleifen</a></h3>
+        <p>Bedingungen formulieren und Verzweigungen nachvollziehen.</p>
+        <span class="status">Material in Vorbereitung</span>
+      </article>
+      <article class="card">
+        <span class="number">Termin 2.2</span>
+        <h3><a href="randbedingungen/index.html">Komplexerer Kontrollfluss und Randbedingungen</a></h3>
+        <p>Mehrere Bedingungen und Schleifen sinnvoll verbinden.</p>
+        <span class="status">Material in Vorbereitung</span>
+      </article>
+      </div>
+    </section>
+    <section class="course-week" id="woche-3" aria-labelledby="titel-3">
+      <h2 id="titel-3">Woche 3 · Funktionen und Grundlagencheck<span class="week-date">Kurswoche ab 2. November 2026</span></h2>
+      <div class="cards">
+      <article class="card">
+        <span class="number">Termin 3.1</span>
+        <h3><a href="funktionen-debugging/index.html">Funktionen, Programmzerlegung und Debugging</a></h3>
+        <p>Funktionen aufrufen, Parameter übergeben und Rückgabewerte verwenden.</p>
+        <span class="status">Material in Vorbereitung</span>
+      </article>
+      <article class="card">
+        <span class="number">Termin 3.2</span>
+        <h3><a href="lernstand-1/index.html">Grundlagencheck</a></h3>
+        <p>Variablen, Datentypen, Bedingungen, Schleifen und Funktionen verbinden.</p>
+        <span class="status">Material in Vorbereitung</span>
+      </article>
+      </div>
+    </section>
+    <section class="course-week" id="woche-4" aria-labelledby="titel-4">
+      <h2 id="titel-4">Woche 4 · Daten und Datenaustausch<span class="week-date">Kurswoche ab 9. November 2026</span></h2>
+      <div class="cards">
+      <article class="card">
+        <span class="number">Termin 4.1</span>
+        <h3><a href="arrays-zeichenketten/index.html">Manpages, Arrays, Zeichenketten und Listenmodelle</a></h3>
+        <p>Manpages lesen: Signatur, Parameter, Rückgabewerte und Fehlerfälle.</p>
+        <span class="status">Material in Vorbereitung</span>
+      </article>
+      <article class="card">
+        <span class="number">Termin 4.2</span>
+        <h3><a href="pointer/index.html">Pointer und Datenaustausch</a></h3>
+        <p>Wert, Adresse und Pointer unterscheiden.</p>
+        <span class="status">Material in Vorbereitung</span>
+      </article>
+      </div>
+    </section>
+    <section class="course-week" id="woche-5" aria-labelledby="titel-5">
+      <h2 id="titel-5">Woche 5 · Listen und Speicheraufbau<span class="week-date">Kurswoche ab 16. November 2026</span></h2>
+      <div class="cards">
+      <article class="card">
+        <span class="number">Termin 5.1</span>
+        <h3><a href="verkettete-listen/index.html">Verkettete Listen mit Pointern umsetzen</a></h3>
+        <p>Eine vorgegebene einfache Knotenstruktur nachvollziehen.</p>
+        <span class="status">Material in Vorbereitung</span>
+      </article>
+      <article class="card">
+        <span class="number">Termin 5.2</span>
+        <h3><a href="speicheraufbau/index.html">Speicheraufbau: Text, Data, Heap und Stack</a></h3>
+        <p>Den typischen Speicheraufbau eines Programms einordnen.</p>
+        <span class="status">Material in Vorbereitung</span>
+      </article>
+      </div>
+    </section>
+    <section class="course-week" id="woche-6" aria-labelledby="titel-6">
+      <h2 id="titel-6">Woche 6 · Dynamische Strukturen und Module<span class="week-date">Kurswoche ab 23. November 2026</span></h2>
+      <div class="cards">
+      <article class="card">
+        <span class="number">Termin 6.1</span>
+        <h3><a href="dynamischer-speicher/index.html">Dynamischer Speicher und Strukturen</a></h3>
+        <p>Daten mit Strukturen modellieren.</p>
+        <span class="status">Material in Vorbereitung</span>
+      </article>
+      <article class="card">
+        <span class="number">Termin 6.2</span>
+        <h3><a href="header-quellen/index.html">Header, Quelldateien und Schnittstellen</a></h3>
+        <p>Ein komplexeres Programm auf mehrere Dateien verteilen.</p>
+        <span class="status">Material in Vorbereitung</span>
+      </article>
+      </div>
+    </section>
+    <section class="course-week" id="woche-7" aria-labelledby="titel-7">
+      <h2 id="titel-7">Woche 7 · Build und Programmzerlegung<span class="week-date">Kurswoche ab 30. November 2026</span></h2>
+      <div class="cards">
+      <article class="card">
+        <span class="number">Termin 7.1</span>
+        <h3><a href="kompilieren-make/index.html">Kompilieren, Linken und Makefiles</a></h3>
+        <p>Die Schritte vom Quelltext zum ausführbaren Programm nachvollziehen.</p>
+        <span class="status">Material in Vorbereitung</span>
+      </article>
+      <article class="card">
+        <span class="number">Termin 7.2</span>
+        <h3><a href="modularisierung-praxis/index.html">Programmzerlegung in Dateien: praktische Aufgabe</a></h3>
+        <p>Ein Programm selbstständig in sinnvolle Module zerlegen.</p>
+        <span class="status">Material in Vorbereitung</span>
+      </article>
+      </div>
+    </section>
+    <section class="course-week" id="woche-8" aria-labelledby="titel-8">
+      <h2 id="titel-8">Woche 8 · Wiederholung und Lernstandscheck<span class="week-date">Kurswoche ab 7. Dezember 2026</span></h2>
+      <div class="cards">
+      <article class="card">
+        <span class="number">Termin 8.1</span>
+        <h3><a href="wiederholung/index.html">Wiederholung</a></h3>
+        <p>Den eigenen Lernstand zu den bisherigen Themen einschätzen.</p>
+        <span class="status">Material in Vorbereitung</span>
+      </article>
+      <article class="card">
+        <span class="number">Termin 8.2</span>
+        <h3><a href="lernstand-2/index.html">Umfassender Lernstandscheck</a></h3>
+        <p>Die bis dahin benötigten C-Kompetenzen in einer größeren Aufgabe verbinden.</p>
+        <span class="status">Material in Vorbereitung</span>
+      </article>
+      </div>
+    </section>
+    <section class="course-week" id="woche-9" aria-labelledby="titel-9">
+      <h2 id="titel-9">Woche 9 · Projektplanung<span class="week-date">Kurswoche ab 14. Dezember 2026</span></h2>
+      <div class="cards">
+      <article class="card single">
+        <span class="number">Woche 9</span>
+        <h3><a href="projektplanung/index.html">Projekt planen</a></h3>
+        <p>Gruppen bilden und eine Spielidee mit klaren Anforderungen festlegen.</p>
+        <span class="status">Material in Vorbereitung</span>
+      </article>
+      </div>
+    </section>
+    <aside class="pause" aria-labelledby="weihnachten">
+      <h2 id="weihnachten">Weihnachtspause</h2>
+      <p>Für diesen Plan sind die Wochen ab 21. und 28. Dezember ausgenommen. Weiter geht es mit Woche 10 ab dem 4. Januar 2027. Die endgültigen Kursdaten werden im Kurs bekanntgegeben.</p>
+    </aside>
+    <section class="course-week" id="woche-10" aria-labelledby="titel-10">
+      <h2 id="titel-10">Woche 10 · Projektgrundumfang<span class="week-date">Kurswoche ab 4. Januar 2027</span></h2>
+      <div class="cards">
+      <article class="card single">
+        <span class="number">Woche 10</span>
+        <h3><a href="projekt-grundumfang/index.html">Technischen Projektgrundumfang umsetzen</a></h3>
+        <p>Den vereinbarten technischen Mindestumfang funktionsfähig umsetzen.</p>
+        <span class="status">Material in Vorbereitung</span>
+      </article>
+      </div>
+    </section>
+    <section class="course-week" id="woche-11–12" aria-labelledby="titel-11–12">
+      <h2 id="titel-11–12">Woche 11–12 · Projekt verbessern<span class="week-date">Kurswoche ab 11. und 18. Januar 2027</span></h2>
+      <div class="cards">
+      <article class="card single">
+        <span class="number">Woche 11–12</span>
+        <h3><a href="projekt-verbesserung/index.html">Projekt verbessern, erweitern und prüfen</a></h3>
+        <p>Das Projekt gezielt verbessern und um ausgewählte Funktionen erweitern.</p>
+        <span class="status">Material in Vorbereitung</span>
+      </article>
+      </div>
+    </section>
+    <section class="course-week" id="woche-13" aria-labelledby="titel-13">
+      <h2 id="titel-13">Woche 13 · Abschluss der Implementierung<span class="week-date">Kurswoche ab 25. Januar 2027</span></h2>
+      <div class="cards">
+      <article class="card single">
+        <span class="number">Woche 13</span>
+        <h3><a href="vortragsvorbereitung/index.html">Implementierung abschließen und Vortrag vorbereiten</a></h3>
+        <p>Die Implementierung abschließen und den Stand nachvollziehbar dokumentieren.</p>
+        <span class="status">Material in Vorbereitung</span>
+      </article>
+      </div>
+    </section>
+    <section class="course-week" id="woche-14–15" aria-labelledby="titel-14–15">
+      <h2 id="titel-14–15">Woche 14–15 · Präsentationen und Kursabschluss<span class="week-date">Kurswoche ab 1. und 8. Februar 2027</span></h2>
+      <div class="cards">
+      <article class="card single">
+        <span class="number">Woche 14–15</span>
+        <h3><a href="abschluss/index.html">Projektpräsentationen und Abschluss</a></h3>
+        <p>Das Spiel und den strukturierten Entwurf vorstellen.</p>
+        <span class="status">Material in Vorbereitung</span>
+      </article>
+      </div>
+    </section>
+    <section class="milestones" aria-labelledby="zwischenziele">
+      <h2 id="zwischenziele">Gemeinsame Zwischenziele</h2>
+      <ul>
+        <li><strong>3.2:</strong> Grundlagencheck in 90 Minuten. Bei Schwierigkeiten gezielt bis zur folgenden Woche wiederholen.</li>
+        <li><strong>8.2:</strong> Zweiter 90-Minuten-Check zu den bis dahin benötigten C-Kompetenzen.</li>
+        <li><strong>Ende Woche 9:</strong> Spielidee, Datenmodell, Aufgabenverteilung und Meilensteine sind festgelegt.</li>
+        <li><strong>Ende Woche 10:</strong> Der vereinbarte technische Projektgrundumfang ist funktionsfähig.</li>
+        <li><strong>Bis 11. Februar 2027:</strong> Präsentationen, Gespräche und Kursabschluss.</li>
+      </ul>
+      <p>Das Abschlussprojekt ist ein Spiel in C. Erwartet werden ein strukturierter Entwurf, nachvollziehbare eigene Beiträge und Verständnis des Codes. Der technische Grundumfang ersetzt die übrigen Abschlussanforderungen nicht; die genauen Kriterien werden gesondert festgelegt.</p>
+      <p>Bei ungelösten Problemen hältst du fest, was scheitert, was du versucht hast und wie du weiter vorgehen würdest.</p>
+    </section>
+    <footer>C-Lernwerkstatt · Wintersemester 2026/27</footer>
   </main>
 </body>
 </html>
