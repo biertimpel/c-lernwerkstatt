@@ -1,25 +1,85 @@
-# C-Programmierkurs – erster Pages-Entwurf
+# C-Lernwerkstatt
 
-Kleines, eigenständiges Gerüst mit **Aufgabe 1A (Hello World)** und
-**Aufgabe 1B (vier Grundrechenarten)**. Weitere Aufgaben, Kapitel,
-Semesterplanung und Bewertungsregeln sind noch nicht enthalten.
+Statische Kurswebsite für den C-Programmierkurs im Wintersemester 2026/27.
+Start: **19. Oktober 2026**. Abschluss: **bis 11. Februar 2027**.
+Zwei Termine à 90 Minuten pro Woche; der Abschluss ist unbenotet.
 
-## Direkt ausprobieren
+## Einstieg und Materialstand
 
-`index.html` im Browser öffnen. Es gibt keine Installation, externen
-Bibliotheken oder einen Build-Schritt. Die ganze Seite steckt in dieser Datei.
+Die zentrale Übersicht liegt in **`uebersicht.html`**. Dort sind alle vereinbarten
+Termine und Projektphasen mit ihren Themen und Lernzielen erreichbar.
+Die Weihnachtspause ist als Planungsannahme markiert; die beiden konkreten
+Wochentage und endgültigen Kursdaten werden im Kurs bekanntgegeben.
 
-## Auf GitHub Pages veröffentlichen
+Die erste Programmieraufgabe ist vorhanden. Alle weiteren Seiten sind zunächst
+Kapitelgerüste mit Lernzielen sowie Bereichen für Einführung, Aufgaben und Hinweise.
+Unfertige Inhalte sind sichtbar als „in Vorbereitung“ gekennzeichnet.
 
-1. Ein öffentliches Repository, zum Beispiel `c-kurs`, anlegen.
-2. `index.html`, `.nojekyll` und diese `README.md` in den Hauptordner hochladen.
-3. Unter **Settings → Pages → Build and deployment** die Quelle
-   **Deploy from a branch** auswählen.
-4. Branch **main** und Ordner **/(root)** auswählen und speichern.
-5. Nach erfolgreicher Veröffentlichung die von GitHub angezeigte Website-Adresse öffnen.
+## Startkapitel
 
-Bei einem anderen Standardbranch diesen statt `main` wählen.
-Die GitHub-Anleitung: https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site
+- `start/index.html`: Übersicht für Termin 1.1.
+- `start/mein-erstes-programm.html`: vorhandene Aufgabe mit Hello World und Rechnen.
+- `start/warum-c.html`: Gerüst für die Einführung.
+- `start/code-lesen.html`: Gerüst für die Aufgabe zum Codeverständnis.
+
+`index.html` bleibt als bestehender direkter Einstieg erhalten. Für die weitere
+Entwicklung der Startaufgabe ist `start/mein-erstes-programm.html` maßgeblich;
+die Kursübersicht verlinkt diese Fassung.
+
+## Themenordner
+
+Jeder weitere Themenordner enthält zunächst eine `index.html`. Materialien und
+zusätzliche Aufgaben können später direkt im jeweiligen Ordner ergänzt werden.
+
+| Termin / Woche | Ordner | Thema |
+| --- | --- | --- |
+| 1.1 | `start/` | Start |
+| 1.2 | `variablen/` | Variablen, Datentypen und Berechnungen |
+| 2.1 | `kontrollfluss/` | Bedingungen und Schleifen |
+| 2.2 | `randbedingungen/` | Komplexerer Kontrollfluss und Randbedingungen |
+| 3.1 | `funktionen-debugging/` | Funktionen, Programmzerlegung und Debugging |
+| 3.2 | `lernstand-1/` | Grundlagencheck |
+| 4.1 | `arrays-zeichenketten/` | Manpages, Arrays, Zeichenketten und Listenmodelle |
+| 4.2 | `pointer/` | Pointer und Datenaustausch |
+| 5.1 | `verkettete-listen/` | Verkettete Listen mit Pointern umsetzen |
+| 5.2 | `speicheraufbau/` | Speicheraufbau: Text, Data, Heap und Stack |
+| 6.1 | `dynamischer-speicher/` | Dynamischer Speicher und Strukturen |
+| 6.2 | `header-quellen/` | Header, Quelldateien und Schnittstellen |
+| 7.1 | `kompilieren-make/` | Kompilieren, Linken und Makefiles |
+| 7.2 | `modularisierung-praxis/` | Programmzerlegung in Dateien: praktische Aufgabe |
+| 8.1 | `wiederholung/` | Wiederholung |
+| 8.2 | `lernstand-2/` | Umfassender Lernstandscheck |
+| 9 | `projektplanung/` | Projekt planen |
+| 10 | `projekt-grundumfang/` | Technischen Projektgrundumfang umsetzen |
+| 11–12 | `projekt-verbesserung/` | Projekt verbessern, erweitern und prüfen |
+| 13 | `vortragsvorbereitung/` | Implementierung abschließen und Vortrag vorbereiten |
+| 14–15 | `abschluss/` | Projektpräsentationen und Abschluss |
+
+`kurs.css` enthält die gemeinsame Gestaltung. Links und Stylesheets sind relativ,
+damit die Website auch unter dem GitHub-Pages-Projektpfad funktioniert.
+
+## Gemeinsame Arbeit mit Branches
+
+- `feature/kursstruktur`: zentrale Übersicht, Themenordner und gemeinsame Gestaltung.
+- `feature/start`: Inhalte im Ordner `start/` bearbeiten.
+- `feature/variablen`: Inhalte im Ordner `variablen/` bearbeiten.
+
+Die beiden Themenbranches starten vom gleichen Kursstruktur-Commit. Jeder Branch
+enthält die vollständige Website; die Arbeit konzentriert sich auf den zugehörigen
+Themenordner. Die gemeinsame Struktur wird zunächst über einen Pull Request nach
+`main` übernommen. Danach können Kapiteländerungen ebenfalls über Pull Requests
+nach `main` zusammengeführt werden.
+
+Weitere Themenbranches bei Arbeitsbeginn aus dem dann aktuellen `main` erstellen.
+Änderungen an `uebersicht.html` oder `kurs.css` miteinander abstimmen, da diese Dateien
+von allen Kapiteln verwendet werden.
+
+## Lokal ansehen und veröffentlichen
+
+`uebersicht.html` im Browser öffnen. Die Website benötigt keinen Build-Schritt.
+Für die vorhandene GitHub-Pages-Website bleibt die Veröffentlichung aus `main`
+und `/(root)` vorgesehen. Ein Feature-Branch ist zunächst eine Arbeitsfassung;
+eine Übernahme in `main` erfolgt nach Prüfung der Änderungen.
 
 ## Was die Vorschau macht
 
@@ -46,8 +106,3 @@ Der eingegebene Code bleibt im aktuellen Browserfenster. Er wird nicht
 Änderungen an der Website können gemeinsam im Repository bearbeitet und
 über Issues oder Pull Requests besprochen werden.
 
-## Dateien
-
-- `index.html`: Seitenstruktur, Gestaltung, Aufgabe 1 und Vorschau.
-- `.nojekyll`: veröffentlicht die statische Seite ohne Jekyll-Verarbeitung.
-- `README.md`: kurze Anleitung für den Entwurf.
