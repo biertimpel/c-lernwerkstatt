@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Programmierung in C · Datentypen</title><style>:root { color-scheme: light; --ink: #17253b; --muted: #546279; --blue: #244bcc; --line: #d9dfe9; --paper: #f5f6f9; }
+* { box-sizing: border-box; }
+body { max-width: 1050px; margin: 36px auto; padding: 0 20px; font: 16px/1.6 system-ui, sans-serif; color: var(--ink); background: var(--paper); }
+a { color: var(--blue); text-underline-offset: .18em; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 3px solid #f2ab32; outline-offset: 4px; }
+.skip { position: absolute; top: -90px; left: 20px; padding: 8px 14px; background: white; }
+.skip:focus { top: 12px; }
+header { margin-bottom: 30px; }
+.eyebrow { color: var(--blue); font-size: 13px; font-weight: 700; letter-spacing: .05em; margin: 0 0 6px; }
+h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.2; margin: 0 0 16px; }
+h2 { font-size: 24px; margin: 0 0 16px; line-height: 1.3; }
+h3 { font-size: 19px; margin: 12px 0; line-height: 1.35; }
+p { margin: 0 0 16px; }
+li { margin-bottom: 8px; }
+ul, ol { padding-left: 24px; }
+.intro { max-width: 780px; color: var(--muted); }
+.facts { display: flex; flex-wrap: wrap; gap: 8px; padding: 0; margin: 22px 0; list-style: none; }
+.facts li { margin: 0; padding: 4px 11px; border: 1px solid var(--line); border-radius: 6px; background: white; font-size: 14px; }
+.notice, .milestones, .pause { padding: 20px 24px; border: 1px solid var(--line); border-radius: 10px; background: white; margin: 24px 0; }
+.notice p:last-child, .pause p:last-child { margin-bottom: 0; }
+.course-week { margin: 34px 0; scroll-margin-top: 20px; }
+.week-date { color: var(--muted); font-size: 15px; font-weight: 400; display: block; margin-top: 4px; }
+.cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.card { padding: 22px 24px; background: white; border: 1px solid var(--line); border-radius: 10px; min-width: 0; }
+.card.single { grid-column: 1 / -1; }
+.card ul { margin-bottom: 0; }
+.card li small { color: var(--muted); display: block; }
+.number { color: var(--blue); font-size: 13px; font-weight: 750; }
+.status { font-size: 12px; padding: 3px 8px; border-radius: 5px; background: #e8ecf6; color: #27395e; display: inline-block; }
+.card .status { margin-top: 16px; }
+.navlinks { display: flex; flex-wrap: wrap; gap: 8px 18px; padding: 0; list-style: none; }
+.content-section { background: white; border: 1px solid var(--line); border-radius: 10px; padding: 22px 24px; margin: 22px 0; }
+.content-section ul { margin-bottom: 0; }
+.content-section p:last-child { margin-bottom: 0; }
+footer { border-top: 1px solid var(--line); padding-top: 18px; margin-top: 38px; color: var(--muted); font-size: 14px; }
+@media (max-width: 680px) { body { margin-top: 24px; padding: 0 16px; } .cards { grid-template-columns: 1fr; } .card, .notice, .milestones, .pause, .content-section { padding: 18px; } }
+
+pre { padding:16px 18px; background:#f1f3f8; border:1px solid var(--line); border-radius:6px; overflow-x:auto; line-height:1.55; }
+code { font-family:ui-monospace,SFMono-Regular,Consolas,monospace; }
+p code,li code,td code { font-size:.95em; }
+pre code { font-size:15px; }
+details { border-top:1px solid var(--line); margin-top:14px; padding-top:12px; }
+summary { cursor:pointer; color:var(--blue); font-weight:650; }
+details[open] summary { margin-bottom:14px; }
+.table-wrap { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; margin:12px 0 18px; }
+th,td { padding:10px 12px; border:1px solid var(--line); text-align:left; vertical-align:top; }
+th { background:#f1f3f8; }
+.steps > li { margin-bottom:12px; }
+.chapter-nav { display:flex; flex-wrap:wrap; gap:8px 20px; padding:0; list-style:none; }
+.chapter-nav [aria-current] { font-weight:700; }
+.memory-note { border-left:3px solid var(--blue); padding-left:16px; }
+@media print { details { break-inside:avoid; } .chapter-nav,.download { display:none; } body { max-width:none; margin:0; } }
+</style></head><body><a class="skip" href="#inhalt">Zum Inhalt</a><main id="inhalt"><p><a href="index.html">← Zur Themenübersicht</a></p><header><h1>Datentypen</h1></header><nav aria-label="Themenbereich"><ul class="chapter-nav"><li><a href="index.html">Übersicht</a></li><li><a href="lokale-und-globale-variablen.html">Lokale und globale Variablen</a></li><li><a href="datentypen.html" aria-current="page">Datentypen</a></li><li><a href="berechnungen.html">Berechnungen</a></li></ul></nav><section class="content-section" aria-labelledby="ziele"><h2 id="ziele">Lernziele</h2><ul><li>Beschreiben, dass Bitmuster eine Interpretationsregel benötigen.</li><li>Die grundlegenden Typen <code>int</code>, <code>char</code>, <code>float</code>, <code>double</code> und <code>bool</code> verwenden.</li><li>Werte mit passenden Platzhaltern ausgeben.</li></ul></section><section class="content-section" aria-labelledby="theorie"><h2 id="theorie">Theorie und Hintergrund</h2><h3>Dieselben Bits können unterschiedlich gedeutet werden</h3><p>Werte werden im Speicher als Bits dargestellt. Betrachten Sie diese acht Bits:</p><pre><code>01001101</code></pre><div class="table-wrap"><table><thead><tr><th scope="col">Interpretationsregel</th><th scope="col">Bedeutung</th></tr></thead><tbody><tr><td>Als vorzeichenlose Binärzahl</td><td><code>77</code></td></tr><tr><td>Als ASCII-Zeichencode</td><td>Der Buchstabe <code>M</code></td></tr></tbody></table></div><p>Die Bitfolge allein verrät ihre beabsichtigte Bedeutung nicht. Der Datentyp legt fest, wie ein gespeicherter Wert dargestellt und verarbeitet wird. Für Zeichen wird zusätzlich eine Zeichenkodierung wie ASCII verwendet.</p><p class="memory-note">Merken Sie sich zunächst: Im Speicher liegen Bits. Ihre Interpretation gehört zu den Regeln unseres Programms. Der Compiler berücksichtigt die Datentypen beim Übersetzen.</p>
+<h3>Fünf grundlegende Datentypen</h3><div class="table-wrap"><table><thead><tr><th scope="col">Typ</th><th scope="col">Verwendung</th><th scope="col">Deklaration</th></tr></thead><tbody><tr><td><code>int</code></td><td>Ganze Zahlen</td><td><code>int anzahl = 4;</code></td></tr><tr><td><code>char</code></td><td>Einzelne Zeichencodes</td><td><code>char gruppe = 'A';</code></td></tr><tr><td><code>float</code></td><td>Gleitkommazahlen</td><td><code>float temperatur = 19.5f;</code></td></tr><tr><td><code>double</code></td><td>Gleitkommazahlen mit üblicherweise höherer Genauigkeit als float</td><td><code>double strecke = 4.75;</code></td></tr><tr><td><code>bool</code></td><td>Wahrheitswerte: wahr oder falsch</td><td><code>bool abgeschlossen = false;</code></td></tr></tbody></table></div><p>Gleitkommazahlen werden ebenfalls als Bits dargestellt, jedoch nach anderen Regeln als ganze Zahlen. <code>float</code> und <code>double</code> unterscheiden sich insbesondere in ihrer Genauigkeit. Die genaue Darstellung lernen Sie in Rechnerarchitektur kennen.</p>
+<p>Verwenden Sie bei Zahlen einen Dezimalpunkt. Das angehängte <code>f</code> in <code>19.5f</code> kennzeichnet eine Zahl vom Typ <code>float</code>. Einzelne Zeichen stehen in einfachen Anführungszeichen. Auszugebender Text steht in doppelten Anführungszeichen.</p>
+<p>Für <code>bool</code>, <code>true</code> und <code>false</code> binden Sie in der hier verwendeten C17-Fassung zusätzlich <code>#include &lt;stdbool.h&gt;</code> ein.</p>
+<h3>Passende Ausgabe</h3><div class="table-wrap"><table><thead><tr><th scope="col">Typ</th><th scope="col">Platzhalter bei printf</th></tr></thead><tbody><tr><td><code>int</code></td><td><code>%d</code></td></tr><tr><td><code>char</code></td><td><code>%c</code></td></tr><tr><td><code>float</code> und <code>double</code></td><td><code>%f</code></td></tr><tr><td><code>bool</code></td><td>hier <code>%d</code>: false als 0, true als 1</td></tr></tbody></table></div><p>Mit <code>%.1f</code> geben Sie eine, mit <code>%.2f</code> zwei Nachkommastellen aus. Diese Angabe verändert die Darstellung bei der Ausgabe, nicht den gespeicherten Wert.</p></section><section class="content-section" aria-labelledby="material"><h2 id="material">Materialien</h2><p class="download"><a href="data:application/zip;base64,UEsDBBQAAAAIAFhlUF3gpW00eQAAAJoAAAAgAAAAZGF0ZW50eXBlbi9kYXRlbnR5cGVuL3Byb2dyYW1tLmNNjLEKAjEQRPt8xcA1esWd2CqCvZ1gvzGbuBA3cMnaiP9uFAsHXvOYmUH0mi0w9rUFKdPt4IZ/5UvJH+lEG+4kunoUCWs8HXrmESdOrDgLI3SisUZcaBHyuXuyiqPFRJ6xBSlMAxL736R2emXCOH//Fm62KDY793JvUEsDBBQAAAAIAFhlUF0rxwX0PAAAAFEAAAAeAAAAZGF0ZW50eXBlbi9kYXRlbnR5cGVuL01ha2VmaWxlKyjKTy9KzM21UiiAsvSSuTiTkxV0i0tSbJMNzRV0wxNzcoBkakVJUaKCbkFqSmJeSWYyknoF3Xw4jwsAUEsBAhQDFAAAAAgAWGVQXeClbTR5AAAAmgAAACAAAAAAAAAAAAAAAIABAAAAAGRhdGVudHlwZW4vZGF0ZW50eXBlbi9wcm9ncmFtbS5jUEsBAhQDFAAAAAgAWGVQXSvHBfQ8AAAAUQAAAB4AAAAAAAAAAAAAAIABtwAAAGRhdGVudHlwZW4vZGF0ZW50eXBlbi9NYWtlZmlsZVBLBQYAAAAAAgACAJoAAAAvAQAAAAA=" download="datentypen-material.zip">Programmgerüste und fertige Makefiles herunterladen</a></p><p>Entpacken Sie das Archiv und öffnen Sie ein Terminal im jeweiligen Aufgabenordner. Bearbeiten Sie dort <code>programm.c</code>. Zum Übersetzen und Starten verwenden Sie:</p><pre><code>make
+./programm</code></pre><p>Übersetzen Sie nach einer gespeicherten Quelltextänderung erneut. Den Aufbau der Makefiles behandeln wir später.</p></section><section class="content-section" aria-labelledby="aufgaben"><h2 id="aufgaben">Aufgaben</h2><h3>1. Passende Typen wählen</h3><p>Schreiben Sie zu jeder Information eine passende Deklaration mit Anfangswert:</p><ul><li>Anzahl der Personen: <code>4</code>.</li><li>Temperatur: <code>19.5</code>. Verwenden Sie dafür <code>float</code>.</li><li>Streckenlänge: <code>4.75</code>. Verwenden Sie dafür <code>double</code>.</li><li>Gruppenkennzeichnung: <code>A</code>.</li><li>Aufgabe abgeschlossen: falsch.</li></ul><p>Bei den beiden Gleitkommazahlen ist der Typ hier vorgegeben, damit Sie beide Schreibweisen kennenlernen. Begründen Sie die übrigen Entscheidungen.</p>
+<h3>2. Werte speichern und ausgeben</h3><p>Ergänzen Sie die Deklarationen aus Aufgabe 1 im heruntergeladenen Programmgerüst. Geben Sie alle Werte mit passenden Beschriftungen aus:</p><pre><code>Personen: 4
+Temperatur: 19.5
+Strecke: 4.75
+Gruppe: A
+Abgeschlossen: 0</code></pre><p>Ändern Sie danach <code>abgeschlossen</code> auf <code>true</code>. Sagen Sie die neue Ausgabe vorher, übersetzen Sie erneut und vergleichen Sie.</p>
+<h3>3. Darstellung verändern</h3><p>Geben Sie die Temperatur nacheinander mit <code>%f</code> und <code>%.2f</code> aus. Was verändert sich? Wird der Variable dabei ein neuer Wert zugewiesen?</p>
+<p><strong>Bei der Bearbeitung:</strong> Erklären Sie sich kurz gegenseitig oder der Betreuung, warum die Bits allein noch nicht erklären, was ein Wert bedeutet. Nutzen Sie das Beispiel mit <code>77</code> und <code>M</code>. Wenn Ihnen der Zusammenhang unklar ist, fragen Sie jetzt nach.</p></section><section class="content-section" aria-labelledby="hinweise"><h2 id="hinweise">Hinweise</h2><details><summary>Zeichen und Wahrheitswerte</summary><p>Schreiben Sie <code>char gruppe = 'A';</code> und <code>bool abgeschlossen = false;</code>. Das Wort <code>false</code> steht dabei nicht in Anführungszeichen.</p></details><details><summary>Ausgabe prüfen</summary><p>Kontrollieren Sie für jede Ausgabe den Typ der Variable und den passenden Platzhalter. Für <code>float</code> und <code>double</code> verwenden Sie bei <code>printf</code> denselben Platzhalter <code>%f</code>.</p></details></section><section class="content-section" aria-labelledby="kontrolle"><h2 id="kontrolle">Selbstkontrolle</h2><details><summary>Aufgaben 1 und 2: mögliche Lösung</summary><pre><code>#include &lt;stdio.h&gt;
+#include &lt;stdbool.h&gt;
+
+int main(void) {
+    int personen = 4;
+    float temperatur = 19.5f;
+    double strecke = 4.75;
+    char gruppe = &#x27;A&#x27;;
+    bool abgeschlossen = false;
+
+    printf(&quot;Personen: %d\n&quot;, personen);
+    printf(&quot;Temperatur: %.1f\n&quot;, temperatur);
+    printf(&quot;Strecke: %.2f\n&quot;, strecke);
+    printf(&quot;Gruppe: %c\n&quot;, gruppe);
+    printf(&quot;Abgeschlossen: %d\n&quot;, abgeschlossen);
+    return 0;
+}</code></pre><p>Nach der Änderung auf <code>true</code> lautet die letzte Ausgabe <code>Abgeschlossen: 1</code>.</p></details><details><summary>Aufgabe 3: Ausgabeformat</summary><p>Mit <code>%f</code> erscheint <code>19.500000</code>, mit <code>%.2f</code> erscheint <code>19.50</code>. Die Formatangabe weist der Variable keinen neuen Wert zu.</p></details><details><summary>Speicher und Interpretation</summary><p>Das Muster <code>01001101</code> entspricht als vorzeichenlose Binärzahl <code>77</code> und als ASCII-Code dem Buchstaben <code>M</code>. Erst die Interpretationsregel legt fest, welche Bedeutung wir damit verbinden.</p></details></section><p>Zur nächsten Aufgabe: <a href="berechnungen.html">Berechnungen</a></p><footer>Programmierung in C · <a href="index.html">Zur Themenübersicht</a></footer></main></body></html>

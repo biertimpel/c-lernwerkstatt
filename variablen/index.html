@@ -1,42 +1,63 @@
 <!doctype html>
-<html lang="de">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>C-Lernwerkstatt · Variablen, Datentypen und Berechnungen</title>
-  <link rel="stylesheet" href="../kurs.css">
-</head>
-<body>
-  <a class="skip" href="#inhalt">Zum Inhalt</a>
-  <main id="inhalt">
-    <p><a href="../uebersicht.html#woche-1">← Zur Kursübersicht</a></p>
-    <header>
-      <p class="eyebrow">Termin 1.2</p>
-      <h1>Variablen, Datentypen und Berechnungen</h1>
-      <span class="status">Material in Vorbereitung</span>
-    </header>
-    <section class="content-section" aria-labelledby="ziele">
-      <h2 id="ziele">Lernziele</h2>
-      <ul>
-      <li>Lokale und globale Variablen unterscheiden.</li>
-      <li>Datentypen passend auswählen und Rechenausdrücke nachvollziehen.</li>
-      <li>Ganzzahl- und Gleitkommarechnungen untersuchen.</li>
-      </ul>
-    </section>
-    <section class="content-section" aria-labelledby="einfuehrung">
-      <h2 id="einfuehrung">Einführung und Materialien</h2>
-      <p>Die Einführung und die zugehörigen Materialien werden hier ergänzt.</p>
-    </section>
-    <section class="content-section" aria-labelledby="aufgaben">
-      <h2 id="aufgaben">Aufgaben</h2>
-      <p>Aufgabenstellung, Voraussetzungen und erwartetes Ergebnis werden hier ergänzt.</p>
-    </section>
-    <section class="content-section" aria-labelledby="hinweise">
-      <h2 id="hinweise">Hinweise und Selbstcheck</h2>
-      <p>Hier folgen abgestufte Hinweise und Fragen zur Überprüfung deines Verständnisses.</p>
-    </section>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Programmierung in C · Variablen, Datentypen und Berechnungen</title><style>:root { color-scheme: light; --ink: #17253b; --muted: #546279; --blue: #244bcc; --line: #d9dfe9; --paper: #f5f6f9; }
+* { box-sizing: border-box; }
+body { max-width: 1050px; margin: 36px auto; padding: 0 20px; font: 16px/1.6 system-ui, sans-serif; color: var(--ink); background: var(--paper); }
+a { color: var(--blue); text-underline-offset: .18em; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 3px solid #f2ab32; outline-offset: 4px; }
+.skip { position: absolute; top: -90px; left: 20px; padding: 8px 14px; background: white; }
+.skip:focus { top: 12px; }
+header { margin-bottom: 30px; }
+.eyebrow { color: var(--blue); font-size: 13px; font-weight: 700; letter-spacing: .05em; margin: 0 0 6px; }
+h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.2; margin: 0 0 16px; }
+h2 { font-size: 24px; margin: 0 0 16px; line-height: 1.3; }
+h3 { font-size: 19px; margin: 12px 0; line-height: 1.35; }
+p { margin: 0 0 16px; }
+li { margin-bottom: 8px; }
+ul, ol { padding-left: 24px; }
+.intro { max-width: 780px; color: var(--muted); }
+.facts { display: flex; flex-wrap: wrap; gap: 8px; padding: 0; margin: 22px 0; list-style: none; }
+.facts li { margin: 0; padding: 4px 11px; border: 1px solid var(--line); border-radius: 6px; background: white; font-size: 14px; }
+.notice, .milestones, .pause { padding: 20px 24px; border: 1px solid var(--line); border-radius: 10px; background: white; margin: 24px 0; }
+.notice p:last-child, .pause p:last-child { margin-bottom: 0; }
+.course-week { margin: 34px 0; scroll-margin-top: 20px; }
+.week-date { color: var(--muted); font-size: 15px; font-weight: 400; display: block; margin-top: 4px; }
+.cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.card { padding: 22px 24px; background: white; border: 1px solid var(--line); border-radius: 10px; min-width: 0; }
+.card.single { grid-column: 1 / -1; }
+.card ul { margin-bottom: 0; }
+.card li small { color: var(--muted); display: block; }
+.number { color: var(--blue); font-size: 13px; font-weight: 750; }
+.status { font-size: 12px; padding: 3px 8px; border-radius: 5px; background: #e8ecf6; color: #27395e; display: inline-block; }
+.card .status { margin-top: 16px; }
+.navlinks { display: flex; flex-wrap: wrap; gap: 8px 18px; padding: 0; list-style: none; }
+.content-section { background: white; border: 1px solid var(--line); border-radius: 10px; padding: 22px 24px; margin: 22px 0; }
+.content-section ul { margin-bottom: 0; }
+.content-section p:last-child { margin-bottom: 0; }
+footer { border-top: 1px solid var(--line); padding-top: 18px; margin-top: 38px; color: var(--muted); font-size: 14px; }
+@media (max-width: 680px) { body { margin-top: 24px; padding: 0 16px; } .cards { grid-template-columns: 1fr; } .card, .notice, .milestones, .pause, .content-section { padding: 18px; } }
 
-    <footer><a href="../uebersicht.html#woche-1">Zur Kursübersicht</a></footer>
-  </main>
-</body>
-</html>
+pre { padding:16px 18px; background:#f1f3f8; border:1px solid var(--line); border-radius:6px; overflow-x:auto; line-height:1.55; }
+code { font-family:ui-monospace,SFMono-Regular,Consolas,monospace; }
+p code,li code,td code { font-size:.95em; }
+pre code { font-size:15px; }
+details { border-top:1px solid var(--line); margin-top:14px; padding-top:12px; }
+summary { cursor:pointer; color:var(--blue); font-weight:650; }
+details[open] summary { margin-bottom:14px; }
+.table-wrap { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; margin:12px 0 18px; }
+th,td { padding:10px 12px; border:1px solid var(--line); text-align:left; vertical-align:top; }
+th { background:#f1f3f8; }
+.steps > li { margin-bottom:12px; }
+.chapter-nav { display:flex; flex-wrap:wrap; gap:8px 20px; padding:0; list-style:none; }
+.chapter-nav [aria-current] { font-weight:700; }
+.memory-note { border-left:3px solid var(--blue); padding-left:16px; }
+@media print { details { break-inside:avoid; } .chapter-nav,.download { display:none; } body { max-width:none; margin:0; } }
+</style></head><body><a class="skip" href="#inhalt">Zum Inhalt</a><main id="inhalt"><header><h1>Variablen, Datentypen und Berechnungen</h1></header><nav aria-label="Themenbereich"><ul class="chapter-nav"><li><a href="index.html" aria-current="page">Übersicht</a></li><li><a href="lokale-und-globale-variablen.html">Lokale und globale Variablen</a></li><li><a href="datentypen.html">Datentypen</a></li><li><a href="berechnungen.html">Berechnungen</a></li></ul></nav><section class="content-section" aria-labelledby="ziele"><h2 id="ziele">Lernziele</h2><ul><li>Variablen deklarieren, initialisieren und ihre Werte verändern.</li><li>Aussagekräftige Namen wählen und lokale und globale Deklarationen erkennen.</li><li>Erklären, dass Werte als Bitmuster gespeichert und entsprechend dem Datentyp interpretiert werden.</li><li>Die grundlegenden Datentypen <code>int</code>, <code>char</code>, <code>float</code>, <code>double</code> und <code>bool</code> verwenden.</li><li>Rechenausdrücke formulieren sowie Ganzzahldivision und Restberechnung erklären.</li></ul></section><section class="content-section" aria-labelledby="theorie"><h2 id="theorie">Theorie und Hintergrund</h2><p>Eine Variable stellt einen benannten Speicherplatz für einen Wert bereit. Im Speicher wird dieser Wert durch Bits dargestellt. Ein Bit kann den Zustand <code>0</code> oder <code>1</code> besitzen.</p>
+<p>Der Speicherbereich kann unterschiedlich groß sein. Der Datentyp legt auf dem jeweiligen System fest, wie viel Speicher benötigt wird und wie die gespeicherten Bits als Wert interpretiert und verarbeitet werden.</p>
+<p>Eine Bitfolge erklärt ihre Bedeutung nicht selbst. Im Unterkapitel „Datentypen“ lernen Sie dazu ein einfaches Beispiel kennen.</p></section><section class="content-section" aria-labelledby="material"><h2 id="material">Materialien und Aufgaben</h2><ol>
+<li><a href="lokale-und-globale-variablen.html">Lokale und globale Variablen</a><br>Variablen anlegen, Werte verändern und sinnvolle Namen wählen. Lokale und globale Deklarationen zunächst einordnen.</li>
+<li><a href="datentypen.html">Datentypen</a><br>Bitmuster und ihre Interpretation kennenlernen und grundlegende Datentypen verwenden.</li>
+<li><a href="berechnungen.html">Berechnungen</a><br>Mit Variablen rechnen, Ergebnisse überprüfen und einen Bestellkostenrechner schreiben.</li>
+</ol><p>Arbeiten Sie die Seiten in dieser Reihenfolge und in Ihrem eigenen Tempo durch. Notieren Sie Ihre Vorhersagen vor dem Ausführen. Nutzen Sie bei Schwierigkeiten zunächst die Hinweise und anschließend die Betreuung.</p>
+<p>Zeigen Sie uns Ihren Quelltext und beschreiben Sie, was Sie erwartet und was Sie beobachtet haben. Fragen Sie auch nach, wenn die Erklärung zu Speicher und Bitmustern noch unklar ist.</p></section><p>Zur nächsten Aufgabe: <a href="lokale-und-globale-variablen.html">Lokale und globale Variablen</a></p><footer>Programmierung in C · Variablen, Datentypen und Berechnungen</footer></main></body></html>
