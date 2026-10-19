@@ -2,13 +2,13 @@
 
 Statische Kurswebsite für den C-Programmierkurs im Wintersemester 2026/27.
 Start: **19. Oktober 2026**. Abschluss: **bis 11. Februar 2027**.
-Zwei Termine à 90 Minuten pro Woche; der Abschluss ist unbenotet.
+Pro Woche finden zwei Termine mit jeweils 90 Minuten statt. Der Abschluss ist unbenotet.
 
 ## Einstieg und Materialstand
 
 Die zentrale Übersicht liegt in **`uebersicht.html`**. Dort sind alle vereinbarten
 Termine und Projektphasen mit ihren Themen und Lernzielen erreichbar.
-Die Weihnachtspause ist als Planungsannahme markiert; die beiden konkreten
+Die Weihnachtspause ist als Planungsannahme markiert. Die beiden konkreten
 Wochentage und endgültigen Kursdaten werden im Kurs bekanntgegeben.
 
 Die erste Programmieraufgabe ist vorhanden. Alle weiteren Seiten sind zunächst
@@ -23,8 +23,8 @@ Unfertige Inhalte sind sichtbar als „in Vorbereitung“ gekennzeichnet.
 - `start/code-lesen.html`: Gerüst für die Aufgabe zum Codeverständnis.
 
 `index.html` bleibt als bestehender direkter Einstieg erhalten. Für die weitere
-Entwicklung der Startaufgabe ist `start/mein-erstes-programm.html` maßgeblich;
-die Kursübersicht verlinkt diese Fassung.
+Entwicklung der Startaufgabe ist `start/mein-erstes-programm.html` maßgeblich.
+Die Kursübersicht verlinkt diese Fassung.
 
 ## Themenordner
 
@@ -65,7 +65,7 @@ damit die Website auch unter dem GitHub-Pages-Projektpfad funktioniert.
 - `feature/variablen`: Inhalte im Ordner `variablen/` bearbeiten.
 
 Die beiden Themenbranches starten vom gleichen Kursstruktur-Commit. Jeder Branch
-enthält die vollständige Website; die Arbeit konzentriert sich auf den zugehörigen
+enthält die vollständige Website. Die Arbeit konzentriert sich auf den zugehörigen
 Themenordner. Die gemeinsame Struktur wird zunächst über einen Pull Request nach
 `main` übernommen. Danach können Kapiteländerungen ebenfalls über Pull Requests
 nach `main` zusammengeführt werden.
@@ -78,8 +78,8 @@ von allen Kapiteln verwendet werden.
 
 `uebersicht.html` im Browser öffnen. Die Website benötigt keinen Build-Schritt.
 Für die vorhandene GitHub-Pages-Website bleibt die Veröffentlichung aus `main`
-und `/(root)` vorgesehen. Ein Feature-Branch ist zunächst eine Arbeitsfassung;
-eine Übernahme in `main` erfolgt nach Prüfung der Änderungen.
+und `/(root)` vorgesehen. Ein Feature-Branch ist zunächst eine Arbeitsfassung.
+Eine Übernahme in `main` erfolgt nach Prüfung der Änderungen.
 
 ## Was die Vorschau macht
 
