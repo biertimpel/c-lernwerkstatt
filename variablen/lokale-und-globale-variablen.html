@@ -1,20 +1,110 @@
 <!doctype html>
-<html lang="de">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Programmierung in C · Lokale und globale Variablen</title>
-  <link rel="stylesheet" href="../kurs.css">
-</head>
-<body>
-  <a class="skip" href="#inhalt">Zum Inhalt</a>
-  <main id="inhalt">
-    <p><a href="../uebersicht.html#block-1">Zur Kursübersicht</a></p>
-    <p><a href="index.html">Zur Themenübersicht</a></p>
-    <header>
-      <h1>Lokale und globale Variablen</h1>
-      <span class="status">Material in Vorbereitung</span>
-    </header>
-  </main>
-</body>
-</html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Programmierung in C · Lokale und globale Variablen</title><style>:root { color-scheme: light; --ink: #17253b; --muted: #546279; --blue: #244bcc; --line: #d9dfe9; --paper: #f5f6f9; }
+* { box-sizing: border-box; }
+body { max-width: 1050px; margin: 36px auto; padding: 0 20px; font: 16px/1.6 system-ui, sans-serif; color: var(--ink); background: var(--paper); }
+a { color: var(--blue); text-underline-offset: .18em; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 3px solid #f2ab32; outline-offset: 4px; }
+.skip { position: absolute; top: -90px; left: 20px; padding: 8px 14px; background: white; }
+.skip:focus { top: 12px; }
+header { margin-bottom: 30px; }
+.eyebrow { color: var(--blue); font-size: 13px; font-weight: 700; letter-spacing: .05em; margin: 0 0 6px; }
+h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.2; margin: 0 0 16px; }
+h2 { font-size: 24px; margin: 0 0 16px; line-height: 1.3; }
+h3 { font-size: 19px; margin: 12px 0; line-height: 1.35; }
+p { margin: 0 0 16px; }
+li { margin-bottom: 8px; }
+ul, ol { padding-left: 24px; }
+.intro { max-width: 780px; color: var(--muted); }
+.facts { display: flex; flex-wrap: wrap; gap: 8px; padding: 0; margin: 22px 0; list-style: none; }
+.facts li { margin: 0; padding: 4px 11px; border: 1px solid var(--line); border-radius: 6px; background: white; font-size: 14px; }
+.notice, .milestones, .pause { padding: 20px 24px; border: 1px solid var(--line); border-radius: 10px; background: white; margin: 24px 0; }
+.notice p:last-child, .pause p:last-child { margin-bottom: 0; }
+.course-week { margin: 34px 0; scroll-margin-top: 20px; }
+.week-date { color: var(--muted); font-size: 15px; font-weight: 400; display: block; margin-top: 4px; }
+.cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.card { padding: 22px 24px; background: white; border: 1px solid var(--line); border-radius: 10px; min-width: 0; }
+.card.single { grid-column: 1 / -1; }
+.card ul { margin-bottom: 0; }
+.card li small { color: var(--muted); display: block; }
+.number { color: var(--blue); font-size: 13px; font-weight: 750; }
+.status { font-size: 12px; padding: 3px 8px; border-radius: 5px; background: #e8ecf6; color: #27395e; display: inline-block; }
+.card .status { margin-top: 16px; }
+.navlinks { display: flex; flex-wrap: wrap; gap: 8px 18px; padding: 0; list-style: none; }
+.content-section { background: white; border: 1px solid var(--line); border-radius: 10px; padding: 22px 24px; margin: 22px 0; }
+.content-section ul { margin-bottom: 0; }
+.content-section p:last-child { margin-bottom: 0; }
+footer { border-top: 1px solid var(--line); padding-top: 18px; margin-top: 38px; color: var(--muted); font-size: 14px; }
+@media (max-width: 680px) { body { margin-top: 24px; padding: 0 16px; } .cards { grid-template-columns: 1fr; } .card, .notice, .milestones, .pause, .content-section { padding: 18px; } }
+
+pre { padding:16px 18px; background:#f1f3f8; border:1px solid var(--line); border-radius:6px; overflow-x:auto; line-height:1.55; }
+code { font-family:ui-monospace,SFMono-Regular,Consolas,monospace; }
+p code,li code,td code { font-size:.95em; }
+pre code { font-size:15px; }
+details { border-top:1px solid var(--line); margin-top:14px; padding-top:12px; }
+summary { cursor:pointer; color:var(--blue); font-weight:650; }
+details[open] summary { margin-bottom:14px; }
+.table-wrap { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; margin:12px 0 18px; }
+th,td { padding:10px 12px; border:1px solid var(--line); text-align:left; vertical-align:top; }
+th { background:#f1f3f8; }
+.steps > li { margin-bottom:12px; }
+.chapter-nav { display:flex; flex-wrap:wrap; gap:8px 20px; padding:0; list-style:none; }
+.chapter-nav [aria-current] { font-weight:700; }
+.memory-note { border-left:3px solid var(--blue); padding-left:16px; }
+@media print { details { break-inside:avoid; } .chapter-nav,.download { display:none; } body { max-width:none; margin:0; } }
+</style></head><body><a class="skip" href="#inhalt">Zum Inhalt</a><main id="inhalt"><p><a href="index.html">← Zur Themenübersicht</a></p><header><h1>Lokale und globale Variablen</h1></header><nav aria-label="Themenbereich"><ul class="chapter-nav"><li><a href="index.html">Übersicht</a></li><li><a href="lokale-und-globale-variablen.html" aria-current="page">Lokale und globale Variablen</a></li><li><a href="datentypen.html">Datentypen</a></li><li><a href="berechnungen.html">Berechnungen</a></li></ul></nav><section class="content-section" aria-labelledby="ziele"><h2 id="ziele">Lernziele</h2><ul><li>Deklaration, Initialisierung und spätere Zuweisung unterscheiden.</li><li>Die Werte mehrerer Variablen nach Anweisungen nachvollziehen.</li><li>Aussagekräftige Variablennamen wählen.</li><li>Lokale und globale Variablen anhand ihrer Deklarationsstelle erkennen.</li></ul></section><section class="content-section" aria-labelledby="theorie"><h2 id="theorie">Theorie und Hintergrund</h2><h3>Eine Variable anlegen und verändern</h3><p>Eine Variable hat einen Namen und einen Datentyp. Über den Namen können Sie ihren Wert verwenden.</p><pre><code>int anzahl = 4;</code></pre><p><code>int</code> steht für ganze Zahlen. Mit dieser Anweisung wird <code>anzahl</code> deklariert und mit dem Anfangswert <code>4</code> initialisiert. <strong>Deklaration</strong> bedeutet, eine Variable mit Namen und Datentyp bekannt zu machen. <strong>Initialisierung</strong> bedeutet, ihr beim Anlegen einen Anfangswert zu geben.</p><pre><code>anzahl = 9;
+anzahl = anzahl + 1;</code></pre><p>Diese Anweisungen weisen der vorhandenen Variable neue Werte zu. Der Typ wird dabei nicht erneut angegeben. Bei der zweiten Zuweisung wird zunächst mit dem bisherigen Wert gerechnet und danach das Ergebnis gespeichert. Am Ende enthält <code>anzahl</code> den Wert <code>10</code>.</p>
+<h3>Getrennte Variablen, getrennte Werte</h3><pre><code>int a = 4;
+int b = a;
+a = 9;</code></pre><p><code>b</code> erhält den damaligen Wert von <code>a</code>. Anschließend wird nur <code>a</code> verändert: <code>a</code> enthält <code>9</code>, <code>b</code> weiterhin <code>4</code>. Beide Variablen stehen für getrennte Speicherbereiche. Gleiche Werte bedeuten nicht, dass es sich um denselben Speicherplatz handelt.</p>
+<h3>Namen verständlich wählen</h3><p>Der Name sollte die Bedeutung des gespeicherten Werts beschreiben. In einer Gleichung kann <code>x</code> sinnvoll sein. Für das Ergebnis einer Rechnung passt beispielsweise <code>ergebnis</code>. Wenn mehrere Ergebnisse vorkommen, hilft ein genauerer Name wie <code>ergebnis_subtraktion</code>.</p><div class="table-wrap"><table><thead><tr><th scope="col">Schreibweise</th><th scope="col">Beispiel</th></tr></thead><tbody><tr><td>snake_case: Wörter mit Unterstrichen trennen</td><td><code>ergebnis_subtraktion</code></td></tr><tr><td>camelCase: neue Wörter groß beginnen</td><td><code>ergebnisSubtraktion</code></td></tr></tbody></table></div><p>Wählen Sie eine einheitliche Schreibweise. Verwenden Sie für den Einstieg Buchstaben von <code>a</code> bis <code>z</code> beziehungsweise <code>A</code> bis <code>Z</code>, Ziffern und Unterstriche. Namen dürfen nicht mit einer Ziffer beginnen und keine Leerzeichen enthalten. Groß- und Kleinschreibung werden unterschieden. Schlüsselwörter wie <code>int</code> oder <code>return</code> sind als Namen nicht erlaubt.</p>
+<h3>Lokale und globale Variablen</h3><p>Eine innerhalb einer Funktion deklarierte Variable ist lokal. Eine außerhalb aller Funktionen deklarierte Variable wird als globale Variable bezeichnet.</p><pre><code>#include &lt;stdio.h&gt;
+
+int globale_anzahl = 3;
+
+int main(void) {
+    int lokale_anzahl = 5;
+    printf(&quot;Global: %d\n&quot;, globale_anzahl);
+    printf(&quot;Lokal: %d\n&quot;, lokale_anzahl);
+    return 0;
+}</code></pre><p><code>globale_anzahl</code> steht außerhalb von <code>main</code>. <code>lokale_anzahl</code> innerhalb. Mehr müssen Sie dazu zunächst nicht verwenden. Die Regeln für Sichtbarkeit und Lebensdauer greifen wir bei „Programmzerlegung, Funktionen und Debugging“ wieder auf. Deklarieren Sie die Variablen der folgenden Aufgaben innerhalb von <code>main</code>.</p></section><section class="content-section" aria-labelledby="material"><h2 id="material">Materialien</h2><p class="download"><a href="data:application/zip;base64,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" download="variablen-material.zip">Programmgerüste und fertige Makefiles herunterladen</a></p><p>Entpacken Sie das Archiv und öffnen Sie ein Terminal im jeweiligen Aufgabenordner. Bearbeiten Sie dort <code>programm.c</code>. Zum Übersetzen und Starten verwenden Sie:</p><pre><code>make
+./programm</code></pre><p>Übersetzen Sie nach einer gespeicherten Quelltextänderung erneut. Den Aufbau der Makefiles behandeln wir später.</p></section><section class="content-section" aria-labelledby="aufgaben"><h2 id="aufgaben">Aufgaben</h2><h3>1. Werte nachverfolgen</h3><p>Lesen Sie das Programm zunächst ohne Ausführung:</p><pre><code>#include &lt;stdio.h&gt;
+
+int main(void) {
+    int a = 4;
+    int b = a;
+    a = 9;
+    printf(&quot;a: %d\n&quot;, a);
+    printf(&quot;b: %d\n&quot;, b);
+    b = a + 2;
+    printf(&quot;b danach: %d\n&quot;, b);
+    return 0;
+}</code></pre><ol><li>Notieren Sie nach jeder Deklaration oder Zuweisung die Werte von <code>a</code> und <code>b</code>.</li><li>Sagen Sie die vollständige Ausgabe vorher. Begründen Sie insbesondere den Wert von <code>b</code> nach <code>a = 9;</code>.</li><li>Übersetzen und starten Sie das Programm aus dem Ordner <code>1-werte-nachverfolgen</code>. Vergleichen Sie Ihre Vorhersage mit der Ausgabe.</li></ol>
+<h3>2. Werte verändern</h3><p>Bearbeiten Sie das Gerüst im Ordner <code>2-werte-veraendern</code>. Legen Sie <code>a</code> mit dem Anfangswert <code>6</code> an und initialisieren Sie <code>b</code> mit dem Wert von <code>a</code>. Erhöhen Sie danach <code>a</code> um <code>3</code> und geben Sie beide Werte aus. Entfernen Sie die übrigen Zuweisungen aus dem ursprünglichen Beispiel.</p><p>Notieren Sie Ihre Erwartung und überprüfen Sie sie. Erklären Sie anhand der zwei Speicherbereiche, warum die Variablen am Ende unterschiedliche Werte enthalten.</p>
+<h3>3. Eigene Variablen verwenden</h3><p>Ergänzen Sie im Ordner <code>3-punkte</code> ein Programm mit <code>punkte</code> und <code>bonus</code>. Initialisieren Sie die Variablen mit <code>10</code> und <code>3</code>. Erhöhen Sie <code>punkte</code> um den Wert von <code>bonus</code> und geben Sie den neuen Punktestand aus.</p>
+<h3>4. Namen verbessern</h3><p>Im Ordner <code>4-namen</code> berechnet das Programm eine Bestellung: <code>a</code> ist die Anzahl der Pizzen, <code>b</code> der Einzelpreis, <code>c</code> die einmalige Liefergebühr und <code>d</code> der Gesamtpreis. Benennen Sie die Variablen verständlich um und passen Sie alle Verwendungen an. Die Ausgabe soll gleich bleiben.</p>
+<h3>Kurzer Blick auf die Deklarationsstelle</h3><p>Zeigen Sie im Theoriebeispiel auf die globale und die lokale Deklaration. Woran erkennen Sie den Unterschied? Eine eigene Umsetzung mit globalen Variablen ist hier noch nicht erforderlich.</p></section><section class="content-section" aria-labelledby="hinweise"><h2 id="hinweise">Hinweise</h2><details><summary>Werte nachverfolgen</summary><p>Gehen Sie die Anweisungen von oben nach unten durch. Jede Zuweisung verändert nur die Variable auf ihrer linken Seite.</p></details><details><summary>Mit dem bisherigen Wert rechnen</summary><pre><code>a = a + 3;
+punkte = punkte + bonus;</code></pre></details><details><summary>Namen umstellen</summary><p>Ändern Sie sowohl die Deklaration als auch jede Verwendung eines Namens. Vergleichen Sie nach dem Übersetzen, ob das Ergebnis gleich geblieben ist.</p></details></section><section class="content-section" aria-labelledby="kontrolle"><h2 id="kontrolle">Selbstkontrolle</h2><details><summary>Aufgabe 1: Werte und Ausgabe</summary><div class="table-wrap"><table><thead><tr><th scope="col">Nach der Anweisung</th><th scope="col">a</th><th scope="col">b</th></tr></thead><tbody><tr><td><code>int a = 4;</code></td><td>4</td><td>noch nicht deklariert</td></tr><tr><td><code>int b = a;</code></td><td>4</td><td>4</td></tr><tr><td><code>a = 9;</code></td><td>9</td><td>4</td></tr><tr><td><code>b = a + 2;</code></td><td>9</td><td>11</td></tr></tbody></table></div><pre><code>a: 9
+b: 4
+b danach: 11</code></pre></details><details><summary>Aufgabe 2: getrennte Werte</summary><p>Am Ende enthält <code>a</code> den Wert <code>9</code> und <code>b</code> den Wert <code>6</code>. Die Initialisierung von <code>b</code> erzeugt keine dauerhafte Verbindung mit <code>a</code>.</p><pre><code>#include &lt;stdio.h&gt;
+
+int main(void) {
+    int a = 6;
+    int b = a;
+    a = a + 3;
+    printf(&quot;a: %d\n&quot;, a);
+    printf(&quot;b: %d\n&quot;, b);
+    return 0;
+}</code></pre></details><details><summary>Aufgabe 3: Punktestand</summary><pre><code>#include &lt;stdio.h&gt;
+
+int main(void) {
+    int punkte = 10;
+    int bonus = 3;
+    punkte = punkte + bonus;
+    printf(&quot;Punktestand: %d\n&quot;, punkte);
+    return 0;
+}</code></pre></details><details><summary>Aufgabe 4: mögliche Namen</summary><pre><code>int anzahl_pizzen = 3;
+double einzelpreis = 9.50;
+double lieferkosten = 2.50;
+double gesamtpreis = anzahl_pizzen * einzelpreis + lieferkosten;</code></pre><p>Die Gesamtkosten bleiben <code>31.00</code> Euro.</p></details></section><p>Zur nächsten Aufgabe: <a href="datentypen.html">Datentypen</a></p><footer>Programmierung in C · <a href="index.html">Zur Themenübersicht</a> · <a href="../uebersicht.html">Zur Kursübersicht</a></footer></main></body></html>

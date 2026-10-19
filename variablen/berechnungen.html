@@ -1,20 +1,115 @@
 <!doctype html>
-<html lang="de">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Programmierung in C · Berechnungen</title>
-  <link rel="stylesheet" href="../kurs.css">
-</head>
-<body>
-  <a class="skip" href="#inhalt">Zum Inhalt</a>
-  <main id="inhalt">
-    <p><a href="../uebersicht.html#block-1">Zur Kursübersicht</a></p>
-    <p><a href="index.html">Zur Themenübersicht</a></p>
-    <header>
-      <h1>Berechnungen</h1>
-      <span class="status">Material in Vorbereitung</span>
-    </header>
-  </main>
-</body>
-</html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Programmierung in C · Berechnungen</title><style>:root { color-scheme: light; --ink: #17253b; --muted: #546279; --blue: #244bcc; --line: #d9dfe9; --paper: #f5f6f9; }
+* { box-sizing: border-box; }
+body { max-width: 1050px; margin: 36px auto; padding: 0 20px; font: 16px/1.6 system-ui, sans-serif; color: var(--ink); background: var(--paper); }
+a { color: var(--blue); text-underline-offset: .18em; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 3px solid #f2ab32; outline-offset: 4px; }
+.skip { position: absolute; top: -90px; left: 20px; padding: 8px 14px; background: white; }
+.skip:focus { top: 12px; }
+header { margin-bottom: 30px; }
+.eyebrow { color: var(--blue); font-size: 13px; font-weight: 700; letter-spacing: .05em; margin: 0 0 6px; }
+h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.2; margin: 0 0 16px; }
+h2 { font-size: 24px; margin: 0 0 16px; line-height: 1.3; }
+h3 { font-size: 19px; margin: 12px 0; line-height: 1.35; }
+p { margin: 0 0 16px; }
+li { margin-bottom: 8px; }
+ul, ol { padding-left: 24px; }
+.intro { max-width: 780px; color: var(--muted); }
+.facts { display: flex; flex-wrap: wrap; gap: 8px; padding: 0; margin: 22px 0; list-style: none; }
+.facts li { margin: 0; padding: 4px 11px; border: 1px solid var(--line); border-radius: 6px; background: white; font-size: 14px; }
+.notice, .milestones, .pause { padding: 20px 24px; border: 1px solid var(--line); border-radius: 10px; background: white; margin: 24px 0; }
+.notice p:last-child, .pause p:last-child { margin-bottom: 0; }
+.course-week { margin: 34px 0; scroll-margin-top: 20px; }
+.week-date { color: var(--muted); font-size: 15px; font-weight: 400; display: block; margin-top: 4px; }
+.cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.card { padding: 22px 24px; background: white; border: 1px solid var(--line); border-radius: 10px; min-width: 0; }
+.card.single { grid-column: 1 / -1; }
+.card ul { margin-bottom: 0; }
+.card li small { color: var(--muted); display: block; }
+.number { color: var(--blue); font-size: 13px; font-weight: 750; }
+.status { font-size: 12px; padding: 3px 8px; border-radius: 5px; background: #e8ecf6; color: #27395e; display: inline-block; }
+.card .status { margin-top: 16px; }
+.navlinks { display: flex; flex-wrap: wrap; gap: 8px 18px; padding: 0; list-style: none; }
+.content-section { background: white; border: 1px solid var(--line); border-radius: 10px; padding: 22px 24px; margin: 22px 0; }
+.content-section ul { margin-bottom: 0; }
+.content-section p:last-child { margin-bottom: 0; }
+footer { border-top: 1px solid var(--line); padding-top: 18px; margin-top: 38px; color: var(--muted); font-size: 14px; }
+@media (max-width: 680px) { body { margin-top: 24px; padding: 0 16px; } .cards { grid-template-columns: 1fr; } .card, .notice, .milestones, .pause, .content-section { padding: 18px; } }
+
+pre { padding:16px 18px; background:#f1f3f8; border:1px solid var(--line); border-radius:6px; overflow-x:auto; line-height:1.55; }
+code { font-family:ui-monospace,SFMono-Regular,Consolas,monospace; }
+p code,li code,td code { font-size:.95em; }
+pre code { font-size:15px; }
+details { border-top:1px solid var(--line); margin-top:14px; padding-top:12px; }
+summary { cursor:pointer; color:var(--blue); font-weight:650; }
+details[open] summary { margin-bottom:14px; }
+.table-wrap { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; margin:12px 0 18px; }
+th,td { padding:10px 12px; border:1px solid var(--line); text-align:left; vertical-align:top; }
+th { background:#f1f3f8; }
+.steps > li { margin-bottom:12px; }
+.chapter-nav { display:flex; flex-wrap:wrap; gap:8px 20px; padding:0; list-style:none; }
+.chapter-nav [aria-current] { font-weight:700; }
+.memory-note { border-left:3px solid var(--blue); padding-left:16px; }
+@media print { details { break-inside:avoid; } .chapter-nav,.download { display:none; } body { max-width:none; margin:0; } }
+</style></head><body><a class="skip" href="#inhalt">Zum Inhalt</a><main id="inhalt"><p><a href="index.html">← Zur Themenübersicht</a></p><header><h1>Berechnungen</h1></header><nav aria-label="Themenbereich"><ul class="chapter-nav"><li><a href="index.html">Übersicht</a></li><li><a href="lokale-und-globale-variablen.html">Lokale und globale Variablen</a></li><li><a href="datentypen.html">Datentypen</a></li><li><a href="berechnungen.html" aria-current="page">Berechnungen</a></li></ul></nav><section class="content-section" aria-labelledby="ziele"><h2 id="ziele">Lernziele</h2><ul><li>Rechenausdrücke mit Zahlen, Variablen und Klammern formulieren.</li><li>Ganzzahldivision und Gleitkommadivision unterscheiden.</li><li>Mit <code>%</code> den Rest einer Ganzzahldivision bestimmen.</li><li>Mehrere Berechnungen in einem kleinen Programm verbinden.</li></ul></section><section class="content-section" aria-labelledby="theorie"><h2 id="theorie">Theorie und Hintergrund</h2><h3>Mit Werten rechnen</h3><p>Die Operatoren <code>+</code>, <code>-</code>, <code>*</code> und <code>/</code> stehen für Addition, Subtraktion, Multiplikation und Division. Sie können feste Zahlen und die Werte von Variablen verwenden:</p><pre><code>int anzahl = 3;
+double einzelpreis = 9.50;
+double gesamtpreis = anzahl * einzelpreis;</code></pre><p>Die rechte Seite wird berechnet und das Ergebnis in <code>gesamtpreis</code> gespeichert. Multiplikation und Division gehen vor Addition und Subtraktion. Klammern verändern die Reihenfolge: <code>2 + 3 * 4</code> ergibt <code>14</code>, <code>(2 + 3) * 4</code> ergibt <code>20</code>.</p>
+<h3>Bei Divisionen zählen die beteiligten Typen</h3><p>Werden zwei ganze Zahlen dividiert, wird ein möglicher Nachkommateil abgeschnitten. <code>5 / 2</code> ergibt deshalb <code>2</code>. Ist mindestens ein Operand eine Gleitkommazahl, entsteht eine Gleitkommarechnung: <code>5.0 / 2</code> ergibt <code>2.5</code>.</p><pre><code>double ergebnis = 5 / 2;</code></pre><p>Auch hier ergibt die Rechnung zunächst die ganze Zahl <code>2</code>. Erst danach wird das Ergebnis in der <code>double</code>-Variable gespeichert. Der Datentyp beeinflusst somit auch, welche Rechnung ausgeführt wird.</p>
+<h3>Aufteilen: Was bekommt jeder, was bleibt übrig?</h3><p>Sie verteilen <strong>17 Bonbons auf fünf Personen</strong>. Jede Person erhält drei ganze Bonbons. Zwei bleiben übrig. Das sind zwei verschiedene Ergebnisse:</p><pre><code>int bonbons = 17;
+int personen = 5;
+int pro_person = bonbons / personen;
+int rest = bonbons % personen;</code></pre><p><code>/</code> liefert hier den Anteil pro Person: <code>3</code>. <code>%</code> liefert den Rest: <code>2</code>. Der häufig „Modulo“ genannte Operator berechnet in C den Rest einer Ganzzahldivision. Wir verwenden dafür zunächst nichtnegative Zahlen und einen positiven Teiler.</p>
+<p>Der Rest ist bei vielen Aufgaben die gesuchte Information: übrige Sekunden nach vollständigen Minuten, Gegenstände außerhalb voller Kartons oder die Stunde nach einem vollständigen 24-Stunden-Durchlauf.</p>
+<p>Beispielsweise sind <code>125 / 60</code> vollständige Minuten und <code>125 % 60</code> übrige Sekunden zusammen <strong>2 Minuten und 5 Sekunden</strong>. Für die vollständige Zeitangabe benötigen Sie beide Ergebnisse.</p>
+<p>Durch null darf weder dividiert noch ein Rest mit <code>%</code> berechnet werden.</p></section><section class="content-section" aria-labelledby="material"><h2 id="material">Materialien</h2><p class="download"><a href="data:application/zip;base64,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" download="berechnungen-material.zip">Programmgerüste und fertige Makefiles herunterladen</a></p><p>Entpacken Sie das Archiv und öffnen Sie ein Terminal im jeweiligen Aufgabenordner. Bearbeiten Sie dort <code>programm.c</code>. Zum Übersetzen und Starten verwenden Sie:</p><pre><code>make
+./programm</code></pre><p>Übersetzen Sie nach einer gespeicherten Quelltextänderung erneut. Den Aufbau der Makefiles behandeln wir später.</p></section><section class="content-section" aria-labelledby="aufgaben"><h2 id="aufgaben">Aufgaben</h2><h3>1. Rechnungen vorhersagen</h3><p>Bestimmen Sie zunächst ohne Ausführung:</p><pre><code>8 + 3 * 2
+(8 + 3) * 2
+17 / 5
+17 % 5
+17.0 / 5</code></pre><p>Ergänzen Sie im Ordner <code>1-ausdruecke</code> ein Programm, das die Ergebnisse ausgibt. Verwenden Sie passende Platzhalter und vergleichen Sie mit Ihren Vorhersagen.</p>
+<h3>2. Reicht eine double-Variable?</h3><pre><code>#include &lt;stdio.h&gt;
+
+int main(void) {
+    double a = 5 / 2;
+    double b = 5.0 / 2;
+    printf(&quot;a: %.1f\n&quot;, a);
+    printf(&quot;b: %.1f\n&quot;, b);
+    return 0;
+}</code></pre><ol><li>Sagen Sie die Ausgabe vorher.</li><li>Übersetzen Sie das Beispiel aus <code>2-division</code> und vergleichen Sie.</li><li>Ändern Sie die erste Rechnung so, dass auch <code>a</code> den Wert <code>2.5</code> erhält.</li><li>Erklären Sie bei Unklarheiten mit der Betreuung, welche Rechnung vor dem Speichern des Ergebnisses ausgeführt wird.</li></ol>
+<h3>3. Eine gemeinsame Bestellung</h3><p>Vier Personen bestellen drei Pizzen. Jede Pizza kostet <code>9.50</code> Euro, hinzu kommen einmalig <code>2.50</code> Euro Lieferkosten.</p><p>Ergänzen Sie im Ordner <code>3-bestellung</code> ein Programm, das die Ausgangsdaten in passenden Variablen speichert, den Gesamtpreis und den Anteil pro Person berechnet und beides mit zwei Nachkommastellen ausgibt:</p><pre><code>Gesamtpreis: 31.00 Euro
+Pro Person: 7.75 Euro</code></pre><p>Verwenden Sie die Variablen in Ihren Rechnungen. Ändern Sie anschließend die Personenanzahl auf <code>2</code>. Sagen Sie den neuen Anteil vor dem Ausführen vorher.</p>
+<h3>4. Minuten und Restsekunden</h3><p>Ergänzen Sie im Ordner <code>4-zeit</code> ein Programm, das <code>367</code> Sekunden in vollständige Minuten und übrige Sekunden umrechnet:</p><pre><code>6 Minuten und 7 Sekunden</code></pre><p>Verwenden Sie eine Variable für die gesamte Dauer, eine für die Minuten und eine für die Restsekunden. Prüfen Sie anschließend mit <code>59</code>, <code>60</code> und <code>61</code> Sekunden. Warum sind gerade diese Werte für die Überprüfung hilfreich?</p>
+<h3>Zusatzaufgabe: Über Mitternacht hinaus</h3><p>Es ist <code>22</code> Uhr. Fünf Stunden später ist es <code>3</code> Uhr am nächsten Tag. Schreiben Sie im Ordner <code>zusatz-uhr</code> ein Programm mit <code>start_stunde</code> und <code>dauer</code>, das die spätere Stunde von <code>0</code> bis <code>23</code> berechnet. Verwenden Sie <code>%</code> und zunächst nur nichtnegative Werte.</p><p>Prüfen Sie außerdem <code>10</code> Uhr plus <code>3</code> Stunden und <code>23</code> Uhr plus <code>1</code> Stunde.</p></section><section class="content-section" aria-labelledby="hinweise"><h2 id="hinweise">Hinweise</h2><details><summary>Datentypen bei Rechnungen</summary><p>Bei <code>/</code> ist entscheidend, ob beide Operanden ganze Zahlen sind. Die spätere Speicherung in einer <code>double</code>-Variable ändert eine bereits ausgeführte Ganzzahldivision nicht.</p></details><details><summary>Bestellkosten</summary><p>Rechnen Sie zunächst <code>anzahl_pizzen * einzelpreis + lieferkosten</code>. Teilen Sie diesen Gesamtpreis danach durch die Personenanzahl.</p></details><details><summary>Zeit und Rest</summary><p>Mit <code>sekunden / 60</code> erhalten Sie vollständige Minuten, mit <code>sekunden % 60</code> den Rest. Für die Uhrzeit sind vollständige Durchläufe von <code>24</code> Stunden relevant.</p></details></section><section class="content-section" aria-labelledby="kontrolle"><h2 id="kontrolle">Selbstkontrolle</h2><details><summary>Aufgabe 1: Ergebnisse</summary><div class="table-wrap"><table><thead><tr><th scope="col">Ausdruck</th><th scope="col">Ergebnis</th></tr></thead><tbody><tr><td><code>8 + 3 * 2</code></td><td>14</td></tr><tr><td><code>(8 + 3) * 2</code></td><td>22</td></tr><tr><td><code>17 / 5</code></td><td>3</td></tr><tr><td><code>17 % 5</code></td><td>2</td></tr><tr><td><code>17.0 / 5</code></td><td>3.4</td></tr></tbody></table></div></details><details><summary>Aufgabe 2: Ganzzahldivision</summary><pre><code>a: 2.0
+b: 2.5</code></pre><p>Eine mögliche Änderung lautet <code>double a = 5.0 / 2;</code>.</p></details><details><summary>Aufgabe 3: mögliche Lösung</summary><pre><code>#include &lt;stdio.h&gt;
+
+int main(void) {
+    int personen = 4;
+    int anzahl_pizzen = 3;
+    double einzelpreis = 9.50;
+    double lieferkosten = 2.50;
+
+    double gesamtpreis = anzahl_pizzen * einzelpreis + lieferkosten;
+    double pro_person = gesamtpreis / personen;
+
+    printf(&quot;Gesamtpreis: %.2f Euro\n&quot;, gesamtpreis);
+    printf(&quot;Pro Person: %.2f Euro\n&quot;, pro_person);
+    return 0;
+}</code></pre><p>Bei zwei Personen sind es <code>15.50</code> Euro pro Person.</p></details><details><summary>Aufgabe 4: Zeit umrechnen</summary><pre><code>#include &lt;stdio.h&gt;
+
+int main(void) {
+    int sekunden = 367;
+    int minuten = sekunden / 60;
+    int restsekunden = sekunden % 60;
+    printf(&quot;%d Minuten und %d Sekunden\n&quot;, minuten, restsekunden);
+    return 0;
+}</code></pre><div class="table-wrap"><table><thead><tr><th scope="col">Gesamtdauer</th><th scope="col">Minuten</th><th scope="col">Restsekunden</th></tr></thead><tbody><tr><td>59 Sekunden</td><td>0</td><td>59</td></tr><tr><td>60 Sekunden</td><td>1</td><td>0</td></tr><tr><td>61 Sekunden</td><td>1</td><td>1</td></tr></tbody></table></div><p>Diese Werte prüfen die Rechnung unmittelbar vor, genau bei und unmittelbar nach einer vollständigen Minute.</p></details><details><summary>Zusatzaufgabe: Uhrzeit</summary><pre><code>#include &lt;stdio.h&gt;
+
+int main(void) {
+    int start_stunde = 22;
+    int dauer = 5;
+    int end_stunde = (start_stunde + dauer) % 24;
+    printf(&quot;Spaetere Stunde: %d Uhr\n&quot;, end_stunde);
+    return 0;
+}</code></pre><p>Die drei späteren Stunden lauten <code>3</code>, <code>13</code> und <code>0</code>.</p></details></section><p>Als nächster Themenbereich folgt: <a href="../kontrollfluss/index.html">Bedingungen und Schleifen</a>.</p><footer>Programmierung in C · <a href="index.html">Zur Themenübersicht</a> · <a href="../uebersicht.html">Zur Kursübersicht</a></footer></main></body></html>
