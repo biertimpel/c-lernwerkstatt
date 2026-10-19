@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Under Construction</title>
+  <meta name="description" content="Dieses Thema des C-Kurses wird gerade vorbereitet.">
+  <link rel="stylesheet" href="kurs.css">
+  <style>
+    .construction-image { display: block; width: 100%; height: auto; border-radius: 8px; margin-bottom: 22px; }
+    .back { display: inline-block; padding: 10px 16px; border-radius: 6px; color: white; background: #244bcc; font-weight: 600; }
+    .back:hover { background: #1637a9; }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="uebersicht.html">← Zur Kursübersicht</a></p>
+    <header><h1 id="thema">Under Construction</h1></header>
+    <section class="content-section" aria-label="Material in Vorbereitung">
+      <img class="construction-image" src="assets/under-construction-web.webp" width="1672" height="941" alt="Ein großes C aus leuchtendem Code wird auf einer digitalen Baustelle aufgebaut.">
+      <p>Dieses Thema wird gerade vorbereitet. Bitte arbeiten Sie zunächst an den bereits veröffentlichten Aufgaben weiter.</p>
+      <p><a class="back" href="uebersicht.html">Zur Kursübersicht</a></p>
+    </section>
+  </main>
+  <script>
+    (() => {
+      const themen = {"kontrollfluss":"Bedingungen und Schleifen","funktionen-debugging":"Programmzerlegung, Funktionen und Debugging","lernstand-1":"Lernstandscheck I","manpages":"Manpages","arrays-zeichenketten":"Arrays, Zeichenketten und Listen","pointer":"Pointer und Datenaustausch","dynamischer-speicher":"Dynamischer Speicher und Strukturen","kompilieren-make":"Makefiles","header-quellen":"Header, Quelldateien und Schnittstellen","lernstand-2":"Lernstandscheck II","projektplanung":"Projekt","abschluss":"Präsentation"};
+      const schluessel = new URLSearchParams(window.location.search).get('thema');
+      if (Object.hasOwn(themen, schluessel)) {
+        const titel = themen[schluessel];
+        document.getElementById('thema').textContent = titel;
+        document.title = 'Programmierung in C · ' + titel;
+      }
+    })();
+  </script>
+</body>
+</html>
+
