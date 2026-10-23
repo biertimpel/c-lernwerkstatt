@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Programmzerlegung</title>
+  <style>:root { color-scheme: light; --ink: #17253b; --muted: #546279; --blue: #244bcc; --line: #d9dfe9; --paper: #f5f6f9; }
+* { box-sizing: border-box; }
+body { max-width: 1050px; margin: 36px auto; padding: 0 20px; font: 16px/1.6 system-ui, sans-serif; color: var(--ink); background: var(--paper); }
+a { color: var(--blue); text-underline-offset: .18em; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 3px solid #f2ab32; outline-offset: 4px; }
+.skip { position: absolute; top: -90px; left: 20px; padding: 8px 14px; background: white; }
+.skip:focus { top: 12px; }
+header { margin-bottom: 30px; }
+.eyebrow { color: var(--blue); font-size: 13px; font-weight: 700; letter-spacing: .05em; margin: 0 0 6px; }
+h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.2; margin: 0 0 16px; }
+h2 { font-size: 24px; margin: 0 0 16px; line-height: 1.3; }
+h3 { font-size: 19px; margin: 12px 0; line-height: 1.35; }
+p { margin: 0 0 16px; }
+li { margin-bottom: 8px; }
+ul, ol { padding-left: 24px; }
+.intro { max-width: 780px; color: var(--muted); }
+.facts { display: flex; flex-wrap: wrap; gap: 8px; padding: 0; margin: 22px 0; list-style: none; }
+.facts li { margin: 0; padding: 4px 11px; border: 1px solid var(--line); border-radius: 6px; background: white; font-size: 14px; }
+.notice, .milestones, .pause { padding: 20px 24px; border: 1px solid var(--line); border-radius: 10px; background: white; margin: 24px 0; }
+.notice p:last-child, .pause p:last-child { margin-bottom: 0; }
+.course-week { margin: 34px 0; scroll-margin-top: 20px; }
+.week-date { color: var(--muted); font-size: 15px; font-weight: 400; display: block; margin-top: 4px; }
+.cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.card { padding: 22px 24px; background: white; border: 1px solid var(--line); border-radius: 10px; min-width: 0; }
+.card.single { grid-column: 1 / -1; }
+.card ul { margin-bottom: 0; }
+.card li small { color: var(--muted); display: block; }
+.number { color: var(--blue); font-size: 13px; font-weight: 750; }
+.status { font-size: 12px; padding: 3px 8px; border-radius: 5px; background: #e8ecf6; color: #27395e; display: inline-block; }
+.card .status { margin-top: 16px; }
+.navlinks { display: flex; flex-wrap: wrap; gap: 8px 18px; padding: 0; list-style: none; }
+.content-section { background: white; border: 1px solid var(--line); border-radius: 10px; padding: 22px 24px; margin: 22px 0; }
+.content-section ul { margin-bottom: 0; }
+.content-section p:last-child { margin-bottom: 0; }
+footer { border-top: 1px solid var(--line); padding-top: 18px; margin-top: 38px; color: var(--muted); font-size: 14px; }
+@media (max-width: 680px) { body { margin-top: 24px; padding: 0 16px; } .cards { grid-template-columns: 1fr; } .card, .notice, .milestones, .pause, .content-section { padding: 18px; } }
+
+pre { padding:16px 18px; background:#f1f3f8; border:1px solid var(--line); border-radius:6px; overflow-x:auto; line-height:1.55; }
+code { font-family:ui-monospace,SFMono-Regular,Consolas,monospace; }
+p code,li code,td code { font-size:.95em; }
+pre code { font-size:15px; }
+details { border-top:1px solid var(--line); margin-top:14px; padding-top:12px; }
+summary { cursor:pointer; color:var(--blue); font-weight:650; }
+details[open] summary { margin-bottom:14px; }
+.table-wrap { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; margin:12px 0 18px; }
+th,td { padding:10px 12px; border:1px solid var(--line); text-align:left; vertical-align:top; }
+th { background:#f1f3f8; }
+.steps > li { margin-bottom:12px; }
+.chapter-nav { display:flex; flex-wrap:wrap; gap:8px 20px; padding:0; list-style:none; }
+.chapter-nav [aria-current] { font-weight:700; }
+.memory-note { border-left:3px solid var(--blue); padding-left:16px; }
+@media print { details { break-inside:avoid; } .chapter-nav,.download { display:none; } body { max-width:none; margin:0; } }
+</style>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Themenübersicht</a></p>
+    <header><h1>Programmzerlegung</h1></header>
+    <nav aria-label="Themenbereich"><ul class="chapter-nav"><li><a href="index.html">Übersicht</a></li><li><a href="01-programmzerlegung.html" aria-current="page">Programmzerlegung</a></li><li><a href="02-funktionen.html">Funktionen</a></li><li><a href="03-debugging.html">Debugging</a></li></ul></nav>
+    <section class="content-section" aria-labelledby="ziele"><h2 id="ziele">Lernziele</h2><ul><li>Funktionalitäten einer Aufgabenbeschreibung erkennen.</li><li>Zusammengehörige Arbeitsschritte bündeln und unterschiedliche Aufgaben abgrenzen.</li><li>Für geplante Funktionen benötigte Daten und Ergebnisse benennen.</li><li>Mehrfach benötigte Berechnungen erkennen und gemeinsam nutzbar planen.</li></ul></section><section class="content-section" aria-labelledby="theorie"><h2 id="theorie">Theorie und Hintergrund</h2><p>Überlegen Sie vor dem Schreiben des Codes, welche Aufgaben Ihr Programm erledigen muss. Beschreiben Sie die Teilaufgaben und geben Sie ihnen aussagekräftige Namen.</p><p>Eine Funktion sollte eine zusammenhängende Aufgabe erfüllen. Dazu gehört die Frage, welche Daten sie benötigt und welches Ergebnis sie liefert. Wenn mehrere Funktionen dieselbe Teilaufgabe benötigen, kann dafür eine gemeinsam verwendete Hilfsfunktion sinnvoll sein.</p><p>Diese Planung ist zunächst unabhängig von der genauen C-Schreibweise. Parameter und Rückgabetypen legen Sie auf der nächsten Seite fest. Die spätere Aufteilung in mehrere Quelldateien und Header behandeln wir in einem eigenen Kapitel.</p></section><section class="content-section" aria-labelledby="materialien"><h2 id="materialien">Materialien</h2><p>Für die Aufgaben a bis d benötigen Sie Ihren Funktionsplan auf Papier oder in einer Textdatei. Es gibt hier keine C-Datei zum Herunterladen. Sie beginnen mit der Umsetzung auf der nächsten Seite.</p></section><section class="content-section" aria-labelledby="aufgaben"><h2 id="aufgaben">Aufgaben</h2><p>Ein Geschäft bietet Lieferung und Abholung an. Ein kleiner Bestellrechner soll für dieselbe Bestellung beide Preise berechnen.</p><ul><li>Eingaben sind die <strong>Anzahl der Artikel</strong> und der <strong>Einzelpreis pro Artikel</strong>.</li><li>Der <strong>Warenwert</strong> ist der Gesamtwert der Artikel: Anzahl × Einzelpreis.</li><li>Bei Lieferung kommen einmalig <strong>2,50 Euro Lieferkosten</strong> hinzu.</li><li>Bei Abholung gibt es <strong>10 Prozent Rabatt auf den Warenwert</strong>.</li></ul><p>Für drei Artikel zu jeweils <code>9.50</code> Euro beträgt der Warenwert <code>28.50</code> Euro. Erwartet wird diese Ausgabe:</p><pre><code class="language-text">Lieferpreis: 31.00 Euro
+Abholpreis: 25.65 Euro</code></pre><p>In C-Quelltexten schreiben Sie Dezimalzahlen mit einem Punkt.</p><h3>a) Funktionalitäten erkennen</h3><p>Notieren Sie die Arbeitsschritte, die das Programm von den Bestelldaten bis zur Ausgabe beider Preise benötigt.</p><h3>b) Zusammenfassen und aufteilen</h3><p>Untersuchen Sie Ihre Arbeitsschritte:</p><ul><li>Welche Schritte gehören zu einer zusammenhängenden Teilaufgabe?</li><li>Welche Schritte erledigen unterschiedliche Aufgaben und sollten getrennt werden?</li><li>Welche Schritte betreffen die Berechnung und welche die Ausgabe?</li></ul><h3>c) Einen Funktionsplan erstellen</h3><p>Beginnen Sie mit den Namen <code>berechne_lieferpreis</code>, <code>berechne_abholpreis</code> und <code>gib_preise_aus</code>. Notieren Sie für jede Funktion ihre Aufgabe, die benötigten Daten und das erwartete Ergebnis. Datentypen müssen Sie hier noch nicht festlegen.</p><div class="table-wrap"><table><thead><tr><th scope="col">Funktionsname</th><th scope="col">Aufgabe</th><th scope="col">Benötigte Daten</th><th scope="col">Ergebnis oder Ausgabe</th></tr></thead><tbody><tr><td><code>berechne_lieferpreis</code></td><td>…</td><td>…</td><td>…</td></tr><tr><td><code>berechne_abholpreis</code></td><td>…</td><td>…</td><td>…</td></tr><tr><td><code>gib_preise_aus</code></td><td>…</td><td>…</td><td>…</td></tr></tbody></table></div><h3>d) Den Plan auf gemeinsame Berechnungen untersuchen</h3><p>Vergleichen Sie die Rechenwege für Lieferung und Abholung. Prüfen Sie, ob eine Berechnung an mehreren Stellen vorkommt.</p><ul><li>Welche Teilrechnung könnte eine gemeinsam verwendete Funktion übernehmen?</li><li>Welche Daten benötigt diese Funktion und was liefert sie zurück?</li><li>Ergänzen Sie Ihren Plan und kennzeichnen Sie die Funktionen, die diese Teilrechnung aufrufen sollen.</li></ul></section><section class="content-section" aria-labelledby="hinweise"><h2 id="hinweise">Hinweise</h2><details><summary>Zu a und b: Teilaufgaben abgrenzen</summary><p>Unterscheiden Sie zunächst die benötigten Ergebnisse. Ordnen Sie jedem Ergebnis die notwendigen Rechenschritte zu. Prüfen Sie anschließend, ob Berechnung und Ausgabe unterschiedliche Verantwortlichkeiten haben.</p></details><details><summary>Zu c: Daten und Ergebnis einer Funktion</summary><p>Beschreiben Sie die Funktion aus Sicht des aufrufenden Programmteils: Welche Informationen muss er bereitstellen und welches Ergebnis erwartet er? Die Beschreibung soll unabhängig davon verständlich sein, wie die Berechnung später in C formuliert wird.</p></details><details><summary>Zu d: Wiederkehrende Teilausdrücke erkennen</summary><p>Schreiben Sie beide Rechenwege zunächst vollständig als Ausdrücke mit Anzahl und Einzelpreis auf. Vergleichen Sie die Teilausdrücke vor der Berücksichtigung von Lieferkosten beziehungsweise Rabatt. Prüfen Sie, ob sich diese Berechnung mit derselben Schnittstelle an beiden Stellen verwenden lässt.</p></details></section><section class="content-section" aria-labelledby="kontrolle"><h2 id="kontrolle">Selbstkontrolle</h2><details><summary>Möglicher Funktionsplan</summary><div class="table-wrap"><table><thead><tr><th scope="col">Funktionsname</th><th scope="col">Aufgabe</th><th scope="col">Benötigte Daten</th><th scope="col">Ergebnis oder Ausgabe</th></tr></thead><tbody><tr><td><code>berechne_warenwert</code></td><td>Anzahl × Einzelpreis berechnen</td><td>Anzahl und Einzelpreis</td><td>Warenwert aller Artikel</td></tr><tr><td><code>berechne_lieferpreis</code></td><td>Warenwert berechnen lassen und Lieferkosten addieren</td><td>Anzahl und Einzelpreis</td><td>Lieferpreis</td></tr><tr><td><code>berechne_abholpreis</code></td><td>Warenwert berechnen lassen und Rabatt berücksichtigen</td><td>Anzahl und Einzelpreis</td><td>Abholpreis</td></tr><tr><td><code>gib_preise_aus</code></td><td>Beide fertigen Preise ausgeben</td><td>Lieferpreis und Abholpreis</td><td>Bildschirmausgabe</td></tr></tbody></table></div><p>Die Lieferpreisfunktion und die Abholpreisfunktion rufen beide <code>berechne_warenwert</code> auf. Die Rechnung aus Anzahl und Einzelpreis steht dadurch an einer gemeinsamen Stelle.</p><p>Die Lieferkosten sind eine feste Vorgabe. Auf der nächsten Seite legen Sie sie außerhalb der Funktionen an. Der Warenwert wird dagegen aus den jeweiligen Bestelldaten berechnet und zurückgegeben.</p></details></section>
+  <p class="next-task">Zur nächsten Aufgabe: <a href="02-funktionen.html">Funktionen →</a></p></main>
+</body>
+</html>

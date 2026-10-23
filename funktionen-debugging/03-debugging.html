@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Debugging</title>
+  <style>:root { color-scheme: light; --ink: #17253b; --muted: #546279; --blue: #244bcc; --line: #d9dfe9; --paper: #f5f6f9; }
+* { box-sizing: border-box; }
+body { max-width: 1050px; margin: 36px auto; padding: 0 20px; font: 16px/1.6 system-ui, sans-serif; color: var(--ink); background: var(--paper); }
+a { color: var(--blue); text-underline-offset: .18em; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 3px solid #f2ab32; outline-offset: 4px; }
+.skip { position: absolute; top: -90px; left: 20px; padding: 8px 14px; background: white; }
+.skip:focus { top: 12px; }
+header { margin-bottom: 30px; }
+.eyebrow { color: var(--blue); font-size: 13px; font-weight: 700; letter-spacing: .05em; margin: 0 0 6px; }
+h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.2; margin: 0 0 16px; }
+h2 { font-size: 24px; margin: 0 0 16px; line-height: 1.3; }
+h3 { font-size: 19px; margin: 12px 0; line-height: 1.35; }
+p { margin: 0 0 16px; }
+li { margin-bottom: 8px; }
+ul, ol { padding-left: 24px; }
+.intro { max-width: 780px; color: var(--muted); }
+.facts { display: flex; flex-wrap: wrap; gap: 8px; padding: 0; margin: 22px 0; list-style: none; }
+.facts li { margin: 0; padding: 4px 11px; border: 1px solid var(--line); border-radius: 6px; background: white; font-size: 14px; }
+.notice, .milestones, .pause { padding: 20px 24px; border: 1px solid var(--line); border-radius: 10px; background: white; margin: 24px 0; }
+.notice p:last-child, .pause p:last-child { margin-bottom: 0; }
+.course-week { margin: 34px 0; scroll-margin-top: 20px; }
+.week-date { color: var(--muted); font-size: 15px; font-weight: 400; display: block; margin-top: 4px; }
+.cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.card { padding: 22px 24px; background: white; border: 1px solid var(--line); border-radius: 10px; min-width: 0; }
+.card.single { grid-column: 1 / -1; }
+.card ul { margin-bottom: 0; }
+.card li small { color: var(--muted); display: block; }
+.number { color: var(--blue); font-size: 13px; font-weight: 750; }
+.status { font-size: 12px; padding: 3px 8px; border-radius: 5px; background: #e8ecf6; color: #27395e; display: inline-block; }
+.card .status { margin-top: 16px; }
+.navlinks { display: flex; flex-wrap: wrap; gap: 8px 18px; padding: 0; list-style: none; }
+.content-section { background: white; border: 1px solid var(--line); border-radius: 10px; padding: 22px 24px; margin: 22px 0; }
+.content-section ul { margin-bottom: 0; }
+.content-section p:last-child { margin-bottom: 0; }
+footer { border-top: 1px solid var(--line); padding-top: 18px; margin-top: 38px; color: var(--muted); font-size: 14px; }
+@media (max-width: 680px) { body { margin-top: 24px; padding: 0 16px; } .cards { grid-template-columns: 1fr; } .card, .notice, .milestones, .pause, .content-section { padding: 18px; } }
+
+pre { padding:16px 18px; background:#f1f3f8; border:1px solid var(--line); border-radius:6px; overflow-x:auto; line-height:1.55; }
+code { font-family:ui-monospace,SFMono-Regular,Consolas,monospace; }
+p code,li code,td code { font-size:.95em; }
+pre code { font-size:15px; }
+details { border-top:1px solid var(--line); margin-top:14px; padding-top:12px; }
+summary { cursor:pointer; color:var(--blue); font-weight:650; }
+details[open] summary { margin-bottom:14px; }
+.table-wrap { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; margin:12px 0 18px; }
+th,td { padding:10px 12px; border:1px solid var(--line); text-align:left; vertical-align:top; }
+th { background:#f1f3f8; }
+.steps > li { margin-bottom:12px; }
+.chapter-nav { display:flex; flex-wrap:wrap; gap:8px 20px; padding:0; list-style:none; }
+.chapter-nav [aria-current] { font-weight:700; }
+.memory-note { border-left:3px solid var(--blue); padding-left:16px; }
+@media print { details { break-inside:avoid; } .chapter-nav,.download { display:none; } body { max-width:none; margin:0; } }
+</style>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Themenübersicht</a></p>
+    <header><h1>Debugging</h1></header>
+    <nav aria-label="Themenbereich"><ul class="chapter-nav"><li><a href="index.html">Übersicht</a></li><li><a href="01-programmzerlegung.html">Programmzerlegung</a></li><li><a href="02-funktionen.html">Funktionen</a></li><li><a href="03-debugging.html" aria-current="page">Debugging</a></li></ul></nav>
+    <section class="content-section" aria-labelledby="ziele"><h2 id="ziele">Lernziele</h2><ul><li>Fehler beim Übersetzen, falsche Ergebnisse und erkannte ungültige Werte unterscheiden.</li><li>Vereinbarte Fehlercodes prüfen und an den Aufrufer weitergeben.</li><li>Fehlercodes, Fehlermeldungen und zusätzliche Ausgaben zur Fehlersuche unterscheiden.</li><li>Parameter und Rückgabewerte mit gezielten Ausgaben verfolgen.</li><li>Geeignete Testfälle wählen und eine gefundene Ursache korrigieren und überprüfen.</li></ul></section><section class="content-section" aria-labelledby="theorie"><h2 id="theorie">Theorie und Hintergrund</h2><p>Ihr Bestellrechner liefert für die bisherigen Beispiele passende Ergebnisse. Was passiert aber, wenn eine Anzahl für die Bestellung nicht sinnvoll ist? Und wie finden Sie heraus, warum das Programm trotz erfolgreicher Übersetzung einen falschen Preis ausgibt?</p><p>Solche Fragen gehören zum Debugging: Sie beobachten einen Fehler, untersuchen seine Ursache und überprüfen anschließend Ihre Korrektur. Fehler können sich unterschiedlich zeigen:</p><div class="table-wrap"><table><thead><tr><th scope="col">Beispiel</th><th scope="col">Möglicher Umgang</th></tr></thead><tbody><tr><td>Der Compiler meldet eine fehlende Klammer.</td><td>Lesen Sie die erste Fehlermeldung mit Zeilennummer. Prüfen Sie auch die direkt vorhergehende Anweisung.</td></tr><tr><td>Eine ungültige Anzahl wird an eine Funktion übergeben.</td><td>Die Funktion erkennt den ungültigen Wert und meldet ihn über einen vereinbarten Rückgabewert.</td></tr><tr><td>Das Programm berechnet einen falschen Preis.</td><td>Vergleichen Sie erwartete und tatsächliche Werte und untersuchen Sie die beteiligten Funktionsaufrufe.</td></tr></tbody></table></div><h3>Fehler gezielt untersuchen</h3><p>Ein Debugger ist ein Werkzeug, mit dem Sie ein laufendes Programm anhalten, die gespeicherten Werte ansehen und den Programmablauf schrittweise verfolgen können. So können Sie beobachten, nach welcher Anweisung ein Wert erstmals von Ihrer Erwartung abweicht.</p><p>In dieser Aufgabe machen Sie solche Beobachtungen zunächst mit gezielten <code>printf</code>-Ausgaben. Sie überlegen, welche Ursache zum beobachteten Verhalten passen könnte und welche Ausgabe diese Vermutung überprüft. Damit üben Sie, Fehler einzugrenzen. Diese Überlegungen helfen Ihnen später auch dabei, im Debugger sinnvolle Haltepunkte zu setzen und die passenden Variablen zu untersuchen.</p><p>Debugger und Diagnoseausgaben sind zwei Werkzeuge für die Fehlersuche. Für beide brauchen Sie eine Vorstellung davon, welches Verhalten Sie erwarten. Hier arbeiten Sie mit <code>printf</code>-Ausgaben.</p><h3>Was ist hier ein Wert?</h3><p>Mit einem Wert meinen wir hier die konkrete Zahl, die eine Variable gerade enthält oder die eine Berechnung liefert. <code>10.2</code> ist ein einzelner Zahlenwert. Die Ziffern sind keine getrennten Werte. Im Fließtext schreiben wir dafür auch 10,2.</p><p>Eine Bestellung mit der Anzahl <code>3</code> und dem Einzelpreis <code>10.20</code> hat zwei Eingabewerte. Der daraus berechnete Warenwert <code>30.60</code> ist ein weiterer Wert.</p><h3>Fehler über Rückgabewerte melden</h3><p>Fehlerbehandlung ist von der Suche nach der Ursache zu unterscheiden: Eine Funktion kann während ihrer Ausführung zum Beispiel ungültige Eingabedaten erkennen. Der aufrufende Programmteil muss dann erfahren, dass kein gültiges Ergebnis berechnet werden konnte.</p><p>Eine Konvention vieler C-Schnittstellen ist, einen erkannten Fehler durch einen dafür vorgesehenen Rückgabewert zu signalisieren. Die Bedeutung des Rückgabewerts gehört zur Schnittstelle der jeweiligen Funktion. Der Aufrufer muss ihn prüfen und passend reagieren. Es gibt keinen einzelnen Fehlerwert und keinen Rückgabetyp, der für alle C-Funktionen gilt. Für unsere Funktionen vereinbaren wir deshalb jetzt eigene Fehlercodes.</p><h3>Fehlercode, Fehlermeldung und Diagnoseausgabe</h3><div class="table-wrap"><table><thead><tr><th scope="col">Mittel</th><th scope="col">Aufgabe</th><th scope="col">Beispiel</th></tr></thead><tbody><tr><td>Fehlercode</td><td>Ein Wert informiert den aufrufenden Programmteil darüber, dass eine Funktion einen Fehler erkannt hat.</td><td><code>return -1;</code></td></tr><tr><td>Fehlermeldung</td><td>Eine Ausgabe informiert die Person vor dem Bildschirm über einen erkannten Fehler.</td><td><code>printf("Ungueltige Anzahl.\n");</code></td></tr><tr><td>Diagnoseausgabe zur Fehlersuche</td><td>Eine zusätzliche Ausgabe zeigt Werte, um eine Ursache einzugrenzen. Sie kann auch bei einem gültigen Ablauf erscheinen.</td><td><code>printf("[DEBUG] anzahl=%d\n", anzahl);</code></td></tr></tbody></table></div><p>Ein Fehlercode erscheint nicht automatisch auf dem Bildschirm. Eine Fehlermeldung verändert umgekehrt nicht von selbst den Programmablauf. Dazu müssen Sie im Code entscheiden, wie es weitergeht. Die zusätzlichen Diagnoseausgaben dienen Ihrer Fehlersuche. Wenn das Programm nach Ihren Tests das gewünschte Verhalten zeigt, entfernen Sie diese Ausgaben vor der Fertigstellung oder kommentieren sie aus. Die regulären Ergebnisausgaben, Fehlerprüfungen und Fehlermeldungen bleiben erhalten.</p><h3>Die Bedeutung eines Rückgabewerts vereinbaren</h3><p>Unsere Berechnungsfunktionen liefern bei Erfolg einen Preis ab <code>0.00</code> zurück. Die Werte <code>-1</code> und <code>-2</code> verwenden wir als Fehlercodes. So lässt sich ein Fehler von einem gültigen Preis unterscheiden. Ein Preis von <code>0.00</code> bleibt ein mögliches gültiges Ergebnis.</p><p>Der Rückgabetyp bleibt <code>double</code>, weil diese Funktionen außerdem Preise mit Nachkommastellen zurückgeben. Bei <code>return -1;</code> wird die Zahl <code>-1</code> passend zu diesem Rückgabetyp umgewandelt. Eine andere Funktion könnte stattdessen einen <code>int</code>-Wert zurückgeben, der nur Erfolg oder eine bestimmte Fehlerart meldet. Für unsere Aufgabe bleiben wir bei der bestehenden Preisrückgabe.</p><p>Dies ist eine Vereinbarung für unsere Funktionen. Andere C-Funktionen können andere Bedeutungen verwenden. <code>scanf</code> zählt beispielsweise die erfolgreich eingelesenen und zugewiesenen Werte. Beim Einlesen eines einzelnen Werts erwarten Sie dort <code>1</code>.</p><h3>Mit return einen Fehler weitergeben</h3><p>Erkennt die Warenwertfunktion ungültige Bestelldaten, beendet sie ihren Aufruf mit einem Fehlercode. Danach läuft die aufrufende Preisfunktion weiter. Diese muss das Ergebnis prüfen, bevor sie Lieferkosten oder Rabatt berechnet. Bei einem Fehler gibt sie eine Fehlermeldung aus und liefert denselben Fehlercode an ihren eigenen Aufrufer zurück.</p><p>Schließlich erhält <code>main</code> das Ergebnis der Preisfunktion. Wenn <code>main</code> einen Fehler erkennt, gibt es eine Meldung aus und beendet das Programm mit <code>return 1;</code>. Bei erfolgreichem Ablauf steht am Ende <code>return 0;</code>. Diese beiden Werte melden dem aufrufenden System, ob das Programm erfolgreich war. Sie werden nicht automatisch als Text ausgegeben.</p><p>Entscheidend ist, in welcher Funktion <code>return</code> steht: In einer Berechnungsfunktion führt es zurück zum Aufrufer. In <code>main</code> beendet es hier das Programm. Das bekannte <code>break</code> beendet dagegen eine Schleife und setzt die Ausführung hinter dieser Schleife fort.</p><h3>Werte sichtbar machen</h3><p>Eine Fehlermeldung zeigt zunächst, wo ein Problem erkannt wurde. Die Ursache kann früher liegen, etwa bei einem Funktionsaufruf mit einem falschen Argument. Geben Sie zur Untersuchung gezielt die übergebenen Werte und die Ergebnisse aus. Benennen Sie in jeder Diagnoseausgabe die Funktion und die Bedeutung des Werts.</p><p>Vergleichen Sie bei einem konkreten Testfall zuerst das erwartete und das tatsächliche Ergebnis. Verfolgen Sie dann mit diesen Ausgaben, an welcher Stelle die erste Abweichung auftritt. Korrigieren Sie eine Ursache und führen Sie denselben Test nach erneutem Übersetzen noch einmal aus. Anschließend prüfen Sie weitere selbst gewählte Fälle.</p></section><section class="content-section" aria-labelledby="materialien"><h2 id="materialien">Materialien</h2><p><strong>Aufgaben a und b:</strong> Arbeiten Sie an Ihrer eigenen funktionierenden Lösung aus „Funktionen“. Bewahren Sie eine Kopie dieser Ausgangsfassung auf. Den folgenden Download benötigen Sie für diese beiden Aufgaben noch nicht.</p><p><strong>Nur für Aufgabe c:</strong> Das folgende Archiv enthält eine separate <code>programm.c</code> mit drei absichtlichen Fehlern und ein fertiges Makefile. Öffnen Sie diese Fassung erst für die Fehlersuchaufgabe in einem eigenen Ordner.</p><p class="download"><a href="materialien/debugging-fehlerfassung.zip" download>Fehlerfassung ausschließlich für Aufgabe c samt Makefile herunterladen</a></p><p>Entpacken Sie das Archiv und öffnen Sie <code>debugging-fehlerfassung/programm.c</code> in Ihrer IDE. Übersetzen und starten Sie die Datei dort wie gewohnt. Alternativ können Sie im Aufgabenordner das fertige Makefile verwenden:</p><pre><code class="language-shell">make
+./programm</code></pre><p>Speichern Sie Änderungen am Quelltext und übersetzen Sie danach erneut. Den Aufbau eigener Makefiles behandeln wir später.</p></section><section class="content-section" aria-labelledby="aufgaben"><h2 id="aufgaben">Aufgaben</h2><h3>a) Fehlerprüfungen ergänzen</h3><p>Ergänzen Sie Ihr eigenes Programm um Fehlerprüfungen. Sie können Ihre Tastatureingabe mit <code>scanf</code> weiterverwenden oder feste Ausgangswerte in <code>main</code> nutzen.</p><p>Die Warenwertfunktion erhält weiterhin Anzahl und Einzelpreis als Parameter. Prüfen Sie zuerst die Anzahl und danach den Einzelpreis:</p><div class="table-wrap"><table><thead><tr><th scope="col">Bedingung</th><th scope="col">Rückgabewert</th></tr></thead><tbody><tr><td>Anzahl ist null oder negativ.</td><td>Fehlercode <code>-1</code></td></tr><tr><td>Einzelpreis ist negativ.</td><td>Fehlercode <code>-2</code></td></tr><tr><td>Beide Werte sind gültig.</td><td>Warenwert aus Anzahl × Einzelpreis</td></tr></tbody></table></div><ol class="steps"><li>Ergänzen Sie die Prüfungen und Rückgaben in der Warenwertfunktion.</li><li>Prüfen Sie in beiden Preisfunktionen den Rückgabewert der Warenwertfunktion. Geben Sie bei einem Fehler eine Fehlermeldung aus und liefern Sie denselben Fehlercode sofort zurück. Rechnen Sie in diesem Fall nicht weiter.</li><li>Prüfen Sie in <code>main</code> unmittelbar nach jedem Aufruf einer Preisfunktion deren Ergebnis. Bei einem Fehler geben Sie eine Meldung aus und beenden das Programm mit <code>return 1;</code>.</li><li>Rufen Sie die reguläre Ausgabefunktion nur auf, wenn beide Berechnungen erfolgreich waren.</li><li>Falls Sie <code>scanf</code> verwenden, prüfen Sie zusätzlich, ob jeweils ein Wert eingelesen wurde. Bei fehlgeschlagenem Einlesen soll das Programm eine Meldung ausgeben und mit <code>return 1;</code> enden, bevor die Berechnungen aufgerufen werden.</li></ol><h3>b) Die Fehlerbehandlung selbst testen</h3><p>Wählen Sie passende gültige und ungültige Bestelldaten. Berücksichtigen Sie auch die Grenzen der erlaubten Werte. Notieren Sie vor jedem Start, welchen Rückgabewert und welche Ausgabe Sie erwarten.</p><p>Führen Sie mindestens einen Test für jede vereinbarte Fehlersituation durch. Bei ungültigen Bestellungen sollen Fehlermeldungen erscheinen und die Berechnung abbrechen. Reguläre Preiszeilen sollen dann nicht ausgegeben werden. Prüfen Sie außerdem, ob ein gültiger Preis von <code>0.00</code> möglich bleibt.</p><p>Geben Sie Ihre Testwerte über <code>scanf</code> ein oder ändern Sie die festen Werte in <code>main</code>. Nach Änderungen am Quelltext übersetzen Sie erneut. Bewahren Sie Ihre Testfälle für die nächste Aufgabe auf.</p><h3>c) Drei vorbereitete Fehler finden</h3><p>Verwenden Sie jetzt die unter „Materialien“ verlinkte Fehlerfassung für Aufgabe c. Öffnen Sie sie in einem eigenen Ordner. Sie enthält bereits Fehlerprüfungen und Fehlermeldungen und lässt sich übersetzen. Trotzdem sind drei Fehler eingebaut.</p><ol class="steps"><li>Starten Sie zunächst mit den vorhandenen Bestelldaten und vergleichen Sie das Verhalten mit Ihrer Erwartung.</li><li>Ergänzen Sie Diagnoseausgaben für die Parameter einer Funktion und die Rückgabewerte ihrer Aufrufe. Verfolgen Sie die Bestelldaten von <code>main</code> bis zur Warenwertberechnung. An welcher Stelle weicht ein Wert erstmals von Ihrer Erwartung ab?</li><li>Korrigieren Sie eine gefundene Ursache und wiederholen Sie denselben Test. Prüfen Sie danach auch die berechneten Preise.</li><li>Untersuchen Sie die Fassung mit Ihren selbst gewählten Testfällen aus Aufgabe b. Finden Sie alle drei Fehler und prüfen Sie nach jeder Korrektur erneut.</li></ol><p>Sie können auch hier eine bereits umgesetzte Tastatureingabe verwenden. Wählen Sie bei einem erneuten Test dieselben Eingaben.</p><p>Halten Sie zu jedem Fehler fest, wo die Ursache lag, welche Ausgabe bei der Suche geholfen hat und mit welchem Test Sie die Korrektur überprüft haben.</p><p><strong>Zum Abschluss:</strong> Wenn Ihre Korrekturen die selbst gewählten Tests bestehen, entfernen Sie die zusätzlichen Diagnoseausgaben oder kommentieren Sie sie aus. Lassen Sie die regulären Preiszeilen, Fehlerprüfungen und Fehlermeldungen bestehen. Übersetzen und testen Sie diese abschließende Fassung erneut.</p></section><section class="content-section" aria-labelledby="hinweise"><h2 id="hinweise">Hinweise</h2><details><summary>Zu a: Einen ungültigen Wert melden</summary><p>Die Warenwertfunktion kann einen Fehler über einen Rückgabewert melden:</p><pre><code class="language-c">if (anzahl &lt;= 0) {
+    return -1;
+}</code></pre><p>Ergänzen Sie danach die Prüfung des Einzelpreises. Die normale Berechnung folgt erst hinter den Prüfungen.</p></details><details><summary>Zu a: Einen Fehlercode weitergeben</summary><p>Nach dem Aufruf der Warenwertfunktion prüfen Sie das Ergebnis, bevor Sie damit weiterrechnen:</p><pre><code class="language-c">double warenwert = berechne_warenwert(anzahl, einzelpreis);
+if (warenwert &lt; 0.0) {
+    printf("Warenwertberechnung meldet Fehlercode %.0f.\n", warenwert);
+    return warenwert;
+}</code></pre><p><code>printf</code> zeigt die Fehlermeldung an. <code>return</code> beendet den Aufruf und liefert den Fehlercode zurück. Erst hinter dieser Prüfung berechnen Sie den endgültigen Preis.</p></details><details><summary>Zu a: In main auf den Fehler reagieren</summary><p>Prüfen Sie den Rückgabewert unmittelbar nach dem Aufruf:</p><pre><code class="language-c">double lieferpreis = berechne_lieferpreis(anzahl, einzelpreis);
+if (lieferpreis &lt; 0.0) {
+    printf("Die Lieferpreisberechnung meldet einen Fehler.\n");
+    return 1;
+}</code></pre><p>Gehen Sie für den Abholpreis entsprechend vor. Die Ausgabefunktion erhält nur erfolgreich berechnete Preise.</p></details><details><summary>Zu a mit scanf: Erfolgreiches Einlesen prüfen</summary><p>Wenn Sie einen einzelnen Wert einlesen wollen, muss <code>scanf</code> den Wert <code>1</code> zurückgeben:</p><pre><code class="language-c">if (scanf("%d", &amp;anzahl) != 1) {
+    printf("Die Anzahl konnte nicht gelesen werden.\n");
+    return 1;
+}</code></pre><p>Prüfen Sie den Einzelpreis entsprechend. Testen Sie etwa auch eine Buchstabeneingabe. Erfolgreiches Einlesen und ein sinnvoller Zahlenwert sind verschiedene Prüfungen: Eine negative Zahl kann erfolgreich eingelesen und erst von Ihrer Berechnungsfunktion abgelehnt werden.</p></details><details><summary>Zu b: Den Programmabschluss prüfen</summary><p>Ihre IDE zeigt gegebenenfalls den Abschlussstatus an. Im Linux-/Unix-Terminal können Sie ihn direkt nach dem Programmstart abfragen:</p><pre><code class="language-shell">./programm
+echo $?</code></pre><p>Bei Erfolg erwarten Sie <code>0</code> und bei einem erkannten Fehler <code>1</code>. Führen Sie zwischen diesen beiden Befehlen keinen anderen Befehl aus.</p></details><details><summary>Zu c: Eine gezielte Diagnoseausgabe</summary><p>Geben Sie beispielsweise am Anfang einer Funktion ihre Parameter aus:</p><pre><code class="language-c">printf("[DEBUG Lieferpreis] anzahl=%d, einzelpreis=%.2f\n",
+       anzahl, einzelpreis);</code></pre><p>Vergleichen Sie diese Werte mit denen, die in der aufgerufenen Warenwertfunktion ankommen. Untersuchen Sie anschließend auch deren Rückgabewert. Eine solche Ausgabe dokumentiert Werte unabhängig davon, ob schon ein Fehler erkannt wurde.</p></details><details><summary>Zu c: Wenn die erste Korrektur noch nicht reicht</summary><p>Prüfen Sie nach der Weitergabe der Argumente auch die Berechnung des Rabatts und die Bedingungen für gültige Eingaben. Wählen Sie Testfälle, bei denen eine kleine Änderung eines Werts das erwartete Verhalten verändert.</p></details></section><section class="content-section" aria-labelledby="kontrolle"><h2 id="kontrolle">Selbstkontrolle</h2><details><summary>Die drei Fehler und ihre Ursachen</summary><div class="table-wrap"><table><thead><tr><th scope="col">Fehler</th><th scope="col">Beobachtung</th><th scope="col">Korrektur</th></tr></thead><tbody><tr><td>Falsches Argument</td><td>Ein positiver Einzelpreis kommt bei der Warenwertfunktion negativ an. Sie meldet deshalb den Fehlercode <code>-2</code>.</td><td>In der Lieferpreisfunktion <code>einzelpreis</code> statt <code>-einzelpreis</code> übergeben.</td></tr><tr><td>Falsche Rabattberechnung</td><td>Nach der ersten Korrektur beträgt der Abholpreis für drei Artikel zu 9.50 Euro nur 2.85 Euro.</td><td>Mit <code>0.90</code> statt <code>0.10</code> multiplizieren.</td></tr><tr><td>Fehlerhafte Grenzprüfung</td><td>Die Anzahl <code>0</code> wird zugelassen, obwohl sie ungültig ist.</td><td><code>anzahl &lt;= 0</code> statt <code>anzahl &lt; 0</code> prüfen.</td></tr></tbody></table></div><p>Ein möglicher Satz von Testfällen enthält eine normale Bestellung, eine negative Anzahl, die Anzahl null, einen negativen Einzelpreis und einen gültigen Einzelpreis null.</p><p>Die Stelle, an der ein Fehler erkannt wird, muss nicht seine Ursache enthalten. Hier erkennt die Warenwertfunktion den negativen Preis korrekt. Der falsche Wert entsteht bereits beim Aufruf.</p></details><details><summary>Mögliche korrigierte Lösung mit Diagnoseausgaben</summary><p>Vergleichen Sie nach einem eigenen Versuch. Andere sinnvolle Lösungen sind möglich.</p><pre><code class="language-c">#include &lt;stdio.h&gt;
+
+const double lieferkosten = 2.50;
+
+double berechne_warenwert(int anzahl, double einzelpreis) {
+    printf("[DEBUG Warenwert] anzahl=%d, einzelpreis=%.2f\n", anzahl, einzelpreis);
+    if (anzahl &lt;= 0) {
+        return -1;
+    }
+    if (einzelpreis &lt; 0.0) {
+        return -2;
+    }
+    double warenwert = anzahl * einzelpreis;
+    printf("[DEBUG Warenwert] Ergebnis=%.2f\n", warenwert);
+    return warenwert;
+}
+
+double berechne_lieferpreis(int anzahl, double einzelpreis) {
+    printf("[DEBUG Lieferpreis] anzahl=%d, einzelpreis=%.2f\n", anzahl, einzelpreis);
+    double warenwert = berechne_warenwert(anzahl, einzelpreis);
+    printf("[DEBUG Lieferpreis] Rueckgabe der Warenwertberechnung=%.2f\n", warenwert);
+    if (warenwert &lt; 0.0) {
+        printf("[FEHLER Lieferpreis] Warenwertberechnung meldet Fehlercode %.0f\n", warenwert);
+        return warenwert;
+    }
+    return warenwert + lieferkosten;
+}
+
+double berechne_abholpreis(int anzahl, double einzelpreis) {
+    printf("[DEBUG Abholpreis] anzahl=%d, einzelpreis=%.2f\n", anzahl, einzelpreis);
+    double warenwert = berechne_warenwert(anzahl, einzelpreis);
+    printf("[DEBUG Abholpreis] Rueckgabe der Warenwertberechnung=%.2f\n", warenwert);
+    if (warenwert &lt; 0.0) {
+        printf("[FEHLER Abholpreis] Warenwertberechnung meldet Fehlercode %.0f\n", warenwert);
+        return warenwert;
+    }
+    return warenwert * 0.90;
+}
+
+void gib_preise_aus(double lieferpreis, double abholpreis) {
+    printf("Lieferpreis: %.2f Euro\n", lieferpreis);
+    printf("Abholpreis: %.2f Euro\n", abholpreis);
+}
+
+int main(void) {
+    int anzahl = 3;
+    double einzelpreis = 9.50;
+
+    double lieferpreis = berechne_lieferpreis(anzahl, einzelpreis);
+    if (lieferpreis &lt; 0.0) {
+        printf("Abbruch: Lieferpreis konnte nicht berechnet werden (%.0f).\n", lieferpreis);
+        return 1;
+    }
+
+    double abholpreis = berechne_abholpreis(anzahl, einzelpreis);
+    if (abholpreis &lt; 0.0) {
+        printf("Abbruch: Abholpreis konnte nicht berechnet werden (%.0f).\n", abholpreis);
+        return 1;
+    }
+
+    gib_preise_aus(lieferpreis, abholpreis);
+    return 0;
+}</code></pre><p><a href="materialien/loesungen/debugging/programm.c" download="programm.c">C-Datei herunterladen</a> · <a href="materialien/loesungen/debugging/Makefile" download="Makefile">Makefile herunterladen</a></p></details><details><summary>Mögliche Lösung mit geprüften Tastatureingaben</summary><p>Vergleichen Sie nach einem eigenen Versuch. Andere sinnvolle Lösungen sind möglich.</p><pre><code class="language-c">#include &lt;stdio.h&gt;
+
+const double lieferkosten = 2.50;
+
+double berechne_warenwert(int anzahl, double einzelpreis) {
+    printf("[DEBUG Warenwert] anzahl=%d, einzelpreis=%.2f\n", anzahl, einzelpreis);
+    if (anzahl &lt;= 0) {
+        return -1;
+    }
+    if (einzelpreis &lt; 0.0) {
+        return -2;
+    }
+    double warenwert = anzahl * einzelpreis;
+    printf("[DEBUG Warenwert] Ergebnis=%.2f\n", warenwert);
+    return warenwert;
+}
+
+double berechne_lieferpreis(int anzahl, double einzelpreis) {
+    printf("[DEBUG Lieferpreis] anzahl=%d, einzelpreis=%.2f\n", anzahl, einzelpreis);
+    double warenwert = berechne_warenwert(anzahl, einzelpreis);
+    printf("[DEBUG Lieferpreis] Rueckgabe der Warenwertberechnung=%.2f\n", warenwert);
+    if (warenwert &lt; 0.0) {
+        printf("[FEHLER Lieferpreis] Warenwertberechnung meldet Fehlercode %.0f\n", warenwert);
+        return warenwert;
+    }
+    return warenwert + lieferkosten;
+}
+
+double berechne_abholpreis(int anzahl, double einzelpreis) {
+    printf("[DEBUG Abholpreis] anzahl=%d, einzelpreis=%.2f\n", anzahl, einzelpreis);
+    double warenwert = berechne_warenwert(anzahl, einzelpreis);
+    printf("[DEBUG Abholpreis] Rueckgabe der Warenwertberechnung=%.2f\n", warenwert);
+    if (warenwert &lt; 0.0) {
+        printf("[FEHLER Abholpreis] Warenwertberechnung meldet Fehlercode %.0f\n", warenwert);
+        return warenwert;
+    }
+    return warenwert * 0.90;
+}
+
+void gib_preise_aus(double lieferpreis, double abholpreis) {
+    printf("Lieferpreis: %.2f Euro\n", lieferpreis);
+    printf("Abholpreis: %.2f Euro\n", abholpreis);
+}
+
+int main(void) {
+    int anzahl = 0;
+    double einzelpreis = 0.0;
+
+    printf("Anzahl der Artikel: ");
+    if (scanf("%d", &amp;anzahl) != 1) {
+        printf("Die Anzahl konnte nicht als ganze Zahl gelesen werden.\n");
+        return 1;
+    }
+    printf("Einzelpreis pro Artikel in Euro (z. B. 9.50): ");
+    if (scanf("%lf", &amp;einzelpreis) != 1) {
+        printf("Der Einzelpreis konnte nicht als Zahl gelesen werden.\n");
+        return 1;
+    }
+
+    double lieferpreis = berechne_lieferpreis(anzahl, einzelpreis);
+    if (lieferpreis &lt; 0.0) {
+        printf("Abbruch: Lieferpreis konnte nicht berechnet werden (%.0f).\n", lieferpreis);
+        return 1;
+    }
+
+    double abholpreis = berechne_abholpreis(anzahl, einzelpreis);
+    if (abholpreis &lt; 0.0) {
+        printf("Abbruch: Abholpreis konnte nicht berechnet werden (%.0f).\n", abholpreis);
+        return 1;
+    }
+
+    gib_preise_aus(lieferpreis, abholpreis);
+    return 0;
+}</code></pre><p><a href="materialien/loesungen/debugging-scanf/programm.c" download="programm.c">C-Datei herunterladen</a> · <a href="materialien/loesungen/debugging-scanf/Makefile" download="Makefile">Makefile herunterladen</a></p></details><details><summary>Referenz ohne zusätzliche Diagnoseausgaben</summary><p>Diese Fassung behält die Fehlerprüfungen und Fehlermeldungen bei. Die zusätzlichen Ausgaben für die Untersuchung der Werte sind entfernt.</p><p><a href="materialien/loesungen/debugging-ohne-diagnosen/programm.c" download="programm.c">C-Datei herunterladen</a> · <a href="materialien/loesungen/debugging-ohne-diagnosen/Makefile" download="Makefile">Makefile herunterladen</a></p></details></section>
+  <p class="next-task">Dieser Themenabschnitt ist abgeschlossen. <a href="index.html">Zur Themenübersicht →</a></p></main>
+</body>
+</html>
