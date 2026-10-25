@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>C-Lernwerkstatt · Werte vergleichen</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="selbstkontrollen.css">
+  <script src="selbstkontrollen.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="bedingungen-und-vergleiche.html">← Zu Bedingungen und Vergleiche</a></p>
+    <header>
+      <h1>Werte vergleichen</h1>
+      <p>Ein Rechenausdruck liefert eine Zahl. Mit einem Vergleich prüfen Sie, ob eine Aussage über Werte wahr oder falsch ist.</p>
+    </header>
+    <nav aria-label="Abschnitte"><ul class="navlinks">
+      <li><a href="#einstieg">Vergleichsergebnisse</a></li>
+      <li><a href="#operatoren">Operatoren</a></li>
+      <li><a href="#ausprobieren">Selbst programmieren</a></li>
+      <li><a href="#zuweisung">Zuweisung und Vergleich</a></li>
+      <li><a href="#grenzen">Wahrheitswerte und Grenzen</a></li>
+    </ul></nav>
+    <section class="content-section" aria-labelledby="ziele">
+      <h2 id="ziele">Lernziele</h2>
+      <ul>
+        <li>Die sechs Vergleichsoperatoren verwenden und ihre Ergebnisse vorhersagen.</li>
+        <li>Zuweisung und Vergleich unterscheiden.</li>
+        <li>Vergleichsergebnisse speichern, ausgeben und an Grenzwerten prüfen.</li>
+      </ul>
+    </section>
+    <noscript><p>Die interaktive Auswertung benötigt JavaScript. Sie können alle Fragen dennoch bearbeiten und mit den aufklappbaren Erklärungen vergleichen.</p></noscript>
+    <section class="content-section" aria-labelledby="einstieg">
+      <h2 id="einstieg">1. Was liefert ein Vergleich?</h2>
+      <p>Lesen Sie diesen Ausschnitt aus <code>main</code>. Notieren Sie zunächst die erwartete Ausgabe.</p>
+      <pre><code>int alter = 19;
+
+printf("Alter im nächsten Jahr: %d\n", alter + 1);
+printf("Mindestens 18: %d\n", (alter &gt;= 18));</code></pre>
+      <p><code>alter + 1</code> berechnet eine Zahl. <code>alter &gt;= 18</code> prüft, ob das Alter mindestens 18 ist. Die Vergleichsoperatoren liefern in C einen Wert vom Typ <code>int</code>: <strong>1 für wahr, 0 für falsch</strong>.</p>
+      <form class="self-check" data-hint="Ein Vergleich gibt weder das Alter noch das Wort true aus, sondern 0 oder 1.">
+        <fieldset><legend>Selbstkontrolle: Welche vollständige Ausgabe entsteht?</legend>
+          <p>Genau eine Antwort ist richtig. Kreuzen Sie diese an.</p>
+          <label><input type="checkbox" data-correct="true"> <code>Alter im nächsten Jahr: 20</code>, danach <code>Mindestens 18: 1</code></label>
+          <label><input type="checkbox"> <code>Alter im nächsten Jahr: 20</code>, danach <code>Mindestens 18: true</code></label>
+          <label><input type="checkbox"> <code>Alter im nächsten Jahr: 19</code>, danach <code>Mindestens 18: 19</code></label>
+        </fieldset>
+        <button type="submit" hidden>Antwort prüfen</button>
+        <p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die erste Antwort stimmt. <code>19 + 1</code> ergibt <code>20</code>. <code>19 &gt;= 18</code> ist wahr und liefert <code>1</code>. Beide Ausgaben stehen wegen <code>\n</code> in eigenen Zeilen.</p></details>
+      </form>
+      <p>Allgemein gilt für C-Bedingungen: <code>0</code> wird als falsch interpretiert, jeder Wert ungleich <code>0</code> als wahr. Die hier verwendeten Vergleichsoperatoren liefern jedoch immer genau <code>0</code> oder <code>1</code>. Formulieren Sie Bedingungen zunächst mit ausdrücklichen Vergleichen.</p>
+    </section>
+    <section class="content-section" aria-labelledby="operatoren">
+      <h2 id="operatoren">2. Die sechs Vergleichsoperatoren</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th scope="col">Operator</th><th scope="col">Bedeutung</th><th scope="col">Beispiel</th><th scope="col">Ergebnis</th></tr></thead>
+        <tbody>
+          <tr><td><code>==</code></td><td>gleich</td><td><code>7 == 5</code></td><td>0</td></tr>
+          <tr><td><code>!=</code></td><td>ungleich</td><td><code>7 != 5</code></td><td>1</td></tr>
+          <tr><td><code>&lt;</code></td><td>kleiner</td><td><code>7 &lt; 5</code></td><td>0</td></tr>
+          <tr><td><code>&lt;=</code></td><td>kleiner oder gleich</td><td><code>7 &lt;= 5</code></td><td>0</td></tr>
+          <tr><td><code>&gt;</code></td><td>größer</td><td><code>7 &gt; 5</code></td><td>1</td></tr>
+          <tr><td><code>&gt;=</code></td><td>größer oder gleich</td><td><code>7 &gt;= 5</code></td><td>1</td></tr>
+        </tbody>
+      </table></div>
+      <p>„Mindestens“ und „höchstens“ schließen den Grenzwert ein. „Mehr als“ und „weniger als“ schließen ihn aus.</p>
+      <form class="self-check" data-hint="Setzen Sie für punkte den Wert 10 ein. Achten Sie darauf, ob Gleichheit zugelassen ist.">
+        <fieldset><legend>Welche Vergleiche sind bei <code>int punkte = 10;</code> wahr?</legend>
+          <p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox"> <code>punkte &gt; 10</code></label>
+          <label><input type="checkbox" data-correct="true"> <code>punkte &gt;= 10</code></label>
+          <label><input type="checkbox" data-correct="true"> <code>punkte == 10</code></label>
+          <label><input type="checkbox"> <code>punkte != 10</code></label>
+        </fieldset>
+        <button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p><code>punkte &gt;= 10</code> und <code>punkte == 10</code> sind wahr. 10 ist gleich 10, aber weder größer noch ungleich.</p></details>
+      </form>
+      <p><strong>Kurze Frage:</strong> Wie formulieren Sie „höchstens 10 Punkte“?</p>
+      <details><summary>Antwort anzeigen</summary><p><code>punkte &lt;= 10</code>. Auch genau 10 Punkte erfüllen die Bedingung.</p></details>
+    </section>
+    <section class="content-section" aria-labelledby="ausprobieren">
+      <h2 id="ausprobieren">3. Programmieraufgabe: Vergleiche untersuchen</h2>
+      <p>Verwenden Sie aus dem <a href="materialien/bedingungen-und-vergleiche.zip" download>Materialarchiv</a> den Ordner <code>01-vergleiche</code>. Einzeldateien: <a href="materialien/bedingungen-und-vergleiche/01-vergleiche/programm.c" download>programm.c</a> und <a href="materialien/bedingungen-und-vergleiche/01-vergleiche/Makefile" download>Makefile</a>.</p>
+      <ol>
+        <li>Im Gerüst stehen <code>int a = 7;</code> und <code>int b = 5;</code>. Notieren Sie für alle sechs Operatoren das erwartete Ergebnis.</li>
+        <li>Ersetzen Sie die mit <code>TODO</code> markierten Nullen in den Ausgaben durch passende Vergleiche. Beispiel: <code>printf("a == b: %d\n", (a == b));</code></li>
+        <li>Speichern Sie, übersetzen Sie im Aufgabenordner mit <code>make</code> und starten Sie mit <code>./programm</code>. Vergleichen Sie mit Ihrer Vorhersage.</li>
+        <li>Setzen Sie danach beide Variablen auf <code>5</code>. Welche Ergebnisse ändern sich? Notieren Sie Ihre Vorhersage und überprüfen Sie sie nach erneutem Übersetzen.</li>
+      </ol>
+      <details><summary>Hinweis</summary><p>Ändern Sie den Vergleich außerhalb der Anführungszeichen. Der Text vor <code>%d</code> ist nur die Beschriftung.</p></details>
+      <details><summary>Selbstkontrolle: Ergebnisse</summary><p>In der Reihenfolge <code>==</code>, <code>!=</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code>:</p><ul><li>Für 7 und 5: <code>0, 1, 0, 0, 1, 1</code>.</li><li>Für 5 und 5: <code>1, 0, 0, 1, 0, 1</code>.</li></ul></details>
+      <details><summary>Mögliche Lösung der Ausgabezeilen</summary><pre><code>printf("a == b: %d\n", (a == b));
+printf("a != b: %d\n", (a != b));
+printf("a &lt; b: %d\n", (a &lt; b));
+printf("a &lt;= b: %d\n", (a &lt;= b));
+printf("a &gt; b: %d\n", (a &gt; b));
+printf("a &gt;= b: %d\n", (a &gt;= b));</code></pre></details>
+    </section>
+    <section class="content-section" aria-labelledby="zuweisung">
+      <h2 id="zuweisung">4. Zuweisung ist kein Vergleich</h2>
+      <pre><code>int anzahl = 4;
+printf("%d\n", (anzahl == 6));
+printf("%d\n", anzahl);
+anzahl = 6;
+printf("%d\n", (anzahl == 6));</code></pre>
+      <p><code>==</code> vergleicht Werte, ohne sie zu verändern. <code>anzahl = 6;</code> weist der Variable dagegen einen neuen Wert zu. Bei <code>int anzahl = 4;</code> wird die Variable deklariert und initialisiert, wie im Variablenkapitel.</p>
+      <form class="self-check" data-hint="Gehen Sie Zeile für Zeile vor. Erst die Zuweisung anzahl = 6 verändert den gespeicherten Wert.">
+        <fieldset><legend>Welche Aussagen zum Beispiel stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Der erste Vergleich liefert 0.</label>
+          <label><input type="checkbox" data-correct="true"> Nach dem ersten Vergleich enthält <code>anzahl</code> weiterhin 4.</label>
+          <label><input type="checkbox"> Der erste Vergleich setzt <code>anzahl</code> auf 6.</label>
+          <label><input type="checkbox" data-correct="true"> Nach der Zuweisung liefert der letzte Vergleich 1.</label>
+        </fieldset>
+        <button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die Aussagen 1, 2 und 4 stimmen. Die Ausgabe lautet zeilenweise <code>0</code>, <code>4</code>, <code>1</code>. Ein Vergleich verändert die Variable nicht.</p></details>
+      </form>
+    </section>
+    <section class="content-section" aria-labelledby="grenzen">
+      <h2 id="grenzen">5. Wahrheitswerte speichern und Grenzen prüfen</h2>
+      <p>Vergleichsergebnisse können Sie in einer Variable vom bekannten Typ <code>bool</code> speichern. Verwenden Sie dafür <code>#include &lt;stdbool.h&gt;</code>.</p>
+      <pre><code>int alter = 19;
+bool volljaehrig = (alter &gt;= 18);
+printf("Volljährig: %d\n", volljaehrig);</code></pre>
+      <p>Der Vergleich liefert ein <code>int</code>-Ergebnis mit dem Wert 0 oder 1. Die <code>bool</code>-Variable speichert den entsprechenden Wahrheitswert. Mit <code>%d</code> erscheint hier ebenfalls 0 oder 1.</p>
+      <p><strong>Vorhersage:</strong> Welche Ausgabe erwarten Sie für ein Alter von 17, 18 und 19 Jahren?</p>
+      <details><summary>Antwort anzeigen</summary><p>Für 17: <code>Volljährig: 0</code>. Für 18 und 19: jeweils <code>Volljährig: 1</code>.</p></details>
+      <h3>Programmieraufgabe: Zwei Grenzen</h3>
+      <p>Nutzen Sie den Ordner <code>02-grenzwerte</code> im <a href="materialien/bedingungen-und-vergleiche.zip" download>Materialarchiv</a>. Einzeldateien: <a href="materialien/bedingungen-und-vergleiche/02-grenzwerte/programm.c" download>programm.c</a> und <a href="materialien/bedingungen-und-vergleiche/02-grenzwerte/Makefile" download>Makefile</a>.</p>
+      <ol>
+        <li>Ersetzen Sie die markierten <code>false</code>-Werte durch Vergleiche: <code>volljaehrig</code> soll ab 18 Jahren wahr sein. <code>menge_erlaubt</code> soll für höchstens 10 Stück wahr sein. Verwenden Sie zunächst nur nichtnegative Werte.</li>
+        <li>Prüfen Sie für das Alter die Werte 17, 18 und 19, für die Menge 9, 10 und 11. Notieren Sie die Erwartungen vor jedem Ausführen. Speichern und übersetzen Sie jede Änderung erneut.</li>
+        <li>Erklären Sie, welchen Fehler Sie mit dem Test genau auf der Grenze erkennen können.</li>
+      </ol>
+      <details><summary>Hinweis</summary><p>„Ab 18“ bedeutet „größer oder gleich 18“. „Höchstens 10“ bedeutet „kleiner oder gleich 10“.</p></details>
+      <details><summary>Mögliche Lösung und Selbstkontrolle</summary><pre><code>bool volljaehrig = (alter &gt;= 18);
+bool menge_erlaubt = (menge &lt;= 10);</code></pre><p>Alter 17, 18, 19 ergibt 0, 1, 1. Menge 9, 10, 11 ergibt 1, 1, 0. Genau auf der Grenze unterscheiden Sie zum Beispiel <code>&gt;</code> von <code>&gt;=</code>. Ein Test nur mit 19 würde diesen Fehler nicht aufdecken.</p></details>
+    </section>
+    <p>Sie können nun einzelne Werte vergleichen. Als Nächstes verbinden Sie mehrere Vergleiche zu einer Bedingung.</p>
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="bedingungen-und-vergleiche.html">← Zurück: Bedingungen und Vergleiche</a></li>
+      <li><a href="bedingungen-verknuepfen.html">Weiter: Bedingungen verknüpfen →</a></li>
+    </ul></nav>
+    <footer><a href="index.html">Zur Kapitelübersicht</a> · <a href="../uebersicht.html">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>
