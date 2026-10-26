@@ -51,7 +51,7 @@ printf("Mindestens 18: %d\n", (alter &gt;= 18));</code></pre>
         <p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
         <details><summary>Erklärung anzeigen</summary><p>Die erste Antwort stimmt. <code>19 + 1</code> ergibt <code>20</code>. <code>19 &gt;= 18</code> ist wahr und liefert <code>1</code>. Beide Ausgaben stehen wegen <code>\n</code> in eigenen Zeilen.</p></details>
       </form>
-      <p>Allgemein gilt für C-Bedingungen: <code>0</code> wird als falsch interpretiert, jeder Wert ungleich <code>0</code> als wahr. Die hier verwendeten Vergleichsoperatoren liefern jedoch immer genau <code>0</code> oder <code>1</code>. Formulieren Sie Bedingungen zunächst mit ausdrücklichen Vergleichen.</p>
+      <p>Allgemein gilt für C-Bedingungen: <code>0</code> wird als false (falsch) interpretiert, jeder Wert ungleich <code>0</code> als true (wahr). Die hier verwendeten Vergleichsoperatoren liefern jedoch immer genau <code>0</code> oder <code>1</code>. Formulieren Sie Bedingungen zunächst mit ausdrücklichen Vergleichen.</p>
     </section>
     <section class="content-section" aria-labelledby="operatoren">
       <h2 id="operatoren">2. Die sechs Vergleichsoperatoren</h2>
@@ -82,25 +82,75 @@ printf("Mindestens 18: %d\n", (alter &gt;= 18));</code></pre>
       <details><summary>Antwort anzeigen</summary><p><code>punkte &lt;= 10</code>. Auch genau 10 Punkte erfüllen die Bedingung.</p></details>
     </section>
     <section class="content-section" aria-labelledby="ausprobieren">
-      <h2 id="ausprobieren">3. Programmieraufgabe: Vergleiche untersuchen</h2>
-      <p>Verwenden Sie aus dem <a href="materialien/bedingungen-und-vergleiche.zip" download>Materialarchiv</a> den Ordner <code>01-vergleiche</code>. Einzeldateien: <a href="materialien/bedingungen-und-vergleiche/01-vergleiche/programm.c" download>programm.c</a> und <a href="materialien/bedingungen-und-vergleiche/01-vergleiche/Makefile" download>Makefile</a>.</p>
-      <ol>
-        <li>Im Gerüst stehen <code>int a = 7;</code> und <code>int b = 5;</code>. Notieren Sie für alle sechs Operatoren das erwartete Ergebnis.</li>
-        <li>Ersetzen Sie die mit <code>TODO</code> markierten Nullen in den Ausgaben durch passende Vergleiche. Beispiel: <code>printf("a == b: %d\n", (a == b));</code></li>
-        <li>Speichern Sie, übersetzen Sie im Aufgabenordner mit <code>make</code> und starten Sie mit <code>./programm</code>. Vergleichen Sie mit Ihrer Vorhersage.</li>
-        <li>Setzen Sie danach beide Variablen auf <code>5</code>. Welche Ergebnisse ändern sich? Notieren Sie Ihre Vorhersage und überprüfen Sie sie nach erneutem Übersetzen.</li>
-      </ol>
-      <details><summary>Hinweis</summary><p>Ändern Sie den Vergleich außerhalb der Anführungszeichen. Der Text vor <code>%d</code> ist nur die Beschriftung.</p></details>
-      <details><summary>Selbstkontrolle: Ergebnisse</summary><p>In der Reihenfolge <code>==</code>, <code>!=</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code>:</p><ul><li>Für 7 und 5: <code>0, 1, 0, 0, 1, 1</code>.</li><li>Für 5 und 5: <code>1, 0, 0, 1, 0, 1</code>.</li></ul></details>
-      <details><summary>Mögliche Lösung der Ausgabezeilen</summary><pre><code>printf("a == b: %d\n", (a == b));
-printf("a != b: %d\n", (a != b));
-printf("a &lt; b: %d\n", (a &lt; b));
-printf("a &lt;= b: %d\n", (a &lt;= b));
-printf("a &gt; b: %d\n", (a &gt; b));
-printf("a &gt;= b: %d\n", (a &gt;= b));</code></pre></details>
+      <h2 id="ausprobieren">3. Programmieraufgabe: Passt die Gruppe in den Seminarraum?</h2>
+      <p>Ein Seminarraum hat 24 Plätze. Für eine Veranstaltung sind zunächst 19 Teilnehmende angemeldet. Ihr Programm soll Aussagen zur Belegung prüfen.</p>
+      <p>Verwenden Sie aus dem <a href="materialien/bedingungen-und-vergleiche.zip" download>Materialarchiv</a> den Ordner <code>01-vergleiche</code> und darin die Dateien: <a href="materialien/bedingungen-und-vergleiche/01-vergleiche/programm.c" download>programm.c</a> und <a href="materialien/bedingungen-und-vergleiche/01-vergleiche/Makefile" download>Makefile</a>.</p>
+      <p>Das Gerüst enthält <code>int plaetze = 24;</code> und <code>int teilnehmende = 19;</code>. Verwenden Sie für Ihre Tests nur nichtnegative Werte.</p>
+      <h3>1. Aussagen ausdrücken</h3>
+      <p>Schreiben Sie für jede der folgenden Aussagen eine beschriftete Ausgabe mit <code>printf</code>. Geben Sie jeweils 1 für wahr und 0 für falsch aus. Wählen Sie die passenden Vergleichsoperatoren selbst.</p>
+      <ul>
+        <li>Alle Teilnehmenden finden einen Platz.</li>
+        <li>Mindestens ein Platz bleibt frei.</li>
+        <li>Der Raum ist genau voll.</li>
+        <li>Es fehlen Plätze.</li>
+      </ul>
+      <p>Notieren Sie vor dem Ausführen die vier erwarteten Ergebnisse. Speichern Sie, übersetzen Sie im Aufgabenordner mit <code>make</code> und starten Sie mit <code>./programm</code>. Vergleichen Sie mit Ihrer Vorhersage.</p>
+      <h3>2. Eigene Testfälle wählen</h3>
+      <p>Lassen Sie <code>plaetze</code> unverändert und verändern Sie ausschließlich <code>teilnehmende</code>. Finden Sie für jede Situation einen passenden Wert:</p>
+      <ul>
+        <li>Es bleiben Plätze frei.</li>
+        <li>Der Raum ist genau voll.</li>
+        <li>Es fehlen Plätze.</li>
+      </ul>
+      <form class="self-check test-cases" novalidate>
+        <fieldset>
+          <legend>Selbstkontrolle: Passen Ihre Testwerte?</legend>
+          <p>Tragen Sie für jede Situation eine Anzahl Teilnehmender ein. Der Raum hat weiterhin 24 Plätze. Verwenden Sie nichtnegative ganze Zahlen.</p>
+          <div class="test-case" data-case="free">
+            <label for="teilnehmende-frei">Es bleiben Plätze frei.</label>
+            <input id="teilnehmende-frei" type="text" inputmode="numeric" aria-describedby="rueckmeldung-frei" autocomplete="off">
+            <p id="rueckmeldung-frei" class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+          </div>
+          <div class="test-case" data-case="full">
+            <label for="teilnehmende-voll">Der Raum ist genau voll.</label>
+            <input id="teilnehmende-voll" type="text" inputmode="numeric" aria-describedby="rueckmeldung-voll" autocomplete="off">
+            <p id="rueckmeldung-voll" class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+          </div>
+          <div class="test-case" data-case="overflow">
+            <label for="teilnehmende-zu-viele">Es fehlen Plätze.</label>
+            <input id="teilnehmende-zu-viele" type="text" inputmode="numeric" aria-describedby="rueckmeldung-zu-viele" autocomplete="off">
+            <p id="rueckmeldung-zu-viele" class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+          </div>
+        </fieldset>
+        <button type="submit" hidden>Testfälle prüfen</button>
+      </form>
+      <p>Die Browser-Auswertung prüft nur, ob Ihre Testwerte zur jeweiligen Situation passen. Ob Ihr C-Programm richtig arbeitet, prüfen Sie anschließend mit diesen Werten selbst.</p>
+      <p>Notieren Sie für jeden Testfall zunächst die vier erwarteten Ergebnisse. Überprüfen Sie diese anschließend. Speichern und übersetzen Sie nach jeder Änderung erneut.</p>
+      <h3>3. Einen Fehler aufdecken</h3>
+      <p>Eine Person verwendet für „Alle Teilnehmenden finden einen Platz“ den Ausdruck <code>teilnehmende &lt; plaetze</code>. Finden Sie einen Testfall, der zeigt, dass der Ausdruck die Aussage nicht korrekt abbildet. Erklären und korrigieren Sie den Fehler.</p>
+      <details><summary>Hinweis zu den Ausgaben</summary><p>Verwenden Sie <code>%d</code> als Platzhalter für das Vergleichsergebnis. Die Beschriftung steht in Anführungszeichen, der auszuwertende Vergleich danach als weiteres Argument.</p></details>
+      <details><summary>Hinweis zur Platzverteilung</summary><p>Überlegen Sie für jede Aussage, ob sie auch dann wahr ist, wenn es genau so viele Teilnehmende wie Plätze gibt.</p></details>
+      <details><summary>Selbstkontrolle: mögliche Testfälle und Ergebnisse</summary>
+        <p>Bei unverändert 24 Plätzen sind beispielsweise diese Testfälle möglich:</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th scope="col">Teilnehmende</th><th scope="col">Alle finden Platz</th><th scope="col">Platz bleibt frei</th><th scope="col">Genau voll</th><th scope="col">Plätze fehlen</th></tr></thead>
+          <tbody><tr><th scope="row">19</th><td>1</td><td>1</td><td>0</td><td>0</td></tr><tr><th scope="row">24</th><td>1</td><td>0</td><td>1</td><td>0</td></tr><tr><th scope="row">25</th><td>0</td><td>0</td><td>0</td><td>1</td></tr></tbody>
+        </table></div>
+      </details>
+      <details><summary>Mögliche Lösung der Ausgabezeilen</summary><pre><code>printf("Alle finden einen Platz: %d\n",
+       (teilnehmende &lt;= plaetze));
+printf("Mindestens ein Platz bleibt frei: %d\n",
+       (teilnehmende &lt; plaetze));
+printf("Der Raum ist genau voll: %d\n",
+       (teilnehmende == plaetze));
+printf("Es fehlen Plaetze: %d\n",
+       (teilnehmende &gt; plaetze));</code></pre></details>
+      <details><summary>Lösung zum Fehler</summary><p>Bei 24 Teilnehmenden und 24 Plätzen finden alle einen Platz. <code>24 &lt; 24</code> liefert aber 0. Richtig ist <code>teilnehmende &lt;= plaetze</code>, weil Gleichheit eingeschlossen sein muss.</p></details>
     </section>
     <section class="content-section" aria-labelledby="zuweisung">
       <h2 id="zuweisung">4. Zuweisung ist kein Vergleich</h2>
+      <p>Beim Programmieren möchten wir manchmal einen Wert verändern und manchmal nur etwas über ihn herausfinden. Dafür verwendet C zwei ähnlich aussehende, aber unterschiedliche Operatoren: Mit <code>=</code> weisen Sie einer Variable einen Wert zu. Mit <code>==</code> prüfen Sie, ob zwei Werte gleich sind. Der Vergleich liefert <code>0</code> oder <code>1</code>, verändert die Variable aber nicht.</p>
+      <p>Lesen Sie das folgende Beispiel Zeile für Zeile. Notieren Sie vor jeder Ausgabe, welchen Wert <code>anzahl</code> gerade enthält und was ausgegeben wird.</p>
       <pre><code>int anzahl = 4;
 printf("%d\n", (anzahl == 6));
 printf("%d\n", anzahl);
@@ -121,22 +171,39 @@ printf("%d\n", (anzahl == 6));</code></pre>
     <section class="content-section" aria-labelledby="grenzen">
       <h2 id="grenzen">5. Wahrheitswerte speichern und Grenzen prüfen</h2>
       <p>Vergleichsergebnisse können Sie in einer Variable vom bekannten Typ <code>bool</code> speichern. Verwenden Sie dafür <code>#include &lt;stdbool.h&gt;</code>.</p>
-      <pre><code>int alter = 19;
-bool volljaehrig = (alter &gt;= 18);
-printf("Volljährig: %d\n", volljaehrig);</code></pre>
+      <p>Eine Jugendwerkstatt erlaubt die Teilnahme ab 14 Jahren. Ob eine Person dieses Mindestalter erreicht, können Sie als Wahrheitswert speichern:</p>
+      <pre><code>int alter = 14;
+bool teilnahme_erlaubt = (alter &gt;= 14);
+printf("Teilnahme erlaubt: %d\n", teilnahme_erlaubt);</code></pre>
       <p>Der Vergleich liefert ein <code>int</code>-Ergebnis mit dem Wert 0 oder 1. Die <code>bool</code>-Variable speichert den entsprechenden Wahrheitswert. Mit <code>%d</code> erscheint hier ebenfalls 0 oder 1.</p>
-      <p><strong>Vorhersage:</strong> Welche Ausgabe erwarten Sie für ein Alter von 17, 18 und 19 Jahren?</p>
-      <details><summary>Antwort anzeigen</summary><p>Für 17: <code>Volljährig: 0</code>. Für 18 und 19: jeweils <code>Volljährig: 1</code>.</p></details>
-      <h3>Programmieraufgabe: Zwei Grenzen</h3>
-      <p>Nutzen Sie den Ordner <code>02-grenzwerte</code> im <a href="materialien/bedingungen-und-vergleiche.zip" download>Materialarchiv</a>. Einzeldateien: <a href="materialien/bedingungen-und-vergleiche/02-grenzwerte/programm.c" download>programm.c</a> und <a href="materialien/bedingungen-und-vergleiche/02-grenzwerte/Makefile" download>Makefile</a>.</p>
+      <p><strong>Vorhersage:</strong> Welche Ausgabe erwarten Sie für ein Alter von 13, 14 und 15 Jahren?</p>
+      <details><summary>Antwort anzeigen</summary><p>Für 13: <code>Teilnahme erlaubt: 0</code>. Für 14 und 15: jeweils <code>Teilnahme erlaubt: 1</code>.</p></details>
+      <h3>Programmieraufgabe: Altersgrenzen einer Jugendwerkstatt</h3>
+      <p>Für die Jugendwerkstatt gilt:</p>
+      <ul>
+        <li>Die Teilnahme ist ab 14 Jahren erlaubt.</li>
+        <li>Die Altersgrenze für den Jugendtarif liegt bei höchstens 17 Jahren.</li>
+      </ul>
+      <p>Prüfen Sie beide Alterskriterien unabhängig voneinander. <code>jugendtarif</code> soll nur ausdrücken, ob die obere Altersgrenze für den Tarif eingehalten ist, nicht, ob die Person teilnehmen darf. Eine 13-jährige Person erfüllt also das Tarif-Alterskriterium, darf aber noch nicht teilnehmen.</p>
+      <p>Nutzen Sie den Ordner <code>02-grenzwerte</code> im <a href="materialien/bedingungen-und-vergleiche.zip" download>Materialarchiv</a> und darin die Dateien: <a href="materialien/bedingungen-und-vergleiche/02-grenzwerte/programm.c" download>programm.c</a> und <a href="materialien/bedingungen-und-vergleiche/02-grenzwerte/Makefile" download>Makefile</a>.</p>
       <ol>
-        <li>Ersetzen Sie die markierten <code>false</code>-Werte durch Vergleiche: <code>volljaehrig</code> soll ab 18 Jahren wahr sein. <code>menge_erlaubt</code> soll für höchstens 10 Stück wahr sein. Verwenden Sie zunächst nur nichtnegative Werte.</li>
-        <li>Prüfen Sie für das Alter die Werte 17, 18 und 19, für die Menge 9, 10 und 11. Notieren Sie die Erwartungen vor jedem Ausführen. Speichern und übersetzen Sie jede Änderung erneut.</li>
-        <li>Erklären Sie, welchen Fehler Sie mit dem Test genau auf der Grenze erkennen können.</li>
+        <li>Ersetzen Sie die markierten <code>false</code>-Werte durch passende Vergleiche für <code>teilnahme_erlaubt</code> und <code>jugendtarif</code>. Verwenden Sie nur nichtnegative Alterswerte.</li>
+        <li>Geben Sie beide Wahrheitswerte mit selbst geschriebenen, beschrifteten <code>printf</code>-Ausgaben aus.</li>
+        <li>Prüfen Sie für das Alter die Werte 13, 14, 17 und 18. Notieren Sie die beiden erwarteten Ergebnisse vor jedem Ausführen. Speichern und übersetzen Sie jede Änderung erneut.</li>
+        <li>Erklären Sie, warum gerade diese vier Testwerte sinnvoll sind und welche Fehler an den Grenzen sie aufdecken können.</li>
       </ol>
-      <details><summary>Hinweis</summary><p>„Ab 18“ bedeutet „größer oder gleich 18“. „Höchstens 10“ bedeutet „kleiner oder gleich 10“.</p></details>
-      <details><summary>Mögliche Lösung und Selbstkontrolle</summary><pre><code>bool volljaehrig = (alter &gt;= 18);
-bool menge_erlaubt = (menge &lt;= 10);</code></pre><p>Alter 17, 18, 19 ergibt 0, 1, 1. Menge 9, 10, 11 ergibt 1, 1, 0. Genau auf der Grenze unterscheiden Sie zum Beispiel <code>&gt;</code> von <code>&gt;=</code>. Ein Test nur mit 19 würde diesen Fehler nicht aufdecken.</p></details>
+      <details><summary>Hinweis</summary><p>„Ab 14“ bedeutet „größer oder gleich 14“. „Höchstens 17“ bedeutet „kleiner oder gleich 17“. Für diese beiden unabhängigen Vergleiche benötigen Sie keine logische Verknüpfung.</p></details>
+      <details><summary>Mögliche Lösung und Selbstkontrolle</summary><pre><code>bool teilnahme_erlaubt = (alter &gt;= 14);
+bool jugendtarif = (alter &lt;= 17);
+
+printf("Teilnahme erlaubt: %d\n", teilnahme_erlaubt);
+printf("Alterskriterium Jugendtarif erfüllt: %d\n", jugendtarif);</code></pre>
+        <div class="table-wrap"><table>
+          <thead><tr><th scope="col">Alter</th><th scope="col">Teilnahme erlaubt</th><th scope="col">Alterskriterium Jugendtarif erfüllt</th></tr></thead>
+          <tbody><tr><th scope="row">13</th><td>0</td><td>1</td></tr><tr><th scope="row">14</th><td>1</td><td>1</td></tr><tr><th scope="row">17</th><td>1</td><td>1</td></tr><tr><th scope="row">18</th><td>1</td><td>0</td></tr></tbody>
+        </table></div>
+        <p>13 und 14 prüfen den Übergang zur erlaubten Teilnahme. 17 und 18 prüfen den Übergang beim Jugendtarif. Genau auf den Grenzen erkennen Sie, ob Gleichheit versehentlich ausgeschlossen wurde: <code>&gt;</code> statt <code>&gt;=</code> beziehungsweise <code>&lt;</code> statt <code>&lt;=</code>.</p>
+      </details>
     </section>
     <p>Sie können nun einzelne Werte vergleichen. Als Nächstes verbinden Sie mehrere Vergleiche zu einer Bedingung.</p>
     <nav aria-label="Seitennavigation"><ul class="navlinks">

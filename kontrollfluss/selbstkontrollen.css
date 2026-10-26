@@ -15,4 +15,8 @@ details[open] summary { margin-bottom: 12px; }
 .self-check button { padding: 9px 16px; margin-top: 12px; background: var(--blue); color: white; border: 0; border-radius: 5px; cursor: pointer; font: inherit; }
 .self-check .feedback { margin: 14px 0 0; border-left: 3px solid var(--blue); padding-left: 12px; }
 .self-check .feedback[data-state="success"] { border-color: #19713d; }
+.test-case { margin: 16px 0; }
+.test-case input { width: 100%; max-width: 14rem; padding: 8px; border: 1px solid var(--muted); border-radius: 4px; font: inherit; }
+.test-case input[aria-invalid="true"] { border: 2px solid #a32121; }
+.self-check .feedback:empty { display: none; }
 @media print { .self-check button { display: none; } }

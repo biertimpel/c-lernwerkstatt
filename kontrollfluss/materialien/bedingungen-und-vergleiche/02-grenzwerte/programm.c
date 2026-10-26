@@ -2,14 +2,12 @@
 #include <stdio.h>
 
 int main(void) {
-    int alter = 17;
-    int menge = 9;
+    int alter = 14;
 
     /* TODO: Ersetzen Sie false jeweils durch einen passenden Vergleich. */
-    bool volljaehrig = false;   /* Ab 18 Jahren. */
-    bool menge_erlaubt = false; /* Hoechstens 10 Stueck. */
+    bool teilnahme_erlaubt = false; /* Teilnahme ab 14 Jahren. */
+    bool jugendtarif = false;      /* Nur das Alterskriterium: hoechstens 17. */
 
-    printf("Alter: %d, volljaehrig: %d\n", alter, volljaehrig);
-    printf("Menge: %d, Menge erlaubt: %d\n", menge, menge_erlaubt);
+    /* TODO: Geben Sie beide Wahrheitswerte mit beschrifteten Ausgaben aus. */
     return 0;
 }
