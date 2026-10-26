@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>C-Lernwerkstatt · Bedingungen verknüpfen</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="selbstkontrollen.css">
+  <script src="selbstkontrollen.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="bedingungen-und-vergleiche.html">← Zu Bedingungen und Vergleiche</a></p>
+    <header><h1>Bedingungen verknüpfen</h1><p>Ein einzelner Vergleich reicht nicht immer aus. Hier formulieren Sie Bedingungen aus mehreren Teilen.</p></header>
+    <nav aria-label="Abschnitte"><ul class="navlinks">
+      <li><a href="#nicht">NICHT</a></li><li><a href="#und-oder">UND und ODER</a></li>
+      <li><a href="#bereiche">Wertebereiche</a></li><li><a href="#kurzschluss">Short-Circuit Evaluation</a></li>
+    </ul></nav>
+    <section class="content-section" aria-labelledby="ziele">
+      <h2 id="ziele">Lernziele</h2>
+      <ul>
+        <li>Bedingungen mit <code>!</code> umkehren und mit <code>&amp;&amp;</code> und <code>||</code> verknüpfen.</li>
+        <li>Wertebereiche einschließlich ihrer Grenzen korrekt prüfen.</li>
+        <li>Erklären, wann die rechte Seite einer logischen Verknüpfung ausgewertet wird.</li>
+      </ul>
+      <p>Voraussetzung: <a href="werte-vergleichen.html">Werte vergleichen</a>. Auch hier arbeiten Sie ohne <code>if</code> und ohne Schleifen.</p>
+    </section>
+    <noscript><p>Die interaktive Auswertung benötigt JavaScript. Sie können alle Fragen dennoch bearbeiten und mit den aufklappbaren Erklärungen vergleichen.</p></noscript>
+    <section class="content-section" aria-labelledby="nicht">
+      <h2 id="nicht">1. NICHT: Eine Bedingung umkehren</h2>
+      <p>Der Operator <code>!</code> kehrt einen Wahrheitswert um: Aus wahr wird falsch, aus falsch wird wahr.</p>
+      <pre><code>int alter = 17;
+bool volljaehrig = (alter &gt;= 18);
+bool minderjaehrig = !volljaehrig;
+printf("Minderjährig: %d\n", minderjaehrig);</code></pre>
+      <p>Mit <code>#include &lt;stdbool.h&gt;</code> und <code>#include &lt;stdio.h&gt;</code> können Sie diese Zeilen in <code>main</code> ausprobieren. Die Ausgabe lautet <code>Minderjährig: 1</code>.</p>
+      <p>Statt der gespeicherten Variable können Sie den Vergleich direkt umkehren: <code>!(alter &gt;= 18)</code>. Das bedeutet bei ganzzahligem Alter dasselbe wie <code>alter &lt; 18</code>. Setzen Sie den vollständigen Vergleich in Klammern: <code>!alter &gt;= 18</code> würde zuerst <code>!alter</code> auswerten und ist nicht dasselbe.</p>
+      <p><strong>Selbstkontrolle:</strong> Was liefern <code>!(5 == 5)</code> und <code>!(5 &lt; 3)</code>?</p>
+      <details><summary>Antwort anzeigen</summary><p><code>!(5 == 5)</code> liefert 0, weil der Vergleich wahr ist. <code>!(5 &lt; 3)</code> liefert 1, weil der Vergleich falsch ist.</p></details>
+    </section>
+    <section class="content-section" aria-labelledby="und-oder">
+      <h2 id="und-oder">2. UND und ODER</h2>
+      <ul>
+        <li><code>A &amp;&amp; B</code> ist wahr, wenn <strong>beide</strong> Bedingungen wahr sind.</li>
+        <li><code>A || B</code> ist wahr, wenn <strong>mindestens eine</strong> Bedingung wahr ist. Beide dürfen wahr sein.</li>
+      </ul>
+      <p><code>A</code> und <code>B</code> stehen hier als Platzhalter für beliebige Bedingungen. Die logischen Operatoren liefern wie Vergleiche einen <code>int</code>-Wert von genau 0 oder 1.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th scope="col">A</th><th scope="col">B</th><th scope="col">A &amp;&amp; B</th><th scope="col">A || B</th></tr></thead>
+        <tbody><tr><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>0</td><td>1</td><td>0</td><td>1</td></tr><tr><td>1</td><td>0</td><td>0</td><td>1</td></tr><tr><td>1</td><td>1</td><td>1</td><td>1</td></tr></tbody>
+      </table></div>
+      <pre><code>bool angemeldet = true;
+bool ticket_bezahlt = false;
+bool einlass = angemeldet &amp;&amp; ticket_bezahlt;
+bool noch_etwas_offen = !angemeldet || !ticket_bezahlt;</code></pre>
+      <p>Hier ist <code>einlass</code> falsch: Die Anmeldung allein reicht nicht. <code>noch_etwas_offen</code> ist wahr, weil das Ticket noch nicht bezahlt wurde.</p>
+      <p>Verwenden Sie die <strong>doppelten</strong> Zeichen <code>&amp;&amp;</code> und <code>||</code>. Die einzelnen Zeichen <code>&amp;</code> und <code>|</code> sind andere Operatoren, die wir hier nicht behandeln.</p>
+      <form class="self-check" data-hint="Bei UND müssen beide Seiten wahr sein. ODER schließt den Fall ein, dass beide Seiten wahr sind.">
+        <fieldset><legend>Welche Ausdrücke liefern 1?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox"> <code>true &amp;&amp; false</code></label>
+          <label><input type="checkbox" data-correct="true"> <code>true || false</code></label>
+          <label><input type="checkbox" data-correct="true"> <code>true || true</code></label>
+          <label><input type="checkbox" data-correct="true"> <code>!false &amp;&amp; true</code></label>
+        </fieldset>
+        <button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die Ausdrücke 2, 3 und 4 liefern 1. Im letzten Ausdruck wird <code>!false</code> zu wahr, also sind beide Seiten des UND wahr.</p></details>
+      </form>
+      <p>Bei gemischten Ausdrücken bindet <code>!</code> stärker als <code>&amp;&amp;</code>, und <code>&amp;&amp;</code> stärker als <code>||</code>. Machen Sie Ihre Absicht trotzdem durch Klammern deutlich, etwa <code>(angemeldet &amp;&amp; ticket_bezahlt) || gast</code>.</p>
+    </section>
+    <section class="content-section" aria-labelledby="bereiche">
+      <h2 id="bereiche">3. Innerhalb oder außerhalb eines Bereichs?</h2>
+      <p>Eine Temperatur soll zwischen 18 und 24 Grad einschließlich beider Grenzen liegen. Dazu müssen zwei Vergleiche gleichzeitig wahr sein:</p>
+      <pre><code>bool angenehm = (temperatur &gt;= 18) &amp;&amp; (temperatur &lt;= 24);</code></pre>
+      <p>Außerhalb dieses Bereichs liegt die Temperatur, wenn sie kleiner als 18 <em>oder</em> größer als 24 ist:</p>
+      <pre><code>bool ausserhalb = (temperatur &lt; 18) || (temperatur &gt; 24);</code></pre>
+      <p>Alternativ können Sie <code>!angenehm</code> verwenden. Hier betrachten wir ganzzahlige Temperaturen.</p>
+      <h3>Achtung: Keine mathematischen Vergleichsketten</h3>
+      <p><code>18 &lt;= temperatur &lt;= 24</code> ist in C keine Bereichsprüfung. C wertet zuerst <code>18 &lt;= temperatur</code> aus. Dessen Ergebnis 0 oder 1 wird danach mit 24 verglichen. Dieser zweite Vergleich ist in beiden Fällen wahr.</p>
+      <form class="self-check" data-hint="Prüfen Sie beide Bereichsgrenzen einzeln. Eine Vergleichskette vergleicht im zweiten Schritt nur noch 0 oder 1 mit 24.">
+        <fieldset><legend>Welche Bedingungen sind bei <code>int temperatur = 25;</code> wahr?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox"> <code>(temperatur &gt;= 18) &amp;&amp; (temperatur &lt;= 24)</code></label>
+          <label><input type="checkbox" data-correct="true"> <code>(temperatur &lt; 18) || (temperatur &gt; 24)</code></label>
+          <label><input type="checkbox" data-correct="true"> <code>!((temperatur &gt;= 18) &amp;&amp; (temperatur &lt;= 24))</code></label>
+          <label><input type="checkbox" data-correct="true"> <code>18 &lt;= temperatur &lt;= 24</code></label>
+        </fieldset>
+        <button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die Antworten 2, 3 und 4 sind wahr. Die vierte ist trotzdem keine korrekte Bereichsprüfung: Zuerst entsteht 1, dann wird <code>1 &lt;= 24</code> geprüft. Dass C einen Ausdruck akzeptiert, bedeutet nicht, dass er die beabsichtigte Frage beantwortet.</p></details>
+      </form>
+      <h3>Programmieraufgabe: Wohlfühlbereich</h3>
+      <p>Nutzen Sie <code>03-wertebereiche</code> aus dem <a href="materialien/bedingungen-und-vergleiche.zip" download>Materialarchiv</a>. Einzeldateien: <a href="materialien/bedingungen-und-vergleiche/03-wertebereiche/programm.c" download>programm.c</a> und <a href="materialien/bedingungen-und-vergleiche/03-wertebereiche/Makefile" download>Makefile</a>.</p>
+      <ol>
+        <li>Ersetzen Sie die markierten <code>false</code>-Werte: <code>angenehm</code> soll den Bereich von 18 bis 24 einschließlich prüfen, <code>ausserhalb</code> die Werte außerhalb dieses Bereichs.</li>
+        <li>Notieren Sie die erwarteten Ausgaben für 17, 18, 21, 24 und 25. Testen Sie jeden Wert durch Änderung der Variable, Speichern, <code>make</code> und <code>./programm</code>.</li>
+        <li>Formulieren Sie <code>ausserhalb</code> zunächst mit ODER und anschließend mit NICHT. Vergleichen Sie die Ergebnisse.</li>
+      </ol>
+      <details><summary>Hinweis</summary><p>Ein Wert muss für den inneren Bereich beide Grenzen einhalten. Für den äußeren Bereich reicht es, eine der Grenzen zu überschreiten.</p></details>
+      <details><summary>Mögliche Lösung und Selbstkontrolle</summary><pre><code>bool angenehm = (temperatur &gt;= 18) &amp;&amp; (temperatur &lt;= 24);
+bool ausserhalb = (temperatur &lt; 18) || (temperatur &gt; 24);
+/* Alternative: bool ausserhalb = !angenehm; */</code></pre><p>Für 17 und 25: <code>angenehm = 0</code>, <code>ausserhalb = 1</code>. Für 18, 21 und 24: <code>angenehm = 1</code>, <code>ausserhalb = 0</code>.</p></details>
+    </section>
+    <section class="content-section" aria-labelledby="kurzschluss">
+      <h2 id="kurzschluss">4. Short-Circuit Evaluation: Nicht immer werden beide Seiten geprüft</h2>
+      <p>C wertet bei <code>&amp;&amp;</code> und <code>||</code> zuerst die linke Seite aus. Die rechte Seite wird nur ausgewertet, wenn sie für das Ergebnis noch benötigt wird:</p>
+      <ul>
+        <li>Bei <code>&amp;&amp;</code>: Ist links falsch, ist der gesamte Ausdruck bereits falsch.</li>
+        <li>Bei <code>||</code>: Ist links wahr, ist der gesamte Ausdruck bereits wahr.</li>
+      </ul>
+      <p>Das kann gefährliche Rechnungen verhindern. Eine Ganzzahldivision durch 0 ist in C nicht erlaubt; erwarten Sie dabei keine verlässliche Fehlermeldung.</p>
+      <pre><code>bool quotient_gross = (teiler != 0) &amp;&amp; (zahl / teiler &gt; 2);</code></pre>
+      <p>Ist <code>teiler</code> gleich 0, ist die linke Seite falsch. Die Division auf der rechten Seite wird nicht ausgeführt. Das Ergebnis ist 0. <strong>Die Reihenfolge ist entscheidend:</strong> Die Schutzbedingung muss vor der Division stehen.</p>
+      <p>Der Test schützt nur vor Division durch 0, nicht vor allen möglichen Fehlern einer Ganzzahldivision. Verwenden Sie in dieser Aufgabe eine nichtnegative kleine Zahl und einen nichtnegativen Teiler.</p>
+      <form class="self-check" data-hint="Bei UND genügt eine falsche linke Seite, bei ODER eine wahre linke Seite, um das Ergebnis festzulegen.">
+        <fieldset><legend>Welche Aussagen zur Short-Circuit Evaluation stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Bei <code>false &amp;&amp; B</code> wird B nicht ausgewertet.</label>
+          <label><input type="checkbox" data-correct="true"> Bei <code>true || B</code> wird B nicht ausgewertet.</label>
+          <label><input type="checkbox"> Bei <code>true &amp;&amp; B</code> wird B nicht ausgewertet.</label>
+          <label><input type="checkbox"> Ein Test auf <code>teiler != 0</code> rechts von der Division schützt die Division genauso.</label>
+        </fieldset>
+        <button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Nur die ersten beiden Aussagen stimmen. Bei <code>true &amp;&amp; B</code> hängt das Ergebnis noch von B ab. Eine Division auf der linken Seite wird bereits vor einer Schutzbedingung rechts ausgewertet.</p></details>
+      </form>
+      <h3>Programmieraufgabe: Sicher prüfen</h3>
+      <p>Nutzen Sie <code>04-kurzschluss</code> aus dem <a href="materialien/bedingungen-und-vergleiche.zip" download>Materialarchiv</a>. Einzeldateien: <a href="materialien/bedingungen-und-vergleiche/04-kurzschluss/programm.c" download>programm.c</a> und <a href="materialien/bedingungen-und-vergleiche/04-kurzschluss/Makefile" download>Makefile</a>.</p>
+      <ol>
+        <li>Ersetzen Sie den markierten <code>false</code>-Wert durch eine Bedingung: Der Teiler muss ungleich 0 sein und der ganzzahlige Quotient größer als 2.</li>
+        <li>Prüfen Sie bei <code>zahl = 10</code> die Teiler 0, 2, 4 und 5. Notieren Sie jeweils das Ergebnis und ob die Division überhaupt ausgeführt wird. Denken Sie an die Ganzzahldivision.</li>
+        <li>Erklären Sie anhand des Codes, warum der Test mit Teiler 0 sicher ist. Vertauschen Sie die Reihenfolge nicht zum Ausprobieren.</li>
+      </ol>
+      <details><summary>Mögliche Lösung und Selbstkontrolle</summary><pre><code>bool quotient_gross = (teiler != 0) &amp;&amp; (zahl / teiler &gt; 2);</code></pre><ul><li>Teiler 0: Ergebnis 0, keine Division.</li><li>Teiler 2: Quotient 5, Ergebnis 1.</li><li>Teiler 4: Ganzzahliger Quotient 2, Ergebnis 0.</li><li>Teiler 5: Quotient 2, Ergebnis 0.</li></ul><p>Die Anzeige 0 bedeutet hier nicht, dass die Division durch 0 das Ergebnis 0 hätte. Sie bedeutet, dass die zusammengesetzte Bedingung falsch ist und die Division ausgelassen wurde.</p></details>
+    </section>
+    <section class="content-section" aria-labelledby="abschluss">
+      <h2 id="abschluss">Zum Abschluss</h2>
+      <p>Erklären Sie einer anderen Person den Unterschied zwischen UND und ODER und warum ein Grenzwert mitgetestet werden sollte. Wenn Ihre Vorhersage nicht zur Ausgabe passt, zeigen Sie der Betreuung den Quelltext, Ihre Erwartung und Ihre Beobachtung.</p>
+      <p>Bisher geben Sie aus, ob eine Bedingung erfüllt ist. Auf der nächsten Seite verwenden Sie Bedingungen, um zu entscheiden, welche Anweisungen ausgeführt werden.</p>
+    </section>
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="werte-vergleichen.html">← Zurück: Werte vergleichen</a></li>
+      <li><a href="entscheidungen-treffen.html">Weiter: Entscheidungen treffen →</a></li>
+    </ul></nav>
+    <footer><a href="bedingungen-und-vergleiche.html">Zu Bedingungen und Vergleiche</a> · <a href="index.html">Zur Kapitelübersicht</a> · <a href="../uebersicht.html">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>
