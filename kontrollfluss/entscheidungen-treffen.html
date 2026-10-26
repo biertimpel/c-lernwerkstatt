@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>C-Lernwerkstatt · Entscheidungen treffen</title>
   <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="selbstkontrollen.css">
+  <script src="selbstkontrollen.js" defer></script>
 </head>
 <body>
   <a class="skip" href="#inhalt">Zum Inhalt</a>
@@ -12,11 +14,166 @@
     <p><a href="index.html">← Zur Kapitelübersicht</a></p>
     <header>
       <h1>Entscheidungen treffen</h1>
-      <span class="status">In Vorbereitung</span>
+      <p>Aus einer Bedingung wird eine Handlung: Wir beginnen eine Parkhaus-Simulation und entscheiden, ob ein Fahrzeug einfahren darf.</p>
     </header>
-    <section class="content-section" aria-label="Material in Vorbereitung">
-      <img class="construction-image" src="../assets/under-construction-web.webp" width="1672" height="941" alt="Ein großes C aus leuchtendem Code wird auf einer digitalen Baustelle aufgebaut.">
-      <p>Diese Inhalte sind noch in Vorbereitung. Bitte arbeiten Sie zunächst an den bereits veröffentlichten Aufgaben weiter.</p>
+    <section class="content-section" aria-labelledby="ziele">
+      <h2 id="ziele">Lernziele und Ausgangspunkt</h2>
+      <ul><li>Mit <code>if</code>, <code>else</code> und <code>else if</code> zwischen Handlungen wählen.</li><li>Einzelne Werte mit <code>switch</code> und <code>case</code> unterscheiden.</li><li>Ungültige Zustände erkennen und gezielt Grenzfälle testen.</li></ul>
+      <p>Im gesamten Kapitel erweitern Sie dasselbe Modell: <code>kapazitaet</code> ist die Anzahl der Plätze, <code>belegt</code> die aktuelle Anzahl der Fahrzeuge. Es soll immer <code>0 &lt;= belegt</code> und <code>belegt &lt;= kapazitaet</code> gelten. Diese dauerhaft einzuhaltende Regel heißt <strong>Invariante</strong>. Wir verwenden kleine ganze Zahlen und fest eingetragene Startwerte, noch keine Tastatureingabe.</p>
+      <p><a href="materialien/entscheidungen-treffen.zip" download>C-Gerüste und Makefiles herunterladen (ZIP)</a>. Entpacken Sie das Archiv und öffnen Sie ein Terminal im jeweiligen Aufgabenordner. Bearbeiten und speichern Sie <code>programm.c</code>, übersetzen Sie mit <code>make</code> und starten Sie mit <code>./programm</code>. Nach Änderungen erneut übersetzen.</p>
+      <nav aria-label="Abschnitte"><ul class="navlinks"><li><a href="#if">if und else</a></li><li><a href="#else-if">else if</a></li><li><a href="#switch">switch-case</a></li><li><a href="#fehler">Fehlersuche</a></li></ul></nav>
+    </section>
+    <noscript><p>Die interaktive Prüfung benötigt JavaScript. Die aufklappbaren Lösungen können Sie auch ohne JavaScript verwenden.</p></noscript>
+    <section class="content-section" aria-labelledby="if">
+      <h2 id="if">1. Eine Entscheidung mit if und else</h2>
+      <p><code>if</code> führt seinen Anweisungsblock in geschweiften Klammern aus, wenn die Bedingung in den runden Klammern zu wahr auswertet. Der optionale <code>else</code>-Block wird andernfalls ausgeführt. Genau einer der beiden Blöcke läuft, nach der Verzweigung geht es gemeinsam weiter.</p>
+      <p>Das folgende einfache Beispiel prüft, ob eine Zahl gleich null ist. Die Bedingung steht in runden Klammern, die zugehörigen Anweisungen stehen jeweils in einem Block aus geschweiften Klammern.</p>
+      <pre><code>int zahl = 3;
+
+if (zahl == 0) {
+    printf("Die Zahl ist null.\n");
+} else {
+    printf("Die Zahl ist nicht null.\n");
+}
+printf("Pruefung beendet.\n");</code></pre>
+      <p>Ohne <code>else</code> passiert bei falscher Bedingung in der Verzweigung nichts. Verwenden Sie auch bei nur einer Anweisung geschweifte Klammern und rücken Sie den Block ein. Das macht spätere Ergänzungen sicherer.</p>
+      <form class="self-check" data-hint="Prüfen Sie, ob zahl gleich 0 ist. Die letzte Ausgabe steht außerhalb beider Blöcke.">
+        <fieldset><legend>Welche Aussagen zum Beispiel stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Bei zahl = 3 erscheint „Die Zahl ist nicht null.“.</label>
+          <label><input type="checkbox"> Bei zahl = 0 läuft zuerst der if- und danach der else-Block.</label>
+          <label><input type="checkbox" data-correct="true"> Bei zahl = 0 erscheint „Die Zahl ist null.“.</label>
+          <label><input type="checkbox" data-correct="true"> Die letzte printf-Ausgabe wird in beiden Fällen erreicht.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>1, 3 und 4 stimmen. Bei zahl = 3 ist die Bedingung falsch und nur der else-Block läuft. Bei zahl = 0 ist sie wahr und nur der if-Block läuft. Danach erscheint in beiden Fällen „Pruefung beendet.“.</p></details>
+      </form>
+
+      <h3>Programmieraufgabe: Eine Einfahrt verarbeiten</h3>
+      <p>Gehen Sie zum Ordner <code>entscheidungen-treffen/01-einfahrt</code>. Dort finden Sie die Dateien <a href="materialien/entscheidungen-treffen/01-einfahrt/programm.c" download>programm.c</a> und <a href="materialien/entscheidungen-treffen/01-einfahrt/Makefile" download>Makefile</a>.</p>
+      <ol><li>Schreiben Sie die Entscheidung für genau ein ankommendes Fahrzeug selbst. Erstellen Sie eine Ausgabe, ob es einfahren darf ("Einfahrt erlaubt." oder "Parkhaus voll."), und geben Sie die neue Belegung aus.</li><li>Notieren Sie erwartete Ergebnisse für die Startbelegungen 0, 9 und 10 bei Kapazität 10. Prüfen Sie alle drei Fälle.</li><li>Ergänzen Sie vor der Einfahrt eine Prüfung: Negative Kapazität, negative Belegung oder Belegung über der Kapazität sind ungültig. Geben Sie eine Fehlermeldung aus und beenden Sie <code>main</code> mit <code>return 1;</code>. Testen Sie jeden Fehlerfall. Kapazität 0 ist gültig, erlaubt aber keine Einfahrt.</li></ol>
+      <p><code>return 1;</code> beendet das Programm an dieser Stelle mit einem Fehlerstatus; <code>return 0;</code> meldet weiterhin einen erfolgreichen Ablauf. Eine abgewiesene Einfahrt bei vollem Parkhaus ist ein normaler Fall, kein ungültiger Programmzustand.</p>
+      <details><summary>Hinweis</summary><p>Prüfen Sie die ungültigen Startwerte mit ODER. Beenden Sie das Programm, bevor Sie die Belegung verändern. Für die Einfahrt muss der Vergleich strikt kleiner sein.</p></details>
+      <details><summary>Mögliche Lösung</summary><pre data-solution="einfahrt"><code>#include &lt;stdio.h&gt;
+
+int main(void) {
+    int kapazitaet = 10;
+    int belegt = 7;
+    if (kapazitaet &lt; 0 || belegt &lt; 0 || belegt &gt; kapazitaet) {
+        printf("Ungueltige Startwerte.\n");
+        return 1;
+    }
+    if (belegt &lt; kapazitaet) {
+        belegt = belegt + 1;
+        printf("Einfahrt erlaubt.\n");
+    } else {
+        printf("Parkhaus voll.\n");
+    }
+    printf("Belegt: %d\n", belegt);
+    return 0;
+}</code></pre><p>Für 0, 9 und 10 ergeben sich die Endbelegungen 1, 10 und 10. Nur im letzten Fall wird abgewiesen.</p></details>
+    </section>
+
+
+    <section class="content-section" aria-labelledby="else-if">
+      <h2 id="else-if">2. Mehrere Fälle mit else if</h2>
+      <p>Die Parkhausanzeige soll „leer“, „Plätze frei“ oder „voll“ melden. Eine <code>else if</code>-Kette prüft von oben nach unten. Nur der erste zutreffende Block wird ausgeführt, <code>else</code> fängt den Rest auf.</p>
+      <pre><code>if (belegt == 0) {
+    printf("Leer.\n");
+} else if (belegt &lt; kapazitaet) {
+    printf("Plaetze frei.\n");
+} else {
+    printf("Voll.\n");
+}</code></pre>
+      <p>Hier müssen die Startwerte bereits gültig sein. Bei Kapazität 0 und Belegung 0 gilt sowohl „leer“ als auch „voll“; unsere Anzeige priorisiert ausdrücklich „leer“. Solche Entscheidungen über Randfälle gehören zur Aufgabenbeschreibung.</p>
+      <p><strong>Selbst ausprobieren:</strong> Ergänzen Sie die Anzeige nach der Einfahrt. Welche Startbelegung benötigen Sie, um nach der Einfahrt eines weiteren Autos „voll“ zu sehen? Wie unterscheidet sich die Anzeige, wenn Sie drei unabhängige <code>if</code>-Anweisungen statt einer Kette verwenden?</p>
+      <details><summary>Mögliche Lösung</summary><p>Startbelegung 9 führt nach der Einfahrt zu 10 und damit zu „voll“. Unabhängige if-Anweisungen können mehrere Meldungen erzeugen: Bei Belegung 0 und Kapazität 10 gelten beispielsweise sowohl <code>belegt == 0</code> als auch <code>belegt &lt; kapazitaet</code>. Die Kette wählt dagegen nur die erste Meldung.</p></details>
+    </section>
+
+
+    <section class="content-section" aria-labelledby="switch">
+      <h2 id="switch">3. Ereignisse mit switch-case auswählen</h2>
+      <p>Für einzelne Ereigniscodes eignet sich <code>switch</code>: 1 bedeutet Einfahrt, 2 Ausfahrt und 3 Statusabfrage. Im Gegensatz zu einer if-Kette wird ein ganzzahliger Wert mit festen <code>case</code>-Werten verglichen, nicht mit beliebigen Bedingungen oder Wertebereichen. Auch <code>char</code> ist möglich, Gleitkommazahlen und Zeichenketten dagegen nicht.</p>
+      <pre><code>int ereignis = 1;
+
+switch (ereignis) {
+    case 1:
+        printf("Einfahrt angefordert.\n");
+        break;
+    case 2:
+        printf("Ausfahrt angefordert.\n");
+        break;
+    case 3:
+        printf("Belegt: %d\n", belegt);
+        break;
+    default:
+        printf("Unbekannter Ereigniscode.\n");
+        break;
+}</code></pre>
+      <p><code>break</code> verlässt hier den switch-Block, nicht das Programm. Ohne <code>break</code> läuft die Ausführung in den nächsten Fall weiter, ohne dessen Wert erneut zu vergleichen. Das nennt sich <strong>Fall-through</strong>. Das kann gewollt sein, wäre hier aber ein Fehler. <code>default</code> verarbeitet unbekannte Codes. Ohne <code>default</code> würde bei einem unbekannten Code nichts im switch passieren.</p>
+      <p><strong>Gute Programmierpraxis:</strong> Ergänzen Sie einen abschließenden <code>default</code>-Fall, um auch unerwartete Werte ausdrücklich zu behandeln. So werden unbekannte Ereigniscodes nicht stillschweigend ignoriert, sondern beispielsweise mit einer verständlichen Fehlermeldung sichtbar gemacht.</p>
+      <form class="self-check" data-hint="Ein case ist eine Einsprungstelle. Erst break beendet die Ausführung im switch.">
+        <fieldset><legend>Was gilt für diesen switch?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Bei Code 7 wird default ausgeführt.</label>
+          <label><input type="checkbox"> break beendet immer main.</label>
+          <label><input type="checkbox" data-correct="true"> Fehlt nur das break in case 1, werden bei Code 1 auch die Anweisungen in case 2 ausgeführt.</label>
+          <label><input type="checkbox"> case belegt &lt; kapazitaet: ist ein geeigneter Ersatz für eine if-Bedingung.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>1 und 3 stimmen. case benötigt einen ganzzahligen konstanten Ausdruck; ein Vergleich veränderlicher Variablen gehört in if.</p></details>
+      </form>
+
+
+      <h3>Programmieraufgabe: Ein Ereignis, drei mögliche Handlungen</h3>
+      <p>Arbeiten Sie mit Ihrer bisherigen <code>programm.c</code> und dem vorhandenen Makefile weiter. Ihre Startwertprüfung und die Einfahrtsentscheidung bleiben erhalten. Ergänzen Sie die Variable <code>ereignis</code> und erweitern Sie das Programm so, dass es mit <code>switch</code> zwischen Einfahrt, Ausfahrt und Statusabfrage unterscheidet.</p>
+      <p>Implementieren Sie die Codes 1, 2 und 3. Bauen Sie Ihre bisherige Einfahrtsentscheidung in <code>case 1</code> ein. Bei Ausfahrt prüfen Sie, ob überhaupt ein Fahrzeug im Parkhaus ist. Unbekannte Codes sollen eine Fehlermeldung und Fehlerstatus 1 ergeben, ohne die Belegung zu ändern. Geben Sie nach gültigen Ereignissen die Belegung aus.</p>
+      <p>Planen Sie vor dem Programmieren Tests für Einfahrt bei voller Belegung, Ausfahrt bei leerem Parkhaus, normale Ein- und Ausfahrt, Statusabfrage und einen unbekannten Code. Schreiben Sie erwartete Meldung, Endbelegung und Rückgabestatus auf.</p>
+      <details><summary>Mögliche Lösung</summary><pre data-solution="ereignisse"><code>#include &lt;stdio.h&gt;
+
+int main(void) {
+    int kapazitaet = 10;
+    int belegt = 7;
+    int ereignis = 1;
+    if (kapazitaet &lt; 0 || belegt &lt; 0 || belegt &gt; kapazitaet) {
+        printf("Ungueltige Startwerte.\n");
+        return 1;
+    }
+    switch (ereignis) {
+        case 1:
+            if (belegt &lt; kapazitaet) {
+                belegt = belegt + 1;
+                printf("Einfahrt erlaubt.\n");
+            } else {
+                printf("Parkhaus voll.\n");
+            }
+            break;
+        case 2:
+            if (belegt &gt; 0) {
+                belegt = belegt - 1;
+                printf("Ausfahrt erlaubt.\n");
+            } else {
+                printf("Parkhaus leer.\n");
+            }
+            break;
+        case 3:
+            printf("Statusabfrage.\n");
+            break;
+        default:
+            printf("Unbekannter Ereigniscode.\n");
+            return 1;
+    }
+    printf("Belegt: %d\n", belegt);
+    return 0;
+}</code></pre></details>
+    </section>
+    <section class="content-section" aria-labelledby="fehler">
+      <h2 id="fehler">4. Fehler suchen und Entscheidungen lesbar halten</h2>
+      <p>Fehler gehören zum Programmieren dazu — auch erfahrenen Programmierer*innen passieren sie. Wichtig ist, sie systematisch zu finden und zu verstehen. Üben Sie die Fehlersuche deshalb von Anfang an: Vergleichen Sie Ihre Erwartungen mit dem tatsächlichen Verhalten und untersuchen Sie gezielt, wo die erste Abweichung entsteht.</p>
+      <p><strong>Finden Sie die Fehler:</strong> Hier soll nur bei freien Plätzen eine Einfahrt stattfinden.</p>
+      <pre><code>if (belegt &lt;= kapazitaet);
+{
+    belegt = belegt + 1;
+}</code></pre>
+      <details><summary>Auflösung</summary><p>Das Semikolon beendet die if-Anweisung mit einer leeren Anweisung. Der folgende Block läuft immer. Außerdem erlaubt <code>&lt;=</code> eine Einfahrt auch bei voller Belegung. Entfernen Sie das Semikolon und verwenden Sie <code>&lt;</code>. Testen Sie insbesondere die volle Belegung.</p></details>
+      <p>Achten Sie auch auf <code>=</code> statt <code>==</code>: Eine Zuweisung in einer Bedingung verändert einen Wert und wird von C häufig akzeptiert. Lesen Sie Compilerwarnungen, verwenden Sie aussagekräftige Namen und geben Sie bei der Fehlersuche Zustand vor und nach der Entscheidung aus. Die bereitgestellten Makefiles aktivieren <code>-Wall -Wextra</code>.</p>
+      <p>Es gibt mehrere richtige Strukturen: Die Ereigniscodes können Sie auch mit einer if-else-if-Kette behandeln. switch ist für feste Einzelwerte übersichtlich, if ist für Bereiche und zusammengesetzte Bedingungen flexibler. Entscheidend sind korrekte Regeln und verständlicher Code.</p>
     </section>
     <nav aria-label="Seitennavigation">
       <ul class="navlinks">
