@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>C-Lernwerkstatt · While-Schleifen</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="selbstkontrollen.css">
+  <script src="selbstkontrollen.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header>
+      <h1>While-Schleifen</h1>
+      <p>Die Einfahrt funktioniert für ein Fahrzeug. Jetzt sollen mehrere wartende Fahrzeuge nacheinander verarbeitet werden.</p>
+    </header>
+    <section class="content-section" aria-labelledby="ziele">
+      <h2 id="ziele">Lernziele und Materialien</h2>
+      <ul><li>while- und do-while-Schleifen einschließlich ihrer Zustandsänderungen nachvollziehen.</li><li>Schleifen mit null oder mindestens einem Durchlauf unterscheiden und umformulieren.</li><li>Unbeabsichtigte Endlosschleifen erkennen und gewollten Dauerbetrieb einordnen.</li></ul>
+      <p>Voraussetzung: <a href="entscheidungen-treffen.html">Entscheidungen treffen</a>. Die Parkhausregeln bleiben bestehen: Die Belegung liegt stets zwischen 0 und der Kapazität.</p>
+      <p>Arbeiten Sie in Ihrem bisherigen Parkhausordner mit Ihrer <code>programm.c</code> und demselben Makefile weiter. Sichern Sie vor größeren Änderungen eine Kopie Ihres funktionierenden Stands. Speichern Sie Änderungen, übersetzen Sie mit <code>make</code> und starten Sie mit <code>./programm</code>. Beginnen Sie mit kleinen Testwerten. Auch die Sensorprüfung ergänzen Sie in dieser Datei; ein neues Gerüst ist nicht nötig.</p>
+      <nav aria-label="Abschnitte"><ul class="navlinks"><li><a href="#while">while</a></li><li><a href="#do-while">do while</a></li><li><a href="#endlos">Endlosschleifen</a></li></ul></nav>
+    </section>
+    <noscript><p>Ohne JavaScript können Sie die Fragen mit den aufklappbaren Erklärungen selbst prüfen.</p></noscript>
+    <section class="content-section" aria-labelledby="while">
+      <h2 id="while">1. Wiederholen, solange eine Bedingung gilt</h2>
+      <p><code>while</code> prüft seine Bedingung <strong>vor jedem Durchlauf</strong>. Ist sie falsch, wird der Schleifenrumpf übersprungen und das Programm läuft hinter der Schleife weiter. Anders als if prüft while nach dem Block erneut.</p>
+      <p>Ein einfaches Beispiel zählt von 3 herunter. Es zeigt die drei Bestandteile einer Schleife: Anfangszustand, Bedingung und Zustandsänderung.</p>
+      <pre><code>int zahl = 3;
+
+while (zahl &gt; 0) {
+    printf("%d\n", zahl);
+    zahl = zahl - 1;
+}
+printf("Fertig.\n");</code></pre>
+      <p><code>int zahl = 3;</code> legt den Anfangszustand fest. <code>zahl &gt; 0</code> entscheidet vor jedem Durchlauf, ob es weitergeht. Die Zuweisung im Rumpf verringert den Wert um 1. Ohne passende Zustandsänderung endet eine Schleife möglicherweise nie. Nach ihrem Ende geht es mit der Ausgabe „Fertig.“ weiter.</p>
+      <p><strong>Vorhersage:</strong> Welche vollständige Ausgabe entsteht? Erstellen Sie eine Tabelle mit den Spalten „zahl vor Prüfung“, „Bedingung wahr?“ und „zahl nach Durchlauf“. Wie oft wird die Bedingung geprüft, und wie oft läuft der Rumpf?</p>
+      <details><summary>Selbstkontrolle: Ablauf des Beispiels</summary><div class="table-wrap"><table><thead><tr><th scope="col">zahl vor Prüfung</th><th scope="col">Weiter?</th><th scope="col">zahl nach Durchlauf</th></tr></thead><tbody><tr><td>3</td><td>ja</td><td>2</td></tr><tr><td>2</td><td>ja</td><td>1</td></tr><tr><td>1</td><td>ja</td><td>0</td></tr><tr><td>0</td><td>nein</td><td>unverändert</td></tr></tbody></table></div><p>Die Ausgabe lautet zeilenweise 3, 2, 1 und „Fertig.“. Die Bedingung wird viermal geprüft, der Rumpf dreimal ausgeführt. 0 wird nicht mehr ausgegeben, weil dann die Bedingung falsch ist.</p></details>
+      <form class="self-check" data-hint="Prüfen Sie zahl > 0 vor dem ersten Durchlauf. Die Ausgabe Fertig. steht außerhalb der Schleife.">
+        <fieldset><legend>Bei welchen Startwerten läuft der Schleifenrumpf kein einziges Mal?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> zahl = 0.</label>
+          <label><input type="checkbox" data-correct="true"> zahl = -1.</label>
+          <label><input type="checkbox"> zahl = 1.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p><details><summary>Erklärung anzeigen</summary><p>Die ersten beiden Antworten stimmen: 0 und -1 sind nicht größer als 0. Bei Startwert 1 gibt es genau einen Durchlauf. „Fertig.“ erscheint in allen drei Fällen.</p></details>
+      </form>
+
+
+      <h3>Programmieraufgabe: Eine Warteschlange abarbeiten</h3>
+      <p>Erweitern Sie Ihre Ereignisverarbeitung aus „Entscheidungen treffen“. Der Code 1 soll jetzt eine ganze Warteschlange statt eines einzelnen Fahrzeugs verarbeiten. Die Fälle für Ausfahrt, Status und unbekannte Codes bleiben erhalten.</p>
+      <ol><li>Ergänzen Sie eine int-Variable <code>wartende</code> (initial auf 5) und einen Zähler für erfolgreiche Einfahrten. Erweitern Sie Ihre vorhandene Startwertprüfung: Auch negative Wartendenzahlen sind ungültig.</li><li>Ersetzen Sie in <code>case 1</code> die bisherige einzelne Einfahrtsentscheidung durch eine passende while-Schleife. Lassen Sie Fahrzeuge einfahren, solange Platz ist und Fahrzeuge warten. Formulieren Sie selbst die Bedingung und die nötigen Zustandsänderungen. Zählen Sie die erfolgreichen Einfahrten. Geben Sie nach jedem Durchlauf den Zustand und zum Schluss dieses Falls die Bilanz aus.</li><li>Setzen Sie für Ihre Tests <code>ereignis = 1</code>. Testen Sie bei Kapazität 10 die Paare <code>belegt/wartende</code>: 7/5, 9/1, 10/3 und 0/0. Ergänzen Sie einen Fall, in dem die Warteschlange endet, obwohl noch Platz ist. Notieren Sie Erwartungen vor dem Ausführen. Prüfen Sie anschließend, ob die anderen Ereigniscodes weiterhin korrekt funktionieren.</li></ol>
+      <details><summary>Hinweis</summary><p>Initialisieren Sie den Einfahrtszähler vor der Schleife mit 0. Erhöhen Sie ihn nur dann, wenn ein Fahrzeug wirklich einfährt. Eine verbleibende Warteschlange ist ein reguläres Ergebnis.</p></details>
+      <details><summary>Selbstkontrolle: Ablauf im Parkhaus</summary><div class="table-wrap"><table><thead><tr><th scope="col">Belegt vor Prüfung</th><th scope="col">Wartende vor Prüfung</th><th scope="col">Weiter?</th><th scope="col">Zustand danach</th></tr></thead><tbody><tr><td>7</td><td>5</td><td>ja</td><td>8 / 4</td></tr><tr><td>8</td><td>4</td><td>ja</td><td>9 / 3</td></tr><tr><td>9</td><td>3</td><td>ja</td><td>10 / 2</td></tr><tr><td>10</td><td>2</td><td>nein</td><td>unverändert</td></tr></tbody></table></div><p>Drei Fahrzeuge fahren ein. Zwei warten weiter, weil das Parkhaus voll ist. Die Bedingung wird viermal geprüft, der Rumpf dreimal ausgeführt.</p></details>
+      <details><summary>Mögliche Lösung</summary><pre data-solution="warteschlange"><code>#include &lt;stdio.h&gt;
+
+int main(void) {
+    int kapazitaet = 10;
+    int belegt = 7;
+    int wartende = 5;
+    int ereignis = 1;
+    int eingefahren = 0;
+    if (kapazitaet &lt; 0 || belegt &lt; 0 || belegt &gt; kapazitaet || wartende &lt; 0) {
+        printf("Ungueltige Startwerte.\n");
+        return 1;
+    }
+    switch (ereignis) {
+        case 1:
+            while ((wartende &gt; 0) &amp;&amp; (belegt &lt; kapazitaet)) {
+                belegt = belegt + 1;
+                wartende = wartende - 1;
+                eingefahren = eingefahren + 1;
+                printf("Belegt: %d, wartend: %d\n", belegt, wartende);
+            }
+            printf("Eingefahren: %d, belegt: %d, wartend: %d\n",
+                   eingefahren, belegt, wartende);
+            break;
+        case 2:
+            if (belegt &gt; 0) {
+                belegt = belegt - 1;
+                printf("Ausfahrt erlaubt.\n");
+            } else {
+                printf("Parkhaus leer.\n");
+            }
+            break;
+        case 3:
+            printf("Statusabfrage.\n");
+            break;
+        default:
+            printf("Unbekannter Ereigniscode.\n");
+            return 1;
+    }
+    printf("Belegt: %d\n", belegt);
+    return 0;
+}</code></pre><p>Für die vorgegebenen Paare: 3, 1, 0 und 0 Einfahrten. Bei 7/2 fahren beide Fahrzeuge ein und ein Platz bleibt frei.</p></details>
+    </section>
+    <section class="content-section" aria-labelledby="do-while">
+      <h2 id="do-while">2. Mindestens einmal: do while</h2>
+      <p>Vor dem Schließen der Schranke zum Parkhaus muss der Sicherheitsbereich mindestens einmal geprüft werden. Wir simulieren einen Sensor: Ab der zweiten Prüfung meldet er „frei“. Es werden höchstens drei Prüfungen durchgeführt. Es handelt sich um eine Simulation zu Demonstrationszwecken, nicht um eine echte Schrankensteuerung.</p>
+      <pre><code>int pruefungen = 0;
+int maximum = 3;
+int frei_ab = 2;
+bool sensor_frei = false;
+
+do {
+    pruefungen = pruefungen + 1;
+    sensor_frei = (pruefungen &gt;= frei_ab);
+    printf("Pruefung %d, frei: %d\n", pruefungen, sensor_frei);
+} while (!sensor_frei &amp;&amp; pruefungen &lt; maximum);</code></pre>
+      <p>Für <code>bool</code> benötigen Sie weiterhin <code>&lt;stdbool.h&gt;</code>. Bei <code>do while</code> kommt die Prüfung <strong>nach</strong> dem Rumpf. Dieser läuft also mindestens einmal, selbst wenn die Bedingung danach sofort falsch ist. Das Semikolon hinter <code>while (...);</code> gehört hier zur Syntax.</p>
+      <p><strong>Vorhersage:</strong> Wie viele Prüfungen erfolgen bei <code>frei_ab = 1</code>, <code>2</code> und <code>5</code> mit Maximum 3?</p>
+      <details><summary>Selbstkontrolle</summary><p>1, 2 und 3 Prüfungen. Im letzten Fall bleibt der Sensor blockiert. Das Erreichen des Versuchslimits ist keine Erfolgsmeldung: Die Schranke muss offen bleiben.</p></details>
+      <h3>Programmieraufgabe: Prüfen mit Versuchslimit</h3>
+      <p>Ergänzen Sie zwei Konfigurationsvariablen vom Datentyp <code>int</code>, die für alle Fahrzeuge gelten:</p>
+      <ul>
+        <li><code>int maximum = 3;</code>: Die maximale Anzahl der Sensorprüfungen pro Fahrzeug. Ist der Sicherheitsbereich danach noch blockiert, wird die Simulation mit einer Fehlermeldung beendet.</li>
+        <li><code>int frei_ab = 2;</code>: Die Nummer der Prüfung, ab der der simulierte Sensor „frei“ meldet. Bei diesem Startwert meldet er bei der ersten Prüfung „blockiert“ und ab der zweiten „frei“. Die Prüfungen werden für jedes Fahrzeug neu ab 1 gezählt.</li>
+      </ul>
+      <p>Beide Werte müssen mindestens 1 sein. <code>frei_ab</code> darf größer als <code>maximum</code> sein: Damit simulieren Sie, dass der Sensor innerhalb des Versuchslimits nicht frei wird.</p>
+      <p>Erweitern Sie Ihre aktuelle <code>programm.c</code>: Nach jeder erfolgreichen Einfahrt soll der Sicherheitsbereich geprüft werden, bevor das nächste Fahrzeug einfahren darf. Die Einfahrt ist zu diesem Zeitpunkt bereits erfolgt: Belegung und Einfahrtszähler sind erhöht. Eine abgewiesene Einfahrt löst keine Sensorprüfung aus.</p>
+      <ol>
+        <li>Ergänzen Sie <code>&lt;stdbool.h&gt;</code> und die Konfiguration <code>maximum</code> und <code>frei_ab</code>. Erweitern Sie die vorhandene Startwertprüfung: Beide Werte müssen mindestens 1 sein.</li>
+        <li>Setzen Sie die Sensorprüfung als do-while-Schleife innerhalb Ihrer Warteschleife um, direkt nach der erfolgreichen Einfahrt. Initialisieren Sie <code>pruefungen = 0</code> und <code>sensor_frei = false</code> für jedes Fahrzeug neu.</li>
+        <li>Ist der Sensor frei, melden Sie „Schließen erlaubt“ und verarbeiten das nächste Fahrzeug. Bleibt er nach dem Versuchslimit blockiert, melden Sie „Blockiert, Schranke bleibt offen“, geben den aktuellen Zustand aus und beenden die Simulation mit <code>return 1;</code>. Nehmen Sie die bereits erfolgte Einfahrt nicht zurück.</li>
+        <li>Testen Sie sofortigen Erfolg, Erfolg bei der letzten erlaubten Prüfung, erfolgloses Erreichen des Limits und ungültige Startwerte. Prüfen Sie mit mehreren Einfahrten, ob der Versuchszähler jeweils neu beginnt. Testen Sie auch eine volle Belegung: Ohne Einfahrt darf keine Sensorprüfung erfolgen.</li>
+      </ol>
+      <details><summary>Mögliche Lösung</summary><pre data-solution="schranke"><code>#include &lt;stdbool.h&gt;
+#include &lt;stdio.h&gt;
+
+int main(void) {
+    int kapazitaet = 10;
+    int belegt = 7;
+    int wartende = 5;
+    int ereignis = 1;
+    int eingefahren = 0;
+    int maximum = 3;
+    int frei_ab = 2;
+    if (kapazitaet &lt; 0 || belegt &lt; 0 || belegt &gt; kapazitaet
+        || wartende &lt; 0 || maximum &lt; 1 || frei_ab &lt; 1) {
+        printf("Ungueltige Startwerte.\n");
+        return 1;
+    }
+    switch (ereignis) {
+        case 1:
+            while ((wartende &gt; 0) &amp;&amp; (belegt &lt; kapazitaet)) {
+                belegt = belegt + 1;
+                wartende = wartende - 1;
+                eingefahren = eingefahren + 1;
+                printf("Belegt: %d, wartend: %d\n", belegt, wartende);
+                int pruefungen = 0;
+                bool sensor_frei = false;
+                do {
+                    pruefungen = pruefungen + 1;
+                    sensor_frei = (pruefungen &gt;= frei_ab);
+                    printf("Pruefung %d, frei: %d\n", pruefungen, sensor_frei);
+                } while (!sensor_frei &amp;&amp; pruefungen &lt; maximum);
+                if (!sensor_frei) {
+                    printf("Blockiert, Schranke bleibt offen.\n");
+                    printf("Eingefahren: %d, belegt: %d, wartend: %d\n",
+                           eingefahren, belegt, wartende);
+                    return 1;
+                }
+                printf("Schliessen erlaubt.\n");
+            }
+            printf("Eingefahren: %d, belegt: %d, wartend: %d\n",
+                   eingefahren, belegt, wartende);
+            break;
+        case 2:
+            if (belegt &gt; 0) {
+                belegt = belegt - 1;
+                printf("Ausfahrt erlaubt.\n");
+            } else {
+                printf("Parkhaus leer.\n");
+            }
+            break;
+        case 3:
+            printf("Statusabfrage.\n");
+            break;
+        default:
+            printf("Unbekannter Ereigniscode.\n");
+            return 1;
+    }
+    printf("Belegt: %d\n", belegt);
+    return 0;
+}</code></pre></details>
+      <p></p>
+      <p><strong>Code verbessern: Sprechende Namen wählen.</strong> Der Name <code>maximum</code> verrät nicht, was begrenzt wird. Wählen Sie einen aussagekräftigeren Namen, der die maximale Anzahl der Sensorprüfungen beschreibt. Benennen Sie die Variable in Ihrer <code>programm.c</code> konsequent um — in der Deklaration, der Startwertprüfung und der Schleifenbedingung. Übersetzen Sie erneut und wiederholen Sie Ihre Tests: Die Umbenennung soll die Lesbarkeit verbessern, aber das Verhalten nicht verändern.</p>
+      <h3>Mehrere Wege: dieselbe Aufgabe mit while</h3>
+      <p>Die Sensorprüfung lässt sich auch mit einer while-Schleife umsetzen. Entwickeln Sie diese Variante selbst in Ihrer bisherigen <code>programm.c</code>. Sie soll für alle zulässigen Startwerte dieselben Prüfungen und Meldungen wie Ihre do-while-Version erzeugen.</p>
+      <ol>
+        <li>Sichern Sie Ihre funktionierende do-while-Version. Überlegen Sie vor dem Umbau: Welche Werte haben Versuchszähler und Sensorzustand unmittelbar vor der ersten Prüfung? Wie stellen Sie sicher, dass diese Prüfung auch bei while stattfindet?</li>
+        <li>Ersetzen Sie ausschließlich die innere Sensorprüfung durch eine while-Schleife. Formulieren Sie deren Bedingung selbst. Behalten Sie Ihre sprechenden Variablennamen, die Initialisierung pro Fahrzeug, die äußere Warteschleife und die Fehlerbehandlung bei.</li>
+        <li>Vergleichen Sie beide Versionen mit denselben Testfällen: sofort freier Sensor, Freigabe bei der letzten erlaubten Prüfung, blockierter Sensor und mehrere aufeinanderfolgende Einfahrten. Stimmen Anzahl und Reihenfolge der Prüfungen, Belegung und Rückgabestatus überein?</li>
+        <li>Erklären Sie, warum die while-Version hier mindestens einmal prüft. Gilt Ihre Begründung auch für jede beliebige do-while-Schleife?</li>
+      </ol>
+      <details><summary>Hinweis</summary><p>Bei while wird die Bedingung vor dem ersten Durchlauf ausgewertet. Prüfen Sie deshalb nicht nur den Schleifenrumpf, sondern auch, ob Ihre Anfangswerte die Bedingung bereits erfüllen.</p></details>
+      <details><summary>Selbstkontrolle</summary><p>Der Versuchszähler beginnt für jedes Fahrzeug bei 0, der Sensorzustand bei falsch. Das geprüfte Versuchslimit ist mindestens 1. Eine Bedingung, die einen noch blockierten Sensor und noch verfügbare Prüfversuche verlangt, ist deshalb vor dem ersten Durchlauf wahr. Nach jedem Durchlauf werden dieselben Werte wie in der do-while-Version geprüft. Das funktioniert wegen dieses Anfangszustands; bei einer anfangs falschen Bedingung würde while den Rumpf überspringen, do while dagegen nicht. Die Umformung ist deshalb keine allgemeine Regel für beliebige do-while-Schleifen.</p></details>
+    </section>
+
+
+    <section class="content-section" aria-labelledby="endlos">
+      <h2 id="endlos">3. Endlosschleifen: Fehler oder Absicht?</h2>
+      <h3>Wenn die Fortschaltung fehlt</h3>
+      <pre><code>while (wartende &gt; 0) {
+    printf("Es warten %d Fahrzeuge.\n", wartende);
+}</code></pre>
+      <p><strong>Fehlersuche:</strong> Warum endet diese Schleife bei <code>wartende = 2</code> nicht? Was fehlt neben der Änderung von <code>wartende</code>, damit unsere Parkhausregeln erhalten bleiben?</p>
+      <details><summary>Erklärung anzeigen</summary><p>Wartende wird nie verändert. Außerdem müssen freie Plätze geprüft und bei einer Einfahrt die Belegung erhöht werden. Nur einen Zähler zu ändern genügt nicht, wenn dadurch die Kapazität überschritten wird.</p><p></p></details>
+      <p></p>
+      <p>Weitere häufige Fehler: ein versehentliches Semikolon hinter <code>while (...)</code>, ein Zähler in der falschen Richtung oder ein Zurücksetzen im Schleifenrumpf. Auch ODER statt UND kann den Abbruch verhindern. Fragen Sie: <strong>Welche Variable verändert die Bedingung, und wodurch wird sie irgendwann falsch?</strong></p>
+      <h3>Wenn das Parkhaus dauerhaft geöffnet ist</h3>
+      <p>Eine echte Steuerung soll möglicherweise dauerhaft Ereignisse verarbeiten. Dann ist eine Schleife mit absichtlich immer wahrer Bedingung sinnvoll. Diese kleine Simulation verwendet trotzdem ein kontrolliertes Ende nach sechs Ereignissen:</p>
+      <pre data-solution="dauerbetrieb"><code>#include &lt;stdbool.h&gt;
+#include &lt;stdio.h&gt;
+
+int main(void) {
+    int verarbeitet = 0;
+    while (true) {
+        if (verarbeitet &gt;= 6) {
+            break; /* Simuliertes Abschaltsignal. */
+        }
+        printf("Ereignis %d verarbeiten.\n", verarbeitet + 1);
+        verarbeitet = verarbeitet + 1;
+    }
+    printf("Geordnet beendet.\n");
+    return 0;
+}</code></pre>
+      <p>Im echten Betrieb käme das Ende beispielsweise durch ein Abschaltsignal, und die Ereignisverarbeitung würde Ein- und Ausfahrten behandeln. Auf neue Ereignisse würde man warten, statt ohne Pause immer wieder denselben Zustand zu prüfen: Eine leere Dauerschleife kann einen Prozessorkern auslasten. Die dafür nötigen Betriebssystemwerkzeuge sind hier noch nicht Thema.</p>
+      <p>Zum Abbrechen eines versehentlich endlosen Terminalprogramms verwenden Sie <strong>Ctrl+C</strong>. Das ist kein geordnetes Programmende. Testen Sie zunächst mit begrenzten Durchläufen und Zustandsausgaben; entfernen Sie die Abbruchgrenze nicht unüberlegt.</p>
+      <form class="self-check" data-hint="Entscheidend sind die Absicht, die Zustandsänderungen und ein sinnvoller Betriebs- oder Abbruchmechanismus.">
+        <fieldset><legend>Welche Aussagen stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox"> Jede Schleife mit while (true) ist ein Programmierfehler.</label>
+          <label><input type="checkbox" data-correct="true"> Eine Schleife kann trotz Fortschaltung endlos bleiben, wenn der Zähler in die falsche Richtung läuft.</label>
+          <label><input type="checkbox" data-correct="true"> do while führt seinen Rumpf auch bei einer anschließend falschen Bedingung einmal aus.</label>
+          <label><input type="checkbox"> Ctrl+C ist ein Ersatz für die Prüfung gültiger Startwerte.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p><details><summary>Erklärung anzeigen</summary><p>2 und 3 stimmen. Gewollter Dauerbetrieb ist sinnvoll, benötigt aber ein Betriebskonzept. Ein externer Abbruch repariert keine fehlerhafte Logik.</p></details>
+      </form>
+    </section>
+    <nav aria-label="Seitennavigation">
+      <ul class="navlinks">
+        <li><a href="entscheidungen-treffen.html">← Zurück: Entscheidungen treffen</a></li>
+        <li><a href="for-schleifen.html">Weiter: For-Schleifen →</a></li>
+      </ul>
+    </nav>
+    <footer><a href="../uebersicht.html">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>

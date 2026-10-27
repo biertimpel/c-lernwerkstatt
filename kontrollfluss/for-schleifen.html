@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>C-Lernwerkstatt · For-Schleifen</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="selbstkontrollen.css">
+  <script src="selbstkontrollen.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header>
+      <h1>For-Schleifen</h1>
+      <p>Jetzt beobachten wir das Parkhaus über eine festgelegte Anzahl von Betriebsstunden. Dafür bietet sich eine Zählschleife an.</p>
+    </header>
+    <section class="content-section" aria-labelledby="ziele">
+      <h2 id="ziele">Lernziele und Materialien</h2>
+      <ul><li>Initialisierung, Bedingung und Fortschaltung einer for-Schleife erklären.</li><li>Zählabläufe und Bilanzen implementieren und typische Grenzfehler finden.</li><li>for- und while-Schleifen ineinander überführen.</li></ul>
+      <p>Arbeiten Sie an Ihrer bisherigen Parkhausdatei <code>programm.c</code> einschließlich der integrierten Sensorprüfung mit dem vorhandenen Makefile weiter. Sichern Sie den funktionierenden Stand vor dem Umbau. Verwenden Sie nach dem Speichern wie bisher <code>make</code> und <code>./programm</code>. Ein neues Gerüst ist nicht nötig.</p>
+      <nav aria-label="Abschnitte"><ul class="navlinks"><li><a href="#aufbau">Aufbau</a></li><li><a href="#bilanz">Betriebsstunden</a></li><li><a href="#umformen">Auch mit while</a></li><li><a href="#fehler">Fehlerquellen</a></li></ul></nav>
+    </section>
+    <noscript><p>Ohne JavaScript können Sie die Selbstkontrollen mit den aufklappbaren Erklärungen prüfen.</p></noscript>
+
+
+    <section class="content-section" aria-labelledby="aufbau">
+      <h2 id="aufbau">1. Einen Zählablauf übersichtlich schreiben</h2>
+      <p>Bei einer for-Schleife stehen drei Teile im Schleifenkopf: <code>for (Initialisierung; Bedingung; Fortschaltung)</code>. Die Initialisierung passiert einmal. Vor jedem Durchlauf wird die Bedingung geprüft; nach jedem vollständig ausgeführten Rumpf folgt die Fortschaltung.</p>
+      <pre><code>int anzahl_stunden = 4;
+
+for (int aktuelle_stunde = 1;
+     aktuelle_stunde &lt;= anzahl_stunden;
+     aktuelle_stunde++) {
+    printf("Betriebsstunde %d\n", aktuelle_stunde);
+}</code></pre>
+      <p><code>anzahl_stunden</code> legt fest, wie viele Stunden verarbeitet werden. <code>aktuelle_stunde</code> zählt von 1 bis einschließlich 4 und wird direkt ausgegeben. Die unterschiedlichen Namen machen die Rollen sichtbar. <code>aktuelle_stunde++</code> erhöht den Zähler um 1, wie die eigenständige Anweisung <code>aktuelle_stunde = aktuelle_stunde + 1;</code>. Entsprechend verringert <code>aktuelle_stunde--</code> ihn um 1. Die im Schleifenkopf deklarierte Variable ist nur innerhalb dieser Schleife sichtbar. Die Zeilenumbrüche im Schleifenkopf dienen lediglich der Lesbarkeit.</p>
+      <p>Die Reihenfolge ist also: Initialisierung → Prüfung → Rumpf → Fortschaltung → erneute Prüfung. Ist die Bedingung anfangs falsch, gibt es wie bei while keinen Durchlauf.</p>
+      <form class="self-check" data-hint="Schreiben Sie die Werte von aktuelle_stunde auf, für die die Bedingung wahr ist. Die Zählung beginnt bei 1.">
+        <fieldset><legend>Was gilt für das Beispiel?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Bei anzahl_stunden = 4 wird der Rumpf viermal ausgeführt.</label>
+          <label><input type="checkbox"> Bei anzahl_stunden = 0 wird die Betriebsstunde 1 ausgegeben.</label>
+          <label><input type="checkbox" data-correct="true"> Mit aktuelle_stunde &lt; anzahl_stunden statt aktuelle_stunde &lt;= anzahl_stunden gibt es bei anzahl_stunden = 4 nur drei Ausgaben.</label>
+          <label><input type="checkbox"> Die Initialisierung setzt aktuelle_stunde vor jedem Durchlauf erneut auf 1.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p><details><summary>Erklärung anzeigen</summary><p>1 und 3 stimmen. Mit <code>&lt;=</code> werden die Werte 1 bis 4 verarbeitet, mit <code>&lt;</code> nur 1 bis 3. Bei 0 Stunden ist bereits die erste Prüfung <code>1 &lt;= 0</code> falsch. Die Initialisierung findet nur einmal statt.</p></details>
+      </form>
+      <h3>Dieselbe Anzahl von Durchläufen ab 0 zählen</h3>
+      <p>Alternativ kann ein Index bei 0 beginnen. Dann verwenden wir eine strikt kleinere Grenze und rechnen nur für die Anzeige 1 hinzu:</p>
+      <pre><code>int anzahl_stunden = 4;
+
+for (int stunden_index = 0;
+     stunden_index &lt; anzahl_stunden;
+     stunden_index++) {
+    printf("Betriebsstunde %d\n", stunden_index + 1);
+}</code></pre>
+      <p>Der Index durchläuft 0, 1, 2 und 3; angezeigt werden wieder 1 bis 4. Beide Zählweisen sind richtig. Entscheidend ist, dass Anfangswert, Vergleich und Ausgabe zusammenpassen. In der folgenden Parkhausaufgabe verwenden wir die Zählung ab 1.</p>
+      <h3>Schrittweite und Richtung</h3>
+      <p>Nicht jeder Ablauf zählt in Einerschritten aufwärts. Dieses Beispiel prüft absteigend die geraden Platznummern. Die Zählschritte ändern hier keine tatsächliche Belegung:</p>
+      <pre><code>for (int platz = 10; platz &gt;= 2; platz = platz - 2) {
+    printf("Platz %d pruefen.\n", platz);
+}</code></pre>
+      <p><strong>Selbstkontrolle:</strong> Welche Nummern erscheinen? Was ändert <code>platz &gt; 2</code>?</p>
+      <details><summary>Antwort anzeigen</summary><p>10, 8, 6, 4 und 2. Mit <code>&gt; 2</code> entfällt die letzte Ausgabe 2. Richtung, Schrittweite und Grenze müssen zusammenpassen.</p></details>
+    </section>
+    <section class="content-section" aria-labelledby="bilanz">
+      <h2 id="bilanz">2. Programmieraufgabe: Eine Bilanz über mehrere Stunden</h2>
+      <p>Wir erweitern die bisherige Einfahrt: Pro Betriebsstunde kommt genau ein Fahrzeug an. Es fährt ein, wenn Platz vorhanden ist; andernfalls wird es abgewiesen. Anders als bei der Warteschlangenaufgabe warten abgewiesene Fahrzeuge hier nicht weiter. Es gibt in dieser Teilaufgabe keine Ausfahrten.</p>
+      <p>Bauen Sie Ihren bisherigen Stand um: Statt einmal einen Ereigniscode auszuwählen, verarbeitet das Programm nun einen festen Stundenplan. Ersetzen Sie dazu die bisherige switch-Auswahl samt Warteschleife durch eine Stundenschleife. Verwenden Sie Ihre vorhandene Einfahrtsregel und den Einfahrtszähler weiter. Entfernen Sie die hier nicht mehr benötigten Variablen <code>ereignis</code> und <code>wartende</code> sowie deren Prüfungen.</p>
+      <p>Behalten Sie die Sensorprüfung direkt nach jeder erfolgreichen Einfahrt bei, einschließlich der Initialisierung pro Fahrzeug und des Fehlerabbruchs bei blockierter Schranke. Verwenden Sie für die regulären Bilanztests <code>maximum = 3</code> und <code>frei_ab = 2</code>. Testen Sie den Sensorfehler zusätzlich getrennt; nach einem solchen Abbruch wird keine vollständige Stundenbilanz erwartet.</p>
+      <ol><li>Ergänzen Sie <code>anzahl_stunden</code> und erweitern Sie Ihre vorhandene Startwertprüfung. Zulässig sind eine nichtnegative Kapazität, eine passende Belegung und 0 bis 24 Betriebsstunden. Bei ungültigen Werten: Meldung und <code>return 1;</code>.</li><li>Verarbeiten Sie mit for pro Stunde einen Einfahrtsversuch. Zählen Sie erfolgreiche und abgewiesene Einfahrten getrennt. Geben Sie pro Stunde die Entscheidung und die Belegung aus.</li><li>Erweitern Sie Ihre Abschlussbilanz und testen Sie selbst gewählte Fälle: keine Stunden, genau eine Stunde, mehr Ankünfte als freie Plätze und von Beginn an volles Parkhaus.</li></ol>
+      <p>Prüfen Sie zusätzlich zwei Zusammenhänge: <code>eingefahren + abgewiesen == anzahl_stunden</code> und <code>belegt == startbelegung + eingefahren</code>. Das sind stärkere Kontrollen als nur ein plausibel aussehender Endwert.</p>
+      <details><summary>Hinweis</summary><p>Initialisieren Sie die Bilanzzähler einmal vor der Schleife. Die Entscheidung aus „Entscheidungen treffen“ gehört in den Rumpf. Ändern Sie den Stundenzähler nicht zusätzlich im Rumpf.</p></details>
+      <details><summary>Mögliche Lösung</summary><pre data-solution="betriebsstunden"><code>#include &lt;stdbool.h&gt;
+#include &lt;stdio.h&gt;
+
+int main(void) {
+    int kapazitaet = 10;
+    int belegt = 7;
+    int anzahl_stunden = 5;
+    int maximum = 3;
+    int frei_ab = 2;
+    int eingefahren = 0;
+    int abgewiesen = 0;
+    int startbelegung = belegt;
+    if (kapazitaet &lt; 0 || belegt &lt; 0 || belegt &gt; kapazitaet
+        || anzahl_stunden &lt; 0 || anzahl_stunden &gt; 24 || maximum &lt; 1 || frei_ab &lt; 1) {
+        printf("Ungueltige Startwerte.\n");
+        return 1;
+    }
+    for (int aktuelle_stunde = 1;
+         aktuelle_stunde &lt;= anzahl_stunden;
+         aktuelle_stunde++) {
+        if (belegt &lt; kapazitaet) {
+            belegt = belegt + 1;
+            eingefahren = eingefahren + 1;
+            printf("Stunde %d: Einfahrt erlaubt.\n", aktuelle_stunde);
+            int pruefungen = 0;
+            bool sensor_frei = false;
+            do {
+                pruefungen++;
+                sensor_frei = (pruefungen &gt;= frei_ab);
+                printf("Pruefung %d, frei: %d\n", pruefungen, sensor_frei);
+            } while (!sensor_frei &amp;&amp; pruefungen &lt; maximum);
+            if (!sensor_frei) {
+                printf("Blockiert, Schranke bleibt offen.\n");
+                printf("Eingefahren: %d, belegt: %d\n", eingefahren, belegt);
+                return 1;
+            }
+            printf("Schliessen erlaubt.\n");
+        } else {
+            abgewiesen = abgewiesen + 1;
+            printf("Stunde %d: abgewiesen.\n", aktuelle_stunde);
+        }
+        printf("Belegt: %d\n", belegt);
+    }
+    printf("Bilanz: eingefahren %d, abgewiesen %d, belegt %d\n",
+           eingefahren, abgewiesen, belegt);
+    if (eingefahren + abgewiesen != anzahl_stunden
+        || belegt != startbelegung + eingefahren) {
+        printf("Fehler in der Bilanz.\n");
+        return 1;
+    }
+    return 0;
+}</code></pre><p>Mit den Startwerten fahren drei Fahrzeuge ein, zwei werden abgewiesen, am Ende sind zehn Plätze belegt. Bei null Stunden bleiben alle Bilanzzähler 0 und die Startbelegung unverändert.</p></details>
+    </section>
+    <section class="content-section" aria-labelledby="umformen">
+      <h2 id="umformen">3. Mehrere Wege: for als while schreiben</h2>
+      <p>Die Stundenübersicht vom Anfang kann genauso mit while formuliert werden. Initialisierung und Fortschaltung stehen dann an anderen Stellen:</p>
+      <pre><code>int aktuelle_stunde = 1;
+while (aktuelle_stunde &lt;= anzahl_stunden) {
+    printf("Betriebsstunde %d\n", aktuelle_stunde);
+    aktuelle_stunde++;
+}</code></pre>
+      <p>Ändern Sie in Ihrer aktuellen <code>programm.c</code> nur die Stundenschleife von for zu while; Startwertprüfung, Einfahrtsentscheidung und Bilanz bleiben erhalten. Verwenden Sie dieselben Tests und vergleichen Sie Meldungen, Bilanz und Endbelegung. Lassen Sie die Fortschaltung dabei nicht versehentlich weg.</p>
+      <details><summary>Selbstkontrolle</summary><p>Beide Varianten verarbeiten dieselben Stunden, wenn Startwert, Prüfung, Rumpf und Fortschaltung gleich bleiben. Bei for bleibt der Zählablauf kompakt zusammen; while eignet sich oft gut für Abläufe, deren Ende vom Zustand abhängt. Das ist eine Lesbarkeitsentscheidung, keine strikte Grenze der Möglichkeiten.</p></details>
+      <p>Die einfache Umformung gilt hier ohne <code>continue</code>. Dieser zusätzliche Schleifenbefehl überspringt den Rest des Rumpfs: Bei for folgt dann noch die Fortschaltung im Kopf, bei while würde eine Fortschaltung am Rumpfende übersprungen. Wir verwenden <code>continue</code> in diesen Aufgaben nicht.</p>
+    </section>
+    <section class="content-section" aria-labelledby="fehler">
+      <h2 id="fehler">4. Häufige Fehler gezielt untersuchen</h2>
+      <div class="table-wrap"><table><thead><tr><th scope="col">Fehler</th><th scope="col">Mögliche Folge</th><th scope="col">Geeigneter Test</th></tr></thead><tbody>
+        <tr><td><code>&lt;=</code> statt <code>&lt;</code> bei Start 0</td><td>Ein Durchlauf zu viel (Off-by-one).</td><td>0 und 1 Stunde.</td></tr>
+        <tr><td>Semikolon direkt hinter dem Schleifenkopf</td><td>Leere Schleife; der folgende Block wird nicht wiederholt.</td><td>Ausgaben mit erwarteter Durchlaufzahl vergleichen.</td></tr>
+        <tr><td><code>aktuelle_stunde--</code> statt <code>aktuelle_stunde++</code></td><td>Die Abbruchgrenze wird nicht erreicht; später droht Ganzzahlüberlauf.</td><td>Zählerverlauf auf Papier oder mit begrenztem Diagnoseversuch prüfen.</td></tr>
+        <tr><td>Zusätzliche Fortschaltung im Rumpf</td><td>Stunden werden übersprungen.</td><td>Jede Stundenkennung ausgeben.</td></tr>
+        <tr><td>Bilanzzähler im Rumpf auf 0 setzen</td><td>Frühere Ergebnisse gehen verloren.</td><td>Mehrere erfolgreiche Einfahrten hintereinander.</td></tr>
+      </tbody></table></div>
+      <p><strong>Finden Sie den Fehler:</strong> Drei Einfahrtsversuche sollen verarbeitet werden. Wie viele sind es hier?</p>
+      <pre><code>for (int versuch = 0; versuch &lt;= 3; versuch++) {
+    printf("Versuch %d\n", versuch);
+}</code></pre>
+      <details><summary>Auflösung</summary><p>Es sind vier: 0, 1, 2 und 3. Verwenden Sie entweder Start 0 mit <code>versuch &lt; 3</code> oder Start 1 mit <code>versuch &lt;= 3</code>. Beide Wege sind richtig, wenn Zählweise und Ausgabe zusammenpassen.</p></details>
+      <p>Schleifen mit falscher Zählrichtung sollten Sie nicht bis zum Überlauf laufen lassen: Überlauf vorzeichenbehafteter Ganzzahlen ist in C undefiniertes Verhalten. Stoppen Sie einen festhängenden Lauf mit Ctrl+C. Verwenden Sie kleine Werte, lesen Sie Warnungen und verfolgen Sie die erste Abweichung statt nur den Endwert.</p>
+      <p>Auch <code>for (;;)</code> ist möglich: Die ausgelassene Bedingung gilt als wahr. Das ist eine weitere Schreibweise für gewollten Dauerbetrieb, ersetzt aber weder eine Ereignisverarbeitung noch eine geplante Abschaltmöglichkeit.</p>
+    </section>
+    <nav aria-label="Seitennavigation">
+      <ul class="navlinks">
+        <li><a href="while-schleifen.html">← Zurück: While-Schleifen</a></li>
+        <li><a href="../funktionen-debugging/index.html">Weiter: Programmzerlegung, Funktionen und Debugging →</a></li>
+      </ul>
+    </nav>
+    <footer><a href="../uebersicht.html">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>
