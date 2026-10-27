@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Funktionen</title>
+  <style>:root { color-scheme: light; --ink: #17253b; --muted: #546279; --blue: #244bcc; --line: #d9dfe9; --paper: #f5f6f9; }
+* { box-sizing: border-box; }
+body { max-width: 1050px; margin: 36px auto; padding: 0 20px; font: 16px/1.6 system-ui, sans-serif; color: var(--ink); background: var(--paper); }
+a { color: var(--blue); text-underline-offset: .18em; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 3px solid #f2ab32; outline-offset: 4px; }
+.skip { position: absolute; top: -90px; left: 20px; padding: 8px 14px; background: white; }
+.skip:focus { top: 12px; }
+header { margin-bottom: 30px; }
+.eyebrow { color: var(--blue); font-size: 13px; font-weight: 700; letter-spacing: .05em; margin: 0 0 6px; }
+h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.2; margin: 0 0 16px; }
+h2 { font-size: 24px; margin: 0 0 16px; line-height: 1.3; }
+h3 { font-size: 19px; margin: 12px 0; line-height: 1.35; }
+p { margin: 0 0 16px; }
+li { margin-bottom: 8px; }
+ul, ol { padding-left: 24px; }
+.intro { max-width: 780px; color: var(--muted); }
+.facts { display: flex; flex-wrap: wrap; gap: 8px; padding: 0; margin: 22px 0; list-style: none; }
+.facts li { margin: 0; padding: 4px 11px; border: 1px solid var(--line); border-radius: 6px; background: white; font-size: 14px; }
+.notice, .milestones, .pause { padding: 20px 24px; border: 1px solid var(--line); border-radius: 10px; background: white; margin: 24px 0; }
+.notice p:last-child, .pause p:last-child { margin-bottom: 0; }
+.course-week { margin: 34px 0; scroll-margin-top: 20px; }
+.week-date { color: var(--muted); font-size: 15px; font-weight: 400; display: block; margin-top: 4px; }
+.cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.card { padding: 22px 24px; background: white; border: 1px solid var(--line); border-radius: 10px; min-width: 0; }
+.card.single { grid-column: 1 / -1; }
+.card ul { margin-bottom: 0; }
+.card li small { color: var(--muted); display: block; }
+.number { color: var(--blue); font-size: 13px; font-weight: 750; }
+.status { font-size: 12px; padding: 3px 8px; border-radius: 5px; background: #e8ecf6; color: #27395e; display: inline-block; }
+.card .status { margin-top: 16px; }
+.navlinks { display: flex; flex-wrap: wrap; gap: 8px 18px; padding: 0; list-style: none; }
+.content-section { background: white; border: 1px solid var(--line); border-radius: 10px; padding: 22px 24px; margin: 22px 0; }
+.content-section ul { margin-bottom: 0; }
+.content-section p:last-child { margin-bottom: 0; }
+footer { border-top: 1px solid var(--line); padding-top: 18px; margin-top: 38px; color: var(--muted); font-size: 14px; }
+@media (max-width: 680px) { body { margin-top: 24px; padding: 0 16px; } .cards { grid-template-columns: 1fr; } .card, .notice, .milestones, .pause, .content-section { padding: 18px; } }
+
+pre { padding:16px 18px; background:#f1f3f8; border:1px solid var(--line); border-radius:6px; overflow-x:auto; line-height:1.55; }
+code { font-family:ui-monospace,SFMono-Regular,Consolas,monospace; }
+p code,li code,td code { font-size:.95em; }
+pre code { font-size:15px; }
+details { border-top:1px solid var(--line); margin-top:14px; padding-top:12px; }
+summary { cursor:pointer; color:var(--blue); font-weight:650; }
+details[open] summary { margin-bottom:14px; }
+.table-wrap { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; margin:12px 0 18px; }
+th,td { padding:10px 12px; border:1px solid var(--line); text-align:left; vertical-align:top; }
+th { background:#f1f3f8; }
+.steps > li { margin-bottom:12px; }
+.chapter-nav { display:flex; flex-wrap:wrap; gap:8px 20px; padding:0; list-style:none; }
+.chapter-nav [aria-current] { font-weight:700; }
+.memory-note { border-left:3px solid var(--blue); padding-left:16px; }
+@media print { details { break-inside:avoid; } .chapter-nav,.download { display:none; } body { max-width:none; margin:0; } }
+</style>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Themenübersicht</a></p>
+    <header><h1>Funktionen</h1></header>
+    <nav aria-label="Themenbereich"><ul class="chapter-nav"><li><a href="index.html">Übersicht</a></li><li><a href="01-programmzerlegung.html">Programmzerlegung</a></li><li><a href="02-funktionen.html" aria-current="page">Funktionen</a></li><li><a href="03-debugging.html">Debugging</a></li></ul></nav>
+    <section class="content-section" aria-labelledby="ziele"><h2 id="ziele">Lernziele</h2><ul><li>Benötigte Parameter und passende Rückgabetypen bestimmen.</li><li>Deklaration, Definition und Aufruf einer Funktion unterscheiden.</li><li>Mit <code>return</code> einen Wert zurückgeben und den Funktionsaufruf beenden.</li><li>Eine Hilfsfunktion in zwei unterschiedlichen Funktionen verwenden.</li><li>Eine Ausgabefunktion ohne Rückgabewert schreiben.</li><li>Lokale Variablen und Parameter von einer globalen Konstante unterscheiden.</li></ul></section><section class="content-section" aria-labelledby="theorie"><h2 id="theorie">Theorie und Hintergrund</h2><h3>Eine Schnittstelle festlegen</h3><p>Eine Funktionsdeklaration macht den Namen, den Rückgabetyp und die Parameter einer Funktion bekannt. Sie enthält noch keinen Funktionskörper:</p><pre><code class="language-c">int addiere(int links, int rechts);</code></pre><p>Der Rückgabetyp <code>int</code> beschreibt hier das Ergebnis. Die Parameter <code>links</code> und <code>rechts</code> sind die beiden Zahlen, mit denen die Funktion arbeitet. Jeder Parameter hat einen eigenen Datentyp. Diese Angaben bilden die Schnittstelle der Funktion.</p><h3>Eine Funktion definieren und aufrufen</h3><p>Die Definition enthält zusätzlich den Funktionskörper mit den auszuführenden Anweisungen. Beim Aufruf übergeben Sie konkrete Werte, die Argumente:</p><pre><code class="language-c">#include &lt;stdio.h&gt;
+
+int addiere(int links, int rechts) {
+    return links + rechts;
+}
+
+int main(void) {
+    int a = 4;
+    int b = 7;
+    int summe = addiere(a, b);
+    printf("Summe: %d\n", summe);
+    return 0;
+}</code></pre><p>Beim Aufruf <code>addiere(a, b)</code> erhält <code>links</code> den Wert von <code>a</code> und <code>rechts</code> den Wert von <code>b</code>. Die Position entscheidet über die Zuordnung. Das Ergebnis <code>11</code> wird in <code>summe</code> gespeichert. Erst <code>printf</code> macht es auf dem Bildschirm sichtbar.</p><h3>Was bedeutet return?</h3><p><code>return</code> ist eine Anweisung, die den aktuellen Funktionsaufruf beendet und zum aufrufenden Programmteil zurückführt. Hinter <code>return</code> kann der Wert stehen, der an den Aufrufer zurückgegeben werden soll.</p><p>In <code>addiere</code> wird zuerst <code>links + rechts</code> berechnet. <code>return</code> gibt das Ergebnis an <code>main</code> zurück. Dort wird es in <code>summe</code> gespeichert und anschließend die nächste Anweisung ausgeführt. Anweisungen, die innerhalb desselben Aufrufs nach einem ausgeführten <code>return</code> stehen, werden nicht mehr ausgeführt.</p><p>Der zurückgegebene Wert muss zum Rückgabetyp passen. Eine <code>int</code>-Funktion gibt hier eine ganze Zahl zurück, eine <code>double</code>-Funktion kann ein Ergebnis mit Nachkommastellen liefern.</p><h3>Lokale Variablen und übergebene Werte</h3><p>Im Beispiel gehören <code>a</code>, <code>b</code> und <code>summe</code> zu <code>main</code>. Die Parameter <code>links</code> und <code>rechts</code> gehören zu <code>addiere</code>. Sie erhalten Kopien der übergebenen Werte. Würde <code>addiere</code> den Parameter <code>links</code> verändern, bliebe die Variable <code>a</code> in <code>main</code> unverändert.</p><p>Der Name einer lokalen Variable kann nur in ihrem zugehörigen Block verwendet werden. Die hier verwendeten lokalen Variablen und Parameter werden für den jeweiligen Aufruf angelegt. Nach dem Ende dieses Aufrufs stehen sie nicht als gespeicherte Variablen für den nächsten Aufruf zur Verfügung. Ein benötigtes Ergebnis geben Sie deshalb mit <code>return</code> zurück.</p><h3>Eine Funktion ohne Rückgabewert</h3><p>Der Rückgabetyp <code>void</code> bedeutet, dass eine Funktion keinen Wert an ihren Aufrufer zurückgibt. Ihre Ausgabefunktion kann beispielsweise Text anzeigen, ohne ein berechnetes Ergebnis zurückzuliefern. Sie endet am Ende des Funktionskörpers oder vorzeitig mit <code>return;</code>.</p><p>Benötigt eine Funktion keine Parameter, können Sie bei ihrer Definition die Klammern leer lassen:</p><pre><code class="language-c">int meine_funktion() {
+    return 4;
+}</code></pre><p>Der Aufruf lautet <code>meine_funktion()</code>. Auch eine Schreibweise mit <code>void</code> in der Parameterliste ist möglich: <code>int meine_funktion(void)</code>. Dieses <code>void</code> bedeutet „keine Parameter“. Es ändert nichts am Rückgabetyp <code>int</code>.</p><p><code>main</code> ist der Einstieg in unser Programm. Für diese besondere Funktion behalten die bereitgestellten Programme die bekannte Schreibweise <code>int main(void)</code> bei.</p><h3>Eine globale Größe verwenden</h3><p>Eine Variable außerhalb aller Funktionen wird als globale Variable bezeichnet. Ihr Name kann ab der Deklaration in den nachfolgenden Funktionen derselben Datei verwendet werden. Ihr Speicher besteht während der gesamten Programmausführung. Sie muss diesen Funktionen deshalb nicht als Parameter übergeben werden.</p><pre><code class="language-c">const double lieferkosten = 2.50;</code></pre><p>Die Lieferkosten bleiben für alle Bestellungen gleich. Mit <code>const</code> legen wir fest, dass dieser Wert nach dem Anlegen nicht mehr durch eine Zuweisung verändert werden darf. Wir verwenden ihn damit als globale Konstante. Schreiben Sie die Deklaration unter <code>#include</code> und vor die erste Funktion.</p><p>Anzahl und Einzelpreis gehören dagegen zur jeweiligen Bestellung. Sie bleiben lokale Variablen in <code>main</code> und werden als Argumente übergeben. Auch der berechnete Warenwert bleibt ein lokaler Wert der jeweiligen Funktion.</p><h3>Reihenfolge in der C-Datei</h3><p>Beim Übersetzen verarbeitet der Compiler die Deklarationen und Definitionen im Quelltext von oben nach unten. An einer Aufrufstelle muss er den Namen und die Schnittstelle der aufgerufenen Funktion bereits kennen. Steht <code>main</code> vor einer selbst geschriebenen Funktion und fehlt auch eine vorherige Deklaration, ist diese Funktion beim Aufruf noch nicht bekannt.</p><p>Wir schreiben deshalb zuerst die gemeinsame Hilfsfunktion, danach die Funktionen, die sie aufrufen, anschließend die Ausgabefunktion und zuletzt <code>main</code>. Eine Definition macht die Funktion zugleich bekannt. Zusätzliche einzelne Deklarationen am Dateianfang sind bei dieser Reihenfolge nicht nötig.</p><p>Die Reihenfolge im Quelltext ist nicht die Reihenfolge des Programmstarts. Die Ausführung Ihres Programmcodes beginnt in <code>main</code>. Bei einem Funktionsaufruf werden deren Anweisungen ausgeführt, danach geht es beim Aufrufer weiter. Das sehen Sie auch im Beispiel mit <code>addiere</code>.</p></section><section class="content-section" aria-labelledby="materialien"><h2 id="materialien">Materialien</h2><p><strong>Aufgabe a:</strong> Verwenden Sie Ihren Funktionsplan und notieren Sie die Deklarationen auf Papier oder in einer Textdatei.</p><p><strong>Aufgaben b und c:</strong> Das folgende Archiv enthält das Gerüst <code>funktionen-start/programm.c</code> und ein fertiges Makefile für die Umsetzung und Ihre Tests.</p><p class="download"><a href="materialien/funktionen-start.zip" download>Gerüst für Aufgaben b und c samt Makefile herunterladen</a></p><p>Entpacken Sie das Archiv und öffnen Sie <code>funktionen-start/programm.c</code> in Ihrer IDE. Übersetzen und starten Sie die Datei dort wie gewohnt. Alternativ können Sie im Aufgabenordner das fertige Makefile verwenden:</p><pre><code class="language-shell">make
+./programm</code></pre><p>Speichern Sie Änderungen am Quelltext und übersetzen Sie danach erneut. Den Aufbau eigener Makefiles behandeln wir später.</p><p><strong>Zusatzaufgabe:</strong> Erweitern Sie Ihre eigene funktionierende Lösung aus Aufgabe c. Dafür benötigen Sie keinen weiteren Download.</p></section><section class="content-section" aria-labelledby="aufgaben"><h2 id="aufgaben">Aufgaben</h2><p>Setzen Sie Ihren Funktionsplan für den Bestellrechner um. Es gelten weiterhin die Bestelldaten und Preisregeln aus der Programmzerlegung.</p><div class="table-wrap"><table><thead><tr><th scope="col">Funktion</th><th scope="col">Aufgabe</th></tr></thead><tbody><tr><td><code>berechne_warenwert</code></td><td>Anzahl × Einzelpreis berechnen.</td></tr><tr><td><code>berechne_lieferpreis</code></td><td>Den Warenwert berechnen lassen und die festen Lieferkosten addieren.</td></tr><tr><td><code>berechne_abholpreis</code></td><td>Den Warenwert berechnen lassen und den Abholrabatt berücksichtigen.</td></tr><tr><td><code>gib_preise_aus</code></td><td>Die beiden fertigen Preise anzeigen.</td></tr></tbody></table></div><h3>a) Parameter und Rückgabetypen festlegen</h3><p>Überlegen Sie für jede Funktion, welche Werte sie benötigt und welchen Datentyp diese haben. Welches Ergebnis liefert sie zurück und welcher Rückgabetyp passt dazu? Welche Funktion benötigt keinen Rückgabewert?</p><p>Notieren Sie passende Deklarationen. Versuchen Sie dies zunächst selbst. Falls Sie unsicher sind, öffnen Sie die zugehörige Deklarationshilfe.</p><details><summary>Deklarationshilfe: berechne_warenwert</summary><pre><code class="language-c">double berechne_warenwert(int anzahl, double einzelpreis);</code></pre><p>Die Anzahl ist eine ganze Zahl. Der Preis pro Artikel und der berechnete Warenwert können Nachkommastellen haben.</p></details><details><summary>Deklarationshilfe: berechne_lieferpreis</summary><pre><code class="language-c">double berechne_lieferpreis(int anzahl, double einzelpreis);</code></pre><p>Die Funktion erhält die Bestelldaten. Die festen Lieferkosten stehen über die globale Konstante zur Verfügung.</p></details><details><summary>Deklarationshilfe: berechne_abholpreis</summary><pre><code class="language-c">double berechne_abholpreis(int anzahl, double einzelpreis);</code></pre><p>Die Funktion erhält die Bestelldaten und liefert den Preis nach Abzug des Rabatts.</p></details><details><summary>Deklarationshilfe: gib_preise_aus</summary><pre><code class="language-c">void gib_preise_aus(double lieferpreis, double abholpreis);</code></pre><p>Die fertigen Preise sind Parameter. Die Funktion zeigt sie an und liefert keinen Wert zurück.</p></details><h3>b) Funktionen implementieren</h3><ol class="steps"><li>Legen Sie die festen Lieferkosten als globale Konstante an.</li><li>Implementieren Sie die gemeinsame Warenwertberechnung.</li><li>Implementieren Sie Lieferpreis- und Abholpreisberechnung. Beide sollen dieselbe Warenwertfunktion aufrufen und deren Rückgabewert verwenden.</li><li>Implementieren Sie die Ausgabefunktion. Überlegen Sie als Gedächtnisstütze, mit wie vielen Nachkommastellen Preise in Euro üblicherweise angegeben werden.</li><li>Legen Sie Anzahl und Einzelpreis als lokale Variablen in <code>main</code> an. Rufen Sie beide Preisberechnungen auf, speichern Sie die Ergebnisse und übergeben Sie diese an die Ausgabefunktion.</li></ol><p>Schreiben Sie die Funktionsdefinitionen oberhalb von <code>main</code>. Die Warenwertfunktion steht vor den beiden Preisfunktionen.</p><h3>c) Ergebnisse überprüfen</h3><p>Testen Sie die folgenden Bestellungen und vergleichen Sie die Ergebnisse. Überprüfen Sie zudem negative Werte für einen oder beide Parameter. Was fällt Ihnen auf? Speichern Sie Ihre funktionierende Lösung für die folgende Debugging-Aufgabe.</p><div class="table-wrap"><table><thead><tr><th scope="col">Anzahl</th><th scope="col">Einzelpreis in Euro</th><th scope="col">Lieferpreis in Euro</th><th scope="col">Abholpreis in Euro</th></tr></thead><tbody><tr><td>3</td><td>9.50</td><td>31.00</td><td>25.65</td></tr><tr><td>1</td><td>8.00</td><td>10.50</td><td>7.20</td></tr><tr><td>2</td><td>10.00</td><td>22.50</td><td>18.00</td></tr></tbody></table></div><h3>Zusatzaufgabe: Eingaben mit scanf</h3><p>Ersetzen Sie die festen Anfangswerte in <code>main</code> durch Tastatureingaben. Fragen Sie zunächst nach der Anzahl der Artikel und danach nach dem Einzelpreis pro Artikel. Anschließend sollen dieselben Funktionen beide Preise berechnen und ausgeben.</p><div><p>So können Sie einen Preis einlesen:</p><pre><code class="language-c">double einzelpreis = 0.0;
+printf("Einzelpreis pro Artikel in Euro: ");
+scanf("%lf", &amp;einzelpreis);</code></pre><p><code>printf</code> zeigt wie bisher nur den Text in Anführungszeichen an. <code>scanf</code> liest anschließend Ihre Eingabe. Der Formattext <code>"%lf"</code> gibt an, dass eine Zahl für eine <code>double</code>-Variable eingelesen werden soll. Nach dem Komma steht mit <code>&amp;einzelpreis</code>, wo diese Zahl gespeichert werden soll. Geben Sie zum Beispiel <code>9.50</code> ein und bestätigen Sie mit der Eingabetaste.</p><p>Für die Anzahl benötigen Sie eine <code>int</code>-Variable. Verwenden Sie dafür entsprechend <code>scanf("%d", &amp;anzahl);</code>. Ergänzen Sie davor eine passende Eingabeaufforderung mit <code>printf</code>.</p></div><p>Verwenden Sie hier zunächst gültige Zahleneingaben wie <code>3</code> und <code>9.50</code>. Wie Sie prüfen, ob das Einlesen funktioniert hat und ob die Werte sinnvoll sind, ergänzen Sie auf der nächsten Seite.</p></section><section class="content-section" aria-labelledby="hinweise"><h2 id="hinweise">Hinweise</h2><details><summary>Zu b: Einen Rückgabewert weiterverwenden</summary><p>Speichern Sie das Ergebnis eines Funktionsaufrufs zunächst in einer lokalen Variable. Mit diesem Wert können Sie anschließend weiterrechnen:</p><pre><code class="language-c">double warenwert = berechne_warenwert(anzahl, einzelpreis);</code></pre><p><code>warenwert</code> enthält hier bereits den Gesamtwert aller Artikel. Multiplizieren Sie diesen Wert nicht erneut mit der Anzahl.</p></details><details><summary>Zu b: Eine feste Vorgabe gemeinsam zugänglich machen</summary><p>Deklarieren Sie <code>const double lieferkosten = 2.50;</code> außerhalb aller Funktionen. In der Lieferpreisfunktion können Sie dann den Namen <code>lieferkosten</code> verwenden. Anzahl und Einzelpreis übergeben Sie weiterhin als Parameter.</p></details><details><summary>Zur Zusatzaufgabe: Eine ganze Zahl einlesen</summary><p><code>scanf</code> liest eine Eingabe und speichert sie in einer Variable. Legen Sie diese zunächst an:</p><pre><code class="language-c">int anzahl = 0;
+printf("Anzahl der Artikel: ");
+scanf("%d", &amp;anzahl);</code></pre><p><code>%d</code> steht hier für eine ganze Zahl. Das <code>&amp;</code> übergibt die Speicheradresse der Variable, damit <code>scanf</code> den gelesenen Wert dort ablegen kann. Speicheradressen und Pointer behandeln wir später ausführlich.</p></details><details><summary>Zur Zusatzaufgabe: Einen double-Wert einlesen</summary><p>Für eine Variable vom Typ <code>double</code> verwendet <code>scanf</code> den Platzhalter <code>%lf</code>:</p><pre><code class="language-c">double einzelpreis = 0.0;
+printf("Einzelpreis pro Artikel in Euro: ");
+scanf("%lf", &amp;einzelpreis);</code></pre><p>Beachten Sie das <code>&amp;</code> und verwenden Sie beim Eingeben einen Punkt als Dezimalzeichen.</p></details></section><section class="content-section" aria-labelledby="kontrolle"><h2 id="kontrolle">Selbstkontrolle</h2><details><summary>Mögliche Lösung: Funktionen und globale Lieferkosten</summary><p>Vergleichen Sie nach einem eigenen Versuch. Andere sinnvolle Lösungen sind möglich.</p><pre><code class="language-c">#include &lt;stdio.h&gt;
+
+const double lieferkosten = 2.50;
+
+double berechne_warenwert(int anzahl, double einzelpreis) {
+    return anzahl * einzelpreis;
+}
+
+double berechne_lieferpreis(int anzahl, double einzelpreis) {
+    double warenwert = berechne_warenwert(anzahl, einzelpreis);
+    return warenwert + lieferkosten;
+}
+
+double berechne_abholpreis(int anzahl, double einzelpreis) {
+    double warenwert = berechne_warenwert(anzahl, einzelpreis);
+    return warenwert * 0.90;
+}
+
+void gib_preise_aus(double lieferpreis, double abholpreis) {
+    printf("Lieferpreis: %.2f Euro\n", lieferpreis);
+    printf("Abholpreis: %.2f Euro\n", abholpreis);
+}
+
+int main(void) {
+    int anzahl = 3;
+    double einzelpreis = 9.50;
+
+    double lieferpreis = berechne_lieferpreis(anzahl, einzelpreis);
+    double abholpreis = berechne_abholpreis(anzahl, einzelpreis);
+    gib_preise_aus(lieferpreis, abholpreis);
+    return 0;
+}</code></pre><p><a href="materialien/loesungen/funktionen/programm.c" download="programm.c">C-Datei herunterladen</a> · <a href="materialien/loesungen/funktionen/Makefile" download="Makefile">Makefile herunterladen</a></p></details><details><summary>Mögliche Lösung zur Zusatzaufgabe: Tastatureingaben</summary><p>Vergleichen Sie nach einem eigenen Versuch. Andere sinnvolle Lösungen sind möglich.</p><pre><code class="language-c">#include &lt;stdio.h&gt;
+
+const double lieferkosten = 2.50;
+
+double berechne_warenwert(int anzahl, double einzelpreis) {
+    return anzahl * einzelpreis;
+}
+
+double berechne_lieferpreis(int anzahl, double einzelpreis) {
+    double warenwert = berechne_warenwert(anzahl, einzelpreis);
+    return warenwert + lieferkosten;
+}
+
+double berechne_abholpreis(int anzahl, double einzelpreis) {
+    double warenwert = berechne_warenwert(anzahl, einzelpreis);
+    return warenwert * 0.90;
+}
+
+void gib_preise_aus(double lieferpreis, double abholpreis) {
+    printf("Lieferpreis: %.2f Euro\n", lieferpreis);
+    printf("Abholpreis: %.2f Euro\n", abholpreis);
+}
+
+int main(void) {
+    int anzahl = 0;
+    double einzelpreis = 0.0;
+
+    printf("Anzahl der Artikel: ");
+    scanf("%d", &amp;anzahl);
+    printf("Einzelpreis pro Artikel in Euro (z. B. 9.50): ");
+    scanf("%lf", &amp;einzelpreis);
+
+    double lieferpreis = berechne_lieferpreis(anzahl, einzelpreis);
+    double abholpreis = berechne_abholpreis(anzahl, einzelpreis);
+    gib_preise_aus(lieferpreis, abholpreis);
+    return 0;
+}</code></pre><p><a href="materialien/loesungen/scanf/programm.c" download="programm.c">C-Datei herunterladen</a> · <a href="materialien/loesungen/scanf/Makefile" download="Makefile">Makefile herunterladen</a></p></details><p>Können Sie an Ihrem Programm Parameter, Argumente und Rückgabewerte unterscheiden? Welche Werte sind lokal und welche Größe ist global verfügbar? Wird die gemeinsame Warenwertfunktion von beiden Preisfunktionen aufgerufen?</p></section>
+  <p class="next-task">Zur nächsten Aufgabe: <a href="03-debugging.html">Debugging →</a></p></main>
+</body>
+</html>
