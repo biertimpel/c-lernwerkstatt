@@ -1,0 +1,508 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Tresorraub · Planungsunterlagen</title><style>body{max-width:1120px;margin:32px auto;padding:0 20px;font:16px/1.6 system-ui,sans-serif;background:#f5f6f9;color:#17253b}a{color:#244bcc}nav{line-height:2}article{background:white;border:1px solid #d9dfe9;border-radius:10px;padding:24px;margin:26px 0;overflow-x:auto;scroll-margin-top:20px}h1{font-size:27px;line-height:1.2}h2{font-size:21px;margin-top:28px}h3{font-size:18px}table{border-collapse:collapse;width:100%;font-size:14px}th,td{border:1px solid #d9dfe9;padding:10px;vertical-align:top;text-align:left}th{background:#edf1fc}code{font:0.92em ui-monospace,monospace}pre{background:#f1f3f8;padding:16px;overflow:auto}li{margin:6px 0}@media(max-width:650px){body{padding:0 10px}article{padding:16px}table{min-width:650px}}</style></head><body><p><a href="START_HIER.html">← Zur spielbaren Vorschau</a></p><h1>Tresorraub: Zielbild für Block 2</h1><p>Vorschlag für Jonathan und Larissa · 28. Oktober 2026</p><nav><a href="#readme">Startanleitung</a> · <a href="#spielregeln">Spielregeln</a> · <a href="#kapitelplan">Kapitelplan</a> · <a href="#technik">Technik</a> · <a href="#abstimmung">Abstimmung</a> · <a href="#pruefung">Prüfung</a></nav><article id="readme"><h1>Tresorraub – Zielbild für Block 2</h1>
+<p>Planungsprototyp vom 28. Oktober 2026 für Jonathan und Larissa.</p>
+<h2>Sofort ausprobieren</h2>
+<ol>
+<li>Die gesamte ZIP entpacken.</li>
+<li><code>START_HIER.html</code> per Doppelklick im Browser öffnen.</li>
+<li>Mit den Schaltflächen, W/A/S/D oder den Pfeiltasten spielen.</li>
+</ol>
+<p>Die Vorschau funktioniert offline und benötigt keine Installation. Es gibt keine externen Bilder, Schriftarten, Bibliotheken oder Netzwerkaufrufe. Rot und Grün sind nicht die einzigen Unterscheidungsmerkmale: Überwachte Felder sind rötlich hinterlegt und schraffiert. Die Browser-Vorschau verwendet eigene Piktogramme für Spielfigur, Wächter, Gegenstände, Tür, Tresor und Ausgang. Die Spielfigur lächelt und wird bei Entdeckung traurig. Die C-Terminalfassung verwendet weiterhin die in ihrer Hilfe erklärten Textzeichen.</p>
+<h2>Die C-Referenz starten</h2>
+<p>Im Unterordner <code>spiel/</code> befinden sich sieben C-Dateien, sechs Header, ein Makefile und Tests. Voraussetzung ist ein C-Compiler, zum Beispiel GCC oder Clang. Es werden ausschließlich Funktionen der C-Standardbibliothek verwendet.</p>
+<p><strong>macOS / Linux:</strong> Im Terminal in den Ordner <code>spiel</code> wechseln und <code>sh starten.sh</code> ausführen. Das Skript übersetzt die Quellen und startet das Spiel. Alternativ <code>make</code> und anschließend <code>./tresorraub</code>.</p>
+<p><strong>Windows mit GCC im Suchpfad:</strong> <code>spiel/starten_windows.bat</code> doppelklicken. Das Skript übersetzt und startet das Programm. Bei einer IDE können alle C-Dateien aus <code>src/</code> in ein Konsolenprojekt aufgenommen werden. <code>include/</code> wird als Header-Suchpfad hinzugefügt. Nur <code>src/main.c</code> enthält den Programmeinstieg. <code>tests/test_spiel.c</code> gehört ausschließlich zum Testprogramm.</p>
+<p>Die C-Fassung liest jeweils einen Buchstaben mit anschließendem Enter:</p>
+<table>
+<thead>
+<tr>
+<th>Befehl</th>
+<th>Bedeutung</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>W / A / S / D</td>
+<td>Oben / links / unten / rechts</td>
+</tr>
+<tr>
+<td>Z</td>
+<td>Einen Zug warten</td>
+</tr>
+<tr>
+<td>I</td>
+<td>Inventar anzeigen</td>
+</tr>
+<tr>
+<td>P</td>
+<td>Spielstand speichern</td>
+</tr>
+<tr>
+<td>L</td>
+<td>Spielstand laden</td>
+</tr>
+<tr>
+<td>H</td>
+<td>Hilfe</td>
+</tr>
+<tr>
+<td>Q</td>
+<td>Beenden</td>
+</tr>
+</tbody></table>
+<p>Standarddatei: <code>spielstand.sav</code> im aktuellen Arbeitsverzeichnis. Das erneute Speichern überschreibt diese Datei. Einen anderen Pfad wählt <code>./tresorraub --save-file datei.sav</code>. <code>./tresorraub --load datei.sav</code> startet aus einem gespeicherten Spiel. <code>--debug</code> aktiviert zusätzliche Diagnoseausgaben auf stderr.</p>
+<p>Die Browser-Vorschau lädt und speichert dasselbe Textformat. Einen heruntergeladenen Spielstand kann man beispielsweise in den C-Spielordner kopieren und mit <code>./tresorraub --load spielstand.sav</code> öffnen. Der Browser lädt Dateien über den Dateiauswahldialog und bietet Speichern als Download an.</p>
+<h2>Was enthalten ist</h2>
+<ul>
+<li><code>START_HIER.html</code> und <code>vorschau/spiel.js</code>: sofort spielbare Browser-Vorschau.</li>
+<li><code>SPIELREGELN.md</code>: verbindliche Regeln dieses Prototyps und eine nachvollziehbare Gewinnroute.</li>
+<li><code>KAPITELPLAN.md</code>: grobe Zuordnung aller Überkapitel, einschließlich der sechs Unterkapitel „Vom Problem zum Programm“.</li>
+<li><code>TECHNIK.md</code>: Architektur, objektorientierte Umsetzung in C und Spielstandformat.</li>
+<li><code>ABSTIMMUNG.md</code>: Erklärung der Unterrichtsidee, Gestaltungsspielraum und offene Entscheidungen.</li>
+<li><code>PRUEFUNG.md</code>: tatsächlich ausgeführte Prüfungen und ihre Grenzen.</li>
+<li><code>spiel/</code>: vollständige C-Referenz samt Makefile und Tests.</li>
+</ul>
+<p>Alle Planungsunterlagen sind zusätzlich lesefreundlich in <code>LEITFADEN.html</code> zusammengefasst. Diese Datei lässt sich ebenfalls direkt im Browser öffnen.</p>
+<h2>Einordnung</h2>
+<p>Dieses Paket ist ein unverbindliches Zielbild zur gemeinsamen Besprechung. Es enthält keine fertigen Kapitelaufgaben und keine studentische Projektvorgabe. Die C-Referenz zeigt einen möglichen Endstand nach Block 2. Die Lernenden würden die Bausteine schrittweise entwickeln und benötigen zu Beginn nicht die gesamte Architektur.</p>
+<p>Der bereits besprochene <strong>Lernstandscheck I</strong> mit dem dreistelligen Codeschloss bleibt eine eigenständige Aufgabe aus Block 1. <strong>Lernstandscheck II</strong> würde später diese Spielgrundversion erweitern. Die beiden Vorhaben werden nicht vermischt.</p>
+<p>Es wurden keine Änderungen an der Kurswebsite oder an GitHub-Branches vorgenommen.</p>
+</article>
+<article id="spielregeln"><h1>Spielregeln der Grundversion</h1>
+<h2>Auftrag</h2>
+<p>Sie betreten ein kleines Museum. Holen Sie den Museumsschlüssel, öffnen Sie die Verbindungstür, sichern Sie die Tresorbeute und kehren Sie zum Ausgang zurück. Die Bonusmünze ist ein freiwilliges Zusatzziel.</p>
+<p>Die Browser-Vorschau zeigt die nachfolgenden Spielobjekte als Piktogramme. Überwachte Felder sind dort ohne Ausrufezeichen farbig hinterlegt und schraffiert. Die lächelnde Spielfigur wird bei Entdeckung traurig, Wächter schauen böse. Die Zeichen in der Tabelle gelten für die C-Terminalfassung.</p>
+<p>Die Karte hat 15 Spalten und 9 Zeilen. Die Koordinaten beginnen links oben bei <code>(0, 0)</code>. Die Spielfigur startet bei <code>(3, 7)</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Zeichen</th>
+<th>Bedeutung</th>
+<th>Verhalten beim Betreten</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>@</td>
+<td>Spielfigur</td>
+<td>Aktuelle Position</td>
+</tr>
+<tr>
+<td>#</td>
+<td>Wand</td>
+<td>Bewegung blockiert</td>
+</tr>
+<tr>
+<td>. / leeres Feld</td>
+<td>Boden</td>
+<td>Frei betretbar</td>
+</tr>
+<tr>
+<td>k</td>
+<td>Schlüssel bei (3, 5)</td>
+<td>Landet im Inventar und verschwindet von der Karte</td>
+</tr>
+<tr>
+<td>D</td>
+<td>Tür bei (6, 3)</td>
+<td>Benötigt und verbraucht den Schlüssel</td>
+</tr>
+<tr>
+<td>/</td>
+<td>Geöffnete Tür</td>
+<td>Bleibt frei passierbar</td>
+</tr>
+<tr>
+<td>T</td>
+<td>Tresor bei (13, 1)</td>
+<td>Beute landet im Inventar</td>
+</tr>
+<tr>
+<td>t</td>
+<td>Bereits geleerter Tresor</td>
+<td>Kein erneuter Gegenstand</td>
+</tr>
+<tr>
+<td>E</td>
+<td>Ausgang bei (1, 1)</td>
+<td>Mit Beute gewonnen, ohne Beute noch kein Sieg</td>
+</tr>
+<tr>
+<td>c</td>
+<td>Bonusmünze bei (11, 7)</td>
+<td>Landet im Inventar</td>
+</tr>
+<tr>
+<td>W</td>
+<td>Wächter</td>
+<td>Unbeweglich</td>
+</tr>
+<tr>
+<td>!</td>
+<td>Überwachtes Feld</td>
+<td>Betreten führt zur Entdeckung</td>
+</tr>
+</tbody></table>
+<p>Der linke Wächter steht bei <code>(1, 5)</code> und überwacht Entfernung 1. Der rechte steht bei <code>(9, 5)</code> und überwacht Entfernung 2.</p>
+<h2>Überwachung</h2>
+<p>Die Entfernung ist die Anzahl horizontaler plus vertikaler Schritte:</p>
+<p><code>|spieler.x - waechter.x| + |spieler.y - waechter.y|</code></p>
+<p>Ein Feld ist überwacht, wenn diese Entfernung höchstens dem Radius des Wächters entspricht. Der Wächterstandort selbst ist ebenfalls überwacht. Die Grenzlinie gehört zum Bereich.</p>
+<p>Das ist eine bewusst einfache Erkennungszone. Es gibt keine Blickrichtung, keine Patrouille und keine Sichtlinienberechnung. Wände schirmen diesen Bereich in der Grundversion nicht ab. Der gesamte Bereich ist vorab sichtbar. Das Spiel ist ein Wegfindungsrätsel und reagiert ausschließlich auf Spielaktionen.</p>
+<h2>Züge und Spielende</h2>
+<ul>
+<li>Erfolgreiche Bewegung um ein Feld: ein Zug.</li>
+<li>Warten: ein Zug.</li>
+<li>Wand, verschlossene Tür ohne Schlüssel oder unbekannter Befehl: kein Zug.</li>
+<li>Inventar, Hilfe, Speichern und Laden: kein zusätzlicher Zug.</li>
+<li>Nach dem Laden gilt wieder der Zugzähler aus dem Spielstand.</li>
+<li>Nach dem 60. Zug ohne Sieg endet das Spiel durch Zeitablauf.</li>
+<li>Ein Sieg im 60. Zug ist gültig.</li>
+<li>Entdeckung hat Vorrang vor Sieg und Zeitablauf. In dieser Karte liegt der Ausgang außerhalb aller Überwachungsbereiche.</li>
+</ul>
+<p>Schlüsselaufnahme, Türöffnung, Tresoröffnung und Münzaufnahme erfolgen automatisch mit dem Betreten des Feldes. Es gibt keine zusätzliche Interaktionstaste. Schlüssel und Beute sind verschiedene Gegenstände. Beim Öffnen der Tür wird der Schlüssel aus der dynamischen Inventarliste entfernt und freigegeben.</p>
+<p>Ein gewonnenes, verlorenes oder zeitlich abgelaufenes Spiel verarbeitet keine weiteren Bewegungen. Speichern ist nur während eines laufenden Spiels möglich.</p>
+<h2>Gewinnroute zum Nachvollziehen</h2>
+<p>Diese Route ist für die Lehrenden und zum Testen gedacht. Für einen ersten Spielversuch muss sie nicht gelesen werden.</p>
+<ul>
+<li>Hinweg vom Start zum Tresor: <code>wwddwwddwwdddddd</code> (16 Züge).</li>
+<li>Rückweg vom Tresor zum Ausgang: <code>aaaaaassaawwaaaa</code> (16 Züge).</li>
+<li>Zusammen: <strong>32 Züge</strong>.</li>
+<li>Für die Bonusmünze nach dem Tresor zusätzlich <code>ssssssaaddwwwwww</code>, dann den Rückweg nehmen. Zusammen: <strong>48 Züge</strong>.</li>
+</ul>
+<p>In der C-Fassung wird jeder Buchstabe einzeln mit Enter bestätigt. In der Browser-Vorschau genügt der Tastendruck.</p>
+<h2>Bewusste Umfangsgrenzen</h2>
+<p>Eine Karte, zwei feste Wächter, eine Tür, ein Schlüssel, ein Tresor, ein Ausgang und eine optionale Münze. Kartengenerator, Echtzeitgrafik, Gegner-KI und mehrere Level gehören nicht zur Grundversion. Die Kartenausgabe ist austauschbar: Der Spielzustand und die Regeln hängen nicht von einer bestimmten Anzeige ab.</p>
+</article>
+<article id="kapitelplan"><h1>Block 2: Zielbild und Kapitelzuordnung</h1>
+<h2>Grundidee</h2>
+<p>Die Lehrenden planen zuerst die kleine vollständige Spielgrundversion. Die Studierenden bearbeiten zunächst eigenständig verständliche Aufgaben. Dabei entstehen Bausteine mit passenden Datentypen, Funktionssignaturen und geprüften Ergebnissen. Beim Thema Header und Quelldateien werden diese Bausteine verbunden. Hier entsteht die spielbare Gesamtversion.</p>
+<p>Die nachfolgenden Vorschläge sind <strong>Arbeitsgegenstände und Zielzustände</strong>, keine fertigen Aufgabenstellungen. Reihenfolge, Umfang, Hilfen und konkrete Szenarien werden von Jonathan und Larissa gemeinsam festgelegt. Eine in der Tabelle genannte Datei ist ein Wegweiser im fertigen Referenzcode. Sie muss im entsprechenden frühen Kapitel noch nicht als eigenständiges Modul vorliegen.</p>
+<h2>Überkapitel</h2>
+<table>
+<thead>
+<tr>
+<th>Überkapitel</th>
+<th>Was erarbeitet werden könnte</th>
+<th>Zunächst eigenständiger Kontext</th>
+<th>Beitrag im fertigen Spiel</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Vom Problem zum Programm</strong></td>
+<td>Anforderungen verstehen, Zuständigkeiten abgrenzen, Schnittstellen notieren, eine vertikale erste Version bauen, Änderungen kontrolliert einarbeiten, Ergebnisse erklären und übergeben</td>
+<td>Kleines Verwaltungs- oder Rastersystem mit klaren Ein- und Ausgaben</td>
+<td>Arbeitsweise für alle späteren Bausteine. Die sechs Schritte werden auch beim Zusammenbauen wieder aufgenommen.</td>
+</tr>
+<tr>
+<td><strong>Manpages</strong></td>
+<td>Funktionsbeschreibung lesen, Parameter und Rückgabewert unterscheiden, Fehlerfälle und benötigte Header herausfinden. Bibliotheksfunktion in einem kleinen eigenen Versuch prüfen.</td>
+<td>Eingabezeilen verarbeiten, Zeichenketten untersuchen, Zahlen lesen</td>
+<td><code>fgets</code>, <code>strtol</code>, <code>snprintf</code>, <code>strlen</code>, <code>strcmp</code>, <code>strcspn</code>, <code>malloc</code>, <code>free</code>; später die Dateioperationen. Die robustere Eingabe darf zunächst bereitgestellt werden. Nicht alle Funktionen müssen auf einmal behandelt werden.</td>
+</tr>
+<tr>
+<td><strong>Datenstrukturen</strong></td>
+<td>Eindimensionale und zweidimensionale Arrays, gültige Indizes, Zeichenketten und Nullterminierung, <code>struct</code> für zusammengehörige Daten</td>
+<td>Markiertes Raster, Koordinaten, beschriftete Datensätze</td>
+<td><code>Punkt</code>, Kartenarray, Meldungstext, Spielerdaten. Eine einfache Liste kann zunächst als Modell besprochen werden. Der konkrete Listenaufbau folgt nach Pointern und dynamischem Speicher.</td>
+</tr>
+<tr>
+<td><strong>Pointer und Datenaustausch</strong></td>
+<td>Adressen und Dereferenzierung, Zustandsänderung über Funktionsparameter, lesender Zugriff mit <code>const</code>, Arrays und Pointer auseinanderhalten</td>
+<td>Position einer Einheit verändern, Datensatz aktualisieren, einen Rastereintrag prüfen</td>
+<td>Funktionen verändern <code>Spiel *</code> bzw. <code>Spieler *</code>. Abfragen erhalten <code>const Spiel *</code>. Grenzen werden vor einem Zugriff geprüft. Keine Notwendigkeit, hier bereits alle OOP-Typumwandlungen zu erklären.</td>
+</tr>
+<tr>
+<td><strong>Dynamischer Speicher</strong></td>
+<td>Lebensdauer, Stack und Heap, <code>malloc</code>/<code>calloc</code>, Fehler beim Anlegen, Eigentum, <code>free</code>, Verkettung, Einfügen und Entfernen</td>
+<td>Veränderliche Sammlung beschrifteter Einträge</td>
+<td>Dynamische Inventarliste und Weltobjektliste. Ein Schlüssel wird aufgenommen, beim Verwenden entfernt und freigegeben. Sämtliche Objekte werden beim Spielende aufgeräumt. <code>inventar.c</code> und der Lebenszyklus in <code>objekt.c</code>.</td>
+</tr>
+<tr>
+<td><strong>Objektorientierung in C – zusätzlich einzuplanen</strong></td>
+<td>Daten und zugehöriges Verhalten, gemeinsame Basis, eingebettete Strukturen, Funktionspointer, gemeinsame Methodentabelle, dynamischer Methodenaufruf</td>
+<td>Verschiedene Einträge reagieren auf denselben Aufruf unterschiedlich</td>
+<td><code>Objekt</code> als gemeinsame Basis; konkrete Typen <code>Aufhebbar</code>, <code>Tuer</code>, <code>Tresor</code>, <code>Waechter</code>, <code>Ausgang</code>. Der generische Bewegungscode ruft <code>objekt-&gt;methoden-&gt;betreten(...)</code> auf. Ein Schlüssel landet im Inventar, eine Tür prüft einen Schlüssel und ein Tresor liefert Beute.</td>
+</tr>
+<tr>
+<td><strong>Makefiles</strong></td>
+<td>Übersetzen und Linken auseinanderhalten, mehrere Quellen bauen, Abhängigkeiten von Headern erkennen, nachvollziehbare Build-Ziele</td>
+<td>Zunächst zwei kleine Quelldateien mit gemeinsamer Schnittstelle</td>
+<td>Die einzelnen Objektdateien werden zu <code>tresorraub</code> gelinkt. Der Referenz-Makefile enthält automatische Header-Abhängigkeiten; das kann als Hilfestellung gegeben werden. Ein kurzer eigener einfacher Makefile sollte dem Komfort-Makefile vorausgehen.</td>
+</tr>
+<tr>
+<td><strong>Header, Quelldateien und Schnittstellen</strong></td>
+<td>Deklaration und Implementierung trennen, Include-Schutz, Verantwortlichkeiten, fremde Schnittstellen korrekt verwenden, Testtreiber vom eigentlichen <code>main</code> trennen</td>
+<td>Bisherige geprüfte Bausteine zusammenführen</td>
+<td>Spielmodell, Objekttypen, Inventar, Eingabe, Anzeige und Speicherung werden getrennt gebaut. <strong>Hier wird die Überraschung sichtbar: Die Aufgaben ergeben ein spielbares Spiel.</strong> Integration erst durchführen, wenn die benötigten Kapitelbausteine vorliegen.</td>
+</tr>
+<tr>
+<td><strong>Datei-Ein- und -Ausgabe – zusätzlicher Unterabschnitt</strong></td>
+<td>Textdatei öffnen, schreiben, lesen und schließen; alle Rückgaben prüfen; Dateiformat beschreiben; ungültige Daten abweisen; Zustand wiederherstellen</td>
+<td>Kleinen vollständigen Datenbestand sichern und wiederherstellen</td>
+<td><code>speichern.c</code> schreibt explizite Werte statt Speicherabbildern. Laden baut einen neuen Zustand auf und übernimmt ihn erst nach erfolgreicher Prüfung. Dieser Inhalt muss ausdrücklich eingeplant werden: Er ergibt sich nicht automatisch aus OOP oder Headern.</td>
+</tr>
+<tr>
+<td><strong>Lernstandscheck II</strong></td>
+<td>Eine bekannte vollständige Grundversion um eine klar begrenzte Anforderung erweitern, Schnittstellen nutzen, Tests begründen</td>
+<td>Bereits zusammengeführtes Spiel mit geprüften Referenzbausteinen</td>
+<td>Neue Verhaltensweise oder neuer interaktiver Objekttyp. Dafür wird vorher ein analoger kleiner Erweiterungsschritt geübt. Die finale Aufgabenstellung ist noch offen.</td>
+</tr>
+</tbody></table>
+<h2>Wo Objektorientierung beginnt</h2>
+<p>Bei Datenstrukturen werden zusammengehörige Eigenschaften zunächst in <code>struct</code> gebündelt. Beim Pointerkapitel arbeiten Funktionen mit konkreten Instanzen. Dynamischer Speicher ergänzt die Lebensdauer der Instanzen. Das eigene OOP-Kapitel baut darauf auf und führt Funktionspointer, Struktureinbettung und unterschiedliche Implementierungen derselben Schnittstelle ein. Es liegt vor dem Zusammenbauen und vor Lernstandscheck II.</p>
+<p>OOP soll dabei ein sichtbares Problem lösen: Die zentrale Bewegung soll nicht jedes Interaktionsdetail jedes Gegenstands kennen müssen. Ein kleines vorher/nachher-Beispiel mit zwei Typen genügt als Einstieg. Die gesamte Sieben-Dateien-Referenz wird erst als späterer Endstand betrachtet.</p>
+<h2>Die sechs Unterkapitel „Vom Problem zum Programm“</h2>
+<table>
+<thead>
+<tr>
+<th>Unterkapitel</th>
+<th>Möglicher Arbeitsstand ohne vorzeitige Auflösung des Spiels</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Die Aufgabe verstehen</td>
+<td>Eingaben, Ausgaben, gültige Zustände und Sonderfälle an einem kleinen Auftrag festhalten. Anforderungen in eigene Worte fassen.</td>
+</tr>
+<tr>
+<td>Teilaufgaben und Verantwortlichkeiten finden</td>
+<td>Fachliche Berechnung, Datenhaltung und Ausgabe auseinanderhalten. Datenbesitz und Veränderungsrechte zunächst sprachlich beschreiben.</td>
+</tr>
+<tr>
+<td>Schnittstellen vereinbaren</td>
+<td>Benötigte Parameter, Rückgabewerte, Fehlercodes und Voraussetzungen notieren. Zwei kleine Bausteine über eine abgesprochene Schnittstelle koppeln.</td>
+</tr>
+<tr>
+<td>Eine erste vollständige Version bauen</td>
+<td>Einen kleinen Weg von der Eingabe bis zur Ausgabe vollständig umsetzen. Eine lauffähige Minimalversion und prüfbare Zwischenstände herstellen.</td>
+</tr>
+<tr>
+<td>Anforderungen erweitern, Entwurf überprüfen</td>
+<td>Eine zusätzliche Anforderung ergänzen und überlegen, welche Zuständigkeit davon betroffen ist. Gemeinsamen Code bündeln.</td>
+</tr>
+<tr>
+<td>Prüfen, erklären und übergeben</td>
+<td>Testfälle mit Erwartungen dokumentieren, Änderungen nachvollziehbar erklären, eine Anleitung für die Nutzung eines Bausteins verfassen.</td>
+</tr>
+</tbody></table>
+<p>Ein „vollständiges Programm“ in diesem frühen Kapitel kann ein kleines eigenständiges Programm sein. Es muss noch nicht das Museumsspiel sein. So braucht dieses Kapitel keine noch unbekannten Pointer oder Header vorauszusetzen.</p>
+<h2>Wie die Aufgaben zunächst unabhängig wirken können</h2>
+<ul>
+<li>Entfernungsprüfung zwischen zwei Messpunkten → später Überwachungsradius.</li>
+<li>Gültige Position und markiertes Raster → später Karte und Bewegung.</li>
+<li>Veränderliche Materialsammlung → später Inventar.</li>
+<li>Unterschiedliche Datensätze reagieren auf denselben Verarbeitungsschritt → später Objektverhalten.</li>
+<li>Speicherung beschrifteter Zustandsdaten → später Spielstand.</li>
+</ul>
+<p>Die Lernziele, Anforderungen und Bewertung bleiben transparent. Nur die spätere gemeinsame Anwendung wird zunächst zurückgehalten. Für alle Kapitel benötigen wir vorab konsistente Schnittstellen. Die endgültigen neutralen Namen und Übungskontexte sind noch abzustimmen. Das finale Paket benennt die Dinge offen, weil es eine Lehrendenreferenz ist.</p>
+<h2>Was vorbereitet sein sollte</h2>
+<ol>
+<li>Gemeinsames kleines Daten- und Schnittstellenblatt, damit die Bausteine später passen.</li>
+<li>Ein eigenständig ausführbarer Testtreiber pro Übungsbaustein. Bei der Integration erhält das Spiel genau ein <code>main</code>.</li>
+<li>Geprüfte Referenzstände, damit ein ungelöstes frühes Kapitel den weiteren Kurs nicht blockiert.</li>
+<li>Eine kleine Integrationsprobe vor dem eigentlichen Termin. Die Überraschung sollte schnell in ein funktionierendes Ergebnis münden.</li>
+<li>Vergleichbare Pflichtanforderungen und ausdrücklich freiwillige Erweiterungen.</li>
+</ol>
+<h2>Möglicher Zuschnitt von Lernstandscheck II</h2>
+<p>Als Kandidat eignet sich ein <strong>einmalig betretbares Alarmfeld</strong>: eigener Objekttyp, eigenes Zeichen und eigene Reaktion bei <code>betreten</code>. Die genaue Konsequenz und ein überschaubares Testziel werden vorab festgelegt. Dafür müssten die Studierenden bereits eine vergleichbare Typerweiterung geübt haben.</p>
+<p>Wichtig: Das Spielstandformat der Referenz ist auf die feste Grundversion zugeschnitten. Ein neuer persistenter Objekttyp erfordert eine Formatänderung. Deshalb sollten ein neuer Typ und seine vollständige Speicherformatmigration nicht ohne Erprobung gemeinsam als Pflichtumfang angesetzt werden. Für den Check können die angepassten Serialisierungsstellen vorbereitet werden; alternativ wird das Speicherformat als eigener bereits geübter Erweiterungsauftrag gewählt. Es liegt noch keine verbindliche Prüfungsaufgabe vor.</p>
+<h2>Grenzen und offene Abstimmung</h2>
+<p>Es gibt noch keine belastbare Zeitplanung. Der vollständige Referenzcode ist mehr Stoff als eine einzelne Übung. Insbesondere Funktionspointer, Einbettung, Listen und robustes Dateilesen brauchen jeweils eigene Lernschritte. Ob alles in den vorhandenen Terminen Platz findet, muss gegen die verbleibende Kurszeit geprüft werden. Dieses Paket ersetzt diese Entscheidung nicht.</p>
+</article>
+<article id="technik"><h1>Architektur und C-Referenz</h1>
+<h2>Dateien und Zuständigkeiten</h2>
+<table>
+<thead>
+<tr>
+<th>Datei</th>
+<th>Verantwortung</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>spiel.h</code> / <code>spiel.c</code></td>
+<td>Gemeinsame Grundtypen, Karte, Spielphase, Bewegung, Überwachungsprüfung und Zugabschluss</td>
+</tr>
+<tr>
+<td><code>inventar.h</code> / <code>inventar.c</code></td>
+<td>Besitz und Lebensdauer der dynamischen Inventarknoten</td>
+</tr>
+<tr>
+<td><code>objekt.h</code> / <code>objekt.c</code></td>
+<td>Basistyp, konkrete Objekttypen, Methodentabellen, Erzeugung und Freigabe der Weltobjekte</td>
+</tr>
+<tr>
+<td><code>eingabe.h</code> / <code>eingabe.c</code></td>
+<td>Ganze Eingabezeilen, Befehlserkennung und streng geprüfte Ganzzahlen</td>
+</tr>
+<tr>
+<td><code>speichern.h</code> / <code>speichern.c</code></td>
+<td>Versioniertes Textformat, Schreiben und geprüftes Laden</td>
+</tr>
+<tr>
+<td><code>anzeige.h</code> / <code>anzeige.c</code></td>
+<td>Terminaldarstellung und Ausgabefehler</td>
+</tr>
+<tr>
+<td><code>main.c</code></td>
+<td>Startoptionen, Befehlsschleife, Aufruf der Bausteine und Aufräumen</td>
+</tr>
+</tbody></table>
+<p>Die Header liegen unter <code>spiel/include/</code>, die Implementierungen unter <code>spiel/src/</code>.</p>
+<h2>Datenstrukturen und Besitz</h2>
+<p><code>Spiel</code> enthält das Kartenarray, den Spieler, den Kopf der Weltobjektliste, den Zugzähler und die Spielphase. <code>Spieler</code> enthält seine Position und den Kopf der Inventarliste.</p>
+<p>Die Weltobjektliste besitzt ihre Knoten und deren konkrete Objekte. Die Inventarliste besitzt ihre Knoten. Objektabfragen liefern nur geliehene Pointer; diese werden vom Aufrufer nicht freigegeben. Nach <code>spiel_freigeben</code> sind die Listen leer. Beim Laden wird ein separater Kandidat angelegt. Auf Fehlerpfaden wird dieser freigegeben. Bei Erfolg wird zuerst das alte Spiel freigegeben und anschließend der neue Zustand übernommen.</p>
+<p>Das Museum ist in dieser Referenz fest vorgegeben. Die zur Laufzeit erzeugten und entfernten Inventareinträge demonstrieren veränderliche Sammlungen. Die Weltobjekte werden separat angelegt, weil konkrete Typen unterschiedliche Größen und Lebenszyklen haben. Ein späteres Level-Dateiformat könnte die Anzahl und Typen zusätzlich zur Laufzeit bestimmen; das ist keine Funktion der Grundversion.</p>
+<h2>Objektorientierung in C</h2>
+<p>Der gemeinsame Basistyp <code>Objekt</code> enthält ID, Typ, Position, Aktivitätszustand und einen Pointer auf eine konstante Methodentabelle. Die konkrete Struktur bettet diese Basis als erstes Feld ein und ergänzt ihre eigenen Daten:</p>
+<ul>
+<li><code>Aufhebbar</code>: ID des aufzunehmenden Gegenstands.</li>
+<li><code>Tuer</code>: Schlüsseltyp und Zustand offen/geschlossen.</li>
+<li><code>Tresor</code>: Zustand geleert/nicht geleert.</li>
+<li><code>Waechter</code>: Überwachungsradius.</li>
+<li><code>Ausgang</code>: gemeinsames Objekt mit eigenem Verhalten beim Betreten.</li>
+</ul>
+<p>Die Methodentabelle enthält Funktionspointer für Darstellung, Betreten und Freigabe. <code>spiel_bewegen</code> ruft dieselbe Schnittstelle auf; die konkrete Funktion wird über die Methodentabelle gewählt. Schlüsselaufnahme, Türöffnung und Tresorentnahme sind damit verschiedene Implementierungen derselben Operation. Die Typumwandlungen in den konkreten Methoden sind durch die Zuordnung von erzeugtem Objekttyp und passender Tabelle begründet. Es werden keine beliebigen fremden Pointer umgedeutet.</p>
+<p>Die C-Referenz zeigt Struktureinbettung und dynamische Methodenaufrufe. Sie bildet keine vollständige C++-Laufzeit nach. Die Überwachungsprüfung und das feste Spielstandformat kennen einzelne konkrete Typen. Die Datenstrukturen sind in diesem Lehrprototyp öffentlich sichtbar. Stärkere Kapselung oder eine zusätzliche virtuelle Überwachungsoperation wären mögliche spätere Entwurfsdiskussionen.</p>
+<h2>Fehlercodes und Diagnose</h2>
+<table>
+<thead>
+<tr>
+<th>Ergebnis</th>
+<th>Bedeutung</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>Aktion erfolgreich</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Regulär blockierte Bewegung, kein Programmfehler</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Ende des Eingabestroms</td>
+</tr>
+<tr>
+<td>-1</td>
+<td>Speicher konnte nicht angelegt werden</td>
+</tr>
+<tr>
+<td>-2</td>
+<td>Unbekannter oder ungültiger Befehl</td>
+</tr>
+<tr>
+<td>-3</td>
+<td>Ein-/Ausgabefehler</td>
+</tr>
+<tr>
+<td>-4</td>
+<td>Ungültiges Spielstandformat</td>
+</tr>
+<tr>
+<td>-5</td>
+<td>Ungültige Funktionsargumente oder unpassende Spielphase</td>
+</tr>
+</tbody></table>
+<p>Ein ungültiger Befehl oder eine blockierte Bewegung beendet das Spiel nicht. Ein fehlerhafter Ladevorgang lässt das alte Spiel bestehen. Ein Speicherfehler wird bis zur Hauptfunktion weitergegeben; das Programm räumt auf und endet mit Status 1. Ein regulärer Sieg oder eine reguläre Niederlage ist kein Programmfehler und endet mit Status 0.</p>
+<p><code>--debug</code> gibt Befehl, Ergebniscode, Position, Zugzähler und Phase auf stderr aus. Diese Ausgaben sind optional und gehören nicht zur regulären Spielanzeige.</p>
+<h2>Spielstandformat, Version 1</h2>
+<p>Es wird ein Textformat geschrieben:</p>
+<pre><code class="language-text">TRESORRAUB 1
+3 7 0
+1 0 0 1
+0
+</code></pre>
+<ol>
+<li>Kennung und Version.</li>
+<li>Spieler-x, Spieler-y, verbrauchte Züge.</li>
+<li>Schlüssel noch auf Karte, Tür offen, Tresor geleert, Münze noch auf Karte. Jedes Feld ist 0 oder 1.</li>
+<li>Anzahl der Inventareinträge.</li>
+<li>Anschließend eine Gegenstands-ID pro Zeile: 1 Schlüssel, 2 Beute, 3 Münze.</li>
+</ol>
+<p>Die feste Karte und die unveränderlichen Wächter werden aus der Programmdefinition rekonstruiert. Gespeichert werden alle veränderlichen spielrelevanten Werte der Grundversion. Die flüchtige Meldungszeile wird beim Laden durch eine Lademeldung ersetzt. Gespeichert werden nur laufende Spiele.</p>
+<p>Pointer, Listenknoten, Funktionsadressen und Methodentabellen werden <strong>nicht</strong> als Speicherabbild geschrieben. Beim Laden entstehen neue Instanzen und neue Listenknoten; die Methodentabellen werden durch die Erzeugungsfunktionen wieder zugeordnet. Das ist eine wichtige Verbindung zwischen Datenmodell, Speicherlebensdauer und Persistenz.</p>
+<p>Der Loader prüft Version, Feldanzahl, Wertebereiche, Position, Überwachungszone, Inventar-IDs, Duplikate, zusätzliche Daten und die Konsistenz der Gegenstandszustände. Er ist kein kryptografischer Manipulationsschutz und beweist nicht, dass ein Spielstand durch eine ehrliche Zugfolge entstanden ist.</p>
+<p>Schreiben prüft Öffnen, einzelne Schreiboperationen und Schließen. Das Speichern überschreibt die gewählte Zieldatei. Es gibt in diesem Prototyp keine atomare Sicherung mit Backup; ein Datenträgerfehler beim Schreiben kann die bisherige Datei beschädigen. Laden übernimmt einen Zustand erst nach vollständiger erfolgreicher Prüfung.</p>
+<h2>Nachschlagbare Grundlagen</h2>
+<ul>
+<li>GNU C Language Manual, Function Pointers: <a href="https://www.gnu.org/software/c-intro-and-ref/manual/html_node/Function-Pointers.html">https://www.gnu.org/software/c-intro-and-ref/manual/html_node/Function-Pointers.html</a></li>
+<li>GNU C Language Manual, Pointers and Arrays: <a href="https://www.gnu.org/software/c-intro-and-ref/manual/html_node/Pointers-and-Arrays.html">https://www.gnu.org/software/c-intro-and-ref/manual/html_node/Pointers-and-Arrays.html</a></li>
+<li>Die lokal installierten Manpages zu <code>malloc</code>, <code>free</code>, <code>fgets</code>, <code>strtol</code>, <code>fopen</code>, <code>fprintf</code>, <code>fclose</code>.</li>
+</ul>
+<p>Die Quellen dienen als Nachschlagepunkte. Der Kapitelplan ist ein eigener didaktischer Vorschlag, keine aus diesen Quellen abgeleitete Zeit- oder Erfolgszusage.</p>
+</article>
+<article id="abstimmung"><h1>Vorschlag zur gemeinsamen Abstimmung</h1>
+<h2>Worum es geht</h2>
+<p>Die Idee ist, Block 2 über ein gemeinsames kleines Endprodukt zu verbinden. Zunächst werden verständliche, für sich ausführbare Aufgaben bearbeitet. Die Bausteine erhalten vorab passende Schnittstellen. Beim Kapitel über Header und Quelldateien werden sie zusammengeführt: Aus den Einzelaufgaben entsteht die Grundversion von Tresorraub.</p>
+<p>Der Prototyp dient dazu, das Endprodukt schon einmal spielen und seine Größenordnung einschätzen zu können. Jonathan und Larissa können anschließend für ihre jeweiligen Kapitel selbst festlegen, wie die passenden Konzepte erarbeitet werden. Fertige Kapitelaufgaben sind bewusst noch nicht ausgearbeitet.</p>
+<p>Das Beispiel ist ein unverbindlicher Vorschlag. Es gibt keine Entscheidung, dass dieses Spiel verbindlich für alle Kapitel oder spätere Gruppenprojekte eingesetzt werden muss.</p>
+<h2>Warum dieses Spiel</h2>
+<p>Der Kern ist ein kleines Wegfindungsrätsel ohne Echtzeitdruck. Eine feste Karte, wenige Gegenstände und unbewegliche Wächter begrenzen die Komplexität. Trotzdem gibt es fachliche Anknüpfungspunkte für Arrays, Zeichenketten, Strukturen, Pointer, dynamische Sammlungen, Lebensdauer, Objektverhalten, Header, Makefiles und explizites Speichern und Laden.</p>
+<p>Die vollständige Referenz ist bereits der späte Endstand. Sie soll nicht am Anfang als großes unbekanntes Programm ausgeteilt werden. Vor allem robuste Eingabeverarbeitung und das vollständige Ladeprogramm können als bereitgestellte Infrastruktur dienen, während die Studierenden zunächst kleine Datenbestände selbst speichern und lesen.</p>
+<h2>Gestaltungsspielraum erhalten</h2>
+<ul>
+<li>Ein gemeinsamer Mindestvertrag beschreibt, was ein Baustein leisten muss. Die konkrete Implementierung, weitere Hilfsfunktionen und Tests bleiben eigenständige Entscheidungen.</li>
+<li>Bei der Anzeige, Gestaltung der Karte, Namen und freiwilligen Objekten gibt es Spielraum. Für die erste Integration braucht es eine gemeinsame Referenzkonfiguration.</li>
+<li>Studierende können funktionierende eigene Bausteine einsetzen oder an einer geprüften Referenz weiterarbeiten. Frühere Schwierigkeiten blockieren keine späteren Kapitel.</li>
+<li>Die Erweiterung im Lernstandscheck nutzt vertraute Mechanismen in einer neuen Anforderung. Sie sollte vorher vergleichbar geübt und im Umfang erprobt werden.</li>
+<li>Die Entscheidung über freie spätere Gruppenprojekte bleibt eigenständig. Das gemeinsame Übungsspiel kann ein möglicher Anknüpfungspunkt sein.</li>
+</ul>
+<h2>Risiken, die wir gemeinsam prüfen sollten</h2>
+<ol>
+<li>Werden die Schnittstellen so genau vorgegeben, dass zu wenig eigener Entwurf übrig bleibt? Wir sollten nur die tatsächlich gemeinsam benötigten Schnittstellen festlegen.</li>
+<li>Verbraucht die Integration mehr Zeit als das eigentliche Fachthema? Ein kleiner getesteter Integrationsstand und Testtreiber pro Baustein helfen.</li>
+<li>Wird aus dem überraschenden Zusammenhang eine Abhängigkeit von jeder vorherigen Lösung? Dafür brauchen wir Referenzstände.</li>
+<li>Passen OOP und Datei-Ein-/Ausgabe in die verbleibenden Termine? Beides braucht eigene Lernziele. Dateioperationen sind in der bisherigen Überschriftenliste noch nicht ausdrücklich enthalten.</li>
+<li>Wie viel vom robusten finalen Referenzcode sollen Anfänger selbst schreiben? Nicht jede technische Absicherung muss gleichzeitig eigenständige Pflichtleistung sein.</li>
+</ol>
+<h2>Vorschlag für die nächste Besprechung</h2>
+<ul>
+<li>Gefällt uns dieses Endprodukt und die Idee der späteren Zusammenführung?</li>
+<li>Welche Kapitel übernimmt wer, und welche Schnittstellen werden verbindlich?</li>
+<li>Wie klein muss die erste spielbare Version bleiben?</li>
+<li>Wo bekommt Datei-Ein-/Ausgabe einen ausdrücklichen Platz?</li>
+<li>Was ist ein passender, vorher erprobbarer Erweiterungsumfang für Lernstandscheck II?</li>
+</ul>
+<p>Der bereits entworfene Lernstandscheck I zum dreistelligen Codeschloss gehört weiterhin zu Block 1 und ist unabhängig von dieser Entscheidung.</p>
+</article>
+<article id="pruefung"><h1>Prüfung des Prototyps</h1>
+<p>Stand: 28. Oktober 2026. Die folgenden Angaben beziehen sich auf die gelieferte Grundversion.</p>
+<h2>Tatsächlich ausgeführt</h2>
+<ul>
+<li>Alle sieben C-Dateien mit <code>-std=c17 -Wall -Wextra -Wpedantic -Werror</code> übersetzt und gelinkt: ohne Warnungen und Fehler.</li>
+<li>Standardsuite <code>make test</code>: <strong>643 Prüfungen bestanden</strong>.</li>
+<li>Instrumentierte Suite <code>make test-alloc</code>: <strong>746 Prüfungen bestanden</strong>, einschließlich der Standardsuite. Speicherreservierungen wurden gezielt zum Scheitern gebracht. Erzeugen, Aufnehmen und Laden geben Fehler weiter und räumen bereits angelegte Daten auf. Nach den geprüften Lebenszyklen sind keine erfassten Anwendungs-Speicherblöcke offen.</li>
+<li>AddressSanitizer und UndefinedBehaviorSanitizer: Standardsuite bestanden. Die zusätzliche automatische LeakSanitizer-Suche musste wegen eingeschränkter Prozessinformationen der Prüfungsumgebung deaktiviert werden. Die gesonderte Reservierungs-/Freigabeinstrumentierung wurde dafür ebenfalls ausgeführt.</li>
+<li>Acht Prüfungen des tatsächlichen Konsolenprogramms: Sieg, Entdeckung, Zeitablauf, ungültige und überlange Eingaben, fehlerhafte Startoptionen, fehlender Spielstand, Speichern und anschließender Neustart aus der Datei, Diagnoseausgaben.</li>
+<li><strong>207 Zustandsvergleiche</strong> zwischen dem JavaScript-Spielmodell und dem nativen C-Modell: sieben gezielte Abläufe und 200 reproduzierbare zufällige Befehlsfolgen.</li>
+<li>Austausch des gemeinsamen Spielstandformats zwischen Browser-Modell und C-Fassung geprüft.</li>
+</ul>
+<p>Die gezielten Tests umfassen unter anderem:</p>
+<ul>
+<li>Gewinnroute in 32 Zügen und Bonusroute in 48 Zügen.</li>
+<li>Erkennung genau auf der Radiusgrenze und Sicherheit direkt außerhalb.</li>
+<li>Verschlossene Tür ohne Schlüssel: kein Zug und keine Positionsänderung.</li>
+<li>Aufnahme, Verwendung und Entfernung des Schlüssels.</li>
+<li>Beute und Münze nach Speichern und Laden.</li>
+<li>Sieg exakt im 60. Zug.</li>
+<li>Keine weiteren Bewegungen nach einem Spielende.</li>
+<li>Fehlende, abgeschnittene, widersprüchliche und unbekannt versionierte Spielstände.</li>
+<li>Sehr große Zahlen, ungültige Koordinaten, zusätzliche Daten und doppelte Gegenstände.</li>
+<li>Vorhandener Spielzustand bleibt bei einem Ladefehler erhalten.</li>
+</ul>
+<h2>Aktualisierung: Piktogramme</h2>
+<p>Die Browser-Vorschau verwendet eigene SVG-Piktogramme. Glücklicher und trauriger Spielerzustand, böse Wächter, Türzustände und Gefahrenfelder ohne Textzeichen wurden im JavaScript-Modell geprüft. Die SVGs wurden zusätzlich in einer Spielfeld-Kontaktansicht gerendert und visuell kontrolliert. Die 207 Vergleiche mit dem C-Modell wurden nach der Änderung erneut bestanden. Die C-Quellen und Spielregeln wurden nicht geändert.</p>
+<p>Diese Prüfung ersetzt keinen vollständigen Test der Browseroberfläche; die unten genannte Einschränkung bleibt bestehen.</p>
+<h2>Selbst nachprüfen</h2>
+<p>Im Ordner <code>spiel/</code>:</p>
+<pre><code class="language-sh">make
+make test
+make test-alloc
+</code></pre>
+<p>Optional mit einem Compiler, der die entsprechenden Sanitizer unterstützt:</p>
+<pre><code class="language-sh">make sanitize
+</code></pre>
+<p>In der eingeschränkten Erstellungsumgebung wurde dafür <code>ASAN_OPTIONS=detect_leaks=0 make sanitize</code> verwendet. Auf einem eigenen geeigneten System kann die zusätzliche Leakerkennung aktiv bleiben.</p>
+<h2>Grenzen der Prüfung</h2>
+<p>Die C-Fassung wurde unter Linux mit dem vorhandenen Compiler ausgeführt. Ein Test auf einem tatsächlichen macOS- oder Windows-Rechner wurde nicht durchgeführt. Die Startdateien sind vorbereitet; auf diesen Systemen muss ein passender C-Compiler vorhanden sein.</p>
+<p>Das JavaScript-Modell wurde unter Node.js geprüft. Eine echte Browser-Ausführung samt visueller Desktop-/Mobilprüfung konnte hier mangels installiertem Browser nicht durchgeführt werden. Die HTML-Struktur und lokalen Verweise wurden geprüft. Der erste praktische Sichtcheck von Anzeige, Tastaturbedienung und Dateidialogen bleibt deshalb Teil eurer gemeinsamen Durchsicht.</p>
+<p>Die Tests prüfen Softwareverhalten. Es gab noch keinen Pilotversuch mit Studierenden und keine Messung der benötigten Bearbeitungszeit. Der Kapitelplan und die möglichen Erweiterungen sind keine verbindliche Zeitplanung oder fertige Lernstandscheck-II-Aufgabe.</p>
+</article></body></html>

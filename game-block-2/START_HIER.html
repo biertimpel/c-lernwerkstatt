@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tresorraub · Spielbares Zielbild für Block 2</title>
+<style>
+.cell svg{display:block;width:88%;height:88%;max-width:38px;max-height:38px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 15px;align-items:center}
+.legend>span{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.legend i{display:inline-flex;width:24px;height:24px;align-items:center;justify-content:center;font-style:normal}
+.legend svg{width:24px;height:24px}
+.zone-swatch{background:repeating-linear-gradient(135deg,#f6d9dd,#f6d9dd 5px,#e9bdc6 5px,#e9bdc6 8px);border:1px solid #b97987;border-radius:3px}
+
+:root{color-scheme:light;--ink:#17253b;--muted:#526176;--blue:#244bcc;--line:#d9dfe9;--paper:#f5f6f9}
+*{box-sizing:border-box}body{margin:30px auto;max-width:1080px;padding:0 20px;background:var(--paper);color:var(--ink);font:16px/1.55 system-ui,sans-serif}h1{font-size:clamp(28px,4vw,40px);line-height:1.15;margin:8px 0 12px}h2{font-size:21px;margin:0 0 12px}p{margin:0 0 14px}a{color:var(--blue)}.label{color:var(--blue);font-weight:700;font-size:13px;letter-spacing:.06em}.intro{color:var(--muted);max-width:850px}.layout{display:grid;grid-template-columns:minmax(0,650px) minmax(230px,1fr);gap:20px;margin-top:24px}.panel{background:white;padding:22px;border:1px solid var(--line);border-radius:12px}.stats{display:flex;flex-wrap:wrap;gap:8px 22px;margin-bottom:16px;font-size:14px}.board{display:grid;grid-template-columns:repeat(15,1fr);gap:2px;max-width:610px;padding:4px;background:#dce2eb;border-radius:5px}.cell{aspect-ratio:1;display:grid;place-items:center;font:bold clamp(12px,2.6vw,22px) ui-monospace,monospace;border-radius:2px}.wall{background:#27364b}.floor{background:#fff}.player{background:#edf2ff;border:2px solid #244bcc}.danger{background:repeating-linear-gradient(135deg,#f6d9dd,#f6d9dd 5px,#e9bdc6 5px,#e9bdc6 8px)}.guard{background:#e6dce9}.item{background:#dceafa;color:#173d78}.door{background:#d9c4ae;color:#48301c}.vault{background:#d7e4e4;color:#173a3a}.exit{background:#e8e3fc;color:#3e277b}.controls{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:18px 0 0}button,.file-button{font:inherit;font-size:14px;padding:9px 13px;border:1px solid #a9b6cb;border-radius:6px;background:#fff;color:var(--ink);cursor:pointer;display:inline-block}button:hover,.file-button:hover{background:#edf1fc}button:disabled{opacity:.45;cursor:default}.primary{background:var(--blue);color:white}.primary:hover{background:#1637a9}#message{margin:18px 0 0;padding:12px 14px;background:#edf1fc;border-left:4px solid var(--blue);min-height:70px}#message[data-phase="1"]{background:#e3f2ef;border-color:#276755}#message[data-phase="2"],#message[data-phase="3"]{background:#f6e8f2;border-color:#733c68}ul,ol{padding-left:22px}li{margin-bottom:7px}code{font-family:ui-monospace,monospace;font-size:.94em}.small{font-size:14px;color:var(--muted)}.legend{font-size:14px;margin:14px 0}.docs{margin:20px 0}.docs a{display:inline-block;margin:4px 18px 4px 0}summary{cursor:pointer;font-weight:600}details{margin-top:15px}.rule{margin-top:20px;border-top:1px solid var(--line);padding-top:15px}:focus-visible{outline:3px solid #e7a824;outline-offset:3px}@media(max-width:780px){.layout{grid-template-columns:1fr}.panel{padding:16px}body{margin-top:20px;padding:0 12px}.cell{font-size:clamp(12px,3.4vw,22px)}}
+</style></head><body>
+<p class="label">C-LERNWERKSTATT · ZIELBILD FÜR DIE GEMEINSAME PLANUNG</p>
+<h1>Tresorraub</h1>
+<p class="intro">Schlüssel holen, Tür öffnen, Beute sichern und rechtzeitig zum Ausgang zurückkehren. Diese kleine Grundversion zeigt, was aus den zunächst eigenständigen Aufgaben von Block 2 entstehen könnte.</p>
+<div class="layout"><main class="panel">
+<div class="stats"><span>Züge: <strong id="turns"></strong></span><span>Beute: <strong id="loot"></strong></span></div>
+<div id="board" class="board" role="group" aria-label="Spielkarte mit 15 Spalten und 9 Zeilen"></div>
+<div class="legend" aria-label="Zeichenerklärung"><span><i data-icon="happy"></i> Sie</span><span><i data-icon="key"></i> Schlüssel</span><span><i data-icon="door"></i> Tür</span><span><i data-icon="vault"></i> Tresor</span><span><i data-icon="exit"></i> Ausgang</span><span><i data-icon="angry"></i> Wächter</span><span><i class="zone-swatch"></i> überwacht</span><span><i data-icon="coin"></i> Bonusmünze</span></div>
+<div class="controls" aria-label="Bewegung"><button data-move="w" aria-label="Nach oben">↑ W</button><button data-move="a" aria-label="Nach links">← A</button><button data-move="s" aria-label="Nach unten">↓ S</button><button data-move="d" aria-label="Nach rechts">→ D</button><button data-move="z">Warten</button></div>
+<p id="message" role="status" aria-live="polite"></p>
+<p class="small" style="margin-top:12px">Inventar: <span id="inventory"></span></p>
+<div class="controls"><button id="restart" class="primary">Neu starten</button><button id="save">Spielstand speichern</button><label class="file-button">Spielstand laden<input id="load" type="file" accept=".sav,.txt" hidden></label></div>
+</main><aside class="panel">
+<h2>So funktioniert es</h2><ol><li>Den Schlüssel einsammeln.</li><li>Die Tür betreten. Sie öffnet sich und verbraucht den Schlüssel.</li><li>Den Tresor betreten. Die Beute landet im Inventar.</li><li>Mit der Beute den Ausgang erreichen.</li></ol>
+<p>Die Münze ist ein freiwilliges Zusatzziel. Ihre Figur lächelt, solange sie unentdeckt ist. Bei Entdeckung schaut sie traurig.</p>
+<p><strong>Vorsicht:</strong> Ein überwachtes Feld beendet das Spiel sofort. Die Wächter bewegen sich nicht. Ihr Bereich ist immer sichtbar.</p>
+<p>Nur erfolgreiche Bewegungen und Warten kosten einen Zug. Sie haben insgesamt <strong>60 Züge</strong>. Ein Sieg im letzten Zug zählt.</p>
+<p class="small">Tastatur: W/A/S/D oder Pfeiltasten. Die C-Fassung erwartet zusätzlich Enter und verwendet die Textzeichen aus ihrer Hilfe.</p>
+<details><summary>Was bedeutet „Radius“?</summary><p>Gezählt werden horizontale plus vertikale Schritte. Der linke Wächter überwacht Abstand 1, der rechte Abstand 2. Das ergibt einen rautenförmigen Bereich. Wände schirmen ihn in dieser einfachen Version nicht ab.</p></details>
+<details><summary>Starthilfe</summary><p>Vom Start zweimal nach oben gehen, um den Schlüssel aufzunehmen. Danach über die rechte Seite des linken Raums zur Tür. Hinter der Tür führt der obere Rand sicher zum Tresor.</p></details>
+<p class="rule small">Diese Browser-Vorschau dient dem schnellen Ausprobieren. Die C-Referenz liegt im Ordner <code>spiel/</code>. Beide Fassungen verwenden dieselben Regeln und dasselbe Spielstandformat. Die Vorschau benötigt keine Internetverbindung und überträgt keine Daten.</p>
+</aside></div>
+<section class="panel docs"><h2>Unterlagen zur Besprechung</h2><p>Die Dokumente sind Planungsunterlagen für Jonathan und Larissa. Kapitelaufgaben, Zeitplanung und Lernstandscheck-II-Erweiterung sind Vorschläge zur Abstimmung.</p><a href="LEITFADEN.html#readme">Startanleitung</a><a href="LEITFADEN.html#kapitelplan">Kapitel und Lerninhalte</a><a href="LEITFADEN.html#spielregeln">Spielregeln und Umfang</a><a href="LEITFADEN.html#technik">Code und Architektur</a><a href="LEITFADEN.html#abstimmung">Abstimmung und Gestaltungsspielraum</a><a href="LEITFADEN.html#pruefung">Prüfung</a></section>
+<script src="vorschau/spiel.js"></script></body></html>
