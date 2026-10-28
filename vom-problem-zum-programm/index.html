@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Programmierung in C · Vom Problem zum Programm</title>
   <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="kapitel.css">
 </head>
 <body>
   <a class="skip" href="#inhalt">Zum Inhalt</a>
@@ -12,8 +13,16 @@
     <p><a href="../uebersicht.html#block-2">← Zur Kursübersicht</a></p>
     <header>
       <h1>Vom Problem zum Programm</h1>
-      <span class="status">In Vorbereitung</span>
+      <p>Probleme zerlegen, Lösungen entwerfen und selbstständig umsetzen.</p>
     </header>
+    <section class="content-section" aria-labelledby="ziele">
+      <h2 id="ziele">Vom Umsetzen zum eigenen Entwurf</h2>
+      <p>Sie kennen Variablen, Bedingungen, Schleifen, Funktionen und erste Techniken zur Fehlersuche. Bisher waren viele Arbeitsschritte vorgegeben. Jetzt entscheiden Sie selbst, welche Teilaufgaben eine Beschreibung enthält, welche Daten zwischen ihnen fließen und wie Ihre Lösung wächst.</p>
+      <p>Diese Vorgehensweise ist unabhängig von C. Wir setzen sie hier mit C um. Mit „Architektur“ meinen wir zunächst die Verantwortlichkeiten und Schnittstellen Ihrer Programmteile, nicht eine bestimmte Anzahl an Dateien.</p>
+      <ul><li>Anforderungen klären und mit Beispielen überprüfbar machen.</li><li>Eine begründete eigene Zerlegung mit verständlichen Schnittstellen entwickeln.</li><li>Eine kleine vollständige Lösung bauen und auf Änderungen reagieren.</li><li>Mit selbst entworfenen Tests prüfen und Entscheidungen erklären.</li></ul>
+      <p>Auf Seite 5 üben Sie außerdem Refactoring: Sie verbessern eine selbst gewählte Stelle Ihrer getesteten Implementierung, ohne das Verhalten zu ändern. Erst danach ergänzen Sie eine neue Anforderung. Dabei unterscheiden Sie strukturelle Verbesserung, Erweiterung und Fehlerkorrektur.</p>
+      <p>Das Kapitel knüpft an <a href="../funktionen-debugging/01-programmzerlegung.html">Programmzerlegung</a> an, gibt diesmal aber keine fachlichen Funktionsnamen oder Implementierungsreihenfolge vor. Ein einmaliger perfekter Plan ist nicht das Ziel: Entwerfen, Ausprobieren und Überarbeiten gehören zusammen.</p>
+    </section>
     <section class="content-section" aria-labelledby="unterseiten">
       <h2 id="unterseiten">Unterseiten</h2>
       <ol>
@@ -24,6 +33,17 @@
         <li><a href="05-erweitern-und-ueberarbeiten.html">Anforderungen erweitern, Entwurf überprüfen</a></li>
         <li><a href="06-pruefen-und-uebergeben.html">Prüfen, erklären und übergeben</a></li>
       </ol>
+    </section>
+    <section class="content-section" aria-labelledby="messstation">
+      <h2 id="messstation">Ihr durchgehendes Programm: Eine Messstation</h2>
+      <p>Sie entwickeln einen Temperatur-Messdatenprüfer: von einer einzelnen Messung bis zur Auswertung einer Reihe. Später soll das Programm zusätzlich einen gewünschten Temperaturbereich berücksichtigen. Nutzen Sie auf allen Seiten dieselbe <code>programm.c</code> und Ihr Makefile weiter. Sichern Sie getestete Zwischenstände.</p>
+      <p>Die Aufgaben geben fachliche Regeln und beobachtbares Verhalten vor. Zerlegung, Funktionsnamen, Schnittstellen und Umsetzungsetappen entwickeln Sie selbst. Erst nach Ihrer eigenen Planung verwenden Sie das <a href="materialien/messstation.zip" download>Startmaterial (ZIP)</a>: ein leeres Programm, fertiges Makefile und ein reiner Eingabebaustein, der keine Messwerte bewertet.</p>
+      <p>Alle Temperaturen sind ganze Grad Celsius. Eingabe und Berichtsformat sind auf den jeweiligen Seiten festgelegt beziehungsweise von Ihnen zu dokumentieren.</p>
+    </section>
+    <section class="content-section" aria-labelledby="arbeitsweise">
+      <h2 id="arbeitsweise">So arbeiten Sie mit dem Kapitel</h2>
+      <p>Halten Sie Ihre Anforderungen, Entwurfsskizze, Schnittstellen, Tests und Änderungen in einer eigenen kurzen Projektnotiz fest. Es gibt keine vorgeschriebene Vorlage. Notieren Sie Erwartungen vor dem Ausführen. Tests beginnen auf der ersten Seite, nicht erst am Ende.</p>
+      <p>Die aufklappbaren Hilfen enthalten Denkfragen und Prüfkriterien, aber keine verbindliche Musterarchitektur. Unterschiedliche Entwürfe sind möglich und sogar erwünscht. Lassen Sie eine andere Person erklären, wie sie Ihren Baustein verwenden würde; Unklarheiten in dieser Erklärung sind wertvolle Hinweise.</p>
     </section>
     <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
   </main>

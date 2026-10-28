@@ -5,12 +5,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Programmierung in C · Die Aufgabe verstehen</title>
   <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="kapitel.css">
 </head>
 <body>
   <a class="skip" href="#inhalt">Zum Inhalt</a>
   <main id="inhalt">
     <p><a href="index.html">← Zur Kapitelübersicht</a></p>
-    <header><h1>Die Aufgabe verstehen</h1><span class="status">In Vorbereitung</span></header>
+    <header><h1>Die Aufgabe verstehen</h1><p>Bevor Sie Code schreiben, müssen Sie wissen, woran eine richtige Lösung zu erkennen ist.</p></header>
+    <section class="content-section" aria-labelledby="auftrag">
+      <h2 id="auftrag">1. Ein Auftrag, der noch Fragen offenlässt</h2>
+      <p>Eine Arbeitsgruppe möchte die Temperaturmessungen ihres Gewächshauses überprüfen. Ihr erster Auftrag lautet:</p>
+      <blockquote><p>„Schreiben Sie ein Programm, das eine Temperaturmessung einliest und sagt, ob der Wert in Ordnung ist. Später möchten wir mehrere Messungen zusammen auswerten.“</p></blockquote>
+      <p>Beginnen Sie noch nicht mit der Implementierung. Notieren Sie, was Sie bereits wissen, welche Informationen fehlen und welche Annahmen Sie sonst unbewusst treffen würden. Unterscheiden Sie insbesondere die Bedeutung von „in Ordnung“ von der Frage, ob eine Eingabe überhaupt als Zahl gelesen werden kann.</p>
+      <p>Formulieren Sie mindestens drei Rückfragen an die Auftraggebenden. Geben Sie zu jeder Frage zwei mögliche Antworten an, die zu unterschiedlichem Programmverhalten führen würden.</p>
+      <details><summary>Denkhilfe</summary><p>Fragen Sie nach Einheit, Wertebereich, eingeschlossenen Grenzen, Eingabeform und gewünschter Reaktion auf Fehler. „Ungültige Werte behandeln“ ist noch keine genaue Anforderung: Was soll sichtbar passieren?</p></details>
+    </section>
+    <section class="content-section" aria-labelledby="spezifikation">
+      <h2 id="spezifikation">2. Der geklärte Auftrag für Version 1</h2>
+      <p>Vergleichen Sie erst nach der Formulierung Ihrer Rückfragen Ihre Ergebnisse mit dieser verbindlichen Präzisierung. Alle arbeiten ab hier mit denselben Regeln:</p>
+      <ul>
+        <li>Das Programm verarbeitet genau eine ganzzahlige Temperatur in Grad Celsius.</li>
+        <li>Der Sensor liefert technisch plausible Werte von <strong>−40 bis einschließlich 80</strong>. „Gültig“ bedeutet in Version 1 ausschließlich: innerhalb dieses Bereichs.</li>
+        <li>Das Programm gibt den gelesenen Wert und eine eindeutige Gültigkeitsmeldung aus. Der genaue Wortlaut ist frei, muss aber dokumentiert sein.</li>
+        <li>Eine gelesene Zahl außerhalb des Bereichs wird als ungültige Messung gemeldet. Das ist ein erwarteter fachlicher Fall, kein technischer Abbruch, daher Rückgabestatus 0.</li>
+        <li>Fehlende, nicht ganzzahlige oder außerhalb des C-int-Bereichs liegende Eingaben sind technische Eingabefehler: Fehlermeldung und Rückgabestatus 1. Dafür darf der bereitgestellte Eingabebaustein <code>eingabe.h</code> und <code>eingabe.c</code> verwendet werden.</li>
+      </ul>
+      <p>Geben Sie zunächst nur eine Messung ein. Mehrere Messungen und eine Statistik gehören noch nicht zu Version 1. Zusätzliche fachliche Kategorien werden ebenfalls noch nicht benötigt.</p>
+      <h3>Aufgabe: Anforderungen prüfbar machen</h3>
+      <p>Formulieren Sie mit eigenen Worten, was das Programm leisten und was es noch nicht leisten muss. Entwickeln Sie Fälle unterhalb, auf und oberhalb beider Bereichsgrenzen sowie einen Wert im Inneren. Notieren Sie jeweils das erwartete Urteil und den Rückgabestatus. Wählen Sie außerdem einen technischen Eingabefehler.</p>
+      <details><summary>Selbstkontrolle: Reichen Ihre Fälle aus?</summary><p>Ihre Tests sollten beispielsweise einen Wechsel von gültig zu ungültig an beiden Grenzen erkennen können. Die Grenzwerte −40 und 80 selbst sind gültig. Ein Ergebnis ohne Fehlermeldung oder ein nicht abgestürztes Programm allein beweist noch nicht, dass die fachliche Entscheidung richtig ist.</p></details>
+      <p class="work-result"><strong>Ihr Ergebnis:</strong> Eine präzise Aufgabenbeschreibung, markierte offene Fragen und erste Testfälle mit erwarteten Ergebnissen. Diese Notizen verwenden Sie auf den folgenden Seiten weiter.</p>
+    </section>
     <nav aria-label="Seitennavigation"><ul class="navlinks">
       <li><a href="index.html">← Zurück: Kapitelübersicht</a></li>
       <li><a href="02-teilaufgaben-finden.html">Weiter: Teilaufgaben und Verantwortlichkeiten finden →</a></li>

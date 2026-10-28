@@ -5,12 +5,41 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Programmierung in C · Eine erste vollständige Version bauen</title>
   <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="kapitel.css">
 </head>
 <body>
   <a class="skip" href="#inhalt">Zum Inhalt</a>
   <main id="inhalt">
     <p><a href="index.html">← Zur Kapitelübersicht</a></p>
-    <header><h1>Eine erste vollständige Version bauen</h1><span class="status">In Vorbereitung</span></header>
+    <header><h1>Eine erste vollständige Version bauen</h1><p>Die erste Version soll klein sein, aber einen vollständigen Weg von der Eingabe bis zum Ergebnis bieten.</p></header>
+    <section class="content-section" aria-labelledby="umfang">
+      <h2 id="umfang">1. Ihre Planung umsetzen</h2>
+      <p>Implementieren Sie Version 1 entsprechend Ihrer eigenen Anforderungen, Entwurfsskizze und Schnittstellen. Eine einzelne Messung muss von der Eingabe bis zur Gültigkeitsmeldung verarbeitet werden. Eine Statistik oder ein gewünschter Temperaturbereich gehören noch nicht dazu.</p>
+      <p>Entscheiden Sie selbst, in welchen Etappen Sie vorgehen. Notieren Sie vor jedem neuen Teil, woran Sie erkennen werden, dass er funktioniert. Sie können einen fachlichen Baustein zuerst mit festen Werten prüfen; stellen Sie anschließend aber auch den vollständigen Ablauf her.</p>
+      <p>Wenn sich eine Schnittstelle beim Implementieren als unpassend erweist, ändern Sie Ihren Plan bewusst. Notieren Sie den Grund und passen Sie betroffene Aufrufe und Tests an. Plan und Code müssen nicht von Anfang an perfekt sein, sollten aber denselben aktuellen Stand beschreiben.</p>
+      <p>Verwenden Sie keine komplette Musterlösung. Falls Sie feststecken, beschreiben Sie der Betreuung das gewünschte Verhalten, Ihren bisherigen Ansatz und die erste konkrete Unklarheit.</p>
+    </section>
+    <section class="content-section" aria-labelledby="material">
+      <h2 id="material">2. Technische Starthilfe</h2>
+      <p><a href="materialien/messstation.zip" download>Startmaterial herunterladen (ZIP)</a>. Das Archiv enthält eine leere <a href="materialien/messstation/programm.c" download>programm.c</a>, ein fertiges <a href="materialien/messstation/Makefile" download>Makefile</a> und einen Eingabebaustein. Es gibt keine vorbereiteten fachlichen Funktionen oder Lücken, in die nur Vergleichsausdrücke eingesetzt werden müssen.</p>
+      <p>Entpacken Sie das Archiv und öffnen Sie dort ein Terminal. Ihre eigene Implementierung entsteht in <code>programm.c</code>; verwenden Sie nach dem Speichern:</p>
+      <pre><code>make
+./programm</code></pre>
+      <p>Für Version 1 geben Sie eine ganze Zahl ein und bestätigen mit Enter. Beenden Sie einen Eingabestrom im Terminal unter Linux/macOS bei Bedarf mit Ctrl+D. Die technische Eingabevereinbarung lautet: <strong>eine ganze Zahl pro Zeile</strong>. Leerraum um die Zahl ist erlaubt, weitere Zeichen oder mehrere Zahlen in derselben Zeile nicht.</p>
+      <details><summary>Den bereitgestellten Eingabebaustein verwenden</summary>
+        <p><code>programm.c</code> bindet bereits <code>eingabe.h</code> ein. Der Aufruf <code>lese_ganzzahl()</code> liefert ein <code>int</code> aus der nächsten Eingabezeile zurück. Sie können ihn einer selbst gewählten Variable zuweisen oder in einem eigenen Eingabebaustein kapseln.</p>
+        <p>Die Funktion bewertet keine Temperatur: Auch 99 wird als Zahl geliefert. Fehlt eine Zeile, ist sie zu lang, enthält sie keine einzelne ganze Zahl oder liegt die Zahl außerhalb des int-Bereichs, meldet die Funktion den technischen Fehler und beendet das Programm mit Status 1. Diese Vereinbarung ist absichtlich fest vorgegeben, damit Textverarbeitung nicht Ihre Entwurfsaufgabe verdrängt.</p>
+        <p>Das Makefile verbindet Ihre Datei mit <code>eingabe.c</code>. Für die Verwendung müssen Sie dessen interne Arrays, Pointer und Headertechnik noch nicht verstehen. Die Dateien sind Infrastruktur, keine Vorlage für die Zerlegung Ihres fachlichen Programms. Ihre eigenen Funktionen können zunächst vollständig in <code>programm.c</code> stehen.</p>
+      </details>
+    </section>
+    <section class="content-section" aria-labelledby="nachweis">
+      <h2 id="nachweis">3. Die erste Version nachweisen</h2>
+      <p>Führen Sie Ihre zuvor notierten Tests durch. Prüfen Sie nicht nur, ob das Programm startet: Stimmen Wert, fachliches Urteil und Rückgabestatus? Kontrollieren Sie den Status unmittelbar nach dem Lauf mit <code>echo $?</code>.</p>
+      <p>Dokumentieren Sie Ihr Ausgabeformat. Die Aufgaben schreiben keine exakte Zeichenfolge vor; das Ergebnis muss für eine andere Person eindeutig lesbar sein. Beachten Sie weiterhin: Eine fachlich ungültige Zahl ist ein behandelter Fall mit Status 0. Ein technischer Eingabefehler führt zu Status 1.</p>
+      <details><summary>Selbstkontrolle: Verhalten statt Funktionsnamen vergleichen</summary><p>−40 und 80 sind gültig, −41 und 81 ungültig. Eine Eingabe wie <code>abc</code> darf nicht als Temperatur 0 weiterverarbeitet werden. Ihre Regeln funktionieren sowohl über den vollständigen Ablauf als auch bei gezielten Tests Ihrer selbst gewählten fachlichen Bausteine.</p></details>
+      <p>Lesen und bearbeiten Sie Compilerwarnungen. Verwenden Sie bei Abweichungen gezielte Diagnoseausgaben, entfernen oder kennzeichnen Sie diese aber vor dem abschließenden Vergleich. Sichern Sie den funktionierenden Stand, bevor Sie die nächste Erweiterung beginnen.</p>
+      <p class="work-result"><strong>Ihr Ergebnis:</strong> Eine ausführbare Version 1, Tests mit tatsächlichen und erwarteten Ergebnissen sowie gegebenenfalls begründete Änderungen Ihres Entwurfs. Noch nicht alle späteren Anforderungen müssen implementiert sein.</p>
+    </section>
     <nav aria-label="Seitennavigation"><ul class="navlinks">
       <li><a href="03-schnittstellen-vereinbaren.html">← Zurück: Schnittstellen vereinbaren</a></li>
       <li><a href="05-erweitern-und-ueberarbeiten.html">Weiter: Anforderungen erweitern, Entwurf überprüfen →</a></li>
