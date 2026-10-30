@@ -5,12 +5,69 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Programmierung in C · Anforderungen erweitern, Entwurf überprüfen</title>
   <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="kapitel.css">
 </head>
 <body>
   <a class="skip" href="#inhalt">Zum Inhalt</a>
   <main id="inhalt">
     <p><a href="index.html">← Zur Kapitelübersicht</a></p>
-    <header><h1>Anforderungen erweitern, Entwurf überprüfen</h1><span class="status">In Vorbereitung</span></header>
+    <header><h1>Anforderungen erweitern, Entwurf überprüfen</h1><p>Neue Anforderungen zeigen, welche Teile Ihres Entwurfs tragen und wo Sie nachbessern müssen.</p></header>
+    <section class="content-section" aria-labelledby="reihe">
+      <h2 id="reihe">1. Version 2: Eine Messreihe auswerten</h2>
+      <p>Arbeiten Sie in Ihrer vorhandenen <code>programm.c</code> mit demselben Makefile weiter. Die technische Plausibilitätsregel aus Version 1 bleibt unverändert: −40 bis 80 einschließlich. Entscheiden Sie selbst, wie Ihre bisherigen Funktionen in die Erweiterung passen.</p>
+      <h3>Neue Anforderungen</h3>
+      <ul>
+        <li>Die erste Eingabezeile enthält die Anzahl der folgenden Messungen: eine ganze Zahl von 0 bis 100. Eine andere Anzahl ist ein Konfigurationsfehler mit Fehlermeldung und Status 1, bevor Messungen verarbeitet werden.</li>
+        <li>Danach werden genau so viele Messungen gelesen, jeweils eine ganze Zahl pro Zeile. Für die Anzahl und für Messwerte können Sie denselben bereitgestellten Eingabebaustein verwenden. Zusätzliche Zeilen nach der erwarteten Anzahl gehören nicht zum Auftrag und werden nicht ausgewertet.</li>
+        <li>Jede fachlich ungültige Messung wird gezählt, aber nicht in die Statistik aufgenommen. Die Verarbeitung läuft mit den übrigen Messungen weiter. Technische Eingabefehler brechen weiterhin mit Status 1 ab.</li>
+        <li>Am Ende enthält der Bericht die Anzahl gültiger und ungültiger Messungen sowie Minimum, Maximum und arithmetischen Mittelwert der gültigen Messungen. Der Mittelwert soll als Gleitkommazahl ausgegeben werden.</li>
+        <li>Ohne gültige Messung werden keine erfundenen Statistikwerte ausgegeben, sondern ein eindeutiger Hinweis, dass diese nicht verfügbar sind. Eine leere Reihe mit Anzahl 0 ist zulässig. Vollständig behandelte Reihen enden mit Status 0, auch wenn keine Messung gültig war.</li>
+      </ul>
+      <p>Alle Messungen müssen nicht gespeichert werden. Entscheiden Sie, welche Informationen Sie bis zur nächsten Messung tatsächlich benötigen. Arrays oder dynamischer Speicher werden nicht verlangt. Legen Sie selbst ein verständliches Berichtsformat fest.</p>
+      <h3>Arbeitsauftrag</h3>
+      <p>Markieren Sie in Ihrer Entwurfsskizze unveränderte und betroffene Teile. Planen Sie die Erweiterung und neue Testfälle, bevor Sie implementieren. Begründen Sie anschließend mindestens eine beibehaltene und eine geänderte Entwurfsentscheidung. Falls keine Schnittstelle geändert werden muss, erklären Sie stattdessen, warum Ihre vorhandenen Vereinbarungen ausreichen.</p>
+      <details><summary>Denkhilfe</summary><p>Unterscheiden Sie den Zustand einer einzelnen Messung von Informationen über die gesamte Reihe. Fragen Sie sich bei jeder Variable, wie lange sie gebraucht wird. Prüfen Sie, ob Sie dieselbe fachliche Grenze an mehreren Stellen erneut hinschreiben. Nutzen Sie für die erste Reihe einen einzigen gültigen Wert und erweitern Sie Ihre Tests danach.</p></details>
+      <details><summary>Selbstkontrolle: Referenzfälle für Version 2</summary>
+        <div class="table-wrap"><table><thead><tr><th scope="col">Messwerte</th><th scope="col">Gültig / ungültig</th><th scope="col">Minimum / Maximum / Mittelwert</th></tr></thead><tbody>
+          <tr><td>20, 22, 99, −5, 80, 21</td><td>5 / 1</td><td>−5 / 80 / 27,6</td></tr>
+          <tr><td>−40, 80</td><td>2 / 0</td><td>−40 / 80 / 20</td></tr>
+          <tr><td>−41, 81, 99</td><td>0 / 3</td><td>nicht verfügbar</td></tr>
+          <tr><td>keine, Anzahl 0</td><td>0 / 0</td><td>nicht verfügbar</td></tr>
+        </tbody></table></div>
+        <p>Eine Reihe nur mit negativen gültigen Werten hilft, unpassende Anfangswerte für Maximum oder Minimum zu erkennen. Zahlen außerhalb der Plausibilitätsgrenzen dürfen den Mittelwert nicht beeinflussen.</p>
+      </details>
+    </section>
+    <section class="content-section" aria-labelledby="refactoring">
+      <h2 id="refactoring">2. Refactoring: Die Struktur verbessern, das Verhalten erhalten</h2>
+      <p>Beim Refactoring verändern Sie die innere Struktur eines Programms, ohne sein beobachtbares Verhalten zu ändern. Die Umbenennung einer unklar benannten Variable im Parkhausprogramm war bereits ein kleines Beispiel dafür. Eine neue Funktionalität ist dagegen eine Erweiterung und die Korrektur eines falschen Ergebnisses ist eine Fehlerkorrektur. Nicht jede Überarbeitung ist also Refactoring.</p>
+      <h3>Aufgabe: Eine begründete Verbesserung durchführen</h3>
+      <p>Betrachten Sie Ihre getestete Messreihenauswertung. Wählen Sie selbst eine Stelle, deren Verständlichkeit oder Änderbarkeit Sie verbessern können.</p>
+      <ol>
+        <li>Sichern Sie die funktionierende Version 2 einschließlich Ihrer Tests und der bisherigen Ergebnisse.</li>
+        <li>Benennen Sie eine konkrete strukturelle Schwäche und beschreiben Sie, weshalb Ihre geplante Änderung hilfreich ist.</li>
+        <li>Führen Sie eine kleine Änderung durch. Passen Sie betroffene Aufrufe und Ihre Entwurfsnotiz an, wenn sich eine interne Schnittstelle ändert.</li>
+        <li>Wiederholen Sie die bisherigen Tests mit unveränderten Eingaben und Erwartungen. Vergleichen Sie fachliche Ergebnisse, Ausgaben und Rückgabestatus. Bei einer Abweichung klären Sie die Ursache, bevor Sie weiterarbeiten.</li>
+        <li>Halten Sie fest: Was wurde umgebaut, was blieb gleich, und mit welchen Tests haben Sie das überprüft?</li>
+      </ol>
+      <details><summary>Mögliche Ansatzpunkte</summary><p>Ein wenig aussagekräftiger Name, mehrfach vorhandene fachliche Regeln, eine Funktion mit mehreren Verantwortlichkeiten oder unnötig verschachtelte Entscheidungen können geeignete Ansatzpunkte sein. Wählen Sie eine Änderung, die zu Ihrem tatsächlichen Code passt. Eine bereits gute Struktur künstlich aufzuteilen oder die Zahl der Funktionen zu erhöhen, ist kein Selbstzweck. Falls Sie keine begründbare Verbesserung finden, besprechen Sie Ihren Entwurf mit der Betreuung.</p></details>
+      <details><summary>Selbstkontrolle: War die Änderung Refactoring?</summary><p>Die bestehenden Anforderungen gelten unverändert und dieselben Eingaben führen weiterhin zu denselben beobachtbaren Ergebnissen. Bestehende Tests geben Sicherheit beim Umbau, sind aber kein vollständiger Beweis für alle möglichen Eingaben. Wenn Sie dabei einen fachlichen Fehler entdecken, korrigieren und testen Sie ihn als getrennte Änderung, statt ihn unbemerkt mit dem Refactoring zu vermischen.</p></details>
+      <p>Erst wenn die bisherige Version wieder überprüft ist, bearbeiten Sie den folgenden Änderungsauftrag. So bleibt erkennbar, welche Änderung die Struktur verbessert und welche neues Verhalten ergänzt.</p>
+    </section>
+    <section class="content-section" aria-labelledby="aenderung">
+      <h2 id="aenderung">3. Änderungsauftrag: Gültig ist nicht gleich erwünscht</h2>
+      <p>Bearbeiten Sie diesen Auftrag erst nach der getesteten und überprüften Version 2.</p>
+      <p>Die Arbeitsgruppe ergänzt:</p>
+      <blockquote><p>„Die Messungen können technisch gültig sein, obwohl es für die Pflanzen zu kalt oder zu warm ist. Wir möchten zusätzlich sehen, wie viele gültige Messungen im gewünschten Bereich liegen.“</p></blockquote>
+      <ul>
+        <li>Der gewünschte Bereich liegt zunächst bei 18 bis einschließlich 24 Grad. Beide Grenzen sind gemeinsam an einer klar erkennbaren Stelle konfigurierbar; sie werden nicht zusätzlich aus der Eingabe gelesen.</li>
+        <li>Die Grenzen müssen innerhalb des technischen Plausibilitätsbereichs liegen, und die untere darf die obere nicht übersteigen. Sonst: Fehlermeldung und Status 1 vor der Auswertung.</li>
+        <li>Der Bericht zählt zusätzlich gültige Messungen innerhalb und außerhalb des gewünschten Bereichs. Eine technisch ungültige Messung gehört in keine dieser beiden neuen Kategorien.</li>
+        <li>Die bisherigen Gültigkeitszähler und Statistikwerte bleiben gleich. Nur die zusätzliche Einordnung kommt hinzu. Spätere Änderungen der Wunschgrenzen dürfen die technische Plausibilitätsregel nicht verändern.</li>
+      </ul>
+      <p>Entscheiden Sie selbst, ob bestehende Schnittstellen erweitert, zusätzliche Bausteine eingeführt oder Verantwortlichkeiten neu verteilt werden sollten. </p>
+      <p>Testen Sie insbesondere 17, 18, 24 und 25 sowie eine technisch ungültige Messung. Ändern Sie danach testweise den Wunschbereich und prüfen Sie, ob nur die gewünschten Teile des Berichts betroffen sind.</p>
+      <p class="work-result"><strong>Ihr Ergebnis:</strong> Eine getestete Messreihenauswertung mit zusätzlicher Bereichseinordnung, ein aktualisierter Entwurf und ein kurzer Vergleich: Was änderte sich lokal, was wirkte sich auf mehrere Stellen aus, und warum?</p>
+    </section>
     <nav aria-label="Seitennavigation"><ul class="navlinks">
       <li><a href="04-erste-version.html">← Zurück: Eine erste vollständige Version bauen</a></li>
       <li><a href="06-pruefen-und-uebergeben.html">Weiter: Prüfen, erklären und übergeben →</a></li>

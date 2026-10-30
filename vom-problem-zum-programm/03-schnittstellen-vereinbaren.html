@@ -5,12 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Programmierung in C · Schnittstellen vereinbaren</title>
   <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="kapitel.css">
 </head>
 <body>
   <a class="skip" href="#inhalt">Zum Inhalt</a>
   <main id="inhalt">
     <p><a href="index.html">← Zur Kapitelübersicht</a></p>
-    <header><h1>Schnittstellen vereinbaren</h1><span class="status">In Vorbereitung</span></header>
+    <header><h1>Schnittstellen vereinbaren</h1><p>Eine Schnittstelle beschreibt, wie ein Baustein verwendet wird — unabhängig von seinem inneren Rechenweg.</p></header>
+    <section class="content-section" aria-labelledby="vertrag">
+      <h2 id="vertrag">1. Aus einer Idee wird eine Vereinbarung</h2>
+      <p>„Dieser Baustein prüft etwas“ reicht zum Implementieren noch nicht. Aufrufender und aufgerufener Programmteil müssen dieselbe Vorstellung von Daten, Ergebnis und Fehlern haben. Dazu gehört auch, ob ein Baustein nur einen Wert liefert, etwas ausgibt oder Zustand verändert.</p>
+      <h3>Aufgabe: Ihre Bausteine präzisieren</h3>
+      <p>Beschreiben Sie für die Bausteine Ihres eigenen Entwurfs jeweils Aufgabe, benötigte Eingaben mit Einheit, Ergebnis beziehungsweise Wirkung und Grenzen der Verantwortung. Halten Sie fest, welche Eingaben vorausgesetzt werden und was bei anderen Eingaben passieren soll. Geben Sie jeweils einen passenden Beispielaufruf mit erwarteter Wirkung an — zunächst auch in Alltagssprache möglich.</p>
+      <p>Unterscheiden Sie die fachlich ungültige Temperatur von einem technischen Eingabefehler. Ein Baustein, der eine bereits gelesene Zahl beurteilt, muss nicht gleichzeitig eine fehlerhafte Texteingabe reparieren.</p>
+      <details><summary>Denkhilfe</summary><p>Ist ein negatives int für Ihren Baustein grundsätzlich ein Fehler oder eine zulässige Temperatur? Kann ein bool-Ergebnis die gewünschte Aussage vollständig ausdrücken? Muss eine Ausgabe direkt im Baustein entstehen, oder kann sie aus einem gelieferten Ergebnis gebildet werden?</p></details>
+    </section>
+    <section class="content-section" aria-labelledby="c">
+      <h2 id="c">2. Die Vereinbarung in C ausdrücken</h2>
+      <p>Leiten Sie aus Ihren Beschreibungen selbst Funktionsnamen, Parameter und Rückgabetypen ab. Vergleichen Sie mit Ihren Kenntnissen aus <a href="../funktionen-debugging/02-funktionen.html">Funktionen</a>. Eine bestimmte Zahl oder Benennung von Funktionen ist nicht vorgeschrieben. Für den ersten Stand genügt eine eigene Quelldatei.</p>
+      <p>Vermeiden Sie versteckte Abhängigkeiten von veränderlichen globalen Variablen. Wer nur die Signatur und Ihre Beschreibung liest, soll erkennen können, welche Informationen bereitgestellt werden müssen. Dokumentieren Sie bewusst gewählte gemeinsame Konstanten und deren Bedeutung.</p>
+      <h3>Selbstkontrolle durch Schnittstellentausch</h3>
+      <p>Geben Sie einer anderen Person nur Ihre Signaturen und Vereinbarungen, nicht die geplante Implementierung. Lassen Sie sie einen normalen Aufruf und einen Grenzfall formulieren. Sind die erwarteten Ergebnisse eindeutig? Verbessern Sie die Vereinbarung, wenn Rückfragen nötig sind.</p>
+      <details><summary>Prüfkriterien</summary><p>Einheit und Grenzen sind klar, Parameter und Ergebnis passen zur Verantwortung und beide Seiten verstehen die Fehlerreaktion gleich. Prüfen Sie auch, ob eine Rückgabe und eine Bildschirmausgabe versehentlich verwechselt werden.</p></details>
+      <p class="work-result"><strong>Ihr Ergebnis:</strong> Eigene C-Signaturen mit kurzen Verträgen und Beispieltests. Sie dürfen die Signaturen später begründet ändern; notieren Sie dann, warum.</p>
+    </section>
     <nav aria-label="Seitennavigation"><ul class="navlinks">
       <li><a href="02-teilaufgaben-finden.html">← Zurück: Teilaufgaben und Verantwortlichkeiten finden</a></li>
       <li><a href="04-erste-version.html">Weiter: Eine erste vollständige Version bauen →</a></li>

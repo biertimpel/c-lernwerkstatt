@@ -5,12 +5,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Programmierung in C · Prüfen, erklären und übergeben</title>
   <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="kapitel.css">
 </head>
 <body>
   <a class="skip" href="#inhalt">Zum Inhalt</a>
   <main id="inhalt">
     <p><a href="index.html">← Zur Kapitelübersicht</a></p>
-    <header><h1>Prüfen, erklären und übergeben</h1><span class="status">In Vorbereitung</span></header>
+    <header><h1>Prüfen, erklären und übergeben</h1><p>Eine Lösung ist nicht nur Code, der bei einem Beispiel funktioniert. Sie müssen das Verhalten und Ihren Entwurf nachvollziehbar machen können.</p></header>
+    <section class="content-section" aria-labelledby="tests">
+      <h2 id="tests">1. Tests systematisch zusammenführen</h2>
+      <p>Sammeln Sie Ihre Tests aus allen bisherigen Seiten. Kennzeichnen Sie, was ein einzelner Baustein nachweist und was den vollständigen Ablauf einschließlich Eingabe und Bericht prüft. Ein Testfall enthält Eingabe, erwartetes Ergebnis, tatsächliches Ergebnis und eine kurze Aussage dazu, welchen Fehler er erkennen könnte.</p>
+      <p>Ihre Sammlung soll beide Plausibilitätsgrenzen und beide Wunschgrenzen einschließlich direkter Nachbarwerte abdecken, außerdem eine einzelne Messung, eine gemischte Reihe, nur negative gültige Werte, keine gültigen Werte, die leere Reihe, ungültige Konfiguration und technische Eingabefehler. Prüfen Sie nach jeder Änderung auch die bisherigen Fälle erneut: Das sind Regressionstests.</p>
+      <p>Für vollständig verarbeitete Reihen gelten außerdem unabhängig vom einzelnen Beispieldatensatz:</p>
+      <ul><li>Gültige + ungültige Messungen = angekündigte Anzahl.</li><li>Im Wunschbereich + außerhalb des Wunschbereichs = gültige Messungen.</li><li>Bei mindestens einem gültigen Wert liegt der Mittelwert zwischen Minimum und Maximum.</li><li>Eine Umordnung derselben Messwerte verändert die zusammenfassenden Ergebnisse nicht.</li></ul>
+      <details><summary>Freiwilliger Exkurs: Ein Programmtest mit Dateieingabe</summary><p>Dieser freiwillige Exkurs hat einen höheren Schwierigkeitsgrad. Dateieingabe und systematisches Testen werden in späteren Kapiteln noch ausführlich behandelt. Wenn Sie dieser Abschnitt jetzt noch stark herausfordert, ist das völlig in Ordnung. Für diese Aufgabe können Sie Ihre Testwerte weiterhin von Hand eingeben und die Ergebnisse vergleichen.</p><p>Mit <code>./programm &lt; testdatei.txt</code> liest Ihr Programm dieselben Zeilen wie bei Tastatureingabe. Im <a href="materialien/messstation.zip" download>Startmaterial</a> finden Sie Beispiele unter <code>tests/</code>. Die Dateien mit <code>v1-</code> sind für die Einzelmessung, die mit <code>reihe-</code> für die Messreihe gedacht. Erwartete fachliche Ergebnisse stehen in <a href="materialien/messstation/TESTFAELLE.md">TESTFAELLE.md</a>. Ergänzen Sie eigene Dateien; die Sammlung ist keine vollständige Prüfung Ihres Programms.</p></details>
+      <p>Wenn Sie gerundete Mittelwerte vergleichen, berücksichtigen Sie die von Ihnen dokumentierte Ausgabepräzision.</p>
+    </section>
+    <section class="content-section" aria-labelledby="erklaeren">
+      <h2 id="erklaeren">2. Eine andere Person übernimmt</h2>
+      <p>Geben Sie einer anderen Person Ihren Quelltext, eine kurze Startanleitung und die Beschreibung der Eingabe und Ausgabe. Lassen Sie sie das Programm mit einem selbst gewählten Fall ausführen. Erklären Sie danach Ihre Entwurfsskizze und beantworten Sie Rückfragen:</p>
+      <ul><li>Wo sind die fachlichen Regeln beschrieben und implementiert?</li><li>Welche Daten fließen über welche Schnittstellen?</li><li>Was passiert mit technisch und fachlich ungültigen Eingaben?</li><li>Welche eigene Entwurfsentscheidung haben Sie aufgrund einer Erweiterung geändert?</li></ul>
+      <p>Stellen Sie außerdem Ihr Refactoring vor: Welche strukturelle Schwäche haben Sie bearbeitet, was blieb am Verhalten unverändert und wie haben Sie das geprüft? Grenzen Sie diesen Umbau von der anschließenden Erweiterung um den Wunschbereich und von etwaigen Fehlerkorrekturen ab.</p>
+      <p>Lassen Sie sich eine kleine Änderung vorschlagen, zum Beispiel einen anderen Meldungstext oder Wunschbereich. Zeigen Sie zuerst, welche Stellen betroffen sein sollten, und überprüfen Sie diese Vorhersage anschließend am Code. Eine gute Zerlegung begrenzt die Auswirkungen nachvollziehbar, sie verhindert nicht jede Änderung.</p>
+      <details><summary>Selbstkontrolle ohne Musterarchitektur</summary><p>Die andere Person kann Ihr Programm starten, das Verhalten vorhersagen und die verantwortliche Stelle für eine Änderung finden. Sie können Vor- und Nachteile Ihrer eigenen Struktur benennen. </p></details>
+    </section>
+    <section class="content-section" aria-labelledby="abschluss">
+      <h2 id="abschluss">3. Abschluss und Ausblick</h2>
+      <p>Prüfen Sie Ihren Stand: Compilerwarnungen bearbeitet, Tests reproduzierbar, Diagnoseausgaben bereinigt, Entwurf und Schnittstellen aktuell. Dokumentieren Sie verbleibende Einschränkungen, statt sie zu verschweigen. Wenn etwas nicht funktioniert, halten Sie Erwartung, Beobachtung und bisherige Diagnose fest.</p>
+      <p class="work-result"><strong>Ihre Übergabe:</strong> Das lauffähige Programm mit Startanleitung, die kurze Entwurfsnotiz, eigene Tests und eine begründete Überarbeitung. Zeigen Sie diese Ergebnisse der Betreuung.</p>
+    </section>
     <nav aria-label="Seitennavigation"><ul class="navlinks">
       <li><a href="05-erweitern-und-ueberarbeiten.html">← Zurück: Anforderungen erweitern, Entwurf überprüfen</a></li>
       <li><a href="index.html">Zur Kapitelübersicht</a></li>

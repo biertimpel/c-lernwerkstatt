@@ -5,12 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Programmierung in C · Teilaufgaben und Verantwortlichkeiten finden</title>
   <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="kapitel.css">
 </head>
 <body>
   <a class="skip" href="#inhalt">Zum Inhalt</a>
   <main id="inhalt">
     <p><a href="index.html">← Zur Kapitelübersicht</a></p>
-    <header><h1>Teilaufgaben und Verantwortlichkeiten finden</h1><span class="status">In Vorbereitung</span></header>
+    <header><h1>Teilaufgaben und Verantwortlichkeiten finden</h1><p>Aus einer Beschreibung wird ein eigener Entwurf.</p></header>
+    <section class="content-section" aria-labelledby="verantwortung">
+      <h2 id="verantwortung">1. Zusammengehöriges erkennen</h2>
+      <p>Eine gute Teilaufgabe lässt sich verständlich beschreiben. Ihr Name erklärt eine Verantwortung, nicht nur ihre Position im Ablauf. Eine Funktion namens „Schritt 2“ bleibt unklar, sobald die Reihenfolge geändert wird.</p>
+      <p>Gute Zerlegung bedeutet weder „alles in main“ noch „jede Zeile in eine eigene Funktion“. Sinnvoll ist eine Grenze, wenn der Baustein unabhängig erklärt, verwendet, geprüft oder geändert werden kann. Ein kleiner Entwurf darf klein bleiben.</p>
+      <h3>Aufgabe: Einen eigenen Lösungsentwurf skizzieren</h3>
+      <p>Nehmen Sie Ihre Beschreibung von Version 1. Identifizieren Sie zusammengehörige Aufgaben, geben Sie ihnen eigene Namen und zeichnen Sie auf, welche Informationen zwischen ihnen fließen. Markieren Sie, wo eine Entscheidung getroffen und wo lediglich ein Ergebnis dargestellt wird.</p>
+      <p>Wählen Sie selbst die Darstellungsform: kurze Absätze, eine Tabelle oder beschriftete Kästen und Pfeile. Noch werden keine C-Signaturen verlangt. Notieren Sie zu jeder eingezeichneten Grenze, warum sie Ihnen nützlich erscheint.</p>
+      <details><summary>Denkhilfe</summary><p>Stellen Sie sich vor, nur der Wortlaut einer Meldung ändert sich. Würde sich dadurch auch die fachliche Entscheidung ändern müssen? Oder eine Sensorgrenze ändert sich: Wo wäre diese Regel in Ihrem Entwurf zu finden?</p></details>
+    </section>
+    <section class="content-section" aria-labelledby="vergleich">
+      <h2 id="vergleich">2. Den Entwurf erklären und hinterfragen</h2>
+      <p>Erklären Sie Ihren Entwurf einer anderen Person oder der Betreuung. Lassen Sie sich anschließend erklären, was die einzelnen Bausteine nach deren Verständnis tun. Wo die Erklärungen auseinandergehen, präzisieren Sie Ihre Beschreibung.</p>
+      <ul><li>Hat jede Aufgabe eine erkennbare Verantwortung?</li><li>Kann man für die fachliche Entscheidung ein Ergebnis vorhersagen, ohne erst eine Bildschirmausgabe interpretieren zu müssen?</li><li>Wer benötigt welche Daten? Wird eine Information unnötig an alle Bausteine weitergereicht?</li><li>Steht dieselbe fachliche Regel an mehreren Stellen?</li></ul>
+      <p>Entwerfen Sie kurz eine alternative Aufteilung. Wählen Sie zwischen beiden und begründen Sie einen konkreten Vor- und Nachteil. Sie müssen nicht vorsorglich alle späteren Erweiterungen ermöglichen.</p>
+      <details><summary>Selbstkontrolle: Woran erkennen Sie einen tragfähigen Entwurf?</summary><p>Ihre Aufgabenbeschreibung wird vollständig abgedeckt, Informationen haben nachvollziehbare Wege und keine benötigte Entscheidung bleibt „irgendwo im Programm“. Eine andere Person versteht die Verantwortlichkeiten. Unterschiedliche Aufteilungen können diese Kriterien erfüllen; die Übereinstimmung mit einer Musterzeichnung ist nicht das Ziel.</p></details>
+      <p class="work-result"><strong>Ihr Ergebnis:</strong> Eine eigene Entwurfsskizze mit Namen, Datenfluss und einer begründeten Entscheidung zwischen zwei Varianten. Überarbeiten ist erlaubt und erwünscht!</p>
+    </section>
     <nav aria-label="Seitennavigation"><ul class="navlinks">
       <li><a href="01-aufgabe-verstehen.html">← Zurück: Die Aufgabe verstehen</a></li>
       <li><a href="03-schnittstellen-vereinbaren.html">Weiter: Schnittstellen vereinbaren →</a></li>
