@@ -1,42 +1,162 @@
 <!doctype html>
-<html lang="de">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>C-Lernwerkstatt · Grundlagencheck</title>
-  <link rel="stylesheet" href="../kurs.css">
-</head>
-<body>
-  <a class="skip" href="#inhalt">Zum Inhalt</a>
-  <main id="inhalt">
-    <p><a href="../uebersicht.html#woche-3">← Zur Kursübersicht</a></p>
-    <header>
-      <p class="eyebrow">Termin 3.2</p>
-      <h1>Grundlagencheck</h1>
-      <span class="status">Material in Vorbereitung</span>
-    </header>
-    <section class="content-section" aria-labelledby="ziele">
-      <h2 id="ziele">Lernziele</h2>
-      <ul>
-      <li>Variablen, Datentypen, Bedingungen, Schleifen und Funktionen verbinden.</li>
-      <li>Eine vorbereitete Aufgabenstellung innerhalb von 90 Minuten selbstständig bearbeiten.</li>
-      <li>Unsicherheiten erkennen und bis zur folgenden Woche gezielt wiederholen.</li>
-      </ul>
-    </section>
-    <section class="content-section" aria-labelledby="einfuehrung">
-      <h2 id="einfuehrung">Einführung und Materialien</h2>
-      <p>Die Einführung und die zugehörigen Materialien werden hier ergänzt.</p>
-    </section>
-    <section class="content-section" aria-labelledby="aufgaben">
-      <h2 id="aufgaben">Aufgaben</h2>
-      <p>Aufgabenstellung, Voraussetzungen und erwartetes Ergebnis werden hier ergänzt.</p>
-    </section>
-    <section class="content-section" aria-labelledby="hinweise">
-      <h2 id="hinweise">Hinweise und Selbstcheck</h2>
-      <p>Hier folgen abgestufte Hinweise und Fragen zur Überprüfung Ihres Verständnisses.</p>
-    </section>
-    <aside class="notice"><p>Dieser 90-Minuten-Check dient der Lernstandsbestimmung. Die konkrete Aufgabenstellung wird vor dem Termin festgelegt. Der Kursabschluss ist unbenotet.</p></aside>
-    <footer><a href="../uebersicht.html#woche-3">Zur Kursübersicht</a></footer>
-  </main>
-</body>
-</html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Lernstandscheck I – Das Zahlenschloss · Programmierung in C</title><link rel="stylesheet" href="../kurs.css"><style>pre {padding:16px 18px;background:#f1f3f8;border:1px solid var(--line);border-radius:6px;overflow-x:auto;line-height:1.55} code {font-family:ui-monospace,SFMono-Regular,Consolas,monospace} .table-wrap {overflow-x:auto} table {width:100%;border-collapse:collapse;margin:12px 0 18px} th,td {padding:10px 12px;border:1px solid var(--line);text-align:left;vertical-align:top} th {background:#f1f3f8} h3 {margin-top:24px} @media print {body {max-width:none;margin:0;background:white;padding:0;font-size:11pt} .content-section {border:0;padding:0;margin:16px 0} pre,table {break-inside:avoid} .skip,.back,.next-task {display:none} h2,h3 {break-after:avoid}}</style></head><body><a class="skip" href="#inhalt">Zum Inhalt</a><main id="inhalt"><header><h1>Lernstandscheck I – Das Zahlenschloss</h1></header>
+<p>Sie entwickeln ein kleines Spiel für das Terminal. Vor Ihnen liegt ein Zahlenschloss mit einem dreistelligen Geheimcode. Sie haben insgesamt acht Versuche, um es zu öffnen. Sie können einen Code eingeben, einen Hinweis kaufen oder Ihren aktuellen Stand anzeigen lassen.</p>
+<section class="content-section" aria-labelledby="teil-0"><h2 id="teil-0">Lernziele</h2>
+<ul>
+<li>Variablen, Berechnungen, Bedingungen, Schleifen und Funktionen zu einem vollständigen Programm verbinden.</li>
+<li>Eine Aufgabe in sinnvolle Teilaufgaben zerlegen und passende Schnittstellen festlegen.</li>
+<li>Rückgabewerte verwenden und einen Fehlerwert beim Aufrufer überprüfen.</li>
+<li>Das Programm mit selbst gewählten Fällen prüfen und Fehler systematisch eingrenzen.</li>
+</ul>
+</section><section class="content-section" aria-labelledby="teil-1"><h2 id="teil-1">Materialien</h2>
+<p><a href="materialien/zahlenschloss-start.zip" download="zahlenschloss-start.zip">Startdatei, Makefile und Testdatei herunterladen</a>. Entpacken Sie das gesamte Archiv und öffnen Sie <code>tresor.c</code> in Ihrer IDE. Alternativ können Sie im entpackten Ordner <code>make</code> und danach <code>./tresor</code> ausführen. Nach Änderungen müssen Sie erneut übersetzen.</p>
+<p>Die gesamte Umsetzung bleibt in <strong>einer C-Datei</strong>. Die Tastatureingaben mit <code>scanf</code> schreiben Sie selbst. Eigene Header, Arrays und zusätzliche Bibliotheken sind für Ihre Lösung nicht erforderlich.</p></section><section class="content-section" aria-labelledby="teil-2"><h2 id="teil-2">Spielregeln</h2>
+<p>Der Geheimcode ist eine ganze Zahl von <strong>100 bis 999</strong>. Er wird im Programm festgelegt und zu Beginn nicht ausgegeben. Ziffern dürfen mehrfach vorkommen. Verwenden Sie zunächst den vorgegebenen Geheimcode <strong>427</strong>, damit die automatischen Tests funktionieren. Erst wenn diese Tests bestanden sind, dürfen Sie den Geheimcode nach Belieben innerhalb des gültigen Bereichs ändern. Für die bereitgestellten automatischen Tests stellen Sie ihn wieder auf 427. Die Spiellogik soll für jeden zulässigen Geheimcode funktionieren.</p>
+<p>Das Menü bietet diese vier Möglichkeiten:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Auswahl</th>
+<th>Aktion</th>
+<th>Kosten</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Einen Code eingeben</td>
+<td>Ein Versuch für einen gültigen Code</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Einen Hinweis kaufen</td>
+<td>Ein Versuch bei jedem Aufruf</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Den Status anzeigen</td>
+<td>Kein Versuch</td>
+</tr>
+<tr>
+<td>0</td>
+<td>Das Spiel beenden</td>
+<td>Kein Versuch</td>
+</tr>
+</tbody></table></div>
+<h3>Code eingeben</h3>
+<p>Nach Auswahl 1 wird ein Code eingelesen. Zulässig sind Zahlen von 100 bis 999. Eine Zahl außerhalb dieses Bereichs wird mit einer Meldung abgewiesen. Sie verbraucht keinen Versuch und zählt nicht als gültige Codeeingabe.</p>
+<p>Für einen gültigen Code verbrauchen Sie einen Versuch und geben aus, wie viele Ziffern <strong>an derselben Position</strong> mit dem Geheimcode übereinstimmen. Eine richtige Ziffer an einer anderen Position zählt nicht.</p>
+<p>Beispiele bei Geheimcode <code>427</code>:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Eingabe</th>
+<th>Rückmeldung</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>417</td>
+<td>2 Ziffern an der richtigen Stelle</td>
+</tr>
+<tr>
+<td>472</td>
+<td>1 Ziffer an der richtigen Stelle</td>
+</tr>
+<tr>
+<td>724</td>
+<td>1 Ziffer an der richtigen Stelle</td>
+</tr>
+<tr>
+<td>427</td>
+<td>3 Ziffern an der richtigen Stelle – gewonnen</td>
+</tr>
+</tbody></table></div>
+<h3>Einen Hinweis kaufen</h3>
+<p>Der Hinweis verrät die <strong>Summe der drei Ziffern des Geheimcodes</strong>. Bei <code>427</code> ist das <code>4 + 2 + 7 = 13</code>. Jeder Aufruf kostet einen Versuch, auch wenn derselbe Hinweis schon einmal angezeigt wurde. Ein Hinweis zählt nicht als Codeeingabe.</p>
+<h3>Status anzeigen</h3>
+<p>Zeigen Sie die verbleibenden Versuche und die Anzahl der bisher gültigen Codeeingaben an. Zu Beginn sind das acht verbleibende Versuche und null gültige Codeeingaben. Hinweise und ungültige Eingaben erhöhen die Zahl der gültigen Codeeingaben nicht.</p>
+<h3>Spielende und ungültige Auswahl</h3>
+<ul>
+<li>Der exakt richtige Code öffnet das Schloss sofort. Das gilt auch beim letzten verbleibenden Versuch.</li>
+<li>Sind alle Versuche verbraucht und wurde der Code nicht gefunden, bleibt das Schloss gesperrt und das Spiel endet.</li>
+<li>Auswahl 0 beendet das Spiel unmittelbar mit einer passenden Meldung.</li>
+<li>Andere ganzzahlige Menüauswahlen werden abgewiesen und verbrauchen keinen Versuch.</li>
+<li>Nach einem Spielende werden keine weiteren Aktionen ausgeführt und das Menü erscheint nicht erneut.</li>
+</ul>
+</section><section class="content-section" aria-labelledby="teil-3"><h2 id="teil-3">Aufgaben</h2>
+<h3>a) Das Programm planen</h3>
+<p>Notieren Sie sinnvolle Teilaufgaben. Halten Sie für Ihre geplanten Funktionen Aufgaben, Parameter mit Datentypen und Rückgabetypen fest. Überlegen Sie, welche Werte über mehrere Menüdurchläufe erhalten bleiben müssen und welche Größe konstant ist.</p>
+<p>Planen Sie eine gemeinsame, selbst geschriebene Hilfsfunktion, die von mindestens zwei anderen selbst geschriebenen Funktionen für eine tatsächlich benötigte Teilaufgabe genutzt wird.</p>
+<h3>b) Funktionen implementieren</h3>
+<p>Setzen Sie Ihre geplanten Funktionen oberhalb von <code>main</code> um. Verwenden Sie Rückgabewerte für berechnete Ergebnisse. Mindestens eine selbst geschriebene Funktion soll eine ungültige Eingabe mit einem unterscheidbaren Fehlerwert zurückmelden. Der aufrufende Programmteil muss diesen Wert prüfen und den Fehler behandeln, bevor er mit dem Ergebnis weiterarbeitet.</p>
+<p>Schreiben Sie außerdem mindestens eine eigene Ausgabefunktion mit Rückgabetyp <code>void</code>. Sie soll die ihr übergebenen Daten anzeigen. Sie müssen nicht jeden Ausgabebefehl in eine eigene Funktion verlagern.</p>
+<h3>c) Den vollständigen Spielablauf umsetzen</h3>
+<p>Verbinden Sie Menü, Eingaben, Funktionen und Spielzustand durch eine geeignete Schleife. Setzen Sie sämtliche Spielregeln um. Das Spiel soll nach einer normalen Aktion zum Menü zurückkehren, solange weder gewonnen noch abgebrochen wurde und noch Versuche vorhanden sind.</p>
+<p>Die Gestaltung Ihres Menüs und zusätzliche verständliche Texte sind frei. Verwenden Sie für die geprüften Ergebnisse die Ausgabezeilen im folgenden Abschnitt, damit die automatischen Tests Ihre Ergebnisse erkennen können. Namen und Aufteilung Ihrer Funktionen wählen Sie selbst.</p>
+<h3>d) Eigene Testfälle durchführen und Fehler untersuchen</h3>
+<p>Wählen Sie mindestens sechs aussagekräftige Testfälle. Halten Sie jeweils Ausgangszustand, Eingaben, erwartetes und tatsächliches Ergebnis fest. Berücksichtigen Sie normale Abläufe, Grenzfälle und ungültige Eingaben.</p>
+<p>Bei einer Abweichung können Sie vorübergehend Diagnoseausgaben ergänzen. Beschreiben Sie mindestens eine untersuchte Abweichung und die erneute Prüfung nach der Korrektur. Falls Sie keine Abweichung finden, dokumentieren Sie stattdessen eine gezielte Prüfung eines selbst gewählten Verdachts. Entfernen oder deaktivieren Sie anschließend die vorübergehenden Diagnoseausgaben. Reguläre Rückmeldungen über ungültige Eingaben bleiben erhalten.</p>
+</section><section class="content-section" aria-labelledby="teil-4"><h2 id="teil-4">Automatisch testen</h2>
+<p>Im Startmaterial liegen <code>tresor.c</code>, ein fertiges Makefile und <code>test_tresor.py</code>. Die Testdatei startet Ihr vollständiges Programm, spielt Eingabefolgen durch und prüft die Ausgaben. Sie müssen weder die Testdatei bearbeiten noch dafür bestimmte eigene Funktionsnamen verwenden.</p>
+<p>Starten Sie nach Ihrer Umsetzung im Aufgabenordner:</p>
+<pre><code class="language-sh">make test
+</code></pre>
+<p>Dafür werden der C-Compiler, <code>make</code> und Python 3 benötigt. Alternativ können Sie Ihr Programm in der IDE übersetzen und im Terminal <code>python3 test_tresor.py PFAD_ZUM_PROGRAMM</code> ausführen. Verwenden Sie den Pfad zur ausführbaren Datei, nicht zur C-Quelldatei. Die Testdatei selbst wird nicht mit dem C-Compiler übersetzt.</p>
+<p>Damit die Prüfung unabhängig von Ihrem Menü funktioniert, geben Sie diese Ergebniszeilen aus. <code>N</code> steht jeweils für die berechnete ganze Zahl und wird durch diese ersetzt:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Situation</th>
+<th>Ausgabe</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Nach einer gültigen Codeeingabe</td>
+<td><code>Treffer: N</code></td>
+</tr>
+<tr>
+<td>Beim Hinweis</td>
+<td><code>Hinweis: N</code></td>
+</tr>
+<tr>
+<td>Beim Status, erste Zeile</td>
+<td><code>Versuche: N</code></td>
+</tr>
+<tr>
+<td>Beim Status, zweite Zeile</td>
+<td><code>Tipps: N</code></td>
+</tr>
+<tr>
+<td>Richtiger Code</td>
+<td><code>GEWONNEN</code></td>
+</tr>
+<tr>
+<td>Alle Versuche ohne Sieg verbraucht</td>
+<td><code>GESPERRT</code></td>
+</tr>
+<tr>
+<td>Abbruch mit Menüauswahl 0</td>
+<td><code>BEENDET</code></td>
+</tr>
+<tr>
+<td>Unzulässiger Code oder unbekannte Menüauswahl</td>
+<td><code>UNGUELTIG</code></td>
+</tr>
+</tbody></table></div>
+<p>Nach dem Schlüsselwort <code>UNGUELTIG</code> dürfen Sie eine zusätzliche Erklärung ergänzen. Nach einem richtigen Tipp geben Sie zunächst die Trefferzahl und anschließend die Gewinnmeldung aus. Beim Status erscheinen beide Zeilen. Drucken Sie keine Ergebnis-Schlüsselwörter vorsorglich in Ihrem Menü oder in Diagnoseausgaben ab.</p>
+<p>Die Tests sind eine zusätzliche Kontrolle. Ihre eigenen begründeten Testfälle aus Aufgabe d bleiben Teil der Abgabe. Die leere Startdatei besteht die Tests noch nicht.</p>
+</section><section class="content-section" aria-labelledby="teil-5"><h2 id="teil-5">Eingaben prüfen</h2>
+<p>Lesen Sie Menüauswahl und geratenen Code mit <code>scanf</code> als ganze Zahlen vom Typ <code>int</code> ein. Prüfen Sie den <strong>Rückgabewert des scanf-Aufrufs</strong>: Beim Einlesen einer einzelnen Ganzzahl muss er <code>1</code> sein. Die <code>1</code> bedeutet, dass ein Wert erfolgreich eingelesen und gespeichert wurde.</p>
+<p>Falls keine Zahl eingelesen wurde, geben Sie <code>UNGUELTIG</code> aus und beenden Sie das Programm mit <code>return 1;</code>.</p>
+<p>Prüfen Sie bei einem eingelesenen Code außerdem den erlaubten Bereich <strong>100 bis 999</strong>. Eine ganze Zahl außerhalb dieses Bereichs wird wie in den Spielregeln beschrieben abgewiesen und verbraucht keinen Versuch.</p>
+</section><section class="content-section" aria-labelledby="teil-6"><h2 id="teil-6">Abgabe und eigene Prüfung</h2>
+<p>Geben Sie Ihre <code>tresor.c</code>, Ihren Funktionsplan und Ihr Testprotokoll ab. Eine Textdatei oder ein lesbares Foto Ihres Plans genügt ebenfalls. Halten Sie kurz fest, welche Teile funktionieren und was gegebenenfalls noch offen ist.</p>
+<p>Prüfen Sie vor der Abgabe:</p>
+<ul>
+<li>Lässt sich die Datei neu übersetzen und starten?</li>
+<li>Stimmen Verbrauch der Versuche und Anzahl gültiger Codeeingaben?</li>
+<li>Werden berechnete Ergebnisse und Fehlerwerte unterschieden und geprüft?</li>
+<li>Wird Ihre gemeinsame Hilfsfunktion an mindestens zwei sinnvollen Stellen verwendet?</li>
+<li>Endet das Spiel bei Gewinn, gesperrtem Schloss oder Abbruch wie vorgesehen?</li>
+<li>Sind Ihre Testfälle und Ergebnisse nachvollziehbar festgehalten?</li>
+</ul>
+</section></main></body></html>
