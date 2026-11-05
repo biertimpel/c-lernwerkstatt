@@ -1,4 +1,4 @@
-# Startmaterial: Vom Problem zum Programm
+# Startmaterial: Vom Problem zum Programm I
 
 Dieses Material gibt keine fachliche Architektur und keine fertige Lösung vor.
 Entwickeln Sie Ihre eigenen Funktionen in `programm.c`. Verwenden Sie diesen
