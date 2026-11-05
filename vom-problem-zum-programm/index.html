@@ -3,49 +3,223 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Programmierung in C · Vom Problem zum Programm</title>
-  <link rel="stylesheet" href="../kurs.css">
-  <link rel="stylesheet" href="kapitel.css">
+  <title>C-Lernwerkstatt · Vom Problem zum Programm</title>
+  <link rel="stylesheet" href="kurs.css">
+  <link rel="stylesheet" href="selbstkontrollen.css">
+  <style>.spielbild { margin: 24px 0; } .spielbild img { display: block; width: 100%; height: auto; } .spielbild figcaption { margin-top: 10px; color: var(--muted); font-size: 14px; }</style>
+  <script src="selbstkontrollen.js" defer></script>
 </head>
 <body>
   <a class="skip" href="#inhalt">Zum Inhalt</a>
   <main id="inhalt">
-    <p><a href="../uebersicht.html#block-2">← Zur Kursübersicht</a></p>
-    <header>
-      <h1>Vom Problem zum Programm</h1>
-      <p>Probleme zerlegen, Lösungen entwerfen und selbstständig umsetzen.</p>
-    </header>
-    <section class="content-section" aria-labelledby="ziele">
-      <h2 id="ziele">Vom Umsetzen zum eigenen Entwurf</h2>
-      <p>Sie kennen Variablen, Bedingungen, Schleifen, Funktionen und erste Techniken zur Fehlersuche. Bisher waren viele Arbeitsschritte vorgegeben. Jetzt entscheiden Sie selbst, welche Teilaufgaben eine Beschreibung enthält, welche Daten zwischen ihnen fließen und wie Ihre Lösung wächst.</p>
-      <p>Diese Vorgehensweise ist unabhängig von C. Wir setzen sie hier mit C um. Mit „Architektur“ meinen wir zunächst die Verantwortlichkeiten und Schnittstellen Ihrer Programmteile, nicht eine bestimmte Anzahl an Dateien.</p>
-      <ul><li>Anforderungen klären und mit Beispielen überprüfbar machen.</li><li>Eine begründete eigene Zerlegung mit verständlichen Schnittstellen entwickeln.</li><li>Eine kleine vollständige Lösung bauen und auf Änderungen reagieren.</li><li>Mit selbst entworfenen Tests prüfen und Entscheidungen erklären.</li></ul>
-      <p>Auf Seite 5 üben Sie außerdem Refactoring: Sie verbessern eine selbst gewählte Stelle Ihrer getesteten Implementierung, ohne das Verhalten zu ändern. Erst danach ergänzen Sie eine neue Anforderung. Dabei unterscheiden Sie strukturelle Verbesserung, Erweiterung und Fehlerkorrektur.</p>
-      <p>Das Kapitel knüpft an <a href="../funktionen-debugging/01-programmzerlegung.html">Programmzerlegung</a> an, gibt diesmal aber keine fachlichen Funktionsnamen oder Implementierungsreihenfolge vor. Ein einmaliger perfekter Plan ist nicht das Ziel: Entwerfen, Ausprobieren und Überarbeiten gehören zusammen.</p>
-    </section>
-    <section class="content-section" aria-labelledby="unterseiten">
-      <h2 id="unterseiten">Unterseiten</h2>
-      <ol>
-        <li><a href="01-aufgabe-verstehen.html">Die Aufgabe verstehen</a></li>
-        <li><a href="02-teilaufgaben-finden.html">Teilaufgaben und Verantwortlichkeiten finden</a></li>
-        <li><a href="03-schnittstellen-vereinbaren.html">Schnittstellen vereinbaren</a></li>
-        <li><a href="04-erste-version.html">Eine erste vollständige Version bauen</a></li>
-        <li><a href="05-erweitern-und-ueberarbeiten.html">Anforderungen erweitern, Entwurf überprüfen</a></li>
-        <li><a href="06-pruefen-und-uebergeben.html">Prüfen, erklären und übergeben</a></li>
-      </ol>
-    </section>
-    <section class="content-section" aria-labelledby="messstation">
-      <h2 id="messstation">Ihr durchgehendes Programm: Eine Messstation</h2>
-      <p>Sie entwickeln einen Temperatur-Messdatenprüfer: von einer einzelnen Messung bis zur Auswertung einer Reihe. Später soll das Programm zusätzlich einen gewünschten Temperaturbereich berücksichtigen. Nutzen Sie auf allen Seiten dieselbe <code>programm.c</code> und Ihr Makefile weiter. Sichern Sie getestete Zwischenstände.</p>
-      <p>Die Aufgaben geben fachliche Regeln und beobachtbares Verhalten vor. Zerlegung, Funktionsnamen, Schnittstellen und Umsetzungsetappen entwickeln Sie selbst. Erst nach Ihrer eigenen Planung verwenden Sie das <a href="materialien/messstation.zip" download>Startmaterial (ZIP)</a>: ein leeres Programm, fertiges Makefile und ein reiner Eingabebaustein, der keine Messwerte bewertet.</p>
-      <p>Alle Temperaturen sind ganze Grad Celsius. Eingabe und Berichtsformat sind auf den jeweiligen Seiten festgelegt beziehungsweise von Ihnen zu dokumentieren.</p>
-    </section>
-    <section class="content-section" aria-labelledby="arbeitsweise">
-      <h2 id="arbeitsweise">So arbeiten Sie mit dem Kapitel</h2>
-      <p>Halten Sie Ihre Anforderungen, Entwurfsskizze, Schnittstellen, Tests und Änderungen in einer eigenen kurzen Projektnotiz fest. Es gibt keine vorgeschriebene Vorlage. Notieren Sie Erwartungen vor dem Ausführen. Tests beginnen auf der ersten Seite, nicht erst am Ende.</p>
-      <p>Die aufklappbaren Hilfen enthalten Denkfragen und Prüfkriterien, aber keine verbindliche Musterarchitektur. Unterschiedliche Entwürfe sind möglich und sogar erwünscht. Lassen Sie eine andere Person erklären, wie sie Ihren Baustein verwenden würde; Unklarheiten in dieser Erklärung sind wertvolle Hinweise.</p>
-    </section>
-    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+<header><h1>Vom Problem zum Programm</h1>
+<p>In Block 1 haben Sie bereits Programme in Teilaufgaben zerlegt und eigene Funktionen entwickelt. Jetzt betrachten Sie ein größeres Vorhaben: In den kommenden Kapiteln entsteht schrittweise ein kleines Spiel.</p>
+<p>Bevor Sie einzelne Bestandteile programmieren, machen Sie sich mit dem Ziel vertraut und entwickeln einen ersten eigenen Plan. Dabei arbeiten Sie mit Ihrem bisherigen Wissen. Neue Konzepte aus den folgenden Kapiteln müssen Sie noch nicht beherrschen.</p>
+</header>
+<section class="content-section" aria-labelledby="zielbild">
+<h2 id="zielbild">Das Zielbild: Ein Tresorraub</h2>
+<p>Sie steuern eine Spielfigur durch einen Raum und versuchen, die Beute aus einem Tresor zum Ausgang zu bringen. Dabei müssen Sie Hindernisse überwinden und den Wächtern ausweichen.</p>
+<p>Das Spielfeld wird von oben dargestellt. Es besteht aus einzelnen Feldern. Die Spielfigur kann sich jeweils ein Feld nach oben, unten, links oder rechts bewegen. Diagonale Bewegungen sind nicht vorgesehen.</p>
+<p>Wände verhindern das Durchgehen. Auch der Rand des Spielfelds darf nicht überschritten werden. Ist eine Bewegung blockiert, bleibt die Figur an ihrer bisherigen Position.</p>
+<p>Eine verschlossene Tür versperrt den Weg zum Tresor. Im Raum liegt ein Schlüssel. Wenn die Spielfigur das Schlüsselfeld betritt, nimmt sie ihn automatisch auf und trägt ihn im Inventar mit sich. Mit diesem Schlüssel kann sie die Tür aufschließen und öffnen. Das geschieht beim Betreten des Türfelds. Der Schlüssel wird dabei verbraucht und verschwindet aus dem Inventar. Die geöffnete Tür bleibt anschließend offen und kann ohne weiteren Schlüssel passiert werden.</p>
+<p>Die Wächter bleiben an ihren Positionen stehen. Jeder Wächter besitzt einen festgelegten Überwachungsbereich, der auf dem Spielfeld sichtbar markiert ist. Steht die Spielfigur nach einer Bewegung oder nach dem Warten in einem solchen Bereich, wird sie entdeckt und das Spiel endet. Auch das Feld eines Wächters gehört zu seinem Überwachungsbereich. Für dieses vereinfachte Spiel gelten die markierten Bereiche unabhängig davon, ob eine Wand dazwischenliegt.</p>
+<p>Beim Betreten des Tresorfelds nimmt die Figur die Beute automatisch auf. Die Beute erscheint anschließend im Inventar. Danach muss sie zum Ausgang zurückkehren. Erst wenn sie den Ausgang mit der Beute erreicht, ist das Spiel gewonnen. Den Ausgang vorher zu betreten, beendet das Spiel nicht.</p>
+<p>Eine zusätzliche Münze kann eingesammelt werden. Sie ist für den Sieg nicht erforderlich.</p>
+<p>Für den gesamten Raub stehen <strong>60 Züge</strong> zur Verfügung:</p>
+<ul>
+<li>Eine erfolgreiche Bewegung verbraucht einen Zug.</li>
+<li>Warten verbraucht ebenfalls einen Zug.</li>
+<li>Eine blockierte Bewegung verbraucht keinen Zug.</li>
+<li>Unbekannte Eingaben verändern den Spielzustand nicht und verbrauchen keinen Zug.</li>
+<li>Das bloße Anzeigen des Spielzustands verbraucht keinen Zug.</li>
+</ul>
+<p>Wird die Figur entdeckt oder erreicht sie den Ausgang nicht rechtzeitig mit der Beute, ist das Spiel verloren. Ein erfolgreicher Abschluss im 60. Zug zählt noch als Sieg.</p>
+<p>Die grafische Darstellung soll Positionen und Veränderungen nachvollziehbar anzeigen: Ein aufgenommener Gegenstand verschwindet vom Spielfeld und erscheint im Inventar. Eine geöffnete Tür sieht anders aus als eine verschlossene. Gewinn und Niederlage werden erkennbar dargestellt.</p>
+<figure class="spielbild"><img src="bilder/tresorraub-spielstand.png" width="1536" height="1024" alt="Draufsicht auf einen Spielstand des Tresorraubs. Die Spielfigur befindet sich außerhalb der schraffierten Überwachungsbereiche. Die Tür ist geöffnet und die Beute wird im Inventar angezeigt. Eine Legende erklärt die Piktogramme."><figcaption>Beispielhafter Spielstand: Die Tür ist geöffnet, die Beute liegt im Inventar. Der Ausgang ist noch nicht erreicht.</figcaption></figure>
+</section>
+<section class="content-section" aria-labelledby="aufgabe-verstehen">
+<h2 id="aufgabe-verstehen">a) Die Aufgabenstellung verstehen</h2>
+<p>Überprüfen Sie zunächst, ob Sie die Spielregeln verstanden haben. Wählen Sie bei jeder Frage alle zutreffenden Antworten aus. Eine oder mehrere Antworten können richtig sein.</p>
+<noscript><p>Ohne JavaScript können Sie Ihre Antworten mit den aufklappbaren Rückmeldungen selbst prüfen.</p></noscript>
+<form class="self-check" id="frage-1" data-hint="Lesen Sie noch einmal, was nach dem Erreichen des Tresors geschehen muss.">
+<fieldset>
+<legend>1. Wann ist das Spiel gewonnen?</legend>
+<p>Eine oder mehrere Antworten können richtig sein.</p>
+<label><input type="checkbox" name="antwort" value="A"> A: Sobald die Spielfigur den Tresor erreicht.</label>
+<label><input type="checkbox" name="antwort" value="B" data-correct="true"> B: Sobald die Spielfigur den Ausgang mit der Beute erreicht.</label>
+<label><input type="checkbox" name="antwort" value="C"> C: Sobald die Spielfigur die Tür geöffnet hat.</label>
+</fieldset>
+<button type="submit" hidden>Antwort prüfen</button>
+<p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+<details><summary>Rückmeldung nach der Prüfung</summary><p>Richtig ist B. Das Erreichen des Tresors allein genügt nicht. Die Beute muss anschließend zum Ausgang gebracht werden.</p></details>
+</form>
+<form class="self-check" id="frage-2" data-hint="Vergleichen Sie die Bewegungsrichtungen und die Anzahl der Felder mit der Beschreibung.">
+<fieldset>
+<legend>2. Welche Bewegungen sind vorgesehen?</legend>
+<p>Eine oder mehrere Antworten können richtig sein.</p>
+<label><input type="checkbox" name="antwort" value="A" data-correct="true"> A: Ein Feld nach oben, unten, links oder rechts.</label>
+<label><input type="checkbox" name="antwort" value="B"> B: Ein Feld in eine beliebige Richtung, einschließlich diagonal.</label>
+<label><input type="checkbox" name="antwort" value="C"> C: Mehrere Felder bis zum nächsten Hindernis.</label>
+</fieldset>
+<button type="submit" hidden>Antwort prüfen</button>
+<p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+<details><summary>Rückmeldung nach der Prüfung</summary><p>Richtig ist A. Eine Bewegung führt genau auf ein benachbartes Feld in einer der vier vorgesehenen Richtungen.</p></details>
+</form>
+<form class="self-check" id="frage-3" data-hint="Achten Sie auf den Unterschied zwischen einer erfolgreichen und einer blockierten Bewegung.">
+<fieldset>
+<legend>3. Was passiert bei einem Bewegungsversuch durch eine Wand oder über den Spielfeldrand hinaus?</legend>
+<p>Eine oder mehrere Antworten können richtig sein.</p>
+<label><input type="checkbox" name="antwort" value="A"> A: Die Figur bleibt stehen und verbraucht einen Zug.</label>
+<label><input type="checkbox" name="antwort" value="B"> B: Die Figur wird an die gegenüberliegende Seite versetzt.</label>
+<label><input type="checkbox" name="antwort" value="C" data-correct="true"> C: Die Figur bleibt stehen und verbraucht keinen Zug.</label>
+</fieldset>
+<button type="submit" hidden>Antwort prüfen</button>
+<p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+<details><summary>Rückmeldung nach der Prüfung</summary><p>Richtig ist C. Das Ziel ist nicht erreichbar. Position und Zugzahl bleiben unverändert.</p></details>
+</form>
+<form class="self-check" id="frage-4" data-hint="Unterscheiden Sie die Aufnahme des Schlüssels vom späteren Öffnen der Tür.">
+<fieldset>
+<legend>4. Was geschieht beim Betreten des Schlüsselfelds?</legend>
+<p>Eine oder mehrere Antworten können richtig sein.</p>
+<label><input type="checkbox" name="antwort" value="A" data-correct="true"> A: Der Schlüssel wird automatisch aufgenommen.</label>
+<label><input type="checkbox" name="antwort" value="B" data-correct="true"> B: Der Schlüssel wird im Inventar mitgeführt.</label>
+<label><input type="checkbox" name="antwort" value="C"> C: Die Tür öffnet sich sofort, unabhängig von der Position der Figur.</label>
+</fieldset>
+<button type="submit" hidden>Antwort prüfen</button>
+<p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+<details><summary>Rückmeldung nach der Prüfung</summary><p>Richtig sind A und B. Der Schlüssel wird aufgenommen und mitgeführt. Die Tür wird erst beim späteren Betreten ihres Felds geöffnet.</p></details>
+</form>
+<form class="self-check" id="frage-5" data-hint="Prüfen Sie einzeln, was vor dem ersten Öffnen und nach dem Öffnen der Tür gilt.">
+<fieldset>
+<legend>5. Welche Aussagen über die Tür stimmen?</legend>
+<p>Eine oder mehrere Antworten können richtig sein.</p>
+<label><input type="checkbox" name="antwort" value="A" data-correct="true"> A: Ohne Schlüssel bleibt die verschlossene Tür unpassierbar.</label>
+<label><input type="checkbox" name="antwort" value="B" data-correct="true"> B: Beim ersten Öffnen wird der Schlüssel verbraucht.</label>
+<label><input type="checkbox" name="antwort" value="C" data-correct="true"> C: Nach dem Öffnen bleibt die Tür passierbar.</label>
+<label><input type="checkbox" name="antwort" value="D"> D: Für jedes erneute Durchgehen wird ein weiterer Schlüssel benötigt.</label>
+</fieldset>
+<button type="submit" hidden>Antwort prüfen</button>
+<p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+<details><summary>Rückmeldung nach der Prüfung</summary><p>Richtig sind A, B und C. Der Schlüssel wird einmalig zum Aufschließen und Öffnen verwendet. Die Tür bleibt danach offen.</p></details>
+</form>
+<form class="self-check" id="frage-6" data-hint="Lesen Sie nach, ob sich die Wächter bewegen und welche Felder sie überwachen.">
+<fieldset>
+<legend>6. Welche Aussagen über die Wächter stimmen?</legend>
+<p>Eine oder mehrere Antworten können richtig sein.</p>
+<label><input type="checkbox" name="antwort" value="A"> A: Sie bewegen sich nach jedem Zug auf die Spielfigur zu.</label>
+<label><input type="checkbox" name="antwort" value="B" data-correct="true"> B: Sie bleiben an ihren festgelegten Positionen.</label>
+<label><input type="checkbox" name="antwort" value="C" data-correct="true"> C: Sie entdecken die Figur innerhalb ihres markierten Überwachungsbereichs.</label>
+<label><input type="checkbox" name="antwort" value="D"> D: Ihr eigenes Feld kann gefahrlos betreten werden.</label>
+</fieldset>
+<button type="submit" hidden>Antwort prüfen</button>
+<p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+<details><summary>Rückmeldung nach der Prüfung</summary><p>Richtig sind B und C. Die Wächter stehen still. Ihr eigenes Feld gehört ebenfalls zum Überwachungsbereich.</p></details>
+</form>
+<form class="self-check" id="frage-7" data-hint="Unterscheiden Sie zwischen einer Aktion der Spielfigur und der Darstellung des Zustands.">
+<fieldset>
+<legend>7. Welche Aktionen verbrauchen einen Zug?</legend>
+<p>Eine oder mehrere Antworten können richtig sein.</p>
+<label><input type="checkbox" name="antwort" value="A" data-correct="true"> A: Eine erfolgreiche Bewegung.</label>
+<label><input type="checkbox" name="antwort" value="B"> B: Eine durch eine Wand blockierte Bewegung.</label>
+<label><input type="checkbox" name="antwort" value="C" data-correct="true"> C: Warten.</label>
+<label><input type="checkbox" name="antwort" value="D"> D: Das erneute Zeichnen des Spielfelds.</label>
+</fieldset>
+<button type="submit" hidden>Antwort prüfen</button>
+<p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+<details><summary>Rückmeldung nach der Prüfung</summary><p>Richtig sind A und C. Eine blockierte Bewegung und die reine Darstellung verändern den Zugzähler nicht.</p></details>
+</form>
+<form class="self-check" id="frage-8" data-hint="Prüfen Sie, ob ein erfolgreicher Abschluss im letzten verfügbaren Zug noch zählt.">
+<fieldset>
+<legend>8. Die Figur erreicht im 60. Zug mit der Beute den Ausgang und wird dabei nicht entdeckt. Was passiert?</legend>
+<p>Eine oder mehrere Antworten können richtig sein.</p>
+<label><input type="checkbox" name="antwort" value="A" data-correct="true"> A: Das Spiel ist gewonnen.</label>
+<label><input type="checkbox" name="antwort" value="B"> B: Das Spiel ist verloren, weil bereits 60 Züge verbraucht wurden.</label>
+<label><input type="checkbox" name="antwort" value="C"> C: Die Figur muss noch einen weiteren Zug warten.</label>
+</fieldset>
+<button type="submit" hidden>Antwort prüfen</button>
+<p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+<details><summary>Rückmeldung nach der Prüfung</summary><p>Richtig ist A. Ein erfolgreicher Abschluss im letzten verfügbaren Zug zählt noch als Sieg.</p></details>
+</form>
+<form class="self-check" id="frage-9" data-hint="Lesen Sie nach, ob eine unbekannte Eingabe den Spielzustand verändert.">
+<fieldset>
+<legend>9. Was soll eine unbekannte Eingabe bewirken?</legend>
+<p>Eine oder mehrere Antworten können richtig sein.</p>
+<label><input type="checkbox" name="antwort" value="A"> A: Sie verbraucht einen Zug, ohne die Figur zu bewegen.</label>
+<label><input type="checkbox" name="antwort" value="B" data-correct="true"> B: Sie verändert den Spielzustand nicht.</label>
+<label><input type="checkbox" name="antwort" value="C"> C: Sie beendet das Spiel sofort.</label>
+</fieldset>
+<button type="submit" hidden>Antwort prüfen</button>
+<p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+<details><summary>Rückmeldung nach der Prüfung</summary><p>Richtig ist B. Eine unbekannte Eingabe verändert weder Position noch Zugzahl.</p></details>
+</form>
+<form class="self-check" id="frage-10" data-hint="Unterscheiden Sie zusätzliche Gegenstände von den Voraussetzungen für einen Sieg.">
+<fieldset>
+<legend>10. Welche Rolle spielt die zusätzliche Münze?</legend>
+<p>Eine oder mehrere Antworten können richtig sein.</p>
+<label><input type="checkbox" name="antwort" value="A"> A: Sie ersetzt den Schlüssel.</label>
+<label><input type="checkbox" name="antwort" value="B"> B: Sie muss für den Sieg eingesammelt werden.</label>
+<label><input type="checkbox" name="antwort" value="C" data-correct="true"> C: Sie kann zusätzlich eingesammelt werden, ist aber keine Siegbedingung.</label>
+</fieldset>
+<button type="submit" hidden>Antwort prüfen</button>
+<p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+<details><summary>Rückmeldung nach der Prüfung</summary><p>Richtig ist C. Für den Sieg werden die Beute und das Erreichen des Ausgangs benötigt.</p></details>
+</form>
+</section>
+<section class="content-section" aria-labelledby="anforderungen">
+<h2 id="anforderungen">b) Anforderungen und Sonderfälle festhalten</h2>
+<p>Beschreiben Sie nun mit eigenen Worten, was das Spiel leisten muss.</p>
+<h3>Spielbestandteile und ihre Aufgaben</h3>
+<p>Notieren Sie, welche Bestandteile Sie in der Beschreibung erkennen. Halten Sie für jeden Bestandteil fest:</p>
+<ul>
+<li>Was muss er können oder bewirken?</li>
+<li>Welche Informationen sind dafür wichtig?</li>
+<li>Mit welchen anderen Bestandteilen hängt sein Verhalten zusammen?</li>
+</ul>
+<p>Betrachten Sie dabei sowohl die Dinge im Spiel als auch übergreifende Aufgaben des Programms.</p>
+<p>Ein Beispiel für einen Spielbestandteil ist die Spielfigur: Sie muss ihre Position verändern können. Überlegen Sie selbst, welche weiteren Anforderungen damit verbunden sind.</p>
+<p>Sie können Ihre Überlegungen als Stichpunkte, Skizze oder gegliederte Liste festhalten. C-Code ist hier noch nicht erforderlich.</p>
+<h3>Sonderfälle</h3>
+<p>Überlegen Sie anschließend, in welchen Situationen eine Aktion nicht wie im Normalfall ablaufen kann oder mehrere Regeln gleichzeitig eine Rolle spielen.</p>
+<p>Beschreiben Sie jeweils die Situation und das erwartete Verhalten des Spiels.</p>
+<p>Betrachten Sie beispielsweise einen Versuch, das Spielfeld zu verlassen. Ergänzen Sie weitere eigene Fälle. Prüfen Sie dabei auch das Zusammenspiel mehrerer Bestandteile.</p>
+</section>
+<section class="content-section" aria-labelledby="programmplan">
+<h2 id="programmplan">c) Einen ersten Programmplan entwickeln</h2>
+<p>Überlegen Sie, wie Sie die erkannten Aufgaben aufteilen würden.</p>
+<p>Halten Sie fest:</p>
+<ul>
+<li>Welche Aufgaben gehören aus Ihrer Sicht zusammen?</li>
+<li>Welcher Bestandteil sollte für welche Aufgabe verantwortlich sein?</li>
+<li>Welche Informationen müssen zwischen den Bestandteilen ausgetauscht werden?</li>
+<li>Welche Entscheidungen betreffen mehrere Bestandteile gleichzeitig?</li>
+</ul>
+<p>Skizzieren Sie außerdem, was aus Ihrer Sicht von einem Tastendruck bis zur sichtbaren Veränderung im Fenster geschehen muss.</p>
+<p>Sie dürfen dafür Ihre Kenntnisse über Funktionen aus Block 1 verwenden. Eine vollständige Liste fertiger Funktionsdefinitionen wird hier noch nicht erwartet.</p>
+<p><strong>Ihre Planung ist ein erster Entwurf auf Grundlage Ihres jetzigen Wissens. Es gibt für diese Aufgabe keine vorgegebene technische Lösung, die Sie bereits treffen müssen.</strong> Begründen Sie Ihre Überlegungen und kennzeichnen Sie offene Fragen.</p>
+</section>
+<section class="content-section" aria-labelledby="kapitel-einordnen">
+<h2 id="kapitel-einordnen">d) Die kommenden Kapitel einordnen</h2>
+<p>Sehen Sie sich die folgenden Kapitelüberschriften an:</p>
+<ul>
+<li>Datenstrukturen</li>
+<li>Pointer und Datenaustausch</li>
+<li>Header und Quelldateien</li>
+<li>Dynamischer Speicher und Listen</li>
+<li>Objektorientierung in C</li>
+<li>Makefiles</li>
+<li>Die Spielbausteine zusammenführen</li>
+<li>Datei-Ein- und -Ausgabe</li>
+</ul>
+<p>Überlegen Sie für jede Überschrift, welcher Teil Ihres geplanten Spiels dort behandelt oder erweitert werden könnte.</p>
+<p>Notieren Sie eine Vermutung und eine kurze Begründung. Wenn Ihnen eine Zuordnung noch nicht möglich ist, halten Sie stattdessen fest, welche Frage Sie zu diesem Kapitel haben.</p>
+<p><strong>Es geht nicht darum, alle Zuordnungen bereits richtig vorzunehmen.</strong> Sie müssen die neuen Begriffe noch nicht kennen oder sicher erklären können. Entscheidend ist, dass Sie Ihre bisherigen Vorstellungen festhalten.</p>
+</section>
+<section class="content-section" aria-labelledby="plan-aufbewahren">
+<h2 id="plan-aufbewahren">Ihren Plan für später aufbewahren</h2>
+<p>Bewahren Sie Ihren Entwurf einschließlich der offenen Fragen auf.</p>
+<p>In den folgenden Kapiteln werden Sie schrittweise durch einen möglichen Aufbau des Spiels geführt. Dabei lernen Sie neue Konzepte kennen und entwickeln die einzelnen Spielbestandteile. Ihre erste Planung muss deshalb nicht unverändert umgesetzt werden.</p>
+<p>Beim Zusammenführen der Spielbausteine greifen Sie Ihren Entwurf erneut auf und vergleichen Ihre ursprünglichen Vorstellungen mit dem tatsächlich entstandenen Programm.</p>
+</section>
   </main>
 </body>
 </html>
