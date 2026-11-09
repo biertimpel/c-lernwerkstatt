@@ -1,2 +1,9 @@
 /start/helloWorld.c
 /start/helloWorld.out
+
+# macOS-Metadaten
+.DS_Store
+
+# Kompilierte Programme aus den Lektionsmaterialien
+manpages/materialien/sdl2-start/programm
+manpages/materialien/sdl2-start/programm.exe

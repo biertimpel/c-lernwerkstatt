@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tresorraub · Optionale Piktogramme</title>
+  <style>
+    body { max-width: 1000px; margin: 32px auto; padding: 0 20px; font: 16px/1.6 system-ui, sans-serif; color: #17253b; background: #f5f6f9; }
+    a { color: #244bcc; } code { overflow-wrap: anywhere; }
+    .motive { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+    figure { margin: 0; padding: 16px; background: white; border: 1px solid #d9dfe9; border-radius: 8px; }
+    img { display: block; width: 128px; height: 128px; margin: auto; image-rendering: pixelated; }
+    :focus-visible { outline: 3px solid #f2ab32; outline-offset: 4px; }
+  </style>
+</head>
+<body>
+  <h1>Optionale Piktogramme für den Tresorraub</h1>
+  <p>Alle Motive dürfen verwendet und angepasst werden. Eigene und übernommene Motive sind gleichwertig. Das Lernziel bleibt die begründete Verwendung einer recherchierten SDL2-Funktion.</p>
+  <p>Die <a href="piktogramme.h">Schnittstellen</a> und <a href="piktogramme.c">C-Beispiele</a> liegen direkt neben dieser Seite. Jeder Aufruf erhält Renderer, x, y und Skalierung. Ein Motiv besteht aus 16 × 16 Rasterzellen. Skalierung 4 ergibt 64 × 64 Pixel. Zulässig: Skalierung 1 bis 16, x/y jeweils −10000 bis 10000. Erfolg wird mit 0, ein Fehler negativ gemeldet. Einzelheiten stehen in der <a href="../README.md">Startanleitung</a>.</p>
+  <p><code>./programm --galerie</code> zeigt alle Motive im SDL2-Fenster in derselben Reihenfolge. Die Vorschauen stammen aus denselben Rasterdaten wie die C-Darstellung. Es werden keine Bilddateien vom C-Programm geladen.</p>
+  <div class="motive">
+    <figure><img src="vorschau/spielfigur_froh.svg" alt="Lächelnde blaue Figur"><figcaption>Spielfigur unentdeckt<br><code>zeichne_spielfigur_froh</code></figcaption></figure>
+    <figure><img src="vorschau/spielfigur_entdeckt.svg" alt="Traurige blaue Figur"><figcaption>Spielfigur entdeckt<br><code>zeichne_spielfigur_entdeckt</code></figcaption></figure>
+    <figure><img src="vorschau/waechter.svg" alt="Strenger Wächter mit Mütze"><figcaption>Wächter<br><code>zeichne_waechter</code></figcaption></figure>
+    <figure><img src="vorschau/schluessel.svg" alt="Goldener Schlüssel"><figcaption>Schlüssel<br><code>zeichne_schluessel</code></figcaption></figure>
+    <figure><img src="vorschau/tuer_geschlossen.svg" alt="Geschlossene braune Tür"><figcaption>Tür verschlossen<br><code>zeichne_tuer_geschlossen</code></figcaption></figure>
+    <figure><img src="vorschau/tuer_offen.svg" alt="Tür mit sichtbarem Durchgang"><figcaption>Tür offen<br><code>zeichne_tuer_offen</code></figcaption></figure>
+    <figure><img src="vorschau/tresor_geschlossen.svg" alt="Tresor mit Schloss"><figcaption>Tresor mit Beute<br><code>zeichne_tresor_geschlossen</code></figcaption></figure>
+    <figure><img src="vorschau/tresor_leer.svg" alt="Offene leere Tresorfläche"><figcaption>Tresor leer<br><code>zeichne_tresor_leer</code></figcaption></figure>
+    <figure><img src="vorschau/ausgang.svg" alt="Grünes Schild mit Pfeil"><figcaption>Ausgang<br><code>zeichne_ausgang</code></figcaption></figure>
+    <figure><img src="vorschau/muenze.svg" alt="Goldene Münze"><figcaption>Bonusmünze<br><code>zeichne_muenze</code></figcaption></figure>
+    <figure><img src="vorschau/wand.svg" alt="Graue Mauersteine"><figcaption>Wand<br><code>zeichne_wand</code></figcaption></figure>
+    <figure><img src="vorschau/boden.svg" alt="Heller Boden"><figcaption>Boden<br><code>zeichne_boden</code></figcaption></figure>
+    <figure><img src="vorschau/ueberwachung.svg" alt="Schraffur mit Ausrufezeichen"><figcaption>Überwachungsfeld<br><code>zeichne_ueberwachung</code></figcaption></figure>
+    <figure><img src="vorschau/beute.svg" alt="Drei gestapelte Goldbarren"><figcaption>Beute<br><code>zeichne_beute</code></figcaption></figure>
+  </div>
+  <p>Die Motive zeigen nur Zustände. Das Türbild öffnet noch keine Spieltür, das Überwachungsbild entdeckt noch keine Figur. Grafische Details und die Rastertechnik im vorbereiteten Baustein sind kein zusätzlicher Pflichtstoff.</p>
+</body>
+</html>

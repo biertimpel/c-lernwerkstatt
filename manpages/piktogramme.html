@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Piktogramme für den Tresorraub</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="04-fenster-gestalten.html">← Zur Programmieraufgabe</a></p>
+    <header><h1>Optionale Piktogramme für den Tresorraub</h1><p>Sie müssen kein eigenes Motiv entwerfen. Alle Beispiele dürfen unverändert verwendet und beliebig angepasst werden. Der Lernauftrag bleibt: eine verwendete SDL2-Funktion nachschlagen, erklären, ihren Fehlerindikator behandeln und einen sichtbaren Parameter selbst verändern.</p></header>
+    <section class="content-section" aria-labelledby="verwenden">
+      <h2 id="verwenden">Beispiele verwenden</h2>
+      <p><a href="materialien/sdl2-start.zip" download>Alle C-Beispiele und SVG-Vorschauen im Startmaterial herunterladen</a>. Die <a href="materialien/sdl2-start/piktogramme/piktogramme.h">Schnittstellen</a> und die <a href="materialien/sdl2-start/piktogramme/piktogramme.c">Implementierung</a> liegen unter <code>piktogramme/</code>. Das fertige Makefile bindet sie bereits ein. Mit <code>./programm --galerie</code> sehen Sie alle Motive im SDL2-Fenster, in der unten angegebenen Reihenfolge.</p>
+      <p>Jede Zeichenfunktion erwartet den bereitgestellten Renderer, x, y und eine Skalierung. x und y bezeichnen die linke obere Ecke des Motivs in logischen Pixeln. Die Skalierung ist die Anzahl Pixel pro Rasterzelle; 4 ergibt ein 64 × 64 großes Motiv. Zulässig sind Skalierungen 1 bis 16 und Koordinaten jeweils von −10000 bis 10000. Motive außerhalb des Zeichenbereichs können abgeschnitten oder unsichtbar sein, ohne dass dies ein SDL-Fehler ist.</p>
+      <p>In Ihrer Funktion <code>zeichne</code> können Sie zum Beispiel einen passenden Aufruf direkt zurückgeben. Dieses optionale Nutzungsbeispiel übernimmt sowohl Motiv als auch Fehlerweitergabe:</p>
+      <pre><code>return zeichne_schluessel(renderer, 120, 90, 6);</code></pre>
+      <p>Wählen Sie Motiv und Parameter selbst. Bei mehreren Aufrufen prüfen Sie jedes Ergebnis und geben einen Fehler unmittelbar weiter. Die Hilfsfunktionen verwenden <code>SDL_SetRenderDrawColor</code> und <code>SDL_RenderDrawLine</code>. Recherchieren Sie mindestens einen davon. Der interne Rasteraufbau ist vorbereitet und noch kein Pflichtstoff zu Arrays oder Pointern.</p>
+      <p>Die SVG-Vorschauen sind aus denselben Farb- und Rasterdaten erzeugt wie die C-Beispiele. Sie sind keine zu ladenden Spieltexturen: Die SDL-Fassung zeichnet die Motive selbst, ohne <code>SDL_image</code>, Schriftarten oder externe Bilddateien.</p>
+    </section>
+    <div class="piktogramme" aria-label="Motivsammlung">
+      <figure><img src="materialien/sdl2-start/piktogramme/vorschau/spielfigur_froh.svg" width="128" height="128" alt="Blaue Spielfigur mit lächelndem Gesicht"><figcaption><strong>1. Spielfigur, unentdeckt</strong><br><code>zeichne_spielfigur_froh</code></figcaption></figure>
+      <figure><img src="materialien/sdl2-start/piktogramme/vorschau/spielfigur_entdeckt.svg" width="128" height="128" alt="Blaue Spielfigur mit traurigem Gesicht"><figcaption><strong>2. Spielfigur, entdeckt</strong><br><code>zeichne_spielfigur_entdeckt</code></figcaption></figure>
+      <figure><img src="materialien/sdl2-start/piktogramme/vorschau/waechter.svg" width="128" height="128" alt="Wächter mit Mütze und strengem Gesicht"><figcaption><strong>3. Wächter</strong><br><code>zeichne_waechter</code></figcaption></figure>
+      <figure><img src="materialien/sdl2-start/piktogramme/vorschau/schluessel.svg" width="128" height="128" alt="Goldener Schlüssel mit Ring und Zähnen"><figcaption><strong>4. Schlüssel</strong><br><code>zeichne_schluessel</code></figcaption></figure>
+      <figure><img src="materialien/sdl2-start/piktogramme/vorschau/tuer_geschlossen.svg" width="128" height="128" alt="Geschlossene braune Tür mit Griff"><figcaption><strong>5. Verschlossene Tür</strong><br><code>zeichne_tuer_geschlossen</code></figcaption></figure>
+      <figure><img src="materialien/sdl2-start/piktogramme/vorschau/tuer_offen.svg" width="128" height="128" alt="Geöffnete Tür mit sichtbarem Durchgang"><figcaption><strong>6. Geöffnete Tür</strong><br><code>zeichne_tuer_offen</code></figcaption></figure>
+      <figure><img src="materialien/sdl2-start/piktogramme/vorschau/tresor_geschlossen.svg" width="128" height="128" alt="Geschlossener Tresor mit zentralem Schloss"><figcaption><strong>7. Tresor mit Beute</strong><br><code>zeichne_tresor_geschlossen</code></figcaption></figure>
+      <figure><img src="materialien/sdl2-start/piktogramme/vorschau/tresor_leer.svg" width="128" height="128" alt="Leerer Tresor mit offener dunkler Innenfläche"><figcaption><strong>8. Geleerter Tresor</strong><br><code>zeichne_tresor_leer</code></figcaption></figure>
+      <figure><img src="materialien/sdl2-start/piktogramme/vorschau/ausgang.svg" width="128" height="128" alt="Grünes Ausgangsschild mit weißem Richtungspfeil"><figcaption><strong>9. Ausgang</strong><br><code>zeichne_ausgang</code></figcaption></figure>
+      <figure><img src="materialien/sdl2-start/piktogramme/vorschau/muenze.svg" width="128" height="128" alt="Goldene Bonusmünze mit Zeichen"><figcaption><strong>10. Bonusmünze</strong><br><code>zeichne_muenze</code></figcaption></figure>
+      <figure><img src="materialien/sdl2-start/piktogramme/vorschau/wand.svg" width="128" height="128" alt="Dunkelgraue Mauersteine mit Fugen"><figcaption><strong>11. Wand</strong><br><code>zeichne_wand</code></figcaption></figure>
+      <figure><img src="materialien/sdl2-start/piktogramme/vorschau/boden.svg" width="128" height="128" alt="Heller Boden mit wenigen grauen Markierungen"><figcaption><strong>12. Boden</strong><br><code>zeichne_boden</code></figcaption></figure>
+      <figure><img src="materialien/sdl2-start/piktogramme/vorschau/ueberwachung.svg" width="128" height="128" alt="Schraffiertes Gefahrenfeld mit Ausrufezeichen"><figcaption><strong>13. Überwachungsbereich</strong><br><code>zeichne_ueberwachung</code></figcaption></figure>
+      <figure><img src="materialien/sdl2-start/piktogramme/vorschau/beute.svg" width="128" height="128" alt="Drei gestapelte Goldbarren"><figcaption><strong>14. Beute für das Inventar</strong><br><code>zeichne_beute</code></figcaption></figure>
+    </div>
+    <section class="content-section" aria-labelledby="aendern"><h2 id="aendern">Beobachten und verändern</h2><p>Die Namen beschreiben lediglich die Darstellung: Ein Türbild öffnet keine Spieltür, und ein Überwachungsbild erkennt keine Spielfigur. Beides wird erst später mit dem Spielzustand verbunden. Ein Bild zu verschieben ist deshalb noch keine implementierte Bewegung.</p><p>Alle Rastermotive sind eigens für dieses Kursmaterial erstellt und dürfen in den Kursprojekten verwendet werden. Transparente Rasterzellen lassen den Hintergrund unverändert; Linien, Gesichtsausdruck und Schraffur unterscheiden Zustände zusätzlich zur Farbe.</p><p>Die Farbwerte stehen in <code>piktogramme.c</code> in der Funktion <code>farbe_setzen</code> und dürfen für eigene Versuche geändert werden. Eine Änderung gilt für alle Motive, die diese Farbe verwenden.</p></section>
+    <footer><a href="04-fenster-gestalten.html">Zur Programmieraufgabe</a> · <a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>

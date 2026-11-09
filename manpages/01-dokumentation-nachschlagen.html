@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Dokumentation statt Kopiervorlage</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header><h1>Dokumentation statt Kopiervorlage</h1><p>Wie Sie Manpages und Bibliotheksreferenzen lesen und welche Dokumentation zu diesem Kurs gehört.</p></header>
+    <section class="content-section" aria-labelledby="abschnitt-1">
+      <h2 id="abschnitt-1">1. Manpages lesen</h2>
+      <p>Eine Manpage ist eine lokal verfügbare Handbuchseite. Mit <code>man 3 printf</code> öffnen Sie auf vielen Linux-/Unix-Systemen die C-Funktion statt des gleichnamigen Kommandozeilenbefehls <code>printf(1)</code>. Die Zahl bezeichnet den Handbuchabschnitt; Abschnitt 3 enthält Bibliotheksfunktionen. Die genaue Gliederung hängt vom System ab.</p>
+      <p><strong>Kurzer Einstieg:</strong> Finden Sie in der Beschreibung von <code>printf</code>, was der Rückgabewert bedeutet. Notieren Sie eine normale und eine Fehler-Rückgabe in eigenen Worten. Bei fehlenden lokalen Manpages verwenden Sie eine Referenz zur C-Bibliothek, etwa die <a href="https://man7.org/linux/man-pages/man3/printf.3.html">Online-Manpage zu <code>printf</code></a>.</p>
+      <details><summary>Selbstkontrolle</summary><p><code>printf</code> liefert die Anzahl ausgegebener Zeichen, bei einem Ausgabe- oder Kodierungsfehler einen negativen Wert. Ein positiver Rückgabewert bedeutet hier nicht „Fehler“. Was ein Rückgabewert bedeutet, steht in der Dokumentation der jeweiligen Funktion.</p></details>
+    </section>
+    <section class="content-section" aria-labelledby="abschnitt-2">
+      <h2 id="abschnitt-2">2. Referenzen für externe Bibliotheken</h2>
+      <p>Für externe Bibliotheken gibt es eigene Referenzen. Wir verwenden <strong>SDL2</strong> und die <a href="https://wiki.libsdl.org/SDL2/FrontPage">offizielle SDL2-Dokumentation</a>. SDL-Manpages müssen auf Ihrem Rechner nicht installiert sein. Tutorials helfen zur Orientierung. Signaturen, Fehlerfälle und Verfügbarkeit schlagen Sie in der Referenz nach.</p>
+      <p>SDL stellt Fenster, Grafik und Ereignisse bereit, aber keine fertigen GUI-Bedienelemente wie Menüleisten. Unsere grafische Oberfläche ist eine selbst gezeichnete Spielanzeige. SDL empfiehlt für neue Projekte inzwischen SDL3, für diesen Kurs ist aber bewusst noch die SDL2-API vereinbart. Vermischen Sie die beiden APIs nicht.</p>
+    </section>
+    <section class="content-section" aria-labelledby="abschnitt-3">
+      <h2 id="abschnitt-3">3. Einrichtung prüfen</h2>
+      <p>Die Einrichtung von Compiler und SDL2 muss vor dem Arbeiten funktionieren. In den Referenzen stehen Installations-Hinweise für Linux, macOS und Windows. Auf den Kursrechnern ist alles vorinstalliert. Wenn das unveränderte Gerüst nicht baut oder sich kein Fenster öffnet, klären Sie das mit der Betreuung.</p>
+    </section>
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="index.html">← Zurück: Kapitelübersicht</a></li>
+      <li><a href="02-funktion-untersuchen.html">Weiter: Dokumentation einer Funktion untersuchen →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>
