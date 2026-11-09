@@ -1,4 +1,4 @@
-/* Vorbereiteter SDL2-Fensterrahmen. Eigener Zeichencode: zeichnung.c.
+/* Vorbereitetes SDL2-Programmgeruest. Eigener Zeichencode: zeichnung.c.
    Pointer, Ereignisse und Ressourcenverwaltung werden spaeter vertieft. */
 #include <SDL.h>
 #include <stdbool.h>
@@ -23,13 +23,16 @@ static void version_ausgeben(void) {
 }
 
 int main(int argc, char *argv[]) {
+    bool version = false;
+    bool hilfe = false;
     bool galerie = false;
     bool diagnose = false;
     bool testlauf = false;
+    /* Erst alle Optionen pruefen, dann handeln: So haengt das Ergebnis
+       nicht von der Reihenfolge der Optionen ab. */
     for (int argument = 1; argument < argc; argument++) {
         if (strcmp(argv[argument], "--version") == 0) {
-            version_ausgeben();
-            return 0;
+            version = true;
         } else if (strcmp(argv[argument], "--galerie") == 0) {
             galerie = true;
         } else if (strcmp(argv[argument], "--diagnose") == 0) {
@@ -37,38 +40,50 @@ int main(int argc, char *argv[]) {
         } else if (strcmp(argv[argument], "--testlauf") == 0) {
             testlauf = true;
         } else if (strcmp(argv[argument], "--hilfe") == 0) {
-            puts("./programm [--version] [--galerie] [--diagnose] [--testlauf]");
-            return 0;
+            hilfe = true;
         } else {
             fprintf(stderr, "Unbekannte Option: %s\n", argv[argument]);
             return 2;
         }
     }
-
+    if (hilfe) {
+        puts("./programm [--version] [--galerie] [--diagnose] [--testlauf] [--hilfe]");
+        return 0;
+    }
     version_ausgeben();
+    if (version) {
+        return 0;
+    }
+
+    /* Alle Variablen, die nach der Marke "ende" noch gebraucht werden,
+       stehen vor dem ersten goto und sind dort bereits initialisiert. */
     SDL_Window *fenster = NULL;
     SDL_Renderer *renderer = NULL;
-    int status = 1;
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        goto fehler;
-    }
     Uint32 fenster_flags = testlauf ? SDL_WINDOW_HIDDEN : SDL_WINDOW_RESIZABLE;
+    bool laeuft = true;
+    int status = 1; /* Gilt als Fehler, bis der Ablauf regulaer endet. */
+
+    /* Bewusstes C-Muster: goto springt nur vorwaerts zum gemeinsamen
+       Aufraeumen am Funktionsende. Nicht als allgemeine Ablaufsteuerung
+       verwenden. */
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+        goto ende;
+    }
     fenster = SDL_CreateWindow("Tresorraub: Mein erstes Piktogramm",
                               SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                               640, 480, fenster_flags);
     if (fenster == NULL) {
-        goto fehler;
+        goto ende;
     }
     /* Softwaredarstellung genuegt fuer die kleinen statischen Motive. */
     renderer = SDL_CreateRenderer(fenster, -1, SDL_RENDERER_SOFTWARE);
     if (renderer == NULL) {
-        goto fehler;
+        goto ende;
     }
     if (SDL_RenderSetLogicalSize(renderer, 640, 480) < 0) {
-        goto fehler;
+        goto ende;
     }
 
-    bool laeuft = true;
     while (laeuft) {
         SDL_Event ereignis;
         while (SDL_PollEvent(&ereignis)) {
@@ -84,7 +99,7 @@ int main(int argc, char *argv[]) {
         if (SDL_SetRenderDrawColor(renderer, 245, 246, 249, 255) < 0
             || SDL_RenderClear(renderer) < 0
             || SDL_SetRenderDrawColor(renderer, 23, 37, 59, 255) < 0) {
-            goto fehler;
+            goto ende;
         }
 
         int ergebnis;
@@ -97,7 +112,7 @@ int main(int argc, char *argv[]) {
             ergebnis = zeichne(renderer);
         }
         if (ergebnis < 0) {
-            goto fehler;
+            goto ende;
         }
         SDL_RenderPresent(renderer); /* SDL2: void, kein Fehlercode. */
         if (testlauf) {
@@ -106,12 +121,12 @@ int main(int argc, char *argv[]) {
         SDL_Delay(16); /* Keine leere Dauerschleife mit voller CPU-Auslastung. */
     }
     status = 0;
-    goto aufraeumen;
 
-fehler:
-    /* Meldung vor dem Aufraeumen auslesen, nicht erst danach. */
-    fprintf(stderr, "SDL-Fehler: %s\n", SDL_GetError());
-aufraeumen:
+ende:
+    if (status != 0) {
+        /* Meldung vor dem Aufraeumen auslesen, nicht erst danach. */
+        fprintf(stderr, "SDL-Fehler: %s\n", SDL_GetError());
+    }
     if (renderer != NULL) {
         SDL_DestroyRenderer(renderer);
     }

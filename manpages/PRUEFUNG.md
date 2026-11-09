@@ -30,6 +30,19 @@
 - Lokale HTML-Links, Abschnittsziele, Bildbeschreibungen und SVG-Struktur
   geprüft. SVG-Vorschauen und ZIP werden aus den C-Rastern erzeugt.
 
+- Überarbeitung vom 09.11.2026: `programm.c` mit nur noch einer
+  Aufräummarke `ende`, Deklarationen vor dem ersten `goto` und
+  reihenfolgeunabhängiger Optionsauswertung. Mit SDL 2.30.0 unter Linux
+  mit `-std=c17 -Wall -Wextra -Wpedantic -Werror -Wjump-misses-init`
+  übersetzt; `--testlauf`, `--galerie --testlauf`, `--diagnose --testlauf`
+  (Status 1), `--version`, `--hilfe`, unbekannte Optionen in beliebiger
+  Reihenfolge (Status 2) und die Weitergabe eines Fehlers aus `zeichne`
+  mit dem Dummy-Videotreiber geprüft. ZIP neu erzeugt.
+
+- Desktop-Sichtprüfung der Lektion im Browser sowie Fensterziehen,
+  Minimieren, Escape und Schließen mit der Maus am 09.11.2026 durchgeführt;
+  keine Auffälligkeiten.
+
 ## Selbst nachprüfen
 
 Das Material entpacken, dann bei eingerichteter SDL2-Entwicklungsumgebung:
@@ -65,10 +78,7 @@ und das ZIP. Es verpackt weder erzeugte Programme noch Editor-Metadaten.
 
 ## Noch praktisch zu prüfen
 
-Eine echte Desktop-Sichtprüfung der Lektion im Browser sowie Fensterziehen,
-Minimieren, Escape und Schließen mit der Maus stehen auf den Kursrechnern
-noch aus. Die gerenderte Galerie und die eingespeiste Schließaktion ersetzen
-diese Prüfung nicht. Linux- und Windows-Einrichtungshinweise sind vorbereitet,
+Linux- und Windows-Einrichtungshinweise sind vorbereitet,
 auf tatsächlichen Rechnern dieser Systeme aber hier nicht erprobt.
 
 Der optionale Motivcode verwendet intern Arrays und Pointer. Diese Technik

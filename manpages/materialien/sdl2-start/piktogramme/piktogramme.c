@@ -258,6 +258,7 @@ static const char beute[] =
 
 /* Farben: K dunkel, W weiss, B blau, H hellblau, Y gelb, O braun,
    R rot, G gruen, P violett, L grau, S hellgrau, . transparent.
+   Die Farbwerte duerfen fuer eigene Versuche geaendert werden.
    Recherche-Beispiel: SDL_SetRenderDrawColor und SDL_RenderDrawLine. */
 static int farbe_setzen(SDL_Renderer *renderer, char farbe) {
     switch (farbe) {

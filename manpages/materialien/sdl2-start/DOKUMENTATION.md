@@ -10,7 +10,7 @@ Sie duerfen eine andere Form der Dokumentation waehlen.
 - Was bedeuten die Parameter und welche Werte waehle ich selbst?
 - Welche Voraussetzungen gelten fuer den Aufruf?
 - Welchen Rueckgabewert gibt es? Was bedeutet Erfolg, was Fehler?
-- Wie gibt mein Zeichenablauf einen Fehler an den Rahmen weiter?
+- Wie gibt mein Zeichenablauf einen Fehler an das Geruest weiter?
 - Welche Beobachtung erwarte ich bei anderen Koordinaten oder Farben?
 - Welche eigenen Versuche habe ich durchgefuehrt und was beobachtet?
 

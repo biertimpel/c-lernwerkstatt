@@ -1,7 +1,7 @@
 # SDL2: Mein erstes Fenster fuer den Tresorraub
 
 Dieses Material gehoert zur Lektion „Manpages und Bibliotheksdokumentation“.
-Es stellt den technischen Fensterrahmen bereit, keine fertige Spielmechanik.
+Es stellt das technische Geruest bereit, keine fertige Spielmechanik.
 Sie koennen ein eigenes Motiv entwickeln oder die optionalen Beispiele nutzen.
 Beide Wege sind gleichwertig. Die Bibliotheksrecherche bleibt in beiden Faellen
 Ihre eigene Aufgabe.
@@ -47,7 +47,7 @@ Schliesssymbol oder Escape beenden mit Status 0. Compilerwarnungen beachten.
 Ein fehlgeschlagener SDL-Aufruf fuehrt zur Meldung auf stderr und Status 1.
 Unbekannte Kommandozeilenoptionen ergeben Status 2.
 
-Der Rahmen gibt Header- und Laufzeitversion getrennt aus. Die Unterversionen
+Das Geruest gibt Header- und Laufzeitversion getrennt aus. Die Unterversionen
 muessen nicht exakt gleich sein; die benoetigte API muss aber verfuegbar und
 kompatibel sein. Die passende Dokumentation beginnt mit
 https://wiki.libsdl.org/SDL2/ . SDL3-Dokumentation nicht ungeprueft uebernehmen.
@@ -58,19 +58,20 @@ bewusst die SDL2-API, auch bei einer kompatiblen Implementierung.
 
 - `zeichnung.c`: Ihr Zeichenablauf. Anfangs leer; keine Motivkoordinaten
   vorgeschrieben. Der Renderer ist vorbereitet und wird nur weitergegeben.
-- `zeichnung.h`: Vorbereitete Anschlussvereinbarung: Erfolg 0, Fehler negativ.
+- `zeichnung.h`: Legt fest, was `zeichne` zurueckgibt: 0 bei Erfolg,
+  einen negativen Wert bei Fehler.
 - `programm.c`: Fenster, Renderer, Hauptschleife, Diagnose und Aufraeumen.
   Das ist zunaechst Infrastruktur, keine Pflichtaufgabe zur Pointerverwaltung.
 - `piktogramme/`: optionale Motive samt Schnittstellen und SVG-Vorschauen.
 - `DOKUMENTATION.md`: leere Notizhilfe fuer Ihre eigene Recherche.
 
 Der logische Zeichenbereich ist 640 x 480. Links oben ist (0, 0), die letzte
-sichtbare ganzzahlige Position (639, 479). Der Rahmen loescht vor jedem Bild,
+sichtbare ganzzahlige Position (639, 479). Das Geruest loescht vor jedem Bild,
 ruft Ihren Zeichencode auf und praesentiert danach den Hintergrundpuffer.
 Nach dem Loeschen ist eine dunkle Standardzeichenfarbe vorbereitet; eigene
 Farben koennen Sie innerhalb Ihres Zeichencodes setzen.
 Zeichnen Sie nicht nur einmal vor der Schleife. Den Renderer nicht selbst
-zerstoeren. Pointer und Strukturen innerhalb des Rahmens werden spaeter
+zerstoeren. Pointer und Strukturen innerhalb des Geruests werden spaeter
 behandelt; fuer diese Lektion genuegt die bereitgestellte Schnittstelle.
 
 ## Optionale Piktogramme
@@ -112,7 +113,9 @@ unmittelbar weitergeben. Fuer die eigene Recherche finden Sie in
 Die internen Raster und Schleifen sind vorbereitete Infrastruktur. Sie
 muessen dafuer noch keine Arrays implementieren. Uebernommene Motive sind
 ausdruecklich erlaubt; erklaeren Sie eine verwendete SDL2-Funktion und
-veraendern Sie selbst einen sichtbaren Parameter. Die Motive sind eigens
+veraendern Sie selbst einen sichtbaren Parameter. Die Farbwerte stehen in
+`farbe_setzen` in `piktogramme.c` und duerfen geaendert werden; eine
+Aenderung gilt fuer alle Motive mit dieser Farbe. Die Motive sind eigens
 fuer den Kurs erstellt und in Kursprojekten frei verwendbar. Sie enthalten
 keine Spiellogik. Zustandsunterschiede sind nicht nur durch Farbe erkennbar.
 
