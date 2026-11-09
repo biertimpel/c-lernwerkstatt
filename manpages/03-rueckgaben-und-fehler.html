@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Rückgabewerte und Fehlerbehandlung nachvollziehen</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+  <script src="selbstkontrollen.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header><h1>Rückgabewerte und Fehlerbehandlung nachvollziehen</h1><p>Sie vergleichen dokumentierte Fehlerindikatoren mit den Prüfungen im Gerüst.</p></header>
+    <noscript><p>Ohne JavaScript können Sie die Fragen anhand der aufklappbaren Erklärungen selbst prüfen.</p></noscript>
+    <section class="content-section" aria-labelledby="abschnitt-1">
+      <h2 id="abschnitt-1">1. Prüfungen im Gerüst nachvollziehen</h2>
+      <p>Öffnen Sie <code>programm.c</code>. Fensteraufbau, Ereignisse und Aufräumen sind vorbereitet. Wählen Sie einen Initialisierungsaufruf und vergleichen Sie seine Prüfung mit der Dokumentation. Vergleichen Sie anschließend mit Ihrer Zeichenfunktion: Haben beide dieselbe Fehlerkonvention?</p>
+      <p>Notieren Sie für beide Aufrufe Fehlerindikator und anschließende Reaktion. Sie müssen nicht jede technische Zeile des Gerüsts verstehen. Finden und begründen Sie die dokumentierte Prüfung.</p>
+    </section>
+    <section class="content-section" aria-labelledby="abschnitt-2">
+      <h2 id="abschnitt-2">2. Ein kontrollierter Diagnoseversuch</h2>
+      <p>Das Gerüst bietet <code>./programm --diagnose</code>. Schlagen Sie zuerst <a href="https://wiki.libsdl.org/SDL2/SDL_SetError"><code>SDL_SetError</code></a> und <a href="https://wiki.libsdl.org/SDL2/SDL_GetError"><code>SDL_GetError</code></a> nach. Notieren Sie Ihre Erwartung an Status und Meldung. Starten Sie dann den Versuch und prüfen Sie unmittelbar danach mit <code>echo $?</code> den Programmstatus.</p>
+      <p>Der Versuch <strong>simuliert ausdrücklich einen Fehler</strong>: Er setzt eine SDL-Fehlermeldung und durchläuft denselben Aufräumpfad wie ein fehlgeschlagener Zeichenaufruf. Er behauptet nicht, einen echten Grafikdefekt auszulösen. So ist er unabhängig von der Grafikhardware reproduzierbar, sofern der vorbereitete Fensteraufbau funktioniert. Verwenden Sie keine beliebigen ungültigen Speicheradressen zum Provozieren von Fehlern.</p>
+      <p>Starten Sie danach ohne <code>--diagnose</code>. Erklären Sie, weshalb dieser Lauf nicht automatisch ebenfalls fehlschlagen muss.</p>
+      <details><summary>Selbstkontrolle: Diagnose und Fehlerindikator</summary><p><code>SDL_SetError</code> liefert dokumentiert −1. Das Gerüst erkennt den Fehler, meldet ihn, räumt auf und endet mit Status 1. Reguläres Schließen endet mit Status 0. <code>SDL_GetError</code> liefert die zuletzt gesetzte Meldung; die Meldung allein zeigt nicht, ob ein bestimmter Aufruf fehlgeschlagen ist. Erfolgreiche Aufrufe löschen ältere Meldungen nicht automatisch.</p></details>
+      <form class="self-check" data-hint="Fehlermeldung und Fehlerindikator sind nicht dasselbe. Lesen Sie den dokumentierten Rückgabewert.">
+        <fieldset><legend>Welche Aussagen stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox"> Ein positiver Rückgabewert ist bei jeder C-Funktion ein Fehler.</label>
+          <label><input type="checkbox" data-correct="true"> Der dokumentierte Fehlerindikator entscheidet, ob <code>SDL_GetError</code> ausgewertet wird.</label>
+          <label><input type="checkbox"> Eine nichtleere Meldung beweist, dass der unmittelbar vorherige Aufruf fehlgeschlagen ist.</label>
+          <label><input type="checkbox" data-correct="true"> Bei einer Funktion mit Rückgabetyp <code>void</code> gibt es keinen numerischen Rückgabewert zu vergleichen.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die zweite und vierte Aussage stimmen. Auch innerhalb derselben Bibliothek gibt es unterschiedliche Rückgabekonventionen.</p></details>
+      </form>
+    </section>
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="02-funktion-untersuchen.html">← Zurück: Dokumentation einer Funktion untersuchen</a></li>
+      <li><a href="04-fenster-gestalten.html">Weiter: Ein erstes Fenster gestalten →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>

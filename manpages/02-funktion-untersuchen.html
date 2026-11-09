@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Dokumentation einer Funktion untersuchen</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+  <script src="selbstkontrollen.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header><h1>Dokumentation einer Funktion untersuchen</h1><p>Sie wählen eine SDL2-Zeichenfunktion und halten ihren Vertrag aus der Referenz fest.</p></header>
+    <noscript><p>Ohne JavaScript können Sie die Fragen anhand der aufklappbaren Erklärungen selbst prüfen.</p></noscript>
+    <section class="content-section" aria-labelledby="abschnitt-1">
+      <h2 id="abschnitt-1">1. Eine Zeichenfunktion auswählen</h2>
+      <p>Wählen Sie über die <a href="https://wiki.libsdl.org/SDL2/CategoryRender">SDL2-Referenz zur Darstellung</a> eine Funktion zum Zeichnen von Punkten, Linien oder Rechtecken. Vergleichen Sie bei Bedarf mehrere Funktionen. Ein einzelner klar sichtbarer Strich genügt als erster Versuch.</p>
+    </section>
+    <section class="content-section" aria-labelledby="abschnitt-2">
+      <h2 id="abschnitt-2">2. Ihre Recherche</h2>
+      <p>Halten Sie in einer eigenen Notiz fest: Aufgabe der Funktion, Parameter und ihre Bedeutung, Voraussetzungen, Rückgabewert und Fehlerindikator. Notieren Sie außerdem die dokumentierte Verfügbarkeit und den genauen Link. <a href="materialien/sdl2-start/DOKUMENTATION.md">DOKUMENTATION.md</a> enthält Fragen, keine ausgefüllte Lösung.</p>
+      <p>Lassen Sie eine andere Person anhand Ihrer Notiz erklären, welche Argumente sie für einen eigenen Aufruf wählen würde. Klären Sie Rückfragen durch Nachschlagen, nicht durch Raten.</p>
+      <details><summary>Denkhilfe</summary><p>Lesen Sie auch „Function Parameters“, „Return Value“, „Remarks“ und „Version“. Ein <code>SDL_Renderer *</code> ist hier ein bereitgestellter Zugriff auf den Zeichenkontext. Sie geben ihn erstmal nur weiter, Pointerverwaltung und Erzeugung des Renderers sind noch keine eigene Aufgabe.</p></details>
+    </section>
+    <section class="content-section" aria-labelledby="abschnitt-3">
+      <h2 id="abschnitt-3">3. Dokumentation und Version zuordnen</h2>
+      <p>Führen Sie nach <code>make</code> den Aufruf <code>./programm --version</code> aus. Er meldet die Version der beim Übersetzen verwendeten Header und der zur Laufzeit eingebundenen Bibliothek. Ordnen Sie die Angaben Ihrer Dokumentationsseite zu:</p>
+      <ul><li>Steht in der Adresse tatsächlich <code>/SDL2/</code>?</li><li>Ist Ihre Funktion für die eingesetzten Header und die Laufzeitbibliothek verfügbar?</li><li>Welche Versionsabweichung wäre problematisch, welche könnte unkritisch sein?</li></ul>
+      <details><summary>Selbstkontrolle: Versionsangaben</summary><p>Die exakten Unterversionen müssen bei dynamischem Linken nicht gleich sein. Die benötigte API muss verfügbar und kompatibel sein. „Seit Version …“ ist eine Mindestverfügbarkeit, keine Garantie für andere Hauptversionen. Eine kompatible Implementierung wie sdl2-compat wird hier ebenfalls über ihre SDL2-API verwendet.</p></details>
+      <form class="self-check" data-hint="Vergleichen Sie Hauptversion, Signatur und Verfügbarkeit, nicht nur den Funktionsnamen.">
+        <fieldset><legend>Welche Aussagen zur Recherche stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox"> Bei gleichem Namen darf eine SDL3-Seite ungeprüft für SDL2 verwendet werden.</label>
+          <label><input type="checkbox" data-correct="true"> Die Versionsangabe im Programm hilft bei der Wahl der Referenz.</label>
+          <label><input type="checkbox" data-correct="true"> Parameter und Fehlerkonvention gehören zum Vertrag einer Funktion.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die letzten beiden Aussagen stimmen. Gleiche Namen garantieren keine gleichen Signaturen und Rückgabekonventionen zwischen SDL2 und SDL3.</p></details>
+      </form>
+    </section>
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="01-dokumentation-nachschlagen.html">← Zurück: Dokumentation statt Kopiervorlage</a></li>
+      <li><a href="03-rueckgaben-und-fehler.html">Weiter: Rückgabewerte und Fehlerbehandlung nachvollziehen →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>

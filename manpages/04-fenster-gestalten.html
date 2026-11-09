@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Ein erstes Fenster gestalten</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header><h1>Ein erstes Fenster gestalten</h1><p>Sie zeichnen eine eigene Form oder ein bereitgestelltes Motiv und behandeln Fehler wie dokumentiert.</p></header>
+    <section class="content-section" aria-labelledby="abschnitt-1">
+      <h2 id="abschnitt-1">1. Zeichenbereich und Ausgangslage</h2>
+      <p>Mit <code>make</code> und <code>./programm</code> zeigt das unveränderte Gerüst zunächst einen Hintergrund. Schließsymbol oder Escape beenden es. Ihre Änderungen gehören in <code>zeichne</code> in <code>zeichnung.c</code>. Alle weiteren Schritte bauen auf dieser Datei auf.</p>
+      <p>Der logische Zeichenbereich ist 640 × 480 groß. Links oben ist (0, 0), x wächst nach rechts und y nach unten. Die letzte sichtbare ganzzahlige Position ist (639, 479). Fenstergröße und Zeichenbereich werden vom Gerüst aufeinander abgebildet.</p>
+      <p>Das Gerüst bereitet einen hellen Hintergrund und eine dunkle Standardzeichenfarbe vor. Für andere Farben recherchieren Sie zusätzlich, wie die Zeichenfarbe des Renderers gesetzt wird. Sie gilt für nachfolgende Zeichenoperationen, bis sie erneut geändert wird.</p>
+    </section>
+    <section class="content-section" aria-labelledby="abschnitt-2">
+      <h2 id="abschnitt-2">2. Zwei gleichwertige Wege</h2>
+      <ul><li><strong>Eigener Entwurf:</strong> Skizzieren Sie eine Form oder ein Tresorraub-Piktogramm und wählen Sie Funktionen, Farben und Koordinaten selbst.</li><li><strong>Bereitgestelltes Motiv:</strong> Verwenden Sie ein Beispiel aus der <a href="piktogramme.html">Piktogramm-Sammlung</a>. Dort finden Sie Spielfigur, Wächter, Schlüssel, Tür- und Tresorzustände, Ausgang, Münze und Spielfelder. Das ist ausdrücklich erlaubt und kein schlechterer Lösungsweg.</li></ul>
+      <p>Auch wenn Sie ein bereitgestelltes Motiv verwenden, recherchieren Sie mindestens eine SDL2-Funktion, die in <code>piktogramme.c</code> tatsächlich aufgerufen wird (z.&nbsp;B. <code>SDL_SetRenderDrawColor</code> oder <code>SDL_RenderDrawLine</code>). Die Hilfsfunktion selbst, etwa <code>zeichne_schluessel</code>, gehört nicht zu SDL2 und steht nicht in deren Dokumentation. Erklären Sie, wie die gewählte SDL2-Funktion dort verwendet wird, und verändern Sie sichtbar einen selbst gewählten Parameter, etwa Position, Skalierung oder Farbe. Die Farbwerte der Motive stehen in <code>piktogramme.c</code> in der Funktion <code>farbe_setzen</code> und dürfen dort geändert werden. Eine Änderung gilt für alle Motive, die diese Farbe verwenden.</p>
+    </section>
+    <section class="content-section" aria-labelledby="abschnitt-3">
+      <h2 id="abschnitt-3">3. Pflichtanforderungen</h2>
+      <ul><li>Eine eigene Form oder ein ausgewähltes Beispiel ist sichtbar.</li><li>Sie können mindestens eine verwendete SDL2-Zeichenfunktion anhand der Dokumentation erklären.</li><li>Dokumentierte Fehlerindikatoren werden angemessen behandelt und Fehler an das Gerüst weitergegeben.</li><li>Das Fenster bleibt bedienbar und lässt sich regulär schließen.</li><li>Ihre Notiz enthält Funktion, Parameterbedeutung, Fehlerverhalten, Quelle und zugehörige SDL2-Version.</li></ul>
+      <p>Ihre Zeichenfunktion erhält den bereitgestellten Renderer und meldet Erfolg mit 0, Fehler mit einem negativen Wert. Das haben wir für dieses Gerüst so festgelegt. Andere SDL-Funktionen machen es teilweise anders: <code>SDL_CreateWindow</code> zum Beispiel liefert bei einem Fehler <code>NULL</code>. Das Gerüst meldet weitergegebene Fehler und räumt auf. Motivkoordinaten werden in Ihrer Datei nicht vorgegeben.</p>
+      <details><summary>Hinweis: Warum noch nichts sichtbar ist</summary><p>Wird Ihre Funktion aufgerufen? Liegen die Koordinaten im Zeichenbereich? Unterscheiden sich Vorder- und Hintergrund? SDL zeichnet in einen Hintergrundpuffer. Das Gerüst löscht ihn vor jedem Bild und präsentiert ihn danach. Ihr Zeichencode gehört deshalb in <code>zeichne</code>, nicht einmalig vor die Hauptschleife. Frühere Pixel müssen nicht erhalten bleiben.</p></details>
+      <details><summary>Hinweis zur Fehlerbehandlung</summary><p>Prüfen Sie Ihre ausgewählten Aufrufe gemäß Referenz. Geben Sie einen Zeichenfehler unmittelbar weiter, damit die zugehörige SDL-Meldung nicht durch weitere Aufrufe ersetzt wird. Zerstören Sie den bereitgestellten Renderer nicht selbst; er gehört dem Gerüst.</p></details>
+    </section>
+    <section class="content-section" aria-labelledby="abschnitt-4">
+      <h2 id="abschnitt-4">4. Selbst prüfen</h2>
+      <p>Wählen Sie eigene Tests: Form am erwarteten Ort? Ausreichender Kontrast? Darstellung nach Verkleinern und Wiedervergrößern erhalten? Schließen und Diagnoseversuch korrekt? Notieren Sie Erwartung und Beobachtung. Animation, aufwendige Motive und eine vollständige Spielkarte sind freiwillig, keine Voraussetzung.</p>
+    </section>
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="03-rueckgaben-und-fehler.html">← Zurück: Rückgabewerte und Fehlerbehandlung nachvollziehen</a></li>
+      <li><a href="05-ergebnis-erklaeren.html">Weiter: Ihr Ergebnis erklären und aufbewahren →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>
