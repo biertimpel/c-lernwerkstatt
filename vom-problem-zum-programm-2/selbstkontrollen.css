@@ -1,0 +1,22 @@
+pre { padding: 16px 18px; background: #f1f3f8; border: 1px solid var(--line); border-radius: 6px; overflow-x: auto; }
+code { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
+.table-wrap { overflow-x: auto; }
+table { border-collapse: collapse; margin: 16px 0; width: 100%; }
+th, td { padding: 10px 12px; border: 1px solid var(--line); text-align: left; }
+th { background: #f1f3f8; }
+details { margin-top: 16px; }
+summary { cursor: pointer; color: var(--blue); font-weight: 650; }
+details[open] summary { margin-bottom: 12px; }
+.self-check { margin: 24px 0; padding: 18px; border: 1px solid var(--line); border-radius: 6px; }
+.self-check fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+.self-check legend { font-weight: 700; margin-bottom: 12px; }
+.self-check label { display: block; padding: 8px 0; cursor: pointer; }
+.self-check input { margin-right: 8px; }
+.self-check button { padding: 9px 16px; margin-top: 12px; background: var(--blue); color: white; border: 0; border-radius: 5px; cursor: pointer; font: inherit; }
+.self-check .feedback { margin: 14px 0 0; border-left: 3px solid var(--blue); padding-left: 12px; }
+.self-check .feedback[data-state="success"] { border-color: #19713d; }
+.test-case { margin: 16px 0; }
+.test-case input { width: 100%; max-width: 14rem; padding: 8px; border: 1px solid var(--muted); border-radius: 4px; font: inherit; }
+.test-case input[aria-invalid="true"] { border: 2px solid #a32121; }
+.self-check .feedback:empty { display: none; }
+@media print { .self-check button { display: none; } }
