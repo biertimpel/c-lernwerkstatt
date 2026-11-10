@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Eindimensionale Arrays</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+  <script src="selbstkontrollen.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header><h1>Eindimensionale Arrays</h1><p>Mehrere Werte desselben Typs unter einem Namen speichern und mit Schleifen bearbeiten.</p></header>
+    <noscript><p>Ohne JavaScript können Sie die Fragen anhand der aufklappbaren Erklärungen selbst prüfen.</p></noscript>
+    <section class="content-section" aria-labelledby="abschnitt-1">
+      <h2 id="abschnitt-1">1. Viele Werte, ein Name</h2>
+      <p>Sie möchten festhalten, wie viele Züge Ihre bisherigen Versuche beim Tresorraub gedauert haben. Mit einer eigenen Variablen pro Versuch wird das schnell unübersichtlich. Außerdem kann eine Schleife solche Variablen nicht der Reihe nach durchgehen.</p>
+      <p>Ein <strong>Array</strong> fasst mehrere Werte desselben Typs zusammen. Jeder Wert ist über seine Position erreichbar, den <strong>Index</strong>:</p>
+      <pre><code>int zuege[5] = {41, 60, 37, 52, 61};</code></pre>
+      <p>Bei der Deklaration steht in den eckigen Klammern die Anzahl der Elemente. Beim Zugriff steht dort der Index: <code>zuege[0]</code> ist das erste Element.</p>
+      <h3>Vorhersagen und ausprobieren</h3>
+      <p>Legen Sie dieses Array in der Funktion <code>text_ausgeben</code> in <code>tresorraub.c</code> an und starten Sie Ihr Programm mit <code>./programm --text</code>. Notieren Sie vor jedem Schritt, was Sie erwarten. Führen Sie das Programm erst danach aus.</p>
+      <ol>
+        <li>Welchen Wert haben <code>zuege[1]</code> und <code>zuege[4]</code>?</li>
+        <li>Geben Sie alle Elemente mit einer Schleife aus. Welche Werte nimmt die Schleifenvariable an?</li>
+        <li>Weisen Sie <code>zuege[2]</code> einen neuen Wert zu und geben Sie das Array erneut aus.</li>
+        <li>Deklarieren Sie <code>int liste[6] = {1, 2};</code>. Welche Werte haben die übrigen vier Elemente?</li>
+        <li>Lassen Sie die Größe weg: <code>int liste[] = {4, 8, 15};</code>. Wie viele Elemente hat das Array jetzt?</li>
+        <li>Deklarieren Sie in <code>text_ausgeben</code> ein Array ohne Initialisierung und geben Sie es aus. Was beobachten Sie? Was meldet der Compiler? Was folgt daraus für Ihre Programme?</li>
+      </ol>
+      <details><summary>Selbstkontrolle: Ihre Beobachtungen</summary><p>Elemente ohne eigenen Initialwert erhalten den Wert 0, sobald mindestens ein Wert in geschweiften Klammern angegeben ist. Ohne Größenangabe zählt der Compiler die Initialwerte, hier also drei. Ein lokales Array ganz ohne Initialisierung enthält unbestimmte Werte. Diese können bei jedem Lauf anders aussehen oder zufällig 0 sein. Füllen Sie ein solches Array, bevor Sie daraus lesen.</p></details>
+    </section>
+    <section class="content-section" aria-labelledby="abschnitt-2">
+      <h2 id="abschnitt-2">2. Gültige Indizes</h2>
+      <p>Ein Array mit <em>n</em> Elementen hat die Indizes 0 bis <em>n</em> − 1. C prüft beim Zugriff nicht, ob ein Index gültig ist. Ein Zugriff außerhalb ist <strong>undefiniertes Verhalten</strong>: Das Programm kann scheinbar richtig laufen, falsche Werte liefern oder abstürzen. Das Verhalten kann sich bei jeder kleinen Änderung am Programm ändern. Ein unauffälliger Testlauf beweist deshalb nichts.</p>
+      <p>Sehen Sie sich die Schleife aus Abschnitt 1 an. Wo steht die Grenze? Was würde passieren, wenn Sie <code>&lt;</code> durch <code>&lt;=</code> ersetzen? Beantworten Sie das durch Überlegen, nicht durch Ausprobieren.</p>
+      <details><summary>Hinweis: Zugriffsfehler finden lassen</summary><p>Mit den Compilern GCC und Clang können Sie zusätzlich mit <code>-fsanitize=address</code> übersetzen. Das Programm meldet dann viele Zugriffe außerhalb eines Arrays während der Ausführung. Das ersetzt aber keine eigene Prüfung der Grenzen und steht nicht auf allen Systemen zur Verfügung.</p></details>
+      <form class="self-check" data-hint="Zählen Sie die Indizes ab 0 und überlegen Sie, welche Elemente keinen eigenen Initialwert haben.">
+        <fieldset><legend>Gegeben ist <code>int werte[4] = {3, 8};</code>. Welche Aussagen stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Die gültigen Indizes sind 0 bis 3.</label>
+          <label><input type="checkbox" data-correct="true"> <code>werte[3]</code> hat den Wert 0.</label>
+          <label><input type="checkbox"> <code>werte[4]</code> ist das letzte Element.</label>
+          <label><input type="checkbox"> <code>werte[2]</code> enthält einen unbestimmten Wert.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die ersten beiden Aussagen stimmen. Ein Array mit vier Elementen endet bei Index 3. Weil zwei Initialwerte angegeben sind, erhalten die übrigen Elemente 0. Unbestimmt wären die Werte nur ganz ohne Initialisierung.</p></details>
+      </form>
+    </section>
+    <section class="content-section" aria-labelledby="abschnitt-3">
+      <h2 id="abschnitt-3">3. Die Länge eines Arrays</h2>
+      <p>Auf der Seite <a href="../variablen/datentypen.html#theorie">Datentypen</a> haben Sie gesehen, dass Werte im Speicher als Bits liegen. Acht Bits bilden ein <strong>Byte</strong>, wie das Muster <code>01001101</code> aus dieser Seite. Speichergrößen gibt man in Bytes an. Ein <code>char</code> belegt in C immer genau ein Byte. Wie viele Bytes andere Typen belegen, hängt vom System ab.</p>
+      <p>Mit dem Operator <code>sizeof</code> fragen Sie die Größe ab. Geben Sie <code>sizeof(char)</code>, <code>sizeof(int)</code> und <code>sizeof(double)</code> aus und notieren Sie die Werte für Ihr System. Das Ergebnis von <code>sizeof</code> hat den Typ <code>size_t</code>, eine vorzeichenlose Ganzzahl für Größen. Mit <code>printf</code> geben Sie es über <code>%zu</code> aus.</p>
+      <p>Auch für Arrays liefert <code>sizeof</code> eine Größe in Bytes. <code>sizeof(zuege)</code> ist die Größe des ganzen Arrays, <code>sizeof(zuege[0])</code> die Größe eines einzelnen Elements.</p>
+      <h3>Aufgabe: Die Anzahl der Elemente berechnen</h3>
+      <ol>
+        <li>Geben Sie <code>sizeof(zuege)</code> und <code>sizeof(zuege[0])</code> aus. Passen die Werte zu Ihren Messungen von oben?</li>
+        <li>Entwickeln Sie aus diesen beiden Werten einen Ausdruck, der die Anzahl der Elemente liefert. Er soll auch dann noch stimmen, wenn Sie das Array später verlängern oder den Elementtyp ändern.</li>
+        <li>Prüfen Sie Ihren Ausdruck: Verlängern Sie das Array auf sieben Werte und ändern Sie den Typ in <code>double</code>. Liefert Ihr Ausdruck weiterhin die richtige Anzahl?</li>
+      </ol>
+      <form class="self-check" data-hint="Wie viele Bytes belegt das ganze Array, wie viele ein Element? Was passiert, wenn Sie den Elementtyp ändern?">
+        <fieldset><legend>Gegeben ist <code>int zuege[5];</code>. Welche Ausdrücke liefern die Anzahl der Elemente?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox"> <code>sizeof(zuege)</code></label>
+          <label><input type="checkbox" data-correct="true"> <code>sizeof(zuege) / sizeof(zuege[0])</code></label>
+          <label><input type="checkbox" data-correct="true"> <code>sizeof(zuege) / sizeof(int)</code></label>
+          <label><input type="checkbox"> <code>sizeof(zuege) - sizeof(zuege[0])</code></label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die zweite und dritte Aussage stimmen, beide liefern 5. Die dritte ist aber an den Typ <code>int</code> gebunden: Ändern Sie den Elementtyp in <code>double</code> und vergessen, <code>sizeof(int)</code> anzupassen, stimmt das Ergebnis nicht mehr. Mit <code>sizeof(zuege[0])</code> passt sich der Ausdruck von selbst an. <code>sizeof(zuege)</code> allein ist die Größe in Bytes, auf üblichen Systemen 20.</p></details>
+      </form>
+      <p>Diese Rechnung funktioniert nur dort, wo das Array deklariert ist. Eine Funktion, der Sie ein Array übergeben, kennt dessen Länge nicht. Geben Sie die Länge deshalb als eigenen Parameter mit. Ein Parameter für ein Array wird so geschrieben:</p>
+      <pre><code>int summe(int werte[], size_t anzahl);</code></pre>
+      <p>Warum eine Funktion die Länge nicht selbst bestimmen kann, klären Sie im Kapitel „Pointer und Datenaustausch“.</p>
+      <p>Wenn dieselbe Größe an mehreren Stellen vorkommt, geben Sie ihr einen Namen, zum Beispiel mit <code>#define VERSUCHE 5</code>. Dann ändern Sie sie später nur an einer Stelle. Wie <code>#define</code> genau funktioniert, lernen Sie auf <a href="03-zweidimensionale-arrays.html">Seite 3</a>.</p>
+      <form class="self-check" data-hint="sizeof misst Bytes. Was weiß eine Funktion über ein übergebenes Array?">
+        <fieldset><legend>Gegeben ist <code>double messung[6];</code>. Welche Aussagen stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox"> <code>sizeof(messung)</code> ist 6.</label>
+          <label><input type="checkbox" data-correct="true"> <code>sizeof(messung[0])</code> ist auf üblichen Systemen 8.</label>
+          <label><input type="checkbox" data-correct="true"> Eine Funktion, die <code>messung</code> erhält, braucht die Länge als zusätzlichen Parameter.</label>
+          <label><input type="checkbox"> Ein Zugriff auf <code>messung[6]</code> führt in C immer zu einer Fehlermeldung.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die zweite und dritte Aussage stimmen. Ein <code>double</code> belegt auf üblichen Systemen 8 Bytes. <code>sizeof(messung)</code> ist deshalb 48, nicht 6. Ein Zugriff außerhalb des Arrays ist undefiniertes Verhalten. Eine Fehlermeldung ist dabei nicht garantiert.</p></details>
+      </form>
+    </section>
+    <section class="content-section" aria-labelledby="abschnitt-4">
+      <h2 id="abschnitt-4">4. Aufgabe: Versuche auswerten</h2>
+      <h3>Ausgangslage</h3>
+      <p>Eine Spielerin hat den Tresorraub fünfmal gespielt. Nach jedem Versuch hat sie notiert, wie viele Züge sie verbraucht hat. Das ist das Array aus Abschnitt 1:</p>
+      <pre><code>int zuege[5] = {41, 60, 37, 52, 61};</code></pre>
+      <p>Erlaubt sind höchstens 60 Züge. Der letzte Versuch mit 61 Zügen hat das Zuglimit also überschritten.</p>
+      <h3>Wie die Teile zusammenhängen</h3>
+      <p>Das Gerüst ruft bei <code>./programm --text</code> Ihre Funktion <code>text_ausgeben</code> auf. Diese Funktion ist in <code>tresorraub.h</code> vorgegeben, damit das Gerüst sie findet. Alles andere entsteht in <code>tresorraub.c</code>:</p>
+      <ol>
+        <li>Sie legen das Array mit den Zugzahlen in <code>text_ausgeben</code> als lokale Variable an.</li>
+        <li>Sie schreiben drei eigene Funktionen, die eine Reihe von Zugzahlen auswerten. Diese Funktionen stehen nicht in <code>tresorraub.h</code>, sondern nur in <code>tresorraub.c</code>, und zwar oberhalb von <code>text_ausgeben</code>.</li>
+        <li>In <code>text_ausgeben</code> rufen Sie Ihre Funktionen auf, übergeben dabei das Array und seine Länge und geben die Ergebnisse aus.</li>
+      </ol>
+
+      <h3>Was Sie programmieren</h3>
+      <p>Schreiben Sie drei Funktionen. Jede beantwortet eine Frage zu einer Reihe von Versuchen:</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Funktion</th><th>Frage</th><th>Ergebnis für die Beispieldaten</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Wie viele Versuche haben höchstens 60 Züge gebraucht?</td><td>4 (genau 60 Züge sind noch erlaubt)</td></tr>
+          <tr><td>2</td><td>Wie viele Züge hat der kürzeste Versuch gebraucht?</td><td>37</td></tr>
+          <tr><td>3</td><td>Wie viele Züge wurden im Durchschnitt gebraucht?</td><td>50,2</td></tr>
+        </tbody>
+      </table></div>
+      <p>Für alle drei Funktionen gilt:</p>
+      <ul>
+        <li>Sie erhalten zwei Parameter: ein Array mit Zugzahlen und die Anzahl der Versuche. Wie ein Array-Parameter geschrieben wird, steht in Abschnitt 3. Beim Aufruf in <code>text_ausgeben</code> übergeben Sie Ihr Array und seine Länge.</li>
+        <li>Sie geben ihr Ergebnis mit <code>return</code> zurück. Die Ausgabe mit <code>printf</code> erfolgt nicht in der Funktion, sondern dort, wo Sie sie aufrufen.</li>
+        <li>Sie müssen für jede Anzahl von Versuchen funktionieren, nicht nur für fünf.</li>
+        <li>Den Namen und den Rückgabetyp wählen Sie selbst. Überlegen Sie beim Rückgabetyp: Welche Funktion liefert eine ganze Zahl, welche eine Zahl mit Nachkommastellen?</li>
+      </ul>
+      <h3>So gehen Sie vor</h3>
+      <ol>
+        <li><strong>Testfälle festlegen.</strong> Notieren Sie für jede Funktion, welches Ergebnis Sie bei welchen Daten erwarten. Nehmen Sie neben den Beispieldaten mindestens diese Fälle dazu: eine Reihe mit nur einem Versuch, eine Reihe, in der alle Versuche über 60 liegen, und eine Reihe, in der der kürzeste Versuch ganz vorne oder ganz hinten steht.</li>
+        <li><strong>Vertrag aufschreiben.</strong> Halten Sie für jede Funktion in zwei, drei Sätzen fest, was sie erwartet und was sie liefert. Das ist dieselbe Information, die Sie im Kapitel „Manpages“ für Bibliotheksfunktionen nachgeschlagen haben: Parameter, Rückgabewert und Sonderfälle.</li>
+        <li><strong>Den Sonderfall „keine Versuche“ entscheiden.</strong> Was soll jede Funktion liefern, wenn die Anzahl 0 ist? Bei der ersten Frage ist die Antwort klar. Beim kürzesten Versuch und beim Durchschnitt gibt es kein sinnvolles Ergebnis. Entscheiden Sie, was die Funktion dann zurückgibt, und schreiben Sie es in den Vertrag.</li>
+        <li><strong>Implementieren.</strong> Schreiben Sie die Funktionen in <code>tresorraub.c</code> oberhalb von <code>text_ausgeben</code>. Legen Sie für jeden Testfall in <code>text_ausgeben</code> ein eigenes Array an, rufen Sie Ihre Funktionen damit auf und geben Sie die Ergebnisse aus.</li>
+        <li><strong>Prüfen.</strong> Vergleichen Sie jedes Ergebnis mit Ihrer Erwartung aus Schritt 1 und notieren Sie Abweichungen.</li>
+      </ol>
+      <details><summary>Denkhilfe: Den kürzesten Versuch finden</summary><p>Womit vergleichen Sie den ersten Wert? Ein fester Startwert wie 1000 funktioniert bei diesen Daten, setzt aber voraus, dass kein Versuch länger dauert. Welcher Startwert kommt ohne diese Annahme aus?</p></details>
+      <details><summary>Selbstkontrolle: Durchschnitt 50 statt 50,2?</summary><p>Wenn Sie zwei ganze Zahlen dividieren, rechnet C ohne Nachkommastellen: 251 / 5 ergibt 50. Sehen Sie sich an, welche Typen an Ihrer Division beteiligt sind. Den Unterschied zwischen Ganzzahldivision und Gleitkommadivision kennen Sie von der Seite <a href="../variablen/berechnungen.html">Berechnungen</a>.</p></details>
+      <p class="work-result"><strong>Ihr Ergebnis:</strong> Drei Funktionen mit aufgeschriebenem Vertrag, Ihre Testfälle mit erwarteten und beobachteten Ergebnissen und Ihre Entscheidung für den Fall ohne Versuche.</p>
+    </section>
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="index.html">← Zurück: Kapitelübersicht</a></li>
+      <li><a href="02-zeichenketten.html">Weiter: Zeichenketten →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>

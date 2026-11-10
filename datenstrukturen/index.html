@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Datenstrukturen</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="../uebersicht.html#block-2">← Zur Kursübersicht</a></p>
+    <header>
+      <h1>Datenstrukturen</h1>
+      <p>Mehrere zusammengehörige Werte speichern: Arrays, Zeichenketten und Strukturen.</p>
+    </header>
+    <section class="content-section" aria-labelledby="ziele">
+      <h2 id="ziele">Lernziele und Arbeitsweise</h2>
+      <p>Bisher stand in Ihren Programmen für jeden Wert eine eigene Variable. Für den Tresorraub reicht das nicht mehr: Das Spielfeld besteht aus 135 Feldern, es gibt mehrere Wächter, eine Position besteht aus zwei Koordinaten, und der Spielstand soll als Text ausgegeben werden. In diesem Kapitel lernen Sie die Mittel kennen, mit denen C solche Daten zusammenfasst.</p>
+      <ul>
+        <li>Ein- und zweidimensionale Arrays anlegen, initialisieren und mit Schleifen durchlaufen.</li>
+        <li>Gültige Indizes bestimmen und vor jedem Zugriff sicherstellen.</li>
+        <li>Zeichenketten als Zeichen-Arrays mit abschließendem <code>'\0'</code> verstehen und <code>sizeof</code> von <code>strlen</code> unterscheiden.</li>
+        <li>Zusammengehörige Werte in einer Struktur zusammenfassen.</li>
+        <li>Für ein Problem eine passende Datendarstellung entwerfen und die Entscheidung begründen.</li>
+      </ul>
+      <p>Die Seiten erklären die Sprachmittel an kleinen Beispielen. Wie Sie damit die Daten des Tresorraubs darstellen, entscheiden Sie selbst. Die Seiten geben keinen fertigen Code für die Aufgaben vor: Funktionsnamen, Parameter und Aufbau Ihres Programms entwerfen Sie selbst.</p>
+    </section>
+    <section class="content-section" aria-labelledby="unterseiten">
+      <h2 id="unterseiten">Unterseiten</h2>
+      <ol>
+        <li><a href="01-eindimensionale-arrays.html">Eindimensionale Arrays</a></li>
+        <li><a href="02-zeichenketten.html">Zeichenketten</a></li>
+        <li><a href="03-zweidimensionale-arrays.html">Das Spielfeld als zweidimensionales Array</a></li>
+        <li><a href="04-strukturen.html">Strukturen</a></li>
+        <li><a href="05-spielstand.html">Ein Spielstand als Datenstruktur</a></li>
+      </ol>
+    </section>
+    <section class="content-section" aria-labelledby="tresorraub">
+      <h2 id="tresorraub">Ihr durchgehendes Programm: Die Daten des Tresorraubs</h2>
+      <p>Über alle Seiten hinweg entsteht ein Programm, das den Startzustand des Tresorraubs speichert, als Text ausgibt und im Fenster zeichnet: Spielfeld, Spielfigur, Wächter und Gegenstände. Bewegt wird noch nichts. Dafür brauchen Sie die Mittel aus dem nächsten Kapitel „Pointer und Datenaustausch“.</p>
+      <p>Grundriss, Positionen und Regeln für dieses Kapitel stehen in der Datei <a href="materialien/tresorraub-daten/SPIELFELD.md">SPIELFELD.md</a>. Das <a href="materialien/tresorraub-daten.zip" download>Startmaterial (ZIP)</a> enthält diese Datei, das SDL2-Programmgerüst und die Piktogramme aus dem Kapitel „Manpages“ sowie ein Makefile. Ihr eigener Code entsteht in <code>tresorraub.c</code>: Textausgaben in der Funktion <code>text_ausgeben</code>, die Sie mit <code>./programm --text</code> starten, und die Darstellung im Fenster in <code>zeichne</code>. Wie das zusammenspielt, steht in der <a href="materialien/tresorraub-daten/README.md">README</a>. Arbeiten Sie auf allen Seiten in derselben Datei weiter und sichern Sie getestete Zwischenstände.</p>
+    </section>
+    <section class="content-section" aria-labelledby="arbeitsweise">
+      <h2 id="arbeitsweise">So arbeiten Sie mit dem Kapitel</h2>
+      <p>Viele Aufgaben beginnen mit einer Vorhersage: Notieren Sie, was Sie erwarten, bevor Sie das Programm ausführen. Weicht das Ergebnis ab, ist das kein Fehlschlag, sondern der interessanteste Teil der Aufgabe! Halten Sie fest, was Sie daraus gelernt haben.</p>
+      <p>Führen Sie wieder eine Projektnotiz: Datendarstellung, Funktionsverträge, Testfälle mit erwarteten Ergebnissen und offene Fragen. Notieren Sie Testfälle, bevor Sie eine Funktion implementieren.</p>
+      <p>Direkt in den Abschnitten prüfen Sie Ihr Verständnis mit Multiple-Choice-Fragen. Bei jeder Frage können eine oder mehrere Antworten richtig sein. Die aufklappbaren Hilfen enthalten Denkfragen und erwartete Ergebnisse, aber keinen fertigen Code.</p>
+    </section>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>
