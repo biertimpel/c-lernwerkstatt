@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Einen bestehenden Spielzustand verändern</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header>
+      <h1>Einen bestehenden Spielzustand verändern</h1>
+      <p class="intro">Prüfen Sie das Zielfeld und ändern Sie einen laufenden Spielstand über einen Pointer.</p>
+    </header>
+
+    <section class="content-section" aria-labelledby="abschnitt-1">
+      <h2 id="abschnitt-1">1. Lesen, <code>NULL</code> und Lebensdauer</h2>
+      <p>Mit einem Parameter <code>const Spielstand *p</code> kann eine Funktion den Spielstand über <code>p</code> lesen. Eine Zuweisung an <code>p-&gt;zuege</code> ist über diesen Pointer nicht erlaubt. So macht die Deklaration sichtbar, welche Funktionen den Spielstand nur lesen.</p>
+      <p><code>NULL</code> bedeutet, dass der Pointer auf kein Ziel zeigt. Ist <code>NULL</code> als Eingabe möglich, prüfen Sie das vor dem ersten Zugriff auf das Ziel. <strong>Ein Pointer ist nur so lange brauchbar, wie sein Ziel existiert.</strong> Der Test auf <code>NULL</code> allein beweist nicht, dass das Ziel noch existiert.</p>
+      <p>Für das Spiel heißt das: Der Spielstand wird einmal angelegt und bleibt über die Tastendrücke und Zeichenaufrufe hinweg erhalten. Die Eingabe verändert ihn; Zeichnen und Status lesen ihn.</p>
+    </section>
+
+    <section class="content-section" aria-labelledby="aufgabe-c">
+      <h2 id="aufgabe-c">2. Aufgabe c)</h2>
+      <p>Schreiben Sie <code>figur_bewegen</code>. Die Funktion erhält einen <code>Spielstand *</code> und die Änderung der x- und y-Koordinate als <code>int</code>. Übergeben Sie jeweils einen der vier Schritte zu einem benachbarten Feld.</p>
+      <ul>
+        <li>Prüfen Sie den Pointer auf <code>NULL</code>, bevor Sie auf ein Feld zugreifen.</li>
+        <li>Bestimmen Sie das Zielfeld und prüfen Sie Spielfeldgrenzen und Wände mit Ihren vorhandenen Abfragen. Prüfen Sie auch, ob das Zielfeld die Tür ist und sie laut Spielstand verschlossen ist. Die Tür startet wie in „Datenstrukturen“ verschlossen und blockiert die Bewegung.</li>
+        <li>Ändern Sie nur bei einer erfolgreichen Bewegung Position und Zugzahl und geben Sie <code>true</code> zurück. Andernfalls geben Sie <code>false</code> zurück.</li>
+      </ul>
+      <p>Passen Sie die Funktion für die Statuszeile an (im Startmaterial <code>spielstand_lesen</code>). Sie soll den Spielstand über <code>const Spielstand *</code> lesen und die bekannte Statuszeile füllen. Passen Sie die Aufrufe an den neuen Parametertyp an. Rufen Sie Bewegung und Status im Textmodus mit der Adresse desselben Spielstands auf. Probieren Sie auch einen Aufruf der Bewegungsfunktion mit <code>NULL</code>.</p>
+    </section>
+
+    <section class="content-section" aria-labelledby="hinweise">
+      <h2 id="hinweise">Hinweise</h2>
+      <details><summary>Zu c): Das Zielfeld prüfen</summary><p>Berechnen Sie die Zielkoordinaten zunächst in einer eigenen Variable. Prüfen Sie die Grenzen vor einem Zugriff auf das Spielfeld-Array. Solange das Ziel nicht feststeht, müssen Sie weder Position noch Zugzahl im Spielstand ändern.</p></details>
+    </section>
+
+    <section class="content-section" aria-labelledby="selbstkontrolle">
+      <h2 id="selbstkontrolle">Selbstkontrolle</h2>
+      <details><summary>Zwei Schritte, dann eine Wand</summary>
+        <table><thead><tr><th scope="col">Aktion</th><th scope="col">Position</th><th scope="col">Züge</th></tr></thead><tbody>
+          <tr><td>Start</td><td>(3, 7)</td><td>0</td></tr>
+          <tr><td>Einmal nach rechts</td><td>(4, 7)</td><td>1</td></tr>
+          <tr><td>Noch einmal nach rechts</td><td>(5, 7)</td><td>2</td></tr>
+          <tr><td>Nach unten gegen die Wand</td><td>(5, 7)</td><td>2</td></tr>
+        </tbody></table>
+        <p>Ein Aufruf mit <code>NULL</code> liefert <code>false</code>, ohne auf einen Spielstand zuzugreifen.</p>
+      </details>
+    </section>
+
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="02-kopie-und-original.html">← Zurück: Kopie und Original vergleichen</a></li>
+      <li><a href="04-eingaben-und-bewegung.html">Weiter: Eingaben mit Bewegung verbinden →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>

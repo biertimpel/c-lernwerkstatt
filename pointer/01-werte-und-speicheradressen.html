@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Werte und Speicheradressen untersuchen</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header>
+      <h1>Werte und Speicheradressen untersuchen</h1>
+      <p class="intro">Lesen und schreiben Sie über Pointer und unterscheiden Sie Werte von Adressen.</p>
+    </header>
+
+    <section class="content-section" aria-labelledby="abschnitt-1">
+      <h2 id="abschnitt-1">1. Eine Adresse speichern und benutzen</h2>
+      <p>Eine Variable hat einen Wert und liegt an einer Adresse im Speicher. Mit <code>&amp;var</code> erhalten Sie die Adresse von <code>var</code>. Ein <strong>Pointer</strong> kann diese Adresse speichern. Man sagt: Der Pointer <strong>zeigt auf</strong> die Variable. Sie ist sein <strong>Ziel</strong>.</p>
+      <pre><code>int var = 10;
+int *p = &amp;var;     // p speichert die Adresse von var
+int vorher = *p;   // Wert am Ziel lesen: 10
+*p = 20;           // Wert am Ziel schreiben: var ist jetzt 20</code></pre>
+      <p>In der Deklaration <code>int *p</code> gehört das Sternchen zum Pointertyp. Im Ausdruck <code>*p</code> bedeutet es: auf das Ziel zugreifen. Auch <code>p</code> ist eine Variable und hat eine eigene Adresse. <code>int **pp = &amp;p;</code> lässt <code>pp</code> auf <code>p</code> zeigen. <code>*pp</code> liefert den Pointer <code>p</code>, <code>**pp</code> den Wert von <code>var</code>.</p>
+    </section>
+
+    <section class="content-section" aria-labelledby="abschnitt-2">
+      <h2 id="abschnitt-2">2. Rückblick: Arrays und Zeichenketten</h2>
+      <p>Eine Funktion mit dem Parameter <code>int werte[]</code> erhält einen Pointer auf das erste Element. Im Funktionskörper liefert <code>sizeof(werte)</code> daher die Größe des Pointers. Berechnen Sie die Elementanzahl dort, wo das ganze Array vorliegt, und geben Sie sie der Funktion mit, beispielsweise als <code>size_t anzahl</code>. Bei einem zweidimensionalen Array braucht die Funktion außerdem die Spaltenzahl im Parametertyp, um zur richtigen Zeile zu gelangen.</p>
+      <p>Auch ein Zeichenarray wird bei einem Vergleich mit <code>==</code> in einen Pointer auf sein erstes Zeichen umgewandelt. Der Vergleich prüft damit die Adressen. Zwei getrennte Arrays können denselben Text enthalten. <code>strcmp(a, b) == 0</code> prüft, ob ihre Inhalte bis zum abschließenden Nullzeichen übereinstimmen.</p>
+    </section>
+
+    <section class="content-section" aria-labelledby="aufgabe-a">
+      <h2 id="aufgabe-a">3. Aufgabe a)</h2>
+      <ol>
+        <li>Legen Sie <code>int var = 10;</code> und <code>int *p = &amp;var;</code> an. Sagen Sie voraus, was die Ausgaben von <code>var</code> und <code>*p</code> zeigen, und geben Sie beide Werte aus. Vergleichen Sie anschließend die Adressen <code>p</code> und <code>&amp;var</code>.</li>
+        <li>Schreiben Sie <code>*p = 20;</code>. Geben Sie <code>var</code> erneut aus und erklären Sie die Änderung.</li>
+        <li>Ergänzen Sie <code>int **pp = &amp;p;</code> und geben Sie <code>**pp</code> aus. Auf welche Variable zeigt <code>pp</code> direkt? Über welche beiden Schritte gelangen Sie zum Wert?</li>
+      </ol>
+      <p>Greifen Sie zwei kurze Versuche aus „Datenstrukturen“ wieder auf: Vergleichen Sie <code>sizeof</code> für ein Zahlenarray beim Aufrufer und für den Array-Parameter in der Funktion. Wie erfährt die Funktion die Elementanzahl? Legen Sie anschließend zwei getrennte Zeichenarrays mit dem Inhalt <code>"Beute"</code> an. Vergleichen Sie die Adressen ihrer ersten Zeichen mit <code>==</code> und den Inhalt mit <code>strcmp</code>. Erklären Sie beide Ergebnisse.</p>
+    </section>
+
+    <section class="content-section" aria-labelledby="hinweise">
+      <h2 id="hinweise">Hinweise</h2>
+      <details><summary>Zu a): Eine Adresse ausgeben</summary><p>Verwenden Sie <code>printf("%p\n", (void *)p);</code>. Der Platzhalter <code>%p</code> erwartet einen Pointer vom Typ <code>void *</code>. Vergleichen Sie Adressen aus demselben Programmlauf.</p></details>
+    </section>
+
+    <section class="content-section" aria-labelledby="selbstkontrolle">
+      <h2 id="selbstkontrolle">Selbstkontrolle</h2>
+      <details><summary>Werte und Adressen</summary>
+        <p><code>p</code> enthält <code>&amp;var</code>. Nach <code>*p = 20;</code> liefern <code>var</code>, <code>*p</code> und <code>**pp</code> jeweils <code>20</code>. Im Array-Parameter misst <code>sizeof</code> den Pointer. Zwei getrennte Zeichenarrays haben verschiedene Startadressen; bei gleichem Inhalt liefert <code>strcmp</code> trotzdem <code>0</code>.</p>
+      </details>
+    </section>
+
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="index.html">← Zurück: Kapitelübersicht</a></li>
+      <li><a href="02-kopie-und-original.html">Weiter: Kopie und Original vergleichen →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>
