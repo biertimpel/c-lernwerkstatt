@@ -1,0 +1,56 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Programmierung in C · Ein Programm auf Header und Quelldateien verteilen</title><link rel="stylesheet" href="../kurs.css"><link rel="stylesheet" href="lektion.css"></head><body><a class="skip" href="#inhalt">Zum Inhalt</a><main id="inhalt"><p><a href="index.html">← Zur Kapitelübersicht</a></p><header><h1>Ein Programm auf Header und Quelldateien verteilen</h1><p class="intro">Einen fertigen Rechner in zwei Quelldateien und einen gemeinsamen Header aufteilen.</p></header><section class="content-section"><h2>1. Eine gemeinsame Schnittstelle</h2><p>Bisher standen Ihre eigenen Funktionen überwiegend in einer gemeinsamen Quelldatei. Wenn ein Programm wächst, können Sie zusammengehörige Funktionen auf mehrere Dateien verteilen.</p><p>Eine <strong>Funktionsdeklaration</strong> beschreibt den Rückgabetyp, den Namen und die Parameter:</p><pre><code>int addiere(int a, int b);</code></pre><p>Die <strong>Funktionsdefinition</strong> enthält zusätzlich den Funktionskörper:</p><pre><code>int addiere(int a, int b) {
+    return a + b;
+}</code></pre><p>Mehrere Quelldateien können dieselbe Funktion verwenden. Damit wir die Deklaration nur an einer Stelle pflegen müssen, legen wir sie in einer gemeinsamen <strong>Header-Datei</strong> ab. C-Header haben üblicherweise die Endung <code>.h</code>.</p><div class="table-wrap"><table><thead><tr><th>Datei</th><th>Aufgabe</th></tr></thead><tbody><tr><td><code>calc.h</code></td><td>Deklarationen der Rechenfunktionen.</td></tr><tr><td><code>calc.c</code></td><td>Definitionen der Rechenfunktionen.</td></tr><tr><td><code>main.c</code></td><td>Enthält main, ruft die Funktionen auf und gibt Ergebnisse aus.</td></tr></tbody></table></div><p>Der Header beschreibt die <strong>Schnittstelle</strong>: Welche Funktionen stehen zur Verfügung und wie werden sie aufgerufen? Solange Parameter und Rückgabetyp gleich bleiben, können wir die Berechnung verändern, ohne die Aufrufe anzupassen. An diese Arbeit mit Schnittstellen knüpfen wir später bei der Objektorientierung an.</p></section><section class="content-section"><h2>2. Einen Header einbinden</h2><p>Mit der folgenden Anweisung binden Sie Ihren eigenen Header ein:</p><pre><code>#include &quot;calc.h&quot;</code></pre><p>Vor der eigentlichen Übersetzung verarbeitet der <strong>Präprozessor</strong> solche Anweisungen. Vereinfacht wird dabei der Inhalt des Headers an dieser Stelle eingefügt. Die Deklarationen werden damit für die betreffende Quelldatei verfügbar.</p><p>Sowohl <code>main.c</code> als auch <code>calc.c</code> binden den Header ein. Damit überprüft der Compiler die Aufrufe und kann Abweichungen zwischen den Definitionen und den gemeinsamen Deklarationen erkennen.</p><p>Für unseren eigenen Header verwenden wir Anführungszeichen. Bibliotheksheader kennen Sie bereits mit spitzen Klammern:</p><pre><code>#include &lt;stdio.h&gt;</code></pre><p><code>stdio.h</code> stellt unter anderem die Deklaration von <code>printf</code> bereit. Dessen Implementierung stammt aus der C-Bibliothek.</p></section><section class="content-section"><h2>3. Mehrfaches Einbinden verhindern</h2><p>Ein Header kann auf verschiedenen Wegen mehrfach eingebunden werden. Ein <strong>Include-Schutz</strong> sorgt dafür, dass sein geschützter Inhalt während der Übersetzung einer Quelldatei nur einmal verarbeitet wird:</p><pre><code>#ifndef CALC_H
+#define CALC_H
+
+/* Hier stehen die Funktionsdeklarationen. */
+
+#endif</code></pre><ul><li><code>#ifndef CALC_H</code> prüft, ob die Kennzeichnung noch nicht definiert ist.</li><li><code>#define CALC_H</code> setzt diese Kennzeichnung.</li><li><code>#endif</code> beendet den geschützten Abschnitt.</li></ul><p>Bei einer erneuten Einbindung wird der Abschnitt übersprungen. Der Schutz gilt jeweils während der Übersetzung einer Quelldatei. Beide Quelldateien können den Header verwenden.</p><p>Die Kennzeichnung ist keine Variable des laufenden Programms. Die Anweisungen werden vor der eigentlichen Übersetzung verarbeitet. Später werden auch gemeinsame Datentypen in Headern stehen, bei denen mehrfaches Verarbeiten zu Fehlern führen kann.</p></section><section class="content-section"><h2>4. Aufgabe A</h2><p>Der kleine Rechner ist bereits vollständig implementiert. Laden Sie das <a href="materialien/rechner-start.zip" download>Startmaterial</a> herunter und entpacken Sie es in einen eigenen Arbeitsordner. Es enthält diese <code>main.c</code>:</p><pre><code>#include &lt;stdio.h&gt;
+
+int addiere(int a, int b) {
+    return a + b;
+}
+
+int multipliziere(int a, int b) {
+    return a * b;
+}
+int main(void) {
+    int a = 4;
+    int b = 7;
+    int summe = addiere(a, b);
+    int produkt = multipliziere(a, b);
+
+    printf(&quot;Summe: %d\n&quot;, summe);
+    printf(&quot;Produkt: %d\n&quot;, produkt);
+
+    return 0;
+}</code></pre><ol><li>Legen Sie im selben Ordner <code>calc.h</code> und <code>calc.c</code> an.</li><li>Verschieben Sie die Definitionen von <code>addiere</code> und <code>multipliziere</code> nach <code>calc.c</code>.</li><li>Schreiben Sie die passenden Funktionsdeklarationen in <code>calc.h</code> und ergänzen Sie den Include-Schutz.</li><li>Binden Sie <code>calc.h</code> in beiden Quelldateien ein.</li><li>Übersetzen und starten Sie das aufgeteilte Programm mit den folgenden Befehlen. Prüfen Sie, ob weiterhin dieselben Ergebnisse ausgegeben werden.</li></ol><pre><code>gcc main.c calc.c -o rechner
+./rechner</code></pre><p><code>-o rechner</code> benennt die erzeugte Programmdatei. Was beim Bauen genau geschieht, verfolgen Sie auf der nächsten Seite.</p><p><strong>Ihr Ergebnis:</strong> Der Rechner besteht aus zwei Quelldateien und einem gemeinsamen Header.</p></section><section class="content-section"><h2>Hinweise</h2><details><summary>Deklaration und Definition zuordnen</summary><p>Die Deklaration endet nach der Parameterliste mit einem Semikolon. Die Definition enthält zusätzlich den Funktionskörper. Die vorhandenen Berechnungen sind vollständig gegeben.</p></details><details><summary>Die Dateien verbinden</summary><p>Beide Quelldateien verwenden <code>#include "calc.h"</code>. Die Definitionen stehen in <code>calc.c</code>. Diese Quelldatei wird im Übersetzungsbefehl angegeben. Binden Sie dafür keine <code>.c</code>-Datei mit <code>#include</code> ein.</p></details><details><summary>Den Include-Schutz ergänzen</summary><p>Die Deklarationen gehören zwischen <code>#define CALC_H</code> und <code>#endif</code>. Verwenden Sie für jeden eigenen Header eine passende eigene Kennzeichnung.</p></details></section><section class="content-section"><h2>Selbstkontrolle</h2><details><summary>Eine mögliche Aufteilung</summary><h3>calc.h</h3><pre><code>#ifndef CALC_H
+#define CALC_H
+
+int addiere(int a, int b);
+int multipliziere(int a, int b);
+
+#endif</code></pre><h3>calc.c</h3><pre><code>#include &quot;calc.h&quot;
+
+int addiere(int a, int b) {
+    return a + b;
+}
+
+int multipliziere(int a, int b) {
+    return a * b;
+}</code></pre><h3>main.c</h3><pre><code>#include &lt;stdio.h&gt;
+#include &quot;calc.h&quot;
+
+int main(void) {
+    int a = 4;
+    int b = 7;
+    int summe = addiere(a, b);
+    int produkt = multipliziere(a, b);
+
+    printf(&quot;Summe: %d\n&quot;, summe);
+    printf(&quot;Produkt: %d\n&quot;, produkt);
+
+    return 0;
+}</code></pre></details><details><summary>Erwartete Ausgabe</summary><pre><code>Summe: 11
+Produkt: 28</code></pre></details></section><section class="content-section"><h2>Dokumentation</h2><p class="sources"><a href="https://gcc.gnu.org/onlinedocs/cpp/Include-Operation.html">GCC: Verarbeitung von #include</a> · <a href="https://gcc.gnu.org/onlinedocs/cpp/Once-Only-Headers.html">GCC: Include-Schutz</a></p></section><nav aria-label="Seitennavigation"><ul class="navlinks"><li><a href="index.html">← Zurück: Kapitelübersicht</a></li><li><a href="02-uebersetzen-und-linken.html">Weiter: Vom Quelltext zum ausführbaren Programm →</a></li></ul></nav><footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer></main></body></html>

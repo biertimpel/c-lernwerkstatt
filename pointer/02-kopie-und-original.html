@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Kopie und Original vergleichen</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+  <script src="speicheransicht.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header>
+      <h1>Kopie und Original vergleichen</h1>
+      <p class="intro">Verfolgen Sie im Speichermodell, wie sich eine Wertkopie von einer übergebenen Adresse unterscheidet.</p>
+    </header>
+
+    <section class="content-section" aria-labelledby="abschnitt-1">
+      <h2 id="abschnitt-1">1. Was bekommt eine Funktion?</h2>
+      <p>Ein Parameter erhält eine Kopie des übergebenen Werts. Das gilt auch für Strukturen und Pointer. Bei einem <code>Spielstand</code> werden die Felder kopiert. Bei einem <code>Spielstand *</code> wird die Adresse kopiert: Beide Pointerwerte bezeichnen dasselbe Ziel. Über den Parameter kann die Funktion deshalb Felder im ursprünglichen Spielstand ändern.</p>
+      <p>Bei einem Pointer <code>p</code> auf einen Spielstand lesen Sie mit <code>p-&gt;zuege</code> das Feld <code>zuege</code>. Das ist die Kurzform von <code>(*p).zuege</code>. Die Klammern sorgen dafür, dass zuerst das Ziel bestimmt wird und erst dann das Feld.</p>
+
+      <div class="speicheransicht" data-memory-explorer aria-label="Speicherausschnitt Schritt für Schritt">
+        <div class="memory-toolbar">
+          <label>Beispiel
+            <select data-memory-case>
+              <option value="0">Zahl verdoppeln: Wertkopie</option>
+              <option value="1">Zahl verdoppeln: Pointer</option>
+              <option value="2">Geburtstag: Kopie der Struktur</option>
+              <option value="3">Geburtstag: Pointer auf die Struktur</option>
+            </select>
+          </label>
+          <div class="step-controls">
+            <button type="button" data-memory-prev aria-label="Vorheriger Speicherschritt">←</button>
+            <span data-memory-step></span>
+            <button type="button" data-memory-next aria-label="Nächster Speicherschritt">→</button>
+          </div>
+        </div>
+        <p data-memory-note aria-live="polite" class="memory-note"></p>
+        <div class="memory-layout">
+          <div><h4>C-Code</h4><pre data-memory-code></pre><p data-memory-output hidden>Ausgabe: <code></code></p></div>
+          <div>
+            <h4>Speicherausschnitt</h4>
+            <p class="klein">Adresse oben, Bytewert unten (hexadezimal).</p>
+            <div class="memory-region" data-memory-region>
+              <div class="memory-grid" data-memory-grid role="img" aria-label="Modellspeicher"></div>
+              <svg data-memory-links aria-hidden="true"><defs><marker id="memory-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L7 3.5 L0 7 Z" fill="currentColor"/></marker></defs><g data-memory-arrows></g></svg>
+            </div>
+          </div>
+        </div>
+        <p class="klein">Vereinfachtes Modell ab Adresse 0: <code>int</code> belegt 4 Byte, ein Pointer 8 Byte. Das niedrigste Byte steht zuerst (Little Endian). <code>—</code> steht für einen nicht dargestellten Inhalt.</p>
+      </div>
+      <noscript><p>Ohne JavaScript: Bei Übergabe eines <code>int</code> oder einer Struktur ändert sich nur der Parameter. Bei Übergabe der Adresse kann die Funktion das Original ändern.</p></noscript>
+    </section>
+
+    <section class="content-section" aria-labelledby="aufgabe-b">
+      <h2 id="aufgabe-b">2. Aufgabe b)</h2>
+      <p>In „Datenstrukturen“ haben Sie eine Funktion geschrieben, die einen Spielstand als Wert erhält und die Zugzahl erhöht. Legen Sie mit Ihrer vorhandenen Startzustandsfunktion einen Spielstand an, rufen Sie die bekannte Funktion auf und geben Sie die Zugzahl aus:</p>
+      <pre><code>Spielstand s = startzustand();
+zug_zaehlen(s);
+printf("%d\n", s.zuege);</code></pre>
+      <p>Ergänzen Sie eine zweite Funktion <code>zug_zaehlen_original</code>. Sie erhält einen <code>Spielstand *</code> und erhöht das Feld <code>zuege</code> über <code>-&gt;</code>. Rufen Sie sie mit <code>zug_zaehlen_original(&amp;s);</code> auf und geben Sie <code>s.zuege</code> erneut aus. Wie können Sie den Feldzugriff auch mit <code>*</code> und <code>.</code> schreiben? Erklären Sie den Unterschied zwischen den Aufrufen mithilfe der Speicheransicht.</p>
+    </section>
+
+    <section class="content-section" aria-labelledby="hinweise">
+      <h2 id="hinweise">Hinweise</h2>
+      <details><summary>Zu b): Die Adresse eines Spielstands übergeben</summary><p><code>startzustand()</code> liefert den Startzustand als Wert. Speichern Sie ihn zuerst in <code>s</code>. <code>&amp;s</code> liefert dann die Adresse dieser Variable. In Ihrer neuen Funktion bezeichnen <code>p-&gt;zuege</code> und <code>(*p).zuege</code> dasselbe Feld, wenn der Parameter <code>p</code> heißt.</p></details>
+    </section>
+
+    <section class="content-section" aria-labelledby="selbstkontrolle">
+      <h2 id="selbstkontrolle">Selbstkontrolle</h2>
+      <details><summary>Ergebnis der beiden Funktionsaufrufe</summary>
+        <p>Nach <code>zug_zaehlen(s)</code> hat <code>s</code> noch <code>0</code> Züge. Nach <code>zug_zaehlen_original(&amp;s)</code> steht im selben <code>s</code> die Zahl <code>1</code>.</p>
+      </details>
+    </section>
+
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="01-werte-und-speicheradressen.html">← Zurück: Werte und Speicheradressen untersuchen</a></li>
+      <li><a href="03-spielzustand-veraendern.html">Weiter: Einen bestehenden Spielzustand verändern →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>

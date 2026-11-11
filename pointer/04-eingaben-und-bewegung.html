@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Eingaben mit Bewegung verbinden</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+  <script src="tresor-daten.js" defer></script>
+  <script src="spielvorschau.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header>
+      <h1>Eingaben mit Bewegung verbinden</h1>
+      <p class="intro">Verbinden Sie die Tasteneingabe mit der Bewegungsfunktion und prüfen Sie das Ergebnis im Spielfeld.</p>
+    </header>
+
+    <section class="content-section" aria-labelledby="aufgabe-d">
+      <h2 id="aufgabe-d">1. Aufgabe d)</h2>
+      <ol>
+        <li>Verwenden Sie den laufenden Spielstand, den <code>spiel_starten</code> einmal aus dem Startzustand anlegt. Im Startmaterial ist diese Stelle vorbereitet.</li>
+        <li>Das Programmgerüst ruft <code>taste_gedrueckt</code> bei einem Tastendruck auf. Der Funktionskopf ist mitgegeben. Ergänzen Sie den Funktionskörper so, dass jede Pfeiltaste <code>figur_bewegen</code> mit der Adresse des laufenden Spielstands und der passenden Richtung aufruft.</li>
+        <li>Zeichnen Sie die Figur aus dem laufenden Spielstand. Falls <code>zeichne</code> bisher für jedes Bild einen neuen Startzustand angelegt hat, verwenden Sie stattdessen den vorhandenen Zustand. Rufen Sie in <code>spiel_status</code> die Lesefunktion aus c) mit der Adresse desselben Spielstands auf. Das Gerüst zeigt die Statuszeile im Fenstertitel an.</li>
+        <li>Starten Sie das Programm im Fenster. Bewegen Sie die Figur mehrere Felder weit und versuchen Sie anschließend, in eine Wand und durch die verschlossene Tür zu laufen. Beobachten Sie die Position und die Zugzahl.</li>
+      </ol>
+      <p><strong>Ihr Ergebnis:</strong> Die Figur bewegt sich mit den Pfeiltasten durch das vorhandene Spielfeld. Wände, der Spielfeldrand und die verschlossene Tür blockieren die Bewegung. Bild und Statusanzeige zeigen Position und Zugzahl desselben Spielstands.</p>
+    </section>
+
+    <section class="content-section" aria-labelledby="spiel">
+      <h2 id="spiel">2. Spielfeld ausprobieren</h2>
+      <p>Hier sehen Sie das Zielverhalten im Browser. Wählen Sie eine Richtung über die Schaltflächen oder verwenden Sie bei fokussiertem Spielfeld die Pfeiltasten.</p>
+      <div class="game-demo" data-pointer-game>
+        <p class="game-status" data-game-status aria-live="polite"></p>
+        <canvas data-game-board width="240" height="144" role="img" aria-label="Spielfeld des Tresorraubs" tabindex="0"></canvas>
+        <div class="game-controls">
+          <button type="button" data-move="up" aria-label="Nach oben">↑</button>
+          <button type="button" data-move="left" aria-label="Nach links">←</button>
+          <button type="button" data-move="down" aria-label="Nach unten">↓</button>
+          <button type="button" data-move="right" aria-label="Nach rechts">→</button>
+          <button type="button" data-game-reset>Neu starten</button>
+        </div>
+      </div>
+      <noscript><p>Für die Browser-Vorschau muss JavaScript aktiviert sein. Alternativ starten Sie Ihr SDL2-Programm.</p></noscript>
+    </section>
+
+    <section class="content-section" aria-labelledby="hinweise">
+      <h2 id="hinweise">Hinweise</h2>
+      <details><summary>Zu d): Pfeiltasten zuordnen</summary><p>Die Tastencodes heißen <code>SDLK_LEFT</code>, <code>SDLK_RIGHT</code>, <code>SDLK_UP</code> und <code>SDLK_DOWN</code>. Im Spielfeld wächst x nach rechts und y nach unten. Wenn die Figur nach einem Schritt zurückspringt, suchen Sie nach einem Aufruf der Startzustandsfunktion in <code>zeichne</code>.</p></details>
+    </section>
+
+    <section class="content-section" aria-labelledby="selbstkontrolle">
+      <h2 id="selbstkontrolle">Selbstkontrolle</h2>
+      <details><summary>Verschlossene Tür</summary>
+        <p>Von <code>(5, 3)</code> aus führt ein Schritt nach rechts zur verschlossenen Tür bei <code>(6, 3)</code>. Die Figur bleibt stehen und die Zugzahl bleibt gleich.</p>
+      </details>
+    </section>
+
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="03-spielzustand-veraendern.html">← Zurück: Einen bestehenden Spielzustand verändern</a></li>
+      <li><a href="../in-vorbereitung.html?thema=dynamischer-speicher">Weiter: Dynamischer Speicher →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>

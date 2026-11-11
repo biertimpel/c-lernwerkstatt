@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Zeichenketten</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+  <script src="selbstkontrollen.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header><h1>Zeichenketten</h1><p>Text ist in C ein Array von Zeichen mit einem besonderen Endzeichen.</p></header>
+    <noscript><p>Ohne JavaScript können Sie die Fragen anhand der aufklappbaren Erklärungen selbst prüfen.</p></noscript>
+    <section class="content-section" aria-labelledby="abschnitt-1">
+      <h2 id="abschnitt-1">1. Text als Array von Zeichen</h2>
+      <p>Eine Zeichenkette ist ein Array vom Typ <code>char</code>. Hinter dem letzten sichtbaren Zeichen steht das Nullzeichen <code>'\0'</code>. Daran erkennen Funktionen wie <code>printf</code> mit <code>%s</code>, wo der Text endet. Eine Zeichenkette in Anführungszeichen enthält dieses Endzeichen automatisch:</p>
+      <pre><code>char gegenstand[16] = "Beute";</code></pre>
+      <h3>Vorhersagen und ausprobieren</h3>
+      <p>In den Aufgaben verwenden Sie die Funktion <code>strlen</code> aus der Header-Datei <code>&lt;string.h&gt;</code>. Beide haben Sie bisher noch nicht kennengelernt. Wie Sie eine unbekannte Bibliotheksfunktion verwenden, wissen Sie aber aus dem Kapitel <a href="../manpages/index.html">„Manpages und Bibliotheksdokumentation“</a>: Schlagen Sie <a href="https://man7.org/linux/man-pages/man3/strlen.3.html"><code>strlen</code></a> nach, bevor Sie die Funktion einsetzen. Welche Header-Datei müssen Sie einbinden? Welchen Parameter erwartet die Funktion, und was liefert sie zurück?</p>
+      <p>Notieren Sie zuerst Ihre Erwartung, dann prüfen Sie im Programm:</p>
+      <ol>
+        <li>Was liefert <code>sizeof(gegenstand)</code>? Was liefert <code>strlen(gegenstand)</code>?</li>
+        <li>Welches Zeichen steht in <code>gegenstand[4]</code>, welches in <code>gegenstand[5]</code>?</li>
+        <li>Geben Sie den Text Zeichen für Zeichen mit einer Schleife aus, ohne <code>strlen</code> zu verwenden. Woran erkennt Ihre Schleife das Ende?</li>
+        <li>Lassen Sie die Größe weg: <code>char name[] = "Beute";</code>. Wie groß ist das Array jetzt?</li>
+        <li>Was liefert <code>strlen</code> für <code>"Tür"</code>? Vergleichen Sie mit <code>"Tuer"</code>.</li>
+      </ol>
+      <details><summary>Selbstkontrolle: Ihre Beobachtungen</summary><p><code>sizeof</code> liefert die Größe des ganzen Arrays, hier 16. <code>strlen</code> zählt die Zeichen vor dem Nullzeichen, hier 5. In <code>gegenstand[4]</code> steht <code>'e'</code>, in <code>gegenstand[5]</code> das Nullzeichen. Ohne Größenangabe ist das Array 6 Zeichen groß: fünf Buchstaben und das Endzeichen. Für <code>"Tür"</code> liefert <code>strlen</code> meist 4, weil das ü in der üblichen Kodierung UTF-8 zwei Bytes belegt. <code>strlen</code> zählt Bytes, keine Buchstaben. Verwenden Sie für Spieltexte deshalb Schreibweisen wie <code>Tuer</code>.</p></details>
+      <form class="self-check" data-hint="Unterscheiden Sie Größe des Arrays und Länge des Texts. Wo steht das Nullzeichen?">
+        <fieldset><legend>Gegeben ist <code>char text[10] = "Wache";</code>. Welche Aussagen stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> <code>sizeof(text)</code> ist 10.</label>
+          <label><input type="checkbox" data-correct="true"> <code>strlen(text)</code> ist 5.</label>
+          <label><input type="checkbox" data-correct="true"> <code>text[5]</code> enthält das Nullzeichen.</label>
+          <label><input type="checkbox"> In <code>text</code> passt ein Text mit 10 sichtbaren Zeichen.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die ersten drei Aussagen stimmen. Ein Platz wird immer für das Nullzeichen gebraucht. In ein Array mit 10 Zeichen passen deshalb höchstens 9 sichtbare Zeichen.</p></details>
+      </form>
+    </section>
+    <section class="content-section" aria-labelledby="abschnitt-2">
+      <h2 id="abschnitt-2">2. In der Dokumentation nachschlagen</h2>
+      <p>Für Zeichenketten gibt es Bibliotheksfunktionen in <code>&lt;string.h&gt;</code> und <code>&lt;stdio.h&gt;</code>. Wenden Sie an, was Sie im Kapitel „Manpages und Bibliotheksdokumentation“ geübt haben. Schlagen Sie die folgenden Funktionen nach und notieren Sie jeweils Parameter, Rückgabewert und Voraussetzungen:</p>
+      <ul>
+        <li><a href="https://man7.org/linux/man-pages/man3/strlen.3.html"><code>strlen</code></a> (falls noch nicht in Abschnitt 1 geschehen)</li>
+        <li><a href="https://man7.org/linux/man-pages/man3/strcmp.3.html"><code>strcmp</code></a></li>
+        <li><a href="https://man7.org/linux/man-pages/man3/printf.3.html"><code>snprintf</code></a> (steht auf derselben Seite wie <code>printf</code>)</li>
+      </ul>
+      <h3>Texte vergleichen</h3>
+      <p>Sie starten Ihr Programm mit Optionen wie <code>./programm --text</code>. Das Gerüst muss dafür erkennen, welcher Text auf der Kommandozeile stand. Legen Sie in <code>text_ausgeben</code> ein Zeichen-Array mit dem Inhalt <code>"--text"</code> an. Vergleichen Sie es zuerst mit <code>==</code> mit dem Text <code>"--text"</code> und danach mit <code>strcmp</code>. Was meldet der Compiler? Was gibt das Programm aus? Erklären Sie den Unterschied mithilfe der Dokumentation.</p>
+      <p>Sehen Sie sich anschließend in <code>programm.c</code> die Schleife am Anfang von <code>main</code> an. Wie erkennt das Gerüst die Optionen? Den Ausdruck <code>argv[argument]</code> müssen Sie noch nicht verstehen; er steht für den Text einer Option.</p>
+      <details><summary>Selbstkontrolle: Vergleich mit == und strcmp</summary><p>Der Vergleich mit <code>==</code> vergleicht nicht den Inhalt der beiden Texte, sondern prüft, ob beide Seiten <em>dieselbe Stelle im Speicher</em> bezeichnen. Ein Zeichen-Array ist wie jede Variable ein eigener Speicherbereich (siehe <a href="../variablen/lokale-und-globale-variablen.html">Lokale und globale Variablen</a>). Der Text <code>"--text"</code> in Anführungszeichen liegt an einer anderen Stelle. Deshalb ergibt der Vergleich Ihres Arrays mit <code>"--text"</code> immer 0, also falsch, auch wenn der Inhalt gleich ist. Ebenso ergibt der Vergleich zweier verschiedener Arrays mit gleichem Inhalt immer 0. Wahr ist der Vergleich nur, wenn beide Seiten derselbe Speicherbereich sind, etwa wenn Sie ein Array mit sich selbst vergleichen. Wie man mit solchen Speicherstellen arbeitet, lernen Sie im Kapitel „Pointer und Datenaustausch“.</p>
+      <p>Viele Compiler warnen vor dem Vergleich mit <code>==</code>, weil er fast nie das ist, was gemeint war. <code>strcmp</code> vergleicht Zeichen für Zeichen und liefert 0, wenn beide Texte gleich sind. Ein Rückgabewert ungleich 0 bedeutet, dass sie sich unterscheiden. </p></details>
+    </section>
+    <section class="content-section" aria-labelledby="abschnitt-3">
+      <h2 id="abschnitt-3">3. Aufgabe: Eine Statuszeile zusammensetzen</h2>
+      <p>Laut Spielbeschreibung aus <a href="../vom-problem-zum-programm-2/index.html">„Vom Problem zum Programm II“</a> kann der aktuelle Spielstand zusätzlich als Text ausgegeben werden: Position der Spielfigur, Inventar, verbrauchte Züge und die Zustände von Tür, Tresor und Gegenständen. Als ersten Baustein dafür setzen Sie eine Statuszeile in einem Zeichen-Array zusammen. Sie soll die Position der Spielfigur, die verbrauchten Züge und das Zuglimit enthalten. Verwenden Sie dafür <code>snprintf</code>. Das Format legen Sie selbst fest und notieren es in Ihrer Projektnotiz.</p>
+      <ul>
+        <li>Wählen Sie eine Größe für das Zeichen-Array und begründen Sie sie: Wie lang kann Ihre Zeile höchstens werden?</li>
+        <li>Werten Sie den Rückgabewert von <code>snprintf</code> aus. Woran erkennen Sie laut Dokumentation, dass der Text nicht vollständig in das Array gepasst hat?</li>
+        <li>Testen Sie das absichtlich mit einem zu kleinen Array. Notieren Sie vorher, welchen Inhalt Sie erwarten.</li>
+        <li>Bei welchen Werten wird Ihre Zeile am längsten? Nehmen Sie diesen Fall in Ihre Tests auf.</li>
+      </ul>
+      <details><summary>Denkhilfe: Den Rückgabewert deuten</summary><p>Die Dokumentation unterscheidet zwischen der Zahl der Zeichen, die tatsächlich geschrieben wurden, und der Zahl, die geschrieben worden <em>wäre</em>. Welche der beiden liefert <code>snprintf</code>? Was bedeutet es, wenn dieser Wert mindestens so groß ist wie das Array?</p></details>
+      <details><summary>Selbstkontrolle: Ein zu kleines Array</summary><p><code>snprintf</code> schreibt höchstens so viele Zeichen, wie in das Array passen, und schließt den Text mit <code>'\0'</code> ab. Zurückgegeben wird die Länge, die der vollständige Text gehabt hätte. Ist dieser Wert größer oder gleich der Arraygröße, wurde gekürzt. Ihre Zeile ist dann zwar ein gültiger Text, aber unvollständig.</p></details>
+      <form class="self-check" data-hint="Lesen Sie in der Dokumentation nach, was die Rückgabewerte bedeuten.">
+        <fieldset><legend>Welche Aussagen zu Bibliotheksfunktionen für Zeichenketten stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox"> <code>strcmp</code> liefert 1, wenn beide Texte gleich sind.</label>
+          <label><input type="checkbox" data-correct="true"> <code>==</code> vergleicht nicht den Inhalt zweier Zeichenketten.</label>
+          <label><input type="checkbox" data-correct="true"> Liefert <code>snprintf</code> einen Wert, der mindestens so groß ist wie das Ziel-Array, wurde der Text gekürzt.</label>
+          <label><input type="checkbox"> <code>strlen</code> zählt das Nullzeichen mit.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die zweite und dritte Aussage stimmen. <code>strcmp</code> liefert bei gleichen Texten 0. <code>strlen</code> zählt nur die Zeichen vor dem Nullzeichen.</p></details>
+      </form>
+      <p class="work-result"><strong>Ihr Ergebnis:</strong> Ihre Notizen zu den drei Funktionen, eine Statuszeile mit dokumentiertem Format, eine Prüfung auf Kürzung und Testfälle, einschließlich des längsten Falls.</p>
+    </section>
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="01-eindimensionale-arrays.html">← Zurück: Eindimensionale Arrays</a></li>
+      <li><a href="03-zweidimensionale-arrays.html">Weiter: Das Spielfeld als zweidimensionales Array →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>

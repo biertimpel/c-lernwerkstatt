@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Ein Spielstand als Datenstruktur</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+  <script src="selbstkontrollen.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header><h1>Ein Spielstand als Datenstruktur</h1><p>Arrays, Zeichenketten und Strukturen zu einem vollständigen Spielstand zusammensetzen.</p></header>
+    <noscript><p>Ohne JavaScript können Sie die Fragen anhand der aufklappbaren Erklärungen selbst prüfen.</p></noscript>
+    <section class="content-section" aria-labelledby="abschnitt-1">
+      <h2 id="abschnitt-1">1. Was ein Spielstand wissen muss</h2>
+      <p>Laut Spielbeschreibung aus „Vom Problem zum Programm II“ enthält die Textausgabe des Spielstands die Position der Spielfigur, den Inhalt des Inventars, die verbrauchten Züge sowie die Zustände von Tür, Tresor und einsammelbaren Gegenständen. Alle Positionen finden Sie in <a href="materialien/tresorraub-daten/SPIELFELD.md">SPIELFELD.md</a>.</p>
+      <p>Entwerfen Sie einen Strukturtyp, der einen vollständigen Spielstand beschreibt. Halten Sie in Ihrer Projektnotiz fest, welche Felder er enthält und warum. Folgende Fragen helfen bei der Entscheidung:</p>
+      <ul>
+        <li>Welche Daten ändern sich während des Spiels, welche bleiben immer gleich?</li>
+        <li>Tragen Sie Tür, Tresor und Gegenstände als Zeichen in den Grundriss ein, oder speichern Sie sie getrennt mit eigener Position und eigenem Zustand? Was ist einfacher, wenn die Figur den Schlüssel aufnimmt? Was ist einfacher bei der Ausgabe?</li>
+        <li>Wie stellen Sie das Inventar dar? Es kann höchstens Schlüssel, Beute und Münze enthalten.</li>
+        <li>Welche Typen aus den vorigen Seiten können Sie wiederverwenden?</li>
+      </ul>
+      <p>Vergleichen Sie Ihren Entwurf mit Ihrem Plan aus „Vom Problem zum Programm II“. Was hat sich geändert, und warum?</p>
+      <details><summary>Denkhilfe: Zwei Darstellungen abwägen</summary><p>Spielen Sie für beide Varianten gedanklich durch, was beim Aufnehmen des Schlüssels geändert werden muss. Was passiert in jeder Variante mit dem Feld, auf dem der Schlüssel lag? Wie finden Sie heraus, ob die Tür offen ist? Es gibt keine allein richtige Lösung. Entscheidend ist, dass Sie Ihre Wahl begründen können.</p></details>
+      <form class="self-check" data-hint="Denken Sie an die Regeln aus der Spielbeschreibung und an die Fragen aus Abschnitt 1.">
+        <fieldset><legend>Welche Aussagen zum Entwurf des Spielstands stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Die Zahl der verbrauchten Züge gehört zum Spielstand, das Zuglimit von 60 muss nicht darin gespeichert werden.</label>
+          <label><input type="checkbox"> Weil der Grundriss sich nie ändert, darf er nicht Teil der Struktur sein.</label>
+          <label><input type="checkbox" data-correct="true"> Ob die Tür offen ist, muss sich aus dem Spielstand ablesen lassen.</label>
+          <label><input type="checkbox"> Für jede Darstellung des Spielfelds gibt es nur eine richtige Rangfolge der Zeichen.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die erste und dritte Aussage stimmen. Das Zuglimit ist eine Regel, die für jedes Spiel gleich ist. Es kann als Konstante im Programm stehen. Den Grundriss dürfen Sie in die Struktur aufnehmen oder getrennt halten, beides ist vertretbar. Die Rangfolge der Zeichen legen Sie selbst fest. Sie muss nur dokumentiert und eindeutig sein.</p></details>
+      </form>
+    </section>
+    <section class="content-section" aria-labelledby="abschnitt-2">
+      <h2 id="abschnitt-2">2. Aufgabe: Startzustand und Ausgabe</h2>
+      <ol>
+        <li>Entwerfen Sie eine Funktion, die einen Spielstand im Startzustand liefert.</li>
+        <li>Entwerfen Sie eine Funktion, die für ein Feld das Zeichen für die Darstellung bestimmt. Auf einem Feld können mehrere Dinge zusammentreffen, zum Beispiel die Spielfigur und ein überwachtes Feld. Legen Sie eine Rangfolge fest und dokumentieren Sie sie zusammen mit Ihrer Zeichenlegende.</li>
+        <li>Geben Sie das gesamte Spielfeld mit dieser Funktion als Text aus.</li>
+        <li>Zeichnen Sie den Startzustand auch im Fenster, mit einem passenden Piktogramm für jedes Objekt. Ihre Funktion <code>zeichne</code> kann dafür in jedem Bild einen Spielstand im Startzustand anlegen.</li>
+        <li>Geben Sie den Spielstand zusätzlich als Text aus. Verwenden Sie dafür Ihre Statuszeile von Seite 2 und ergänzen Sie Inventar und Zustände.</li>
+      </ol>
+      <p>Notieren Sie, was die Ausgabe des Startzustands enthalten muss, bevor Sie sie zum ersten Mal ausführen. Prüfen Sie dann jedes Objekt aus <a href="materialien/tresorraub-daten/SPIELFELD.md">SPIELFELD.md</a> an seiner Position.</p>
+      <details><summary>Hinweis: Objekte im Fenster</summary><p>Die Piktogramme der Objekte haben transparente Zellen. Zeichnen Sie deshalb zuerst den Untergrund des Feldes und danach das Objekt darüber. Welche Rangfolge aus Ihrer Textdarstellung können Sie dafür wiederverwenden?</p></details>
+      <details><summary>Selbstkontrolle: Der Startzustand</summary><p>Die Spielfigur steht auf (3, 7). Es sind 0 von 60 Zügen verbraucht, das Inventar ist leer. Die Tür ist verschlossen, die Beute liegt im Tresor. Schlüssel und Münze liegen auf ihren Feldern. Die Startposition ist nicht überwacht. In Ihrer Darstellung müssen alle acht Einträge aus der Tabelle in SPIELFELD.md an der richtigen Stelle erscheinen.</p></details>
+      <p class="work-result"><strong>Ihr Ergebnis:</strong> Ein begründeter Strukturtyp für den Spielstand, eine Funktion für den Startzustand, die Ausgabe des Spielfelds mit Legende, die Darstellung im Fenster und eine Textausgabe des Spielstands.</p>
+    </section>
+    <section class="content-section" aria-labelledby="abschnitt-3">
+      <h2 id="abschnitt-3">3. Eine Beobachtung für das nächste Kapitel</h2>
+      <p>Schreiben Sie eine Funktion, die einen Spielstand als Parameter erhält und darin die Zahl der verbrauchten Züge um eins erhöht. Rufen Sie sie auf und geben Sie den Spielstand danach aus. Notieren Sie vorher Ihre Erwartung.</p>
+      <p>Erinnern Sie sich an zwei frühere Beobachtungen: Auf der Seite <a href="../funktionen-debugging/02-funktionen.html">Funktionen</a> haben Sie gelernt, dass Parameter Kopien der übergebenen Werte erhalten. Auf <a href="04-strukturen.html">Seite 4</a> haben Sie ausprobiert, dass das auch für Strukturen gilt: Eine Funktion, die ein Feld einer übergebenen Position ändert, verändert die Position des Aufrufers nicht. Überlegen Sie jetzt: Was wird bei Ihrem Spielstand alles kopiert? Wie groß ist er laut <code>sizeof</code>? Ein Array lässt sich nicht mit <code>=</code> zuweisen. Wird ein Array, das Feld einer Struktur ist, beim Kopieren der Struktur mitkopiert?</p>
+      <p>Für die Bewegung der Spielfigur muss eine Funktion den Spielstand des Aufrufers verändern können. Wie das geht, lernen Sie im Kapitel „Pointer und Datenaustausch“. Bewahren Sie Ihr Programm dafür auf.</p>
+      <details><summary>Selbstkontrolle: Kopie des Spielstands</summary><p>Der Spielstand des Aufrufers bleibt unverändert, auch die Zahl der Züge. Beim Kopieren einer Struktur werden alle Felder kopiert, auch ein enthaltenes Array wie der Grundriss. Enthält Ihr Spielstand den Grundriss, sind das allein dafür 144 Bytes bei jedem Aufruf.</p></details>
+      <form class="self-check" data-hint="Vergleichen Sie, was bei Arrays und bei Strukturen mit dem Zuweisungsoperator erlaubt ist.">
+        <fieldset><legend>Welche Aussagen zum Kopieren stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox"> Ein Array kann man mit <code>=</code> einem anderen Array zuweisen.</label>
+          <label><input type="checkbox" data-correct="true"> Wird eine Struktur zugewiesen, werden auch die Arrays in ihr kopiert.</label>
+          <label><input type="checkbox" data-correct="true"> Eine Funktion, die einen Spielstand als Parameter erhält, kann den Spielstand des Aufrufers nicht verändern.</label>
+          <label><input type="checkbox"> Eine Funktion, die einen Spielstand als Parameter erhält, bekommt nur die Felder, die sie tatsächlich verwendet.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die zweite und dritte Aussage stimmen. Eine Zuweisung an ein ganzes Array lehnt der Compiler ab. Eine Struktur wird dagegen immer vollständig kopiert, mit allen Feldern und den darin enthaltenen Arrays.</p></details>
+      </form>
+    </section>
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="04-strukturen.html">← Zurück: Strukturen</a></li>
+      <li><a href="../pointer/index.html">Weiter: Pointer und Datenaustausch →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>

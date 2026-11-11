@@ -7,3 +7,11 @@
 # Kompilierte Programme aus den Lektionsmaterialien
 manpages/materialien/sdl2-start/programm
 manpages/materialien/sdl2-start/programm.exe
+
+# Kompilierte Programme der Lektion Datenstrukturen
+datenstrukturen/materialien/tresorraub-daten/programm
+datenstrukturen/materialien/tresorraub-daten/programm.exe
+datenstrukturen/loesung/programm
+datenstrukturen/loesung/programm.exe
+datenstrukturen/loesung/tests
+datenstrukturen/loesung/tests.exe
