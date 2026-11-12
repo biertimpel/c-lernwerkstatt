@@ -26,7 +26,7 @@
 int spielstand_lesen(const Spielstand *p, …);   /* darf ihn nur lesen */</code></pre>
       <p>Steht in einer Funktion mit <code>const Spielstand *p</code> trotzdem eine Zuweisung wie <code>p-&gt;zuege = 5;</code>, bricht der Compiler mit einem Fehler ab. Das hat zwei Vorteile: Wer nur den Funktionskopf liest, sieht sofort, dass die Funktion den Spielstand nicht verändert. Und wenn Sie sich in der Funktion versehentlich doch verschreiben, fällt das schon beim Übersetzen auf.</p>
       <h3><code>NULL</code> und Lebensdauer</h3>
-      <p>Ein Pointer muss nicht immer auf etwas zeigen. Der besondere Wert <code>NULL</code> bedeutet: <strong>Dieser Pointer zeigt auf nichts.</strong> Eine Funktion kann zum Beispiel <code>NULL</code> bekommen, wenn der Aufrufer gerade keinen Spielstand hat. Im Kapitel „Dynamischer Speicher“ begegnet Ihnen <code>NULL</code> noch häufiger.</p>
+      <p>Ein Pointer muss nicht immer auf etwas zeigen. Der besondere Wert <code>NULL</code> bedeutet: <strong>Dieser Pointer zeigt auf nichts.</strong> Eine Funktion kann zum Beispiel <code>NULL</code> bekommen, wenn der Aufrufer gerade keinen Spielstand hat. Im Kapitel <a href="../dynamischer-speicher/index.html">„Dynamischer Speicher und Listen“</a> begegnet Ihnen <code>NULL</code> noch häufiger.</p>
       <p>Über einen <code>NULL</code>-Pointer dürfen Sie nicht zugreifen. Ein Ausdruck wie <code>p-&gt;zuege</code> mit <code>p == NULL</code> bringt das Programm in der Regel sofort zum Absturz. Kann eine Funktion <code>NULL</code> bekommen, prüft sie das deshalb vor dem ersten Zugriff und reagiert passend. Ein Beispiel, das nichts mit dem Spiel zu tun hat:</p>
       <pre><code>void uhrzeit_ausgeben(const Uhrzeit *u) {
     if (u == NULL) {
@@ -35,7 +35,7 @@ int spielstand_lesen(const Spielstand *p, …);   /* darf ihn nur lesen */</code
     }
     printf("%d:%02d\n", u-&gt;stunde, u-&gt;minute);
 }</code></pre>
-      <p>Eine zweite Gefahr erkennt diese Prüfung nicht. <strong>Ein Pointer ist nur so lange brauchbar, wie sein Ziel existiert.</strong> Zeigt ein Pointer zum Beispiel auf eine lokale Variable einer Funktion, gibt es diese Variable nach dem <code>return</code> nicht mehr. Der Pointer enthält aber weiterhin ihre alte Adresse. Er ist also nicht <code>NULL</code>, und trotzdem darf nicht mehr über ihn zugegriffen werden. Einen Versuch dazu machen Sie im Kapitel „Dynamischer Speicher“.</p>
+      <p>Eine zweite Gefahr erkennt diese Prüfung nicht. <strong>Ein Pointer ist nur so lange brauchbar, wie sein Ziel existiert.</strong> Zeigt ein Pointer zum Beispiel auf eine lokale Variable einer Funktion, gibt es diese Variable nach dem <code>return</code> nicht mehr. Der Pointer enthält aber weiterhin ihre alte Adresse. Er ist also nicht <code>NULL</code>, und trotzdem darf nicht mehr über ihn zugegriffen werden. Einen Versuch dazu machen Sie im Kapitel <a href="../dynamischer-speicher/01-lebensdauer.html">„Dynamischer Speicher und Listen“</a>.</p>
       <p>Für das Spiel heißt das: Im Fenster muss der Spielstand so lange existieren wie das ganze Programm. Er wird einmal angelegt und nicht nach jedem Tastendruck neu. Wie Sie eine solche Variable anlegen, lernen Sie auf Seite 4. Die Tasteneingabe verändert sie dann über einen Pointer, Zeichnen und Statuszeile lesen sie über einen <code>const</code>-Pointer.</p>
       <noscript><p>Ohne JavaScript können Sie Ihre Antworten mit der aufklappbaren Erklärung selbst prüfen.</p></noscript>
       <form class="self-check" data-hint="Unterscheiden Sie: Was verbietet const, was erkennt eine NULL-Prüfung, und was passiert mit lokalen Variablen nach dem return?">
@@ -55,7 +55,7 @@ int spielstand_lesen(const Spielstand *p, …);   /* darf ihn nur lesen */</code
       <p>In dieser Aufgabe geht es nur um die <strong>Spiellogik</strong>: Darf die Figur das Zielfeld betreten, und wie verändert sich dann der Spielstand? Sie rufen <code>figur_bewegen</code> dafür im Textmodus direkt auf und prüfen die Ergebnisse. Fenster und Tastatur brauchen Sie hier noch nicht.</p>
       <ul>
         <li>Prüfen Sie den Pointer auf <code>NULL</code>, bevor Sie auf ein Feld zugreifen.</li>
-        <li>Bestimmen Sie das Zielfeld und prüfen Sie Spielfeldgrenzen und Wände mit Ihren vorhandenen Abfragen. Prüfen Sie auch, ob das Zielfeld die Tür ist und sie laut Spielstand verschlossen ist. Die Tür startet wie in „Datenstrukturen“ verschlossen und blockiert die Bewegung.</li>
+        <li>Bestimmen Sie das Zielfeld und prüfen Sie Spielfeldgrenzen und Wände mit Ihren vorhandenen Abfragen. Prüfen Sie auch, ob das Zielfeld die Tür ist und sie laut Spielstand verschlossen ist. Die Tür startet wie in <a href="../datenstrukturen/05-spielstand.html">„Datenstrukturen“</a> verschlossen und blockiert die Bewegung.</li>
         <li>Ändern Sie nur bei einer erfolgreichen Bewegung Position und Zugzahl und geben Sie <code>true</code> zurück. Andernfalls geben Sie <code>false</code> zurück.</li>
         <li>Erlaubt sind nur die vier Schritte zu einem benachbarten Feld: <code>(1, 0)</code>, <code>(-1, 0)</code>, <code>(0, 1)</code> und <code>(0, -1)</code>. Jede andere Änderung, etwa <code>(2, 0)</code> oder <code>(1, 1)</code>, ist ungültig. Die Funktion verändert dann nichts und gibt <code>false</code> zurück.</li>
       </ul>

@@ -20,7 +20,7 @@
 
     <section class="content-section" aria-labelledby="abschnitt-1">
       <h2 id="abschnitt-1">1. Was bekommt eine Funktion?</h2>
-      <p>Beim Aufruf einer Funktion bekommt jeder Parameter eine Kopie dessen, was der Aufrufer übergibt. Das kennen Sie schon aus Block 1 und aus „Datenstrukturen“. Entscheidend ist, <em>was</em> übergeben und damit kopiert wird:</p>
+      <p>Beim Aufruf einer Funktion bekommt jeder Parameter eine Kopie dessen, was der Aufrufer übergibt. Das kennen Sie schon aus Block 1 und aus <a href="../datenstrukturen/05-spielstand.html">„Datenstrukturen“</a>. Entscheidend ist, <em>was</em> übergeben und damit kopiert wird:</p>
       <ul>
         <li><strong>Sie übergeben einen Spielstand</strong>, zum Beispiel <code>s</code>. Dann kopiert C den ganzen Spielstand mit allen Feldern in den Parameter. Die Funktion arbeitet mit ihrer eigenen Kopie. Ändert sie ein Feld, ändert sie nur diese Kopie. Der Spielstand <code>s</code> beim Aufrufer bleibt, wie er war.</li>
         <li><strong>Sie übergeben die Adresse eines Spielstands</strong>, also <code>&amp;s</code>. Dann kopiert C nur diese Adresse in den Parameter. Der Parameter ist ein Pointer vom Typ <code>Spielstand *</code> und enthält dieselbe Adresse wie <code>&amp;s</code>. Er zeigt deshalb auf denselben Spielstand: auf <code>s</code> beim Aufrufer. Ändert die Funktion über diesen Pointer ein Feld, ändert sie <code>s</code> selbst.</li>
@@ -81,7 +81,7 @@
 
     <section class="content-section" aria-labelledby="aufgabe-b">
       <h2 id="aufgabe-b">2. Aufgabe: Den Spielstand des Aufrufers verändern</h2>
-      <p>Sie brauchen zwei Funktionen, die Sie im Kapitel „Datenstrukturen“ auf der Seite „Ein Spielstand als Datenstruktur“ geschrieben haben:</p>
+      <p>Sie brauchen zwei Funktionen, die Sie im Kapitel <a href="../datenstrukturen/index.html">„Datenstrukturen“</a> auf der Seite <a href="../datenstrukturen/05-spielstand.html">„Ein Spielstand als Datenstruktur“</a> geschrieben haben:</p>
       <ul>
         <li>die Funktion, die einen Spielstand im Startzustand liefert. Im Startmaterial heißt sie <code>startzustand</code>.</li>
         <li>die Funktion aus dem Versuch am Ende jener Seite: Sie erhält einen Spielstand als Wert und erhöht darin die Zugzahl um eins. Im Startmaterial heißt sie <code>zug_zaehlen</code>.</li>
