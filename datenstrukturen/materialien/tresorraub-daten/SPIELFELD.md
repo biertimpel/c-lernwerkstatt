@@ -1,4 +1,4 @@
-# Spielfeld für das Kapitel „Datenstrukturen“
+# Spielfeld des Tresorraubs
 
 Diese Datei beschreibt den Startzustand des Tresorraubs. Sie enthält nur Daten
 und Regeln, keinen Code. Wie Sie die Daten im Programm darstellen, entscheiden
