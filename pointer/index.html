@@ -23,6 +23,7 @@
         <li>Erklären, was bei einem Funktionsaufruf kopiert wird, und den Spielstand des Aufrufers über einen Pointer verändern.</li>
         <li>Vor einem Zugriff auf <code>NULL</code> prüfen, die Lebensdauer des Ziels beachten und mit <code>const</code> lesenden Zugriff ausdrücken.</li>
         <li>Arrays zusammen mit der benötigten Größeninformation übergeben und bei Zeichenketten Adresse und Inhalt unterscheiden.</li>
+        <li>Einen Zustand, der während des ganzen Programms existiert, als <code>static</code>-Variable anlegen und mehrere Funktionen über Pointer damit arbeiten lassen.</li>
       </ul>
       <p>Arbeiten Sie mit dem vorhandenen Grundriss, dem Startzustand und der Darstellung weiter. Verwenden Sie Ihre eigenen Namen, wenn Ihre Typen und Felder anders heißen als in den Beispielen.</p>
     </section>
@@ -33,14 +34,14 @@
         <li><a href="01-werte-und-speicheradressen.html">Werte und Speicheradressen untersuchen</a></li>
         <li><a href="02-kopie-und-original.html">Kopie und Original vergleichen</a></li>
         <li><a href="03-spielzustand-veraendern.html">Einen bestehenden Spielzustand verändern</a></li>
-        <li><a href="04-eingaben-und-bewegung.html">Eingaben mit Bewegung verbinden</a></li>
+        <li><a href="04-eingaben-und-bewegung.html">Spiellogik an Tastatur und Anzeige anschließen</a></li>
       </ol>
     </section>
 
     <section class="content-section" aria-labelledby="materialien">
       <h2 id="materialien">Materialien</h2>
       <p>Ausgangspunkt ist Ihr Spielstand aus „Datenstrukturen“. Das <a href="materialien/tresorraub-pointer-start.zip" download>Startmaterial für Pointer und Datenaustausch</a> enthält das erweiterte SDL2-Gerüst, einen passenden Header, die Piktogramme, ein Makefile und einen lauffähigen Stand mit dem unbewegten Spielfeld. In der mitgelieferten <code>README.md</code> steht, wie Sie Ihr bisheriges Programm übernehmen.</p>
-      <p>Arbeiten Sie in <code>tresorraub.c</code>. Die mitgelieferten <code>programm.c</code> und <code>tresorraub.h</code> sind vorbereitet. Mit <code>make</code> übersetzen Sie das Programm. <code>./programm --text</code> startet den Textmodus für a)–c); <code>./programm</code> öffnet das Spielfenster für d).</p>
+      <p>Arbeiten Sie in <code>tresorraub.c</code>. Die mitgelieferten <code>programm.c</code> und <code>tresorraub.h</code> sind vorbereitet. Mit <code>make</code> übersetzen Sie das Programm. <code>./programm --text</code> startet den Textmodus für die Versuche und Aufgaben auf den Seiten 1 bis 3; <code>./programm</code> öffnet das Spielfenster für die Aufgabe auf Seite 4.</p>
     </section>
 
     <nav aria-label="Seitennavigation"><ul class="navlinks">

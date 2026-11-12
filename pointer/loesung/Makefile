@@ -1,20 +1,22 @@
+# Musterloesung: verwendet Geruest und Piktogramme aus dem Startmaterial.
+START = ../materialien/tresorraub-pointer-start
 SDL2_CONFIG ?= sdl2-config
 SDL_CFLAGS := $(shell $(SDL2_CONFIG) --cflags 2>/dev/null)
 SDL_LIBS := $(shell $(SDL2_CONFIG) --libs 2>/dev/null)
 CFLAGS ?= -std=c17 -Wall -Wextra -Wpedantic -g
+EINBINDEN = -I$(START)
 
-QUELLEN = programm.c tresorraub.c piktogramme/piktogramme.c
-KOPFDATEIEN = tresorraub.h piktogramme/piktogramme.h
+.PHONY: all test clean
+all: programm tests
 
-.PHONY: all clean sdl2-pruefen
-all: programm
+programm: $(START)/programm.c tresorraub.c $(START)/piktogramme/piktogramme.c $(START)/tresorraub.h
+	$(CC) $(CFLAGS) $(SDL_CFLAGS) $(EINBINDEN) -o $@ $(START)/programm.c tresorraub.c $(START)/piktogramme/piktogramme.c $(SDL_LIBS)
 
-programm: $(QUELLEN) $(KOPFDATEIEN) | sdl2-pruefen
-	$(CC) $(CFLAGS) $(SDL_CFLAGS) -o $@ $(QUELLEN) $(SDL_LIBS)
+tests: tests.c tresorraub.c $(START)/piktogramme/piktogramme.c $(START)/tresorraub.h
+	$(CC) $(CFLAGS) $(SDL_CFLAGS) $(EINBINDEN) -o $@ tests.c $(START)/piktogramme/piktogramme.c $(SDL_LIBS)
+
+test: tests
+	./tests
 
 clean:
-	rm -f programm programm.exe
-
-sdl2-pruefen:
-	@command -v "$(SDL2_CONFIG)" >/dev/null 2>&1 || { echo "SDL2-Entwicklungspaket fehlt: sdl2-config nicht gefunden. Bitte README.md lesen." >&2; exit 1; }
-	@case "$$($(SDL2_CONFIG) --version)" in 2.*) ;; *) echo "Dieses Geruest benoetigt SDL2, nicht SDL3." >&2; exit 1 ;; esac
+	rm -f programm programm.exe tests tests.exe

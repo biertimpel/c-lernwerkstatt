@@ -39,7 +39,7 @@
           if (object) sprite(object, col, row);
         }
       }
-      status.textContent = "Position (" + x + ", " + y + ") · Züge: " + zuege + (note ? " · " + note : "");
+      status.textContent = "Position (" + x + ", " + y + ") · Züge " + zuege + "/60" + (note ? " · " + note : "");
       status.dataset.x = x;
       status.dataset.y = y;
       status.dataset.zuege = zuege;

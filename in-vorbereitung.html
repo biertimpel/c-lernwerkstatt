@@ -25,7 +25,7 @@
   </main>
   <script>
     (() => {
-      const themen = {"kontrollfluss":"Bedingungen und Schleifen","funktionen-debugging":"Programmzerlegung, Funktionen und Debugging","lernstand-1":"Lernstandscheck I","manpages":"Manpages","arrays-zeichenketten":"Arrays, Zeichenketten und Listen","pointer":"Pointer und Datenaustausch","dynamischer-speicher":"Dynamischer Speicher und Strukturen","kompilieren-make":"Makefiles","header-quellen":"Header, Quelldateien und Schnittstellen","lernstand-2":"Lernstandscheck II","projektplanung":"Projekt","abschluss":"Präsentation"};
+      const themen = {"kontrollfluss":"Bedingungen und Schleifen","funktionen-debugging":"Programmzerlegung, Funktionen und Debugging","lernstand-1":"Lernstandscheck I","manpages":"Manpages","arrays-zeichenketten":"Datenstrukturen","pointer":"Pointer und Datenaustausch","dynamischer-speicher":"Dynamischer Speicher und Listen","kompilieren-make":"Makefiles","header-quellen":"Header und Quelldateien","lernstand-2":"Lernstandscheck II","projektplanung":"Projekt","abschluss":"Präsentation","datei-ein-ausgabe":"Datei-Ein- und -Ausgabe","config":"Config","objektorientierung":"Objektorientierung in C","spielbausteine":"Die Spielbausteine zusammenführen & Refactoring"};
       const schluessel = new URLSearchParams(window.location.search).get('thema');
       if (Object.hasOwn(themen, schluessel)) {
         const titel = themen[schluessel];

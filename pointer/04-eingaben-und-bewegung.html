@@ -3,34 +3,100 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Programmierung in C · Eingaben mit Bewegung verbinden</title>
+  <title>Programmierung in C · Spiellogik an Tastatur und Anzeige anschließen</title>
   <link rel="stylesheet" href="../kurs.css">
   <link rel="stylesheet" href="lektion.css">
   <script src="tresor-daten.js" defer></script>
   <script src="spielvorschau.js" defer></script>
+  <script src="selbstkontrollen.js" defer></script>
 </head>
 <body>
   <a class="skip" href="#inhalt">Zum Inhalt</a>
   <main id="inhalt">
     <p><a href="index.html">← Zur Kapitelübersicht</a></p>
     <header>
-      <h1>Eingaben mit Bewegung verbinden</h1>
-      <p class="intro">Verbinden Sie die Tasteneingabe mit der Bewegungsfunktion und prüfen Sie das Ergebnis im Spielfeld.</p>
+      <h1>Spiellogik an Tastatur und Anzeige anschließen</h1>
+      <p class="intro">Mehrere Funktionen arbeiten über Pointer mit demselben Spielstand: Die Tastatur verändert ihn, Bild und Statuszeile lesen ihn.</p>
     </header>
 
+    <section class="content-section" aria-labelledby="static">
+      <h2 id="static">1. Ein Spielstand für das ganze Programm</h2>
+      <p>Bisher haben Sie den Spielstand in einer Funktion angelegt, zum Beispiel in <code>text_ausgeben</code>. Das ist eine <strong>lokale</strong> Variable: Sie existiert nur, solange die Funktion läuft. Für das Spiel im Fenster reicht das nicht. Das Gerüst ruft Ihre Funktionen immer wieder auf: <code>taste_gedrueckt</code> bei jedem Tastendruck, <code>zeichne</code> für jedes Bild. Ein lokaler Spielstand in <code>taste_gedrueckt</code> würde bei jedem Aufruf neu angelegt, die vorige Bewegung wäre verloren. In <code>main</code> können Sie ihn auch nicht anlegen, denn <code>main</code> steht in <code>programm.c</code>, und die Funktionen bekommen vom Gerüst keinen Spielstand übergeben.</p>
+      <p>Die Lösung ist eine Variable <strong>außerhalb aller Funktionen</strong>. Solche globalen Variablen kennen Sie von den Seiten <a href="../variablen/lokale-und-globale-variablen.html">Lokale und globale Variablen</a> und <a href="../funktionen-debugging/02-funktionen.html">Funktionen</a>. Eine globale Variable existiert während des ganzen Programmlaufs: Sie wird beim Programmstart angelegt und erst am Programmende freigegeben. Alle Funktionen, die in der Datei unterhalb ihrer Deklaration stehen, können sie verwenden.</p>
+      <pre><code>#include &lt;stdio.h&gt;
+
+static int aufrufe;   /* außerhalb aller Funktionen */
+
+void zaehlen(void) {
+    aufrufe++;
+    printf("Aufruf Nummer %d\n", aufrufe);
+}
+
+int main(void) {
+    zaehlen();
+    zaehlen();
+    zaehlen();
+    return 0;
+}</code></pre>
+      <p><strong>Vorhersagen und ausprobieren:</strong> Was gibt das Programm aus? Verschieben Sie danach die Deklaration als <code>int aufrufe = 0;</code> an den Anfang von <code>zaehlen</code>. Was ändert sich, und warum?</p>
+      <p>Zwei Eigenschaften globaler Variablen brauchen Sie für das Spiel:</p>
+      <ul>
+        <li><strong>Anfangswert:</strong> Eine globale Variable ohne Anfangswert beginnt mit <code>0</code>. Bei einer Struktur sind alle Felder <code>0</code> beziehungsweise <code>false</code>. Ihr Wert ist also nie zufällig, anders als bei einer lokalen Variablen ohne Anfangswert. Ein Anfangswert, den Sie selbst angeben, muss aber schon beim Übersetzen feststehen. <code>static Spielstand spielstand = startzustand();</code> bricht deshalb mit <code>initializer element is not constant</code> ab, denn ein Funktionsaufruf findet erst während des Programmlaufs statt. Legen Sie die Variable daher ohne Anfangswert an und weisen Sie ihr in <code>spiel_starten</code> den Startzustand zu. Das Gerüst ruft <code>spiel_starten</code> einmal auf, bevor es Tasten verarbeitet und das erste Bild zeichnet.</li>
+        <li><strong>Das Wort <code>static</code>:</strong> Aus der Lektion <a href="../header-quellen/02-uebersetzen-und-linken.html#variablen">Header und Quelldateien</a> kennen Sie zwei Möglichkeiten für eine globale Variable. Ohne <code>static</code> kann jede andere Quelldatei sie über eine <code>extern</code>-Deklaration verwenden. Mit <code>static</code> ist sie <strong>nur in ihrer eigenen Datei sichtbar</strong>. Dieselbe Bedeutung hat <code>static</code> vor <code>GRUNDRISS</code> und vor der Funktion <code>statuszeile</code> im Startmaterial. Vor einer lokalen Variablen innerhalb einer Funktion hat <code>static</code> eine andere Bedeutung, die Sie in diesem Kapitel nicht brauchen.</li>
+      </ul>
+      <h3>Warum hier <code>static</code> und nicht <code>extern</code>?</h3>
+      <p>Mit <code>extern</code> in <code>tresorraub.h</code> könnte auch <code>programm.c</code> den Spielstand direkt verwenden. Für das Spiel ist <code>static</code> trotzdem die bessere Wahl:</p>
+      <ul>
+        <li><strong>Der Spielstand gehört zu <code>tresorraub.c</code>.</strong> Dort stehen alle Funktionen, die ihn lesen oder verändern. Das Gerüst braucht ihn nicht selbst. Es ruft nur die Funktionen auf, die in <code>tresorraub.h</code> stehen.</li>
+        <li><strong>Die Spielregeln lassen sich nicht umgehen.</strong> Die Figur bewegt sich nur über <code>figur_bewegen</code>, und diese Funktion prüft Wände und Tür und zählt die Züge. Mit <code>extern</code> könnte jede Datei die Position direkt verändern, an allen Prüfungen vorbei. Ändert sich der Spielstand unerwartet, wissen Sie mit <code>static</code>: Die Ursache steht in <code>tresorraub.c</code>.</li>
+        <li><strong>Das Gerüst passt zu jedem Spielstand.</strong> In <code>tresorraub.h</code> kommt der Typ <code>Spielstand</code> gar nicht vor. Für eine <code>extern</code>-Deklaration müsste die Strukturdefinition in den Header wandern, und <code>programm.c</code> hinge davon ab, wie Sie Ihren Spielstand aufgebaut haben. So aber funktioniert dasselbe Gerüst für alle Lösungen, egal wie Ihre Felder heißen.</li>
+      </ul>
+      <noscript><p>Ohne JavaScript können Sie Ihre Antworten mit der aufklappbaren Erklärung selbst prüfen.</p></noscript>
+      <form class="self-check" data-hint="Überlegen Sie, wo die Variable steht und was das Wort static an ihr verändert.">
+        <fieldset><legend>In <code>tresorraub.c</code> steht außerhalb aller Funktionen <code>static Spielstand spielstand;</code>. Welche Aussagen stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Die Variable existiert vom Programmstart bis zum Programmende.</label>
+          <label><input type="checkbox" data-correct="true"> Code in <code>programm.c</code> kann die Variable nicht über ihren Namen verwenden.</label>
+          <label><input type="checkbox"> Bis zum Aufruf von <code>spiel_starten</code> enthält sie zufällige Werte.</label>
+          <label><input type="checkbox"> Bei jedem Aufruf von <code>taste_gedrueckt</code> wird sie neu angelegt.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die ersten beiden Aussagen stimmen. Weil die Variable außerhalb aller Funktionen steht, existiert sie während des ganzen Programmlaufs und wird nicht bei Funktionsaufrufen neu angelegt. Ohne eigenen Anfangswert beginnt sie mit lauter Nullen, also zum Beispiel an der Position <code>(0, 0)</code> mit <code>0</code> Zügen. Zufällig ist das nicht. Den richtigen Startzustand bekommt sie erst in <code>spiel_starten</code>. <code>static</code> beschränkt die Sichtbarkeit auf <code>tresorraub.c</code>.</p></details>
+      </form>
+    </section>
+
     <section class="content-section" aria-labelledby="aufgabe-d">
-      <h2 id="aufgabe-d">1. Aufgabe d)</h2>
+      <h2 id="aufgabe-d">2. Aufgabe: Tastatur, Bild und Statuszeile verbinden</h2>
+      <p>Auf Seite 3 haben Sie die Spiellogik geschrieben und im Textmodus getestet. Neue Bewegungslogik kommt hier nicht hinzu. Neu ist, dass das Gerüst drei Ihrer Funktionen aufruft, die alle mit <strong>demselben</strong> Spielstand arbeiten:</p>
+      <ul>
+        <li><code>taste_gedrueckt</code> verändert ihn über einen Pointer, indem sie <code>figur_bewegen</code> aufruft.</li>
+        <li><code>zeichne</code> liest ihn über einen <code>const</code>-Pointer, um das Spielfeld darzustellen.</li>
+        <li><code>spiel_status</code> liest ihn über einen <code>const</code>-Pointer, um die Statuszeile im Fenstertitel zu füllen.</li>
+      </ul>
+      <p>Dafür brauchen Sie genau einen Spielstand, der während des ganzen Programms existiert, wie in Abschnitt 1 beschrieben. Die Funktionsköpfe gibt das Gerüst in <code>tresorraub.h</code> vor. Die Rümpfe in <code>tresorraub.c</code> sind bisher Platzhalter, die Sie jetzt selbst schreiben. Wie bei <code>zeichne</code> melden die Funktionen mit ihrem Rückgabewert, ob alles geklappt hat: <code>0</code> bei Erfolg, ein negativer Wert bei einem Fehler, nach dem das Spiel nicht weiterlaufen kann. Das Gerüst beendet das Programm dann. In diesem Kapitel kann ein solcher Fehler nur bei der Statuszeile auftreten, wenn sie nicht in das Zeichenarray passt.</p>
       <ol>
-        <li>Verwenden Sie den laufenden Spielstand, den <code>spiel_starten</code> einmal aus dem Startzustand anlegt. Im Startmaterial ist diese Stelle vorbereitet.</li>
-        <li>Das Programmgerüst ruft <code>taste_gedrueckt</code> bei einem Tastendruck auf. Der Funktionskopf ist mitgegeben. Ergänzen Sie den Funktionskörper so, dass jede Pfeiltaste <code>figur_bewegen</code> mit der Adresse des laufenden Spielstands und der passenden Richtung aufruft.</li>
-        <li>Zeichnen Sie die Figur aus dem laufenden Spielstand. Falls <code>zeichne</code> bisher für jedes Bild einen neuen Startzustand angelegt hat, verwenden Sie stattdessen den vorhandenen Zustand. Rufen Sie in <code>spiel_status</code> die Lesefunktion aus c) mit der Adresse desselben Spielstands auf. Das Gerüst zeigt die Statuszeile im Fenstertitel an.</li>
-        <li>Starten Sie das Programm im Fenster. Bewegen Sie die Figur mehrere Felder weit und versuchen Sie anschließend, in eine Wand und durch die verschlossene Tür zu laufen. Beobachten Sie die Position und die Zugzahl.</li>
+        <li>Legen Sie in <code>tresorraub.c</code> eine <code>static</code>-Variable für den laufenden Spielstand an. Schreiben Sie den Rumpf von <code>spiel_starten</code> so, dass die Funktion dieser Variablen den Startzustand zuweist und <code>0</code> zurückgibt.</li>
+        <li>Das Gerüst ruft <code>taste_gedrueckt</code> bei jedem Tastendruck auf und übergibt den Code der gedrückten Taste. Schreiben Sie den Rumpf so, dass jede Pfeiltaste <code>figur_bewegen</code> mit der Adresse des laufenden Spielstands und der passenden Richtung aufruft. Andere Tasten verändern nichts. Die Funktion gibt <code>0</code> zurück.</li>
+        <li>Zeichnen Sie die Figur aus dem laufenden Spielstand. Falls <code>zeichne</code> bisher für jedes Bild einen neuen Startzustand angelegt hat, verwenden Sie stattdessen den vorhandenen Zustand. Zum Anzeigen muss der Spielstand nur gelesen werden. Stellen Sie deshalb die Funktionen, die ihn zum Zeichnen und Ausgeben erhalten, wie auf Seite 3 auf <code>const Spielstand *</code> um. Im Startmaterial sind das <code>feld_zeichnen</code>, <code>feldzeichen</code> und <code>spielfeld_ausgeben</code>. Passen Sie die Aufrufe an, auch im Textmodus.</li>
+        <li>Ersetzen Sie den Platzhalter in <code>spiel_status</code>: Die Funktion ruft Ihre Lesefunktion von Seite 3 mit der Adresse desselben Spielstands auf und gibt deren Rückgabewert zurück. Daran erkennt das Gerüst, ob die Statuszeile in das Zeichenarray gepasst hat. Es zeigt sie dann im Fenstertitel an.</li>
+        <li>Starten Sie das Programm im Fenster und bewegen Sie die Figur mehrere Felder weit. Prüfen Sie dabei, was neu ist: Bleibt die Figur nach einem Schritt auf dem neuen Feld, oder springt sie zurück? Zeigen Bild und Fenstertitel nach jedem Tastendruck dieselbe Position und Zugzahl? Laufen Sie auch gegen eine Wand: Ändert sich der Titel dann?</li>
       </ol>
-      <p><strong>Ihr Ergebnis:</strong> Die Figur bewegt sich mit den Pfeiltasten durch das vorhandene Spielfeld. Wände, der Spielfeldrand und die verschlossene Tür blockieren die Bewegung. Bild und Statusanzeige zeigen Position und Zugzahl desselben Spielstands.</p>
+      <details><summary>Hinweis: Wo Variable und Funktionen stehen müssen</summary><p>Der Compiler liest die Datei von oben nach unten. Legen Sie die Variable deshalb unterhalb der Typdefinition von <code>Spielstand</code> an und oberhalb der ersten Funktion, die sie verwendet. Dasselbe gilt für <code>figur_bewegen</code>: Die Funktion muss oberhalb von <code>taste_gedrueckt</code> und <code>text_ausgeben</code> stehen. Sonst meldet der Compiler eine nicht deklarierte Funktion: GCC mit <code>implicit declaration of function</code>, je nach Version als Warnung oder als Fehler, Clang mit dem Fehler <code>call to undeclared function</code>.</p></details>
+      <details><summary>Hinweis: Pfeiltasten zuordnen</summary><p>Die Tastencodes heißen <code>SDLK_LEFT</code>, <code>SDLK_RIGHT</code>, <code>SDLK_UP</code> und <code>SDLK_DOWN</code>. Im Spielfeld wächst x nach rechts und y nach unten. Wenn die Figur nach einem Schritt zurückspringt, suchen Sie nach einem Aufruf der Startzustandsfunktion in <code>zeichne</code>.</p></details>
+      <details><summary>Selbstkontrolle: Was Sie im Fenster sehen</summary><p>Nach jedem erfolgreichen Schritt bleibt die Figur auf dem neuen Feld, und der Fenstertitel zeigt dieselbe Position wie das Bild sowie eine um eins höhere Zugzahl. Läuft die Figur gegen eine Wand, ändern sich weder Bild noch Titel. Von <code>(5, 3)</code> aus führt ein Schritt nach rechts zur verschlossenen Tür bei <code>(6, 3)</code>. Auch dann bleibt die Figur stehen, und die Zugzahl bleibt gleich.</p></details>
+      <noscript><p>Ohne JavaScript können Sie Ihre Antworten mit der aufklappbaren Erklärung selbst prüfen.</p></noscript>
+      <form class="self-check" data-hint="Überlegen Sie, welchen Spielstand zeichne darstellt, wenn es bei jedem Bild selbst einen anlegt.">
+        <fieldset><legend>Warum darf <code>zeichne</code> nicht bei jedem Bild einen neuen Startzustand anlegen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Jedes Bild würde dann den Ausgangszustand zeigen, nicht den Spielstand nach den Tastendrücken.</label>
+          <label><input type="checkbox" data-correct="true"> <code>taste_gedrueckt</code>, <code>zeichne</code> und <code>spiel_status</code> müssen mit derselben Variablen arbeiten.</label>
+          <label><input type="checkbox"> Ein neuer Startzustand in <code>zeichne</code> würde die <code>static</code>-Variable mit dem Spielstand löschen.</label>
+          <label><input type="checkbox"> <code>zeichne</code> braucht einen Pointer ohne <code>const</code>, um den Spielstand anzeigen zu können.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die ersten beiden Aussagen stimmen. Ein Startzustand, den <code>zeichne</code> selbst anlegt, ist eine eigene lokale Variable. Die <code>static</code>-Variable bleibt dabei unverändert, nur wird sie nicht angezeigt. Die Figur scheint deshalb nach jedem Schritt zurückzuspringen, obwohl sich der eigentliche Spielstand verändert hat. Zum Anzeigen genügt Lesen, also ein <code>const</code>-Pointer.</p></details>
+      </form>
+      <p><strong>Ihr Ergebnis:</strong> Die Figur bewegt sich mit den Pfeiltasten durch das Spielfeld, Wände und die verschlossene Tür blockieren die Bewegung. Tastatur, Bild und Statuszeile arbeiten mit demselben Spielstand: Bild und Fenstertitel zeigen nach jedem Tastendruck dieselbe Position und Zugzahl.</p>
     </section>
 
     <section class="content-section" aria-labelledby="spiel">
-      <h2 id="spiel">2. Spielfeld ausprobieren</h2>
+      <h2 id="spiel">3. Spielfeld ausprobieren</h2>
       <p>Hier sehen Sie das Zielverhalten im Browser. Wählen Sie eine Richtung über die Schaltflächen oder verwenden Sie bei fokussiertem Spielfeld die Pfeiltasten.</p>
       <div class="game-demo" data-pointer-game>
         <p class="game-status" data-game-status aria-live="polite"></p>
@@ -43,19 +109,8 @@
           <button type="button" data-game-reset>Neu starten</button>
         </div>
       </div>
+      <p>Gegenstände, Wächter, Tresor und Ausgang werden hier nur angezeigt. Aufnehmen, Entdecken und Gewinnen folgen in späteren Kapiteln. Auch das Zuglimit wird noch nicht ausgewertet: Nach 60 Zügen läuft das Spiel weiter, und die Statuszeile zeigt zum Beispiel <code>61/60</code>. Nur Wände und die verschlossene Tür blockieren die Bewegung.</p>
       <noscript><p>Für die Browser-Vorschau muss JavaScript aktiviert sein. Alternativ starten Sie Ihr SDL2-Programm.</p></noscript>
-    </section>
-
-    <section class="content-section" aria-labelledby="hinweise">
-      <h2 id="hinweise">Hinweise</h2>
-      <details><summary>Zu d): Pfeiltasten zuordnen</summary><p>Die Tastencodes heißen <code>SDLK_LEFT</code>, <code>SDLK_RIGHT</code>, <code>SDLK_UP</code> und <code>SDLK_DOWN</code>. Im Spielfeld wächst x nach rechts und y nach unten. Wenn die Figur nach einem Schritt zurückspringt, suchen Sie nach einem Aufruf der Startzustandsfunktion in <code>zeichne</code>.</p></details>
-    </section>
-
-    <section class="content-section" aria-labelledby="selbstkontrolle">
-      <h2 id="selbstkontrolle">Selbstkontrolle</h2>
-      <details><summary>Verschlossene Tür</summary>
-        <p>Von <code>(5, 3)</code> aus führt ein Schritt nach rechts zur verschlossenen Tür bei <code>(6, 3)</code>. Die Figur bleibt stehen und die Zugzahl bleibt gleich.</p>
-      </details>
     </section>
 
     <nav aria-label="Seitennavigation"><ul class="navlinks">

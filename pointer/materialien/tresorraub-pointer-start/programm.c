@@ -1,4 +1,4 @@
-/* Vorbereitetes SDL2-Programmgeruest fuer das Kapitel Pointer und Datenaustausch.
+/* Vorbereitetes SDL2-Programmgeruest fuer das Tresorraub-Spiel in Block 2.
    Ihr eigener Code entsteht in tresorraub.c. Diese Datei muessen Sie nicht
    veraendern. Aufbau wie im Kapitel "Manpages und Bibliotheksdokumentation". */
 #include <SDL.h>
@@ -21,22 +21,6 @@ static void version_ausgeben(void) {
            (unsigned)header_version.minor, (unsigned)header_version.patch);
     printf("SDL-Laufzeit: %u.%u.%u\n", (unsigned)laufzeit_version.major,
            (unsigned)laufzeit_version.minor, (unsigned)laufzeit_version.patch);
-}
-
-/* SDL bleibt hier im Geruest. Der Spielcode erhaelt nur den Tastencode. */
-static bool ereignis_bearbeiten(const SDL_Event *ereignis, bool galerie) {
-    if (ereignis->type == SDL_QUIT) {
-        return false;
-    }
-    if (ereignis->type == SDL_KEYDOWN) {
-        if (ereignis->key.keysym.sym == SDLK_ESCAPE) {
-            return false;
-        }
-        if (!galerie && ereignis->key.repeat == 0) {
-            taste_gedrueckt(ereignis->key.keysym.sym);
-        }
-    }
-    return true;
 }
 
 int main(int argc, char *argv[]) {
@@ -68,6 +52,7 @@ int main(int argc, char *argv[]) {
         puts("  --text      text_ausgeben() aufrufen, kein Fenster");
         puts("  --galerie   alle Piktogramme im Fenster zeigen");
         puts("  --testlauf  verstecktes Fenster, genau ein Bild, dann beenden");
+        puts("  Im Fenster beendet Escape das Programm.");
         return 0;
     }
     if (version) {
@@ -75,8 +60,11 @@ int main(int argc, char *argv[]) {
         return 0;
     }
     if (text) {
-        /* Textmodus: kein Fenster, Ihre Funktion wird genau einmal aufgerufen. */
-        return text_ausgeben() < 0 ? 1 : 0;
+        /* Textmodus: kein Fenster, Ihre Funktion wird genau einmal aufgerufen.
+           Danach raeumt aufraeumen() auf. */
+        int ergebnis = text_ausgeben();
+        aufraeumen();
+        return ergebnis < 0 ? 1 : 0;
     }
 
     /* Alle Variablen, die nach der Marke "ende" noch gebraucht werden,
@@ -85,8 +73,9 @@ int main(int argc, char *argv[]) {
     SDL_Renderer *renderer = NULL;
     Uint32 fenster_flags = testlauf ? SDL_WINDOW_HIDDEN : SDL_WINDOW_RESIZABLE;
     bool laeuft = true;
-    bool spiel_gestartet = false;
-    int status = 1; /* Gilt als Fehler, bis der Ablauf regulaer endet. */
+    bool titel_aktualisieren = false;
+    int status = 1;         /* Gilt als Fehler, bis der Ablauf regulaer endet. */
+    bool sdl_fehler = true; /* false, wenn Ihr Code den Fehler gemeldet hat */
 
     /* Bewusstes C-Muster: goto springt nur vorwaerts zum gemeinsamen
        Aufraeumen am Funktionsende. Nicht als allgemeine Ablaufsteuerung
@@ -110,15 +99,29 @@ int main(int argc, char *argv[]) {
     }
 
     if (!galerie) {
-        spiel_starten();
-        spiel_gestartet = true;
+        if (spiel_starten() < 0) {
+            fprintf(stderr, "Abbruch: spiel_starten hat einen Fehler gemeldet.\n");
+            sdl_fehler = false;
+            goto ende;
+        }
+        titel_aktualisieren = true;
     }
-    bool titel_aktualisieren = spiel_gestartet;
     while (laeuft) {
         SDL_Event ereignis;
         while (laeuft && SDL_PollEvent(&ereignis)) {
-            laeuft = ereignis_bearbeiten(&ereignis, galerie);
-            if (spiel_gestartet && ereignis.type == SDL_KEYDOWN) {
+            if (ereignis.type == SDL_QUIT
+                || (ereignis.type == SDL_KEYDOWN
+                    && ereignis.key.keysym.sym == SDLK_ESCAPE)) {
+                laeuft = false;
+            } else if (!galerie && ereignis.type == SDL_KEYDOWN
+                       && ereignis.key.repeat == 0) {
+                /* SDL bleibt hier im Geruest. Ihr Code erhaelt nur den
+                   Tastencode, jeden Tastendruck genau einmal. */
+                if (taste_gedrueckt(ereignis.key.keysym.sym) < 0) {
+                    fprintf(stderr, "Abbruch: taste_gedrueckt hat einen Fehler gemeldet.\n");
+                    sdl_fehler = false;
+                    goto ende;
+                }
                 titel_aktualisieren = true;
             }
         }
@@ -128,7 +131,8 @@ int main(int argc, char *argv[]) {
         if (titel_aktualisieren) {
             char titel[96];
             if (spiel_status(titel, sizeof(titel)) < 0) {
-                SDL_SetError("Spielstatus konnte nicht erstellt werden.");
+                fprintf(stderr, "Abbruch: spiel_status hat einen Fehler gemeldet.\n");
+                sdl_fehler = false;
                 goto ende;
             }
             SDL_SetWindowTitle(fenster, titel);
@@ -153,13 +157,12 @@ int main(int argc, char *argv[]) {
     status = 0;
 
 ende:
-    if (status != 0) {
+    if (status != 0 && sdl_fehler) {
         /* Meldung vor dem Aufraeumen auslesen, nicht erst danach. */
         fprintf(stderr, "SDL-Fehler: %s\n", SDL_GetError());
     }
-    if (spiel_gestartet) {
-        aufraeumen();
-    }
+    /* In jedem Fall aufraeumen, auch nach einem Fehler. */
+    aufraeumen();
     if (renderer != NULL) {
         SDL_DestroyRenderer(renderer);
     }

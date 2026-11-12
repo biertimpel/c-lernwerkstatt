@@ -41,3 +41,28 @@ button:not(:disabled):hover { background: #e8eefc; }
 .game-controls { margin-top: 10px; }
 .game-controls button { min-width: 44px; min-height: 44px; }
 @media (max-width: 710px) { .memory-layout { grid-template-columns: minmax(0, 1fr); } }
+
+/* Multiple-Choice-Selbstkontrollen, wie in den anderen Lektionen */
+.self-check { margin: 24px 0; padding: 18px; border: 1px solid var(--line); border-radius: 6px; }
+.self-check fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+.self-check legend { font-weight: 700; margin-bottom: 12px; }
+.self-check label { display: block; padding: 8px 0; cursor: pointer; }
+.self-check input { margin-right: 8px; }
+.self-check button { padding: 9px 16px; margin-top: 12px; background: var(--blue); color: white; border: 0; border-radius: 5px; cursor: pointer; font: inherit; }
+.feedback { margin: 14px 0 0; border-left: 3px solid var(--blue); padding-left: 12px; }
+.feedback:empty { display: none; }
+.feedback[data-state="success"] { border-color: #19713d; }
+@media print { .self-check button { display: none; } }
+
+/* Speicheransicht, Variante mit Werten statt Bytewerten (data-memory-mode="werte") */
+.memory-wert { z-index: 1; pointer-events: none; border: 2px solid #5075bd; border-radius: 3px; display: grid; place-items: end center; padding-bottom: 3px; }
+.memory-wert code { font-size: 15px; font-weight: 700; background: rgba(255, 255, 255, .85); padding: 0 4px; border-radius: 3px; }
+.memory-wert[data-changed="true"] { background: rgba(220, 233, 255, .55); }
+.memory-platz { visibility: hidden; }
+[data-memory-mode="werte"] .memory-byte { min-height: 48px; align-content: start; padding-top: 4px; }
+
+/* Tabellen zum Ausfuellen, wie in den anderen Lektionen */
+.table-wrap { overflow-x: auto; margin: 12px 0; }
+.table-wrap th, .table-wrap td { border: 1px solid var(--line); }
+.table-wrap th { background: #f1f3f8; }
+.table-wrap td:empty::after { content: "\00a0"; }

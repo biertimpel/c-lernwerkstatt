@@ -1,7 +1,13 @@
 (() => {
   "use strict";
-  const root = document.querySelector("[data-memory-explorer]");
-  if (!root) return;
+  /* Jede Speicheransicht auf der Seite wird einzeln gestartet.
+     data-memory-mode="werte": Kaestchen zeigen nur Adressen, der Wert einer
+     Variablen steht einmal (dezimal) in einem Block ueber ihren Bytes. */
+  document.querySelectorAll("[data-memory-explorer]").forEach(starten);
+
+  function starten(root) {
+  const werteModus = root.dataset.memoryMode === "werte";
+  const markerId = root.querySelector("marker").id;
   const q = (part) => root.querySelector("[data-memory-" + part + "]");
   const casesMenu = q("case"), prev = q("prev"), next = q("next");
   const memory = q("region"), grid = q("grid"), links = q("links"), arrows = q("arrows");
@@ -89,7 +95,7 @@
       const bend = x1 - 9 - 10 * i;
       const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
       path.setAttribute("d", "M" + x1 + " " + y1 + " H" + bend + " V" + y2 + " H" + x2);
-      path.setAttribute("marker-end", "url(#memory-arrow)");
+      path.setAttribute("marker-end", "url(#" + markerId + ")");
       arrows.append(path);
     });
   }
@@ -124,9 +130,33 @@
       cell.dataset.changed = String(byte !== undefined && byte !== previous.get(addr));
       cell.style.gridColumn = (addr % 4) + 1;
       cell.style.gridRow = Math.floor(addr / 4) + 1;
-      cell.append(make("small", "", addr), make("code", "", byte === undefined ? "—" : hex(byte)));
+      if (werteModus) {
+        cell.dataset.changed = "false";
+        cell.append(make("small", "", addr), make("code", "memory-platz", "\u00a0"));
+      } else {
+        cell.append(make("small", "", addr), make("code", "", byte === undefined ? "—" : hex(byte)));
+      }
       content.append(cell);
       cells.set(addr, cell);
+    }
+    if (werteModus) {
+      const vorher = new Map();
+      for (const obj of (index > 0 ? variant.steps[index - 1].memory : [])) {
+        for (const f of obj.fields) vorher.set(obj.name + "@" + f.start, f.value);
+      }
+      for (const obj of current.memory) {
+        for (const f of obj.fields) {
+          const block = make("div", "memory-wert");
+          const ersteZeile = Math.floor(f.start / 4) + 1;
+          const zeilen = Math.ceil(f.data.length / 4);
+          block.style.gridColumn = "1 / 5";
+          block.style.gridRow = ersteZeile + " / " + (ersteZeile + zeilen);
+          const wert = obj.target !== undefined ? String(obj.target) : String(f.value);
+          block.dataset.changed = String(vorher.get(obj.name + "@" + f.start) !== f.value);
+          block.append(make("code", "", wert));
+          content.append(block);
+        }
+      }
     }
     const descriptions = [];
     for (const obj of current.memory) {
@@ -146,7 +176,8 @@
         content.append(label);
       }
       descriptions.push(obj.name + " ab Adresse " + obj.start + ", " + size + " Byte: " +
-        obj.fields.map(f => (f.name ? f.name + " " : "") + f.value + " (" + f.data.map(hex).join(" ") + ")").join("; "));
+        obj.fields.map(f => (f.name ? f.name + " " : "") + f.value +
+          (werteModus ? "" : " (" + f.data.map(hex).join(" ") + ")")).join("; "));
     }
     grid.replaceChildren(content);
     grid.setAttribute("aria-label", "Speicherausschnitt ab Adresse 0. " + descriptions.join(". "));
@@ -174,4 +205,5 @@
   });
   render();
   if (typeof ResizeObserver === "function") new ResizeObserver(drawArrows).observe(memory);
+  }
 })();

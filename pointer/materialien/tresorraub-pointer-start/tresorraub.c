@@ -14,6 +14,7 @@
 #define BREITE 15
 #define HOEHE 9
 #define ANZAHL_WAECHTER 2
+#define ZUGLIMIT 60
 
 
 typedef struct {
@@ -106,13 +107,10 @@ Spielstand startzustand(void) {
     return s;
 }
 
-/* Ein Spielstand fuer Tasteneingabe, Anzeige und Status. */
-static Spielstand spielstand;
-
 /* Formatiert die Position und die Zahl der ausgefuehrten Zuege. */
 static int statuszeile(char ziel[], size_t groesse, Punkt position, int zuege) {
-    int laenge = snprintf(ziel, groesse, "Position (%d, %d) | Zuege: %d",
-                          position.x, position.y, zuege);
+    int laenge = snprintf(ziel, groesse, "Position (%d, %d) | Zuege %d/%d",
+                          position.x, position.y, zuege, ZUGLIMIT);
     return laenge < 0 || (size_t)laenge >= groesse ? -1 : 0;
 }
 
@@ -164,7 +162,7 @@ void spielfeld_ausgeben(Spielstand s) {
            "         k Schluessel, c Muenze, E Ausgang, # Wand, ! ueberwacht\n");
 }
 
-/* Aufgabe c: Auf einen lesenden Pointer umstellen. */
+/* Seite 3: Auf einen lesenden Pointer umstellen. */
 static int spielstand_lesen(Spielstand s, char ziel[], size_t groesse) {
     return statuszeile(ziel, groesse, s.figur, s.zuege);
 }
@@ -186,21 +184,29 @@ int text_ausgeben(void) {
     return 0;
 }
 
+/* Die folgenden Funktionen ruft das Geruest auf. Die Ruempfe sind
+   Platzhalter; Sie schreiben sie in der Aufgabe auf Seite 4. */
+
+/* Seite 4: Den laufenden Spielstand einmal aus dem Startzustand anlegen. */
+int spiel_starten(void) {
+    return 0;
+}
+
+/* Seite 4: Bei einer Pfeiltaste die Figur im laufenden Spielstand bewegen. */
+int taste_gedrueckt(SDL_Keycode taste) {
+    (void)taste; /* Platzhalter: entfernen, sobald Sie taste verwenden. */
+    return 0;
+}
+
+/* Seite 4: Die Statuszeile des laufenden Spielstands in ziel schreiben.
+   Bis dahin steht ein fester Text im Fenstertitel. */
 int spiel_status(char ziel[], size_t groesse) {
-    return spielstand_lesen(spielstand, ziel, groesse);
+    int laenge = snprintf(ziel, groesse, "Tresorraub");
+    return laenge < 0 || (size_t)laenge >= groesse ? -1 : 0;
 }
 
-void taste_gedrueckt(SDL_Keycode taste) {
-    (void)taste; /* Platzhalter bis zur Umsetzung von Aufgabe d. */
-}
-
-
-void spiel_starten(void) {
-    spielstand = startzustand();
-}
-
+/* Fuer das Kapitel "Dynamischer Speicher und Listen" vorgesehen. */
 void aufraeumen(void) {
-    /* Fuer spaetere Kapitel vorgesehen. */
 }
 
 

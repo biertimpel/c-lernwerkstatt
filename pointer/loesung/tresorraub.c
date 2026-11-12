@@ -1,4 +1,15 @@
-/* Referenzstand am Ende von Pointer und Datenaustausch. */
+/* Musterloesung "Pointer und Datenaustausch" - nur fuer Lehrende.
+
+   Entwurfsentscheidungen:
+   - Ein einziger laufender Spielstand als static-Variable (Seite 4).
+     Das Geruest kennt den Typ Spielstand nicht; es erreicht ihn nur ueber
+     spiel_starten, taste_gedrueckt, zeichne und spiel_status.
+   - Veraendernde Funktionen erhalten Spielstand *, lesende
+     const Spielstand * (Seite 3). Die Kopie-Variante zug_zaehlen bleibt
+     fuer den Vergleich auf Seite 2 erhalten.
+   - figur_bewegen prueft NULL, nur die vier Nachbarschritte, Rand, Wand und
+     verschlossene Tuer, bevor sie etwas veraendert. Das Zuglimit wird noch
+     nicht ausgewertet; Gegenstaende werden nur angezeigt. */
 #include "tresorraub.h"
 #include "piktogramme/piktogramme.h"
 #include <stdbool.h>
@@ -14,6 +25,7 @@
 #define BREITE 15
 #define HOEHE 9
 #define ANZAHL_WAECHTER 2
+#define ZUGLIMIT 60
 
 
 typedef struct {
@@ -106,13 +118,10 @@ Spielstand startzustand(void) {
     return s;
 }
 
-/* Ein Spielstand fuer Tasteneingabe, Anzeige und Status. */
-static Spielstand spielstand;
-
 /* Formatiert die Position und die Zahl der ausgefuehrten Zuege. */
 static int statuszeile(char ziel[], size_t groesse, Punkt position, int zuege) {
-    int laenge = snprintf(ziel, groesse, "Position (%d, %d) | Zuege: %d",
-                          position.x, position.y, zuege);
+    int laenge = snprintf(ziel, groesse, "Position (%d, %d) | Zuege %d/%d",
+                          position.x, position.y, zuege, ZUGLIMIT);
     return laenge < 0 || (size_t)laenge >= groesse ? -1 : 0;
 }
 
@@ -164,19 +173,27 @@ void spielfeld_ausgeben(const Spielstand *s) {
            "         k Schluessel, c Muenze, E Ausgang, # Wand, ! ueberwacht\n");
 }
 
+/* Seite 3: liest den Spielstand nur, deshalb const. */
 static int spielstand_lesen(const Spielstand *s, char ziel[], size_t groesse) {
-    if (s == NULL || ziel == NULL || groesse == 0) {
+    if (s == NULL) {
         return -1;
     }
     return statuszeile(ziel, groesse, s->figur, s->zuege);
 }
 
-void zug_zaehlen_original(Spielstand *s) {
-    if (s != NULL) {
-        s->zuege++;
-    }
+/* Seite 2: Hier wird nur die Kopie veraendert. */
+void zug_zaehlen(Spielstand s) {
+    s.zuege++;
+    printf("Zuege innerhalb von zug_zaehlen: %d\n", s.zuege);
 }
 
+/* Seite 2: veraendert das Original ueber den Pointer.
+   Gleichwertig: (*p).zuege++; */
+void zug_zaehlen_original(Spielstand *p) {
+    p->zuege++;
+}
+
+/* Seite 3: genau ein Schritt zu einem Nachbarfeld. */
 bool figur_bewegen(Spielstand *s, int dx, int dy) {
     if (s == NULL) {
         return false;
@@ -187,7 +204,10 @@ bool figur_bewegen(Spielstand *s, int dx, int dy) {
         return false;
     }
     Punkt ziel = {s->figur.x + dx, s->figur.y + dy};
-    if (!begehbar(ziel) || (punkt_gleich(ziel, s->tuer) && !s->tuer_offen)) {
+    if (!begehbar(ziel)) {      /* prueft zuerst die Grenzen, dann die Wand */
+        return false;
+    }
+    if (punkt_gleich(ziel, s->tuer) && !s->tuer_offen) {
         return false;
     }
     s->figur = ziel;
@@ -195,40 +215,105 @@ bool figur_bewegen(Spielstand *s, int dx, int dy) {
     return true;
 }
 
-int spiel_status(char ziel[], size_t groesse) {
-    return spielstand_lesen(&spielstand, ziel, groesse);
+static void ueberschrift(const char *text) {
+    printf("\n=== %s ===\n", text);
+}
+
+/* Fuehrt einen Schritt aus und gibt Rueckgabe und Statuszeile aus. */
+static int schritt_zeigen(const char *name, Spielstand *s, int dx, int dy) {
+    char zeile[64];
+    bool erfolg = figur_bewegen(s, dx, dy);
+    if (s == NULL) {
+        printf("%-28s %-5s (kein Spielstand)\n", name, erfolg ? "true" : "false");
+        return 0;
+    }
+    if (spielstand_lesen(s, zeile, sizeof(zeile)) < 0) {
+        return -1;
+    }
+    printf("%-28s %-5s %s\n", name, erfolg ? "true" : "false", zeile);
+    return 0;
 }
 
 int text_ausgeben(void) {
+    ueberschrift("Seite 1: Eine Adresse speichern und benutzen");
+    int var = 10;
+    int *p = &var;
+    int **pp = &p;
+    printf("var = %d, *p = %d\n", var, *p);
+    printf("p    = %p\n&var = %p\n", (void *)p, (void *)&var);
+    *p = 20;
+    printf("nach *p = 20: var = %d, **pp = %d\n", var, **pp);
+
+    ueberschrift("Seite 1: Zeichenketten vergleichen");
+    /* a == b ist bewusst nicht enthalten: GCC und Clang warnen
+       (siehe README). */
+    char a[] = "Beute";
+    char b[] = "Beute";
+    printf("strcmp(a, b) = %d\n", strcmp(a, b));
+    printf("a bei %p, b bei %p\n", (void *)a, (void *)b);
+    char c[] = "Muenze";   /* der Versuch mit geaendertem Inhalt von b */
+    printf("strcmp(\"Beute\", \"Muenze\") < 0: %d\n", strcmp(a, c) < 0);
+
+    ueberschrift("Seite 2: Kopie und Original");
     Spielstand s = startzustand();
+    zug_zaehlen(s);
+    printf("nach zug_zaehlen(s):           %d\n", s.zuege);
+    zug_zaehlen_original(&s);
+    printf("nach zug_zaehlen_original(&s): %d\n", s.zuege);
+
+    ueberschrift("Seite 3: Einen Schritt ausfuehren");
+    s = startzustand();
     char zeile[64];
-    const int schritte[][2] = {{0, 0}, {1, 0}, {1, 0}, {0, 1}};
-    for (size_t i = 0; i < sizeof(schritte) / sizeof(schritte[0]); i++) {
-        if (i != 0) {
-            figur_bewegen(&s, schritte[i][0], schritte[i][1]);
-        }
-        if (spielstand_lesen(&s, zeile, sizeof(zeile)) < 0) {
-            return -1;
-        }
-        puts(zeile);
+    if (spielstand_lesen(&s, zeile, sizeof(zeile)) < 0) {
+        return -1;
+    }
+    printf("%-28s %-5s %s\n", "Start", "-", zeile);
+    if (schritt_zeigen("Schritt nach rechts", &s, 1, 0) < 0
+        || schritt_zeigen("Schritt nach rechts", &s, 1, 0) < 0
+        || schritt_zeigen("Schritt nach unten (Wand)", &s, 0, 1) < 0) {
+        return -1;
+    }
+    s.figur = (Punkt){5, 3};
+    s.tuer_offen = false;
+    if (schritt_zeigen("Tuer verschlossen, rechts", &s, 1, 0) < 0) {
+        return -1;
+    }
+    s.tuer_offen = true;
+    if (schritt_zeigen("Tuer offen, rechts", &s, 1, 0) < 0
+        || schritt_zeigen("ungueltig (2, 0)", &s, 2, 0) < 0
+        || schritt_zeigen("ungueltig (1, 1)", &s, 1, 1) < 0
+        || schritt_zeigen("NULL", NULL, 1, 0) < 0) {
+        return -1;
     }
     spielfeld_ausgeben(&s);
     return 0;
 }
 
-void taste_gedrueckt(SDL_Keycode taste) {
+/* Seite 4: der laufende Spielstand. Ohne Anfangswert ist er bis zu
+   spiel_starten mit Nullen gefuellt. Ein Funktionsaufruf als Anfangswert
+   ist hier nicht erlaubt. */
+static Spielstand spielstand;
+
+/* Die folgenden Funktionen ruft das Geruest auf. */
+
+int spiel_starten(void) {
+    spielstand = startzustand();
+    return 0;
+}
+
+int taste_gedrueckt(SDL_Keycode taste) {
     switch (taste) {
         case SDLK_LEFT:  figur_bewegen(&spielstand, -1, 0); break;
         case SDLK_RIGHT: figur_bewegen(&spielstand, 1, 0); break;
         case SDLK_UP:    figur_bewegen(&spielstand, 0, -1); break;
         case SDLK_DOWN:  figur_bewegen(&spielstand, 0, 1); break;
-        default: break;
+        default: break;   /* andere Tasten veraendern nichts */
     }
+    return 0;   /* hier kann noch kein Fehler auftreten */
 }
 
-
-void spiel_starten(void) {
-    spielstand = startzustand();
+int spiel_status(char ziel[], size_t groesse) {
+    return spielstand_lesen(&spielstand, ziel, groesse);
 }
 
 void aufraeumen(void) {
