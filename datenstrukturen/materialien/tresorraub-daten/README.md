@@ -3,11 +3,17 @@
 Dieses Material gehört zum Kapitel „Datenstrukturen“. Es enthält:
 
 - `tresorraub.c`: **Ihre Datei.** Hier entsteht Ihr Code für alle Seiten des
-  Kapitels. Sie enthält zwei Funktionen, die das Programmgerüst aufruft:
+  Kapitels. In diesem Kapitel schreiben Sie zwei Funktionen, die das
+  Programmgerüst aufruft:
   - `text_ausgeben`: für Ihre Versuche und Textausgaben
   - `zeichne`: für die Darstellung des Spielfelds im Fenster
-- `programm.c`, `tresorraub.h`: das SDL2-Programmgerüst aus dem Kapitel
-  „Manpages“. Diese Dateien müssen Sie nicht verändern.
+
+  Am Ende der Datei stehen vier weitere Funktionen, die das Gerüst aufruft.
+  Sie brauchen sie erst ab dem Kapitel „Pointer und Datenaustausch“. Lassen
+  Sie diese Platzhalter bis dahin unverändert.
+- `programm.c`, `tresorraub.h`: das SDL2-Programmgerüst, aufgebaut wie im
+  Kapitel „Manpages“. Dasselbe Gerüst verwenden Sie in den folgenden
+  Kapiteln weiter. Diese Dateien müssen Sie nicht verändern.
 - `piktogramme/`: die Piktogramme aus dem Kapitel „Manpages“, zum Beispiel
   für Wand, Boden, Spielfigur und Wächter. Die Vorschau öffnen Sie mit
   `piktogramme/index.html` im Browser.

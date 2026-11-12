@@ -27,3 +27,24 @@ int zeichne(SDL_Renderer *renderer) {
     return zeichne_spielfigur_froh(renderer, 3 * FELDGROESSE, 7 * FELDGROESSE,
                                    SKALIERUNG);
 }
+
+/* Diese Funktionen ruft das Geruest im Fenster ebenfalls auf. Sie brauchen
+   sie erst ab dem Kapitel "Pointer und Datenaustausch". Bis dahin lassen
+   Sie die Platzhalter unveraendert. */
+
+int spiel_starten(void) {
+    return 0;
+}
+
+int taste_gedrueckt(SDL_Keycode taste) {
+    (void)taste; /* Platzhalter: entfernen, sobald Sie taste verwenden. */
+    return 0;
+}
+
+int spiel_status(char ziel[], size_t groesse) {
+    int laenge = snprintf(ziel, groesse, "Tresorraub");
+    return laenge < 0 || (size_t)laenge >= groesse ? -1 : 0;
+}
+
+void aufraeumen(void) {
+}

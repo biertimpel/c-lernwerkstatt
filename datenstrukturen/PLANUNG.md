@@ -66,10 +66,14 @@ Kopie eines Arrays innerhalb einer Struktur.
 
 `materialien/tresorraub-daten.zip` enthält:
 
-- das SDL2-Programmgerüst aus „Manpages“ (`programm.c`, `tresorraub.h`),
-  ergänzt um `--text`: ruft `text_ausgeben()` einmal ohne Fenster auf
+- das einheitliche SDL2-Programmgerüst für Block 2 (`programm.c`,
+  `tresorraub.h`), aufgebaut wie in „Manpages“, mit `--text`
+  (`text_ausgeben()` einmal ohne Fenster) und den Anschlüssen
+  `spiel_starten`, `taste_gedrueckt`, `spiel_status`, `aufraeumen` für die
+  folgenden Kapitel
 - `tresorraub.c` als Datei der Studierenden mit `text_ausgeben()` und
-  `zeichne()`; `zeichne()` zeigt als Beispiel eine Spielfigur
+  `zeichne()`; `zeichne()` zeigt als Beispiel eine Spielfigur. Die übrigen
+  vier Funktionen sind Platzhalter bis zum Kapitel „Pointer“
 - die Piktogramme aus „Manpages“ (Kopie von
   `manpages/materialien/sdl2-start/piktogramme/`)
 - `SPIELFELD.md`, `README.md`, `Makefile`

@@ -1,4 +1,4 @@
-/* Vorbereitetes SDL2-Programmgeruest fuer das Kapitel Datenstrukturen.
+/* Vorbereitetes SDL2-Programmgeruest fuer das Tresorraub-Spiel in Block 2.
    Ihr eigener Code entsteht in tresorraub.c. Diese Datei muessen Sie nicht
    veraendern. Aufbau wie im Kapitel "Manpages und Bibliotheksdokumentation". */
 #include <SDL.h>
@@ -52,6 +52,7 @@ int main(int argc, char *argv[]) {
         puts("  --text      text_ausgeben() aufrufen, kein Fenster");
         puts("  --galerie   alle Piktogramme im Fenster zeigen");
         puts("  --testlauf  verstecktes Fenster, genau ein Bild, dann beenden");
+        puts("  Im Fenster beendet Escape das Programm.");
         return 0;
     }
     if (version) {
@@ -59,8 +60,11 @@ int main(int argc, char *argv[]) {
         return 0;
     }
     if (text) {
-        /* Textmodus: kein Fenster, Ihre Funktion wird genau einmal aufgerufen. */
-        return text_ausgeben() < 0 ? 1 : 0;
+        /* Textmodus: kein Fenster, Ihre Funktion wird genau einmal aufgerufen.
+           Danach raeumt aufraeumen() auf. */
+        int ergebnis = text_ausgeben();
+        aufraeumen();
+        return ergebnis < 0 ? 1 : 0;
     }
 
     /* Alle Variablen, die nach der Marke "ende" noch gebraucht werden,
@@ -69,7 +73,9 @@ int main(int argc, char *argv[]) {
     SDL_Renderer *renderer = NULL;
     Uint32 fenster_flags = testlauf ? SDL_WINDOW_HIDDEN : SDL_WINDOW_RESIZABLE;
     bool laeuft = true;
-    int status = 1; /* Gilt als Fehler, bis der Ablauf regulaer endet. */
+    bool titel_aktualisieren = false;
+    int status = 1;         /* Gilt als Fehler, bis der Ablauf regulaer endet. */
+    bool sdl_fehler = true; /* false, wenn Ihr Code den Fehler gemeldet hat */
 
     /* Bewusstes C-Muster: goto springt nur vorwaerts zum gemeinsamen
        Aufraeumen am Funktionsende. Nicht als allgemeine Ablaufsteuerung
@@ -77,7 +83,7 @@ int main(int argc, char *argv[]) {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         goto ende;
     }
-    fenster = SDL_CreateWindow("Tresorraub: Datenstrukturen",
+    fenster = SDL_CreateWindow("Tresorraub",
                               SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                               640, 480, fenster_flags);
     if (fenster == NULL) {
@@ -92,17 +98,45 @@ int main(int argc, char *argv[]) {
         goto ende;
     }
 
+    if (!galerie) {
+        if (spiel_starten() < 0) {
+            fprintf(stderr, "Abbruch: spiel_starten hat einen Fehler gemeldet.\n");
+            sdl_fehler = false;
+            goto ende;
+        }
+        titel_aktualisieren = true;
+    }
     while (laeuft) {
         SDL_Event ereignis;
-        while (SDL_PollEvent(&ereignis)) {
+        while (laeuft && SDL_PollEvent(&ereignis)) {
             if (ereignis.type == SDL_QUIT
                 || (ereignis.type == SDL_KEYDOWN
                     && ereignis.key.keysym.sym == SDLK_ESCAPE)) {
                 laeuft = false;
+            } else if (!galerie && ereignis.type == SDL_KEYDOWN
+                       && ereignis.key.repeat == 0) {
+                /* SDL bleibt hier im Geruest. Ihr Code erhaelt nur den
+                   Tastencode, jeden Tastendruck genau einmal. */
+                if (taste_gedrueckt(ereignis.key.keysym.sym) < 0) {
+                    fprintf(stderr, "Abbruch: taste_gedrueckt hat einen Fehler gemeldet.\n");
+                    sdl_fehler = false;
+                    goto ende;
+                }
+                titel_aktualisieren = true;
             }
         }
         if (!laeuft) {
             break;
+        }
+        if (titel_aktualisieren) {
+            char titel[96];
+            if (spiel_status(titel, sizeof(titel)) < 0) {
+                fprintf(stderr, "Abbruch: spiel_status hat einen Fehler gemeldet.\n");
+                sdl_fehler = false;
+                goto ende;
+            }
+            SDL_SetWindowTitle(fenster, titel);
+            titel_aktualisieren = false;
         }
         if (SDL_SetRenderDrawColor(renderer, 245, 246, 249, 255) < 0
             || SDL_RenderClear(renderer) < 0
@@ -123,10 +157,12 @@ int main(int argc, char *argv[]) {
     status = 0;
 
 ende:
-    if (status != 0) {
+    if (status != 0 && sdl_fehler) {
         /* Meldung vor dem Aufraeumen auslesen, nicht erst danach. */
         fprintf(stderr, "SDL-Fehler: %s\n", SDL_GetError());
     }
+    /* In jedem Fall aufraeumen, auch nach einem Fehler. */
+    aufraeumen();
     if (renderer != NULL) {
         SDL_DestroyRenderer(renderer);
     }
