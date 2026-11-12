@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Eine Textdatei Zeile für Zeile lesen</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+  <script src="selbstkontrollen.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header><h1>Eine Textdatei Zeile für Zeile lesen</h1><p>Mit <code>fgets</code> eine Datei zeilenweise lesen, Zeilen zählen und Kommentare überspringen.</p></header>
+    <noscript><p>Ohne JavaScript können Sie die Fragen anhand der aufklappbaren Erklärungen selbst prüfen.</p></noscript>
+
+    <section class="content-section" aria-labelledby="abschnitt-1">
+      <h2 id="abschnitt-1">1. <code>fgets</code> nachschlagen</h2>
+      <p>Eine Config besteht aus Zeilen, und jede Zeile ist eine eigene Angabe. Deshalb liest Ihr Programm die Datei Zeile für Zeile. Dafür gibt es die Funktion <code>fgets</code>. Schlagen Sie sie nach, wie im Kapitel <a href="../manpages/01-dokumentation-nachschlagen.html">„Manpages und Bibliotheksdokumentation“</a>, und notieren Sie:</p>
+      <ol>
+        <li>In welcher Header-Datei steht die Funktion?</li>
+        <li>Welche drei Parameter erhält sie?</li>
+        <li>Wie viele Zeichen schreibt sie höchstens in das Array? Steht das Zeilenende <code>'\n'</code> mit darin?</li>
+        <li>Was liefert sie, wenn das Dateiende erreicht ist oder ein Fehler auftritt?</li>
+      </ol>
+      <details><summary>Selbstkontrolle: Ihre Notizen</summary><p><code>fgets</code> steht in <code>&lt;stdio.h&gt;</code>. Sie erhält das Zeichen-Array, seine Größe in Bytes und die geöffnete Datei als <code>FILE *</code>. Sie liest höchstens Größe minus 1 Zeichen und hängt immer <code>'\0'</code> an. Sie hört am Zeilenende auf; das <code>'\n'</code> steht dann mit im Array. Ist die Zeile länger, liest sie nur den Anfang, und der Rest kommt beim nächsten Aufruf. Am Dateiende oder bei einem Fehler liefert sie <code>NULL</code>; welcher der beiden Fälle vorliegt, verraten <code>feof</code> und <code>ferror</code>.</p></details>
+    </section>
+
+    <section class="content-section" aria-labelledby="abschnitt-2">
+      <h2 id="abschnitt-2">2. Versuche mit <code>wecker.txt</code></h2>
+      <p>Im Startmaterial liegt die kleine Datei <code>wecker.txt</code>:</p>
+      <pre><code># Weckzeit für die Versuche auf den Seiten 1 und 2
+stunde = 6
+
+minute = 45</code></pre>
+      <p>Diese Schleife liest sie Zeile für Zeile und gibt jede Zeile mit ihrer Nummer aus:</p>
+      <pre><code>FILE *datei = fopen("wecker.txt", "r");
+if (datei == NULL) {
+    printf("wecker.txt nicht gefunden.\n");
+    return 0;
+}
+char zeile[82];
+int nummer = 0;
+while (fgets(zeile, sizeof(zeile), datei) != NULL) {
+    nummer++;
+    printf("%d: %s", nummer, zeile);
+}
+fclose(datei);</code></pre>
+      <p>Probieren Sie die Schleife in <code>text_ausgeben</code> aus. Starten Sie das Programm in dem Ordner, in dem <code>wecker.txt</code> liegt. Notieren Sie vor jedem Schritt, was Sie erwarten.</p>
+      <ol>
+        <li>Warum steht im <code>printf</code> kein <code>\n</code>? Was passiert mit der letzten Zeile, wenn die Datei nicht mit einem Zeilenende aufhört?</li>
+        <li>Ändern Sie die Schleife so, dass Leerzeilen und Kommentarzeilen nicht ausgegeben werden. Ein Kommentar beginnt mit <code>#</code>, davor dürfen Leerzeichen stehen. Die Zeilennummern sollen trotzdem zur Datei passen.</li>
+        <li>Verkleinern Sie das Array auf 8 Zeichen. Was ändert sich an der Ausgabe und an den Zeilennummern? Woran könnte Ihr Programm erkennen, dass eine Zeile nicht ganz in das Array gepasst hat?</li>
+        <li>Benennen Sie <code>wecker.txt</code> vorübergehend um. Was passiert?</li>
+      </ol>
+      <details><summary>Hinweis: Leerzeilen und Kommentare erkennen</summary><p>Überspringen Sie am Anfang der Zeile zuerst alle Leerzeichen und Tabulatoren. Welches Zeichen steht dann an der ersten Stelle, wenn die Zeile leer ist? Für Leerraum gibt es in <code>&lt;ctype.h&gt;</code> die Funktion <code>isspace</code>; sie zählt auch <code>'\n'</code> dazu.</p></details>
+      <details><summary>Selbstkontrolle: Ihre Beobachtungen</summary>
+        <ol>
+          <li>Das <code>'\n'</code> steht schon in <code>zeile</code>. Fehlt es in der letzten Zeile, endet die Ausgabe ohne Zeilenumbruch.</li>
+          <li>Ausgegeben werden nur noch <code>2: stunde = 6</code> und <code>4: minute = 45</code>. Die Nummer zählt jede gelesene Zeile, auch übersprungene.</li>
+          <li>Mit 8 Zeichen liest <code>fgets</code> höchstens 7 Zeichen auf einmal. Längere Zeilen kommen in mehreren Stücken, und jedes Stück bekommt eine eigene Nummer. Die Nummern passen dann nicht mehr zur Datei. Erkennen lässt sich das daran, dass im Array kein <code>'\n'</code> steht, obwohl das Dateiende noch nicht erreicht ist.</li>
+          <li><code>fopen</code> liefert <code>NULL</code>, das Programm meldet „wecker.txt nicht gefunden.“ und liest nichts.</li>
+        </ol>
+      </details>
+      <form class="self-check" data-hint="Lesen Sie Ihre Notizen zu fgets noch einmal: Was steht nach dem Aufruf im Array?">
+        <fieldset><legend>Welche Aussagen zu <code>fgets</code> stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Passt die Zeile in das Array, steht danach auch ihr <code>'\n'</code> darin.</label>
+          <label><input type="checkbox"> Ist eine Zeile länger als das Array, wird der Rest verworfen.</label>
+          <label><input type="checkbox" data-correct="true"> Liefert <code>fgets</code> <code>NULL</code>, ist das Dateiende erreicht oder ein Fehler aufgetreten.</label>
+          <label><input type="checkbox"> Mit einem Array von 82 Zeichen passen Zeilen mit 82 sichtbaren Zeichen hinein.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die erste und die dritte Aussage stimmen. Der Rest einer zu langen Zeile geht nicht verloren, er kommt beim nächsten Aufruf. In 82 Zeichen passen 80 sichtbare Zeichen, das <code>'\n'</code> und das abschließende <code>'\0'</code>.</p></details>
+      </form>
+      <p class="work-result"><strong>Ihr Ergebnis:</strong> Ihre Notizen zu <code>fgets</code> und eine Schleife, die eine Datei zeilenweise liest, Zeilen zählt und Leerzeilen und Kommentare überspringt.</p>
+    </section>
+
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="index.html">← Zurück: Kapitelübersicht</a></li>
+      <li><a href="02-name-und-wert.html">Weiter: Name und Wert auswerten →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>
