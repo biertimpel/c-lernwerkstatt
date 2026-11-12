@@ -146,5 +146,6 @@ Mit einem SDL2-Bau, der den Dummy-Videotreiber enthaelt, ist beispielsweise
 keine Sichtpruefung mit einem echten Fenster und keine Tastaturpruefung.
 
 Bei abweichendem Installationsort laesst sich `SDL2_CONFIG` anpassen:
-`make SDL2_CONFIG=/pfad/zu/sdl2-config`. Das Makefile soll vorgegeben bleiben;
-seine Details werden in einer spaeteren Lektion behandelt.
+`make SDL2_CONFIG=/pfad/zu/sdl2-config`. Das Makefile soll vorgegeben bleiben.
+Wie ein Makefile aufgebaut ist, lernen Sie im Kapitel „Header und
+Quelldateien“ auf der Seite „Den Build mit einem Makefile ausfuehren“.
