@@ -42,10 +42,10 @@ int vorher = *p;   // Wert am Ziel lesen
 
     <section class="content-section" aria-labelledby="abschnitt-2">
       <h2 id="abschnitt-2">2. Rückblick: Arrays und Zeichenketten</h2>
-      <p>Im Kapitel „Datenstrukturen“ sind Ihnen zwei Dinge begegnet, die dort noch nicht erklärt wurden. Mit Pointern können Sie beide jetzt verstehen.</p>
+      <p>Im Kapitel <a href="../datenstrukturen/index.html">„Datenstrukturen“</a> sind Ihnen zwei Dinge begegnet, die dort noch nicht erklärt wurden. Mit Pointern können Sie beide jetzt verstehen.</p>
       <h3>Warum eine Funktion die Länge eines Arrays nicht kennt</h3>
-      <p>Erinnern Sie sich an die Seite „Strukturen“: Übergeben Sie einer Funktion eine Struktur, bekommt die Funktion eine Kopie mit allen Feldern. Bei einem Array ist das anders. C kopiert beim Aufruf <em>nicht</em> das ganze Array, sondern übergibt nur die <strong>Adresse des ersten Elements</strong>. Der Parameter <code>int werte[]</code> sieht zwar aus wie ein Array, ist aber in Wahrheit ein Pointer. Sie könnten genauso <code>int *werte</code> schreiben.</p>
-      <p>Das erklärt die Beobachtung aus „Datenstrukturen“:</p>
+      <p>Erinnern Sie sich an die Seite <a href="../datenstrukturen/04-strukturen.html">„Strukturen“</a>: Übergeben Sie einer Funktion eine Struktur, bekommt die Funktion eine Kopie mit allen Feldern. Bei einem Array ist das anders. C kopiert beim Aufruf <em>nicht</em> das ganze Array, sondern übergibt nur die <strong>Adresse des ersten Elements</strong>. Der Parameter <code>int werte[]</code> sieht zwar aus wie ein Array, ist aber in Wahrheit ein Pointer. Sie könnten genauso <code>int *werte</code> schreiben.</p>
+      <p>Das erklärt die Beobachtung aus <a href="../datenstrukturen/01-eindimensionale-arrays.html">„Datenstrukturen“</a>:</p>
       <pre><code>void zeige_groesse(int werte[]) {
     printf("in der Funktion: %zu\n", sizeof(werte));   
 }
@@ -69,7 +69,7 @@ zeige_groesse(zuege);</code></pre>
       <p>Weil die Funktion die Adresse des Originals bekommt, gilt außerdem: Mit <code>werte[0] = 99;</code> verändert sie das Array des Aufrufers, nicht eine Kopie. Bei Strukturen ist das, wie Sie wissen, anders. Wie Sie dasselbe für eine Struktur erreichen, lernen Sie auf den nächsten Seiten.</p>
       <details><summary>Für Interessierte: Zweidimensionale Arrays übergeben</summary><p>Auch bei einem zweidimensionalen Array wie dem Grundriss bekommt die Funktion nur die Adresse des Anfangs, hier der ersten Zeile. Um die Zeile <code>y</code> zu finden, muss sie aber wissen, wie lang eine Zeile ist. Deshalb darf im Parameter nur die Zeilenzahl fehlen, die Spaltenzahl muss dastehen: <code>char feld[][BREITE + 1]</code>. Die Zahl der Zeilen geben Sie wie bei einem eindimensionalen Array bei Bedarf als eigenen Parameter mit.</p></details>
       <h3>Warum <code>==</code> zwei gleiche Texte für verschieden hält</h3>
-      <p>Im Kapitel „Datenstrukturen“ haben Sie zwei Zeichen-Arrays mit <code>==</code> verglichen. Wiederholen Sie den Versuch jetzt mit Ihrem Wissen über Adressen:</p>
+      <p>Im Kapitel <a href="../datenstrukturen/02-zeichenketten.html">„Datenstrukturen“</a> haben Sie zwei Zeichen-Arrays mit <code>==</code> verglichen. Wiederholen Sie den Versuch jetzt mit Ihrem Wissen über Adressen:</p>
       <pre><code>char a[] = "Beute";
 char b[] = "Beute";
 printf("%d\n", a == b);
@@ -90,7 +90,7 @@ printf("%d\n", strcmp(a, b));</code></pre>
         <li><code>a == b</code> vergleicht deshalb nur die beiden Adressen. Die sind immer verschieden, das Ergebnis ist immer 0. Darauf weisen auch die Warnungen von GCC und Clang hin.</li>
         <li><code>strcmp(a, b)</code> geht dagegen Zeichen für Zeichen bis zum Nullzeichen vor und vergleicht die Inhalte. Sind sie gleich, liefert die Funktion 0.</li>
       </ul>
-      <p>Das ist die Erklärung für die Selbstkontrolle „Vergleich mit == und strcmp“ aus „Datenstrukturen“: Dort stand, dass <code>==</code> prüft, ob beide Seiten dieselbe Stelle im Speicher bezeichnen. Diese Stelle ist die Adresse, die Sie gerade mit <code>%p</code> ausgegeben haben.</p>
+      <p>Das ist die Erklärung für die Selbstkontrolle „Vergleich mit == und strcmp“ aus <a href="../datenstrukturen/02-zeichenketten.html">„Datenstrukturen“</a>: Dort stand, dass <code>==</code> prüft, ob beide Seiten dieselbe Stelle im Speicher bezeichnen. Diese Stelle ist die Adresse, die Sie gerade mit <code>%p</code> ausgegeben haben.</p>
     </section>
 
     <nav aria-label="Seitennavigation"><ul class="navlinks">
