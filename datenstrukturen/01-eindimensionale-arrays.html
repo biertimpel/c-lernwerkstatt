@@ -69,7 +69,7 @@
       </form>
       <p>Diese Rechnung funktioniert nur dort, wo das Array deklariert ist. Eine Funktion, der Sie ein Array übergeben, kennt dessen Länge nicht. Geben Sie die Länge deshalb als eigenen Parameter mit. Ein Parameter für ein Array wird so geschrieben:</p>
       <pre><code>int summe(int werte[], size_t anzahl);</code></pre>
-      <p>Warum eine Funktion die Länge nicht selbst bestimmen kann, klären Sie im Kapitel „Pointer und Datenaustausch“.</p>
+      <p>Warum eine Funktion die Länge nicht selbst bestimmen kann, klären Sie im Kapitel <a href="../pointer/01-werte-und-speicheradressen.html">„Pointer und Datenaustausch“</a>.</p>
       <p>Wenn dieselbe Größe an mehreren Stellen vorkommt, geben Sie ihr einen Namen, zum Beispiel mit <code>#define VERSUCHE 5</code>. Dann ändern Sie sie später nur an einer Stelle. Wie <code>#define</code> genau funktioniert, lernen Sie auf <a href="03-zweidimensionale-arrays.html">Seite 3</a>.</p>
       <form class="self-check" data-hint="sizeof misst Bytes. Was weiß eine Funktion über ein übergebenes Array?">
         <fieldset><legend>Gegeben ist <code>double messung[6];</code>. Welche Aussagen stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
@@ -115,7 +115,7 @@
       <h3>So gehen Sie vor</h3>
       <ol>
         <li><strong>Testfälle festlegen.</strong> Notieren Sie für jede Funktion, welches Ergebnis Sie bei welchen Daten erwarten. Nehmen Sie neben den Beispieldaten mindestens diese Fälle dazu: eine Reihe mit nur einem Versuch, eine Reihe, in der alle Versuche über 60 liegen, und eine Reihe, in der der kürzeste Versuch ganz vorne oder ganz hinten steht.</li>
-        <li><strong>Vertrag aufschreiben.</strong> Halten Sie für jede Funktion in zwei, drei Sätzen fest, was sie erwartet und was sie liefert. Das ist dieselbe Information, die Sie im Kapitel „Manpages“ für Bibliotheksfunktionen nachgeschlagen haben: Parameter, Rückgabewert und Sonderfälle.</li>
+        <li><strong>Vertrag aufschreiben.</strong> Halten Sie für jede Funktion in zwei, drei Sätzen fest, was sie erwartet und was sie liefert. Das ist dieselbe Information, die Sie im Kapitel <a href="../manpages/02-funktion-untersuchen.html">„Manpages und Bibliotheksdokumentation“</a> für Bibliotheksfunktionen nachgeschlagen haben: Parameter, Rückgabewert und Sonderfälle.</li>
         <li><strong>Den Sonderfall „keine Versuche“ entscheiden.</strong> Was soll jede Funktion liefern, wenn die Anzahl 0 ist? Bei der ersten Frage ist die Antwort klar. Beim kürzesten Versuch und beim Durchschnitt gibt es kein sinnvolles Ergebnis. Entscheiden Sie, was die Funktion dann zurückgibt, und schreiben Sie es in den Vertrag.</li>
         <li><strong>Implementieren.</strong> Schreiben Sie die Funktionen in <code>tresorraub.c</code> oberhalb von <code>text_ausgeben</code>. Legen Sie für jeden Testfall in <code>text_ausgeben</code> ein eigenes Array an, rufen Sie Ihre Funktionen damit auf und geben Sie die Ergebnisse aus.</li>
         <li><strong>Prüfen.</strong> Vergleichen Sie jedes Ergebnis mit Ihrer Erwartung aus Schritt 1 und notieren Sie Abweichungen.</li>
