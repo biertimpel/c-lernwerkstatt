@@ -8,6 +8,7 @@ Vorschlag vom 09.11.2026 zur Abstimmung. Stellung im Kurs: Block 2, nach
 - Block 1: Variablen, Bedingungen, Schleifen, Funktionen, eigene Tests
 - „Vom Problem zum Programm II“: Spielbeschreibung und erster Plan des Tresorraubs
 - „Manpages“: Funktionsverträge in der Dokumentation nachschlagen
+- „Header und Quelldateien“: Deklarationen, Include-Schutz, Übersetzung und das bereitgestellte Makefile nachvollziehen
 
 Arrays, Zeichenketten und Strukturen sind neu. Pointer, dynamischer Speicher
 und Listen kommen erst in späteren Kapiteln und werden hier bewusst vermieden.
