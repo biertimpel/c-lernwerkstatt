@@ -60,6 +60,29 @@ nicht zu überfordern.
 - **Offene Fragen:** Abgrenzung zu „Betriebs- und Kommunikationssysteme“:
   Was erklärt welche Vorlesung (z. B. virtueller Speicher dort)?
 
+### Verkettete Listen im Speicherbild
+
+- **Idee:** Eine verkettete Liste Schritt für Schritt im Speicherbild
+  zeigen: Wo liegen der Kopf-Pointer (statische Daten oder Stack), wo die
+  einzelnen Knoten (Heap), welche Adressen stehen in den
+  Nachfolger-Pointern, und wie verändert sich das Bild beim Einfügen,
+  Entfernen und Freigeben.
+- **Betroffenes Kapitel:** Speicherorganisation, Stack und Heap; Anknüpfung
+  an „Dynamischer Speicher und Listen“ aus dem Grundkurs.
+- **Nutzen für die Studierenden:** Der Grundkurs zeigt Listen bewusst nur
+  als Kästchen-und-Pfeile-Skizze (Seite „Eine verkettete Liste“). Das
+  Speicherbild macht sichtbar, dass Knoten verstreut auf dem Heap liegen,
+  dass ein Pfeil nur eine gespeicherte Adresse ist und was nach `free` mit
+  einem Bereich passiert (Use-after-free, Leck bei verlorenem Pointer).
+- **Mögliche Umsetzung:**
+  - Die Speicheransicht der Pointer-Lektion (`pointer/speicheransicht.js`)
+    um einen Heap-Bereich und Beispiele für Listen erweitern: vorne
+    einfügen, Knoten in der Mitte entfernen, Liste leeren.
+  - Versuch in C: Adressen von Kopf und Knoten mit `%p` ausgeben und mit
+    dem Speicherbild vergleichen.
+- **Offene Fragen:** Gemeinsam mit dem Eintrag „Stack und Heap erklären“
+  behandeln?
+
 ## Vorlage für eine Idee
 
 - **Idee:**
