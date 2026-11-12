@@ -15,9 +15,19 @@ datenstrukturen/loesung/programm
 datenstrukturen/loesung/programm.exe
 datenstrukturen/loesung/tests
 datenstrukturen/loesung/tests.exe
+
+# Kompilierte Programme der Lektion Pointer
 pointer/materialien/tresorraub-pointer-start/programm
 pointer/materialien/tresorraub-pointer-start/programm.exe
 pointer/loesung/programm
 pointer/loesung/programm.exe
 pointer/loesung/tests
 pointer/loesung/tests.exe
+
+# Kompilierte Programme der Lektion Dynamischer Speicher
+dynamischer-speicher/materialien/tresorraub-inventar/programm
+dynamischer-speicher/materialien/tresorraub-inventar/programm.exe
+dynamischer-speicher/loesung/programm
+dynamischer-speicher/loesung/programm.exe
+dynamischer-speicher/loesung/tests
+dynamischer-speicher/loesung/tests.exe

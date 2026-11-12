@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Lebensdauer und Speicherbereiche</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+  <script src="selbstkontrollen.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header><h1>Lebensdauer und Speicherbereiche</h1><p>Wie lange Daten existieren und warum feste Größen nicht immer reichen.</p></header>
+    <noscript><p>Ohne JavaScript können Sie die Fragen anhand der aufklappbaren Erklärungen selbst prüfen.</p></noscript>
+    <section class="content-section" aria-labelledby="abschnitt-1">
+      <h2 id="abschnitt-1">1. Wie lange lebt eine Variable?</h2>
+      <p>Auf der Seite <a href="../variablen/lokale-und-globale-variablen.html">Lokale und globale Variablen</a> haben Sie zwei Arten von Variablen kennengelernt. Eine lokale Variable entsteht, wenn das Programm ihren Block betritt, und verschwindet, wenn es ihn verlässt. Eine globale Variable existiert während der gesamten Laufzeit des Programms. Das gilt auch für eine Variable, die mit <code>static</code> außerhalb von Funktionen steht, wie der laufende Spielstand in <code>tresorraub.c</code> aus dem Kapitel <a href="../pointer/04-eingaben-und-bewegung.html#static">„Pointer und Datenaustausch“</a>. Die Zeitspanne, in der eine Variable existiert, heißt ihre <strong>Lebensdauer</strong>.</p>
+      <p>Beide Arten haben eine Grenze: Ihre Größe steht schon beim Übersetzen fest. Im Kapitel <a href="../datenstrukturen/01-eindimensionale-arrays.html">„Datenstrukturen“</a> hatte jedes Array eine feste Länge. Für das Inventar ist das unbefriedigend. Gegenstände kommen hinzu und verschwinden wieder, und in einer späteren Spielversion könnte es viel mehr Gegenstände geben. Gesucht ist Speicher, der zwei Dinge erfüllt:</p>
+      <ul>
+        <li>Sie fordern ihn während des Programmlaufs in genau der Menge an, die Sie gerade brauchen.</li>
+        <li>Er existiert, bis Sie ihn selbst wieder freigeben, unabhängig davon, welche Funktion gerade läuft.</li>
+      </ul>
+      <p>Solchen Speicher nennt man <strong>dynamischen Speicher</strong>.</p>
+    </section>
+    <section class="content-section" aria-labelledby="abschnitt-2">
+      <h2 id="abschnitt-2">2. Ein vereinfachtes Speicherbild</h2>
+      <p>Ein laufendes Programm teilt seinen Speicher üblicherweise in vier Bereiche. Das Bild ist vereinfacht: Wo genau die Bereiche liegen und wie groß sie sind, hängt vom System ab. Für das Verständnis von Lebensdauer reicht es aber aus.</p>
+      <ul>
+        <li><strong>Programmcode</strong> enthält nur die übersetzten Anweisungen, also die Maschinenbefehle Ihrer Funktionen. Die Variablen, mit denen diese Anweisungen arbeiten, liegen nicht dort, sondern in einem der drei anderen Bereiche.</li>
+        <li><strong>Statische Daten</strong> sind die globalen Variablen und die <code>static</code>-Variablen.</li>
+        <li><strong>Stack</strong> und <strong>Heap</strong> sind die Namen der beiden übrigen Bereiche. Für dieses Kapitel genügt eine einfache Unterscheidung: Auf dem Stack liegen die lokalen Variablen und Parameter. Ihre Größe steht schon beim Übersetzen fest, und sie entstehen und verschwinden von selbst mit dem Aufruf ihrer Funktion. Der Heap ist der Bereich für dynamischen Speicher: Dort fordert Ihr Programm während des Laufs so viel Speicher an, wie es gerade braucht, und gibt ihn selbst wieder frei.</li>
+      </ul>
+      <p>Wie Stack und Heap genau organisiert sind und wie das Betriebssystem den Speicher verwaltet, müssen Sie hier nicht wissen. Das erklären die Vorlesungen „Betriebs- und Kommunikationssysteme“ und „Rechnerarchitektur“.</p>
+      <p>Übertragen Sie die Tabelle in Ihre Projektnotiz und ergänzen Sie die leeren Spalten. Die ersten drei Zeilen können Sie aus Abschnitt 1 und aus Block 1 ableiten. Für die letzte Zeile genügt eine Vermutung, die Sie auf Seite 2 überprüfen.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Bereich</th><th>Was liegt dort?</th><th>Wie lange existiert es?</th><th>Wer gibt es frei?</th></tr></thead>
+        <tbody>
+          <tr><td>Programmcode</td><td>Die übersetzten Anweisungen Ihrer Funktionen, keine Variablen</td><td></td><td></td></tr>
+          <tr><td>Statische Daten</td><td>Globale Variablen und <code>static</code>-Variablen</td><td></td><td></td></tr>
+          <tr><td>Stack</td><td>Lokale Variablen und Parameter der gerade laufenden Funktionen, Größe beim Übersetzen bekannt</td><td></td><td></td></tr>
+          <tr><td>Heap</td><td>Dynamisch angeforderter Speicher, Größe erst während des Laufs bekannt</td><td></td><td></td></tr>
+        </tbody>
+      </table></div>
+      <details><summary>Selbstkontrolle: Das ausgefüllte Speicherbild</summary><p>Programmcode und statische Daten existieren während der gesamten Laufzeit. Das Betriebssystem gibt sie frei, wenn das Programm endet. Lokale Variablen auf dem Stack existieren bis zum Ende ihres Blocks, Parameter bis zum Ende ihrer Funktion. Sie werden automatisch freigegeben, deshalb spricht man auch von automatischer Lebensdauer. Speicher auf dem Heap existiert, bis Ihr Programm ihn ausdrücklich freigibt. Niemand sonst übernimmt das. Vergessen Sie es, bleibt der Speicher bis zum Programmende belegt.</p></details>
+      <form class="self-check" data-hint="Unterscheiden Sie, wer für das Freigeben zuständig ist: das Programm automatisch oder Sie selbst.">
+        <fieldset><legend>Welche Aussagen zur Lebensdauer stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Eine lokale Variable einer Funktion existiert nach dem <code>return</code> nicht mehr.</label>
+          <label><input type="checkbox"> Speicher auf dem Heap wird am Ende der Funktion, die ihn angefordert hat, automatisch freigegeben.</label>
+          <label><input type="checkbox" data-correct="true"> Eine <code>static</code>-Variable außerhalb von Funktionen existiert während der gesamten Laufzeit.</label>
+          <label><input type="checkbox"> Ein lokales Array lässt sich nach seiner Deklaration vergrößern, wenn mehr Platz gebraucht wird.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die erste und dritte Aussage stimmen. Heap-Speicher bleibt bestehen, bis Ihr Programm ihn freigibt, auch über das Ende der anfordernden Funktion hinaus. Genau das macht ihn nützlich. Die Größe eines Arrays steht dagegen nach der Deklaration fest.</p></details>
+      </form>
+    </section>
+    <section class="content-section" aria-labelledby="abschnitt-3">
+      <h2 id="abschnitt-3">3. Versuch: Eine Adresse ohne Ziel</h2>
+      <p>Im Kapitel <a href="../pointer/01-werte-und-speicheradressen.html">„Pointer und Datenaustausch“</a> haben Sie gelernt, dass ein Pointer die Adresse eines Objekts enthält. Was passiert, wenn das Objekt nicht mehr existiert, der Pointer aber schon?</p>
+      <ol>
+        <li>Schreiben Sie in <code>tresorraub.c</code> eine Funktion, die eine lokale <code>int</code>-Variable anlegt, ihr einen Wert gibt und die Adresse dieser Variablen zurückgibt.</li>
+        <li>Rufen Sie die Funktion in <code>text_ausgeben</code> auf und geben Sie den Wert aus, auf den der zurückgegebene Pointer zeigt.</li>
+        <li>Notieren Sie vor dem Übersetzen, was Sie erwarten. Was meldet der Compiler? Was gibt das Programm aus?</li>
+        <li>Erklären Sie Ihre Beobachtung mit dem Speicherbild aus Abschnitt 2. Entfernen Sie den Versuch danach wieder.</li>
+      </ol>
+      <details><summary>Selbstkontrolle: Ihre Beobachtungen</summary><p>GCC warnt mit „function returns address of local variable“, Clang mit „address of stack memory associated with local variable … returned“. Die lokale Variable liegt auf dem Stack und existiert nach dem <code>return</code> nicht mehr. Der Pointer enthält trotzdem weiterhin ihre frühere Adresse. Dieser Speicher kann inzwischen für etwas anderes verwendet werden. Der Zugriff darauf ist undefiniertes Verhalten. Vielleicht erscheint sogar noch der alte Wert, doch darauf ist kein Verlass. Ein Pointer ist nur so lange brauchbar, wie sein Ziel lebt.</p></details>
+      <form class="self-check" data-hint="Der Pointer und das Objekt, auf das er zeigt, haben jeweils eine eigene Lebensdauer.">
+        <fieldset><legend>Welche Aussagen zu Pointern und Lebensdauer stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Ein Pointer kann noch existieren, wenn das Objekt, auf das er zeigt, nicht mehr existiert.</label>
+          <label><input type="checkbox"> Gibt das Programm den erwarteten Wert aus, war der Zugriff korrekt.</label>
+          <label><input type="checkbox" data-correct="true"> Eine Funktion, die Daten für ihren Aufrufer anlegt, kann dafür keine eigene lokale Variable verwenden.</label>
+          <label><input type="checkbox"> Der Compiler verhindert jeden Zugriff auf ein Objekt, das nicht mehr existiert.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die erste und dritte Aussage stimmen. Ein zufällig richtiger Wert beweist bei undefiniertem Verhalten nichts. Der Compiler warnt in einfachen Fällen wie diesem, erkennt aber längst nicht jeden. Soll eine Funktion Daten anlegen, die ihren Aufruf überleben, braucht sie dynamischen Speicher. Wie das geht, zeigt Seite 2.</p></details>
+      </form>
+      <p class="work-result"><strong>Ihr Ergebnis:</strong> Das ausgefüllte Speicherbild und eine Erklärung des Versuchs in eigenen Worten.</p>
+    </section>
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="index.html">← Zurück: Kapitelübersicht</a></li>
+      <li><a href="02-speicher-anfordern.html">Weiter: Speicher anfordern und freigeben →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>

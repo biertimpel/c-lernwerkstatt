@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Das Inventar im Spiel</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+  <script src="selbstkontrollen.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header><h1>Das Inventar im Spiel</h1><p>Das Inventar in den Spielstand übernehmen, Gegenstände mit der Leertaste aufnehmen und die Tür mit dem Schlüssel öffnen.</p></header>
+    <noscript><p>Ohne JavaScript können Sie die Fragen anhand der aufklappbaren Erklärungen selbst prüfen.</p></noscript>
+
+    <section class="content-section" aria-labelledby="abschnitt-1">
+      <h2 id="abschnitt-1">1. Der Spielstand besitzt das Inventar</h2>
+      <p>Ihre <code>tresorraub.c</code> enthält den Stand am Ende des Kapitels <a href="../pointer/04-eingaben-und-bewegung.html">„Pointer und Datenaustausch“</a>: Die Figur läuft mit den Pfeiltasten über das Spielfeld, und der laufende Spielstand liegt als <code>static</code>-Variable in <code>tresorraub.c</code>, außerhalb aller Funktionen. Für das Inventar enthält der Spielstand bisher drei <code>bool</code>-Werte, einen je Gegenstand. Diese ersetzen Sie jetzt durch Ihre Liste von Seite 3.</p>
+      <p>Damit wird der Spielstand zum <strong>Besitzer</strong> des Inventars: Jeder Spielstand, der Einträge aufgenommen hat, muss sie auch wieder freigeben. Für den laufenden Spielstand ist das <code>aufraeumen</code>; das Gerüst ruft diese Funktion in jedem Fall vor dem Programmende auf. Ein Spielstand, den Sie in <code>text_ausgeben</code> als lokale Variable anlegen, gehört dagegen dieser Funktion. Sie muss sein Inventar vor ihrem Ende selbst leeren.</p>
+      <ol>
+        <li>Ersetzen Sie im Strukturtyp des Spielstands die drei <code>bool</code>-Werte für das Inventar durch Ihr Inventar. Der Startzustand beginnt mit einem leeren Inventar.</li>
+        <li>Ergänzen Sie <code>aufraeumen</code>, sodass das Inventar des laufenden Spielstands freigegeben wird.</li>
+        <li>Prüfen Sie mit dem Prüfwerkzeug, dass <code>./programm --text</code> und das Fenster nach Escape keinen vergessenen Speicher melden.</li>
+      </ol>
+      <h3>Versuch: Eine Kopie des Spielstands</h3>
+      <p>Im Kapitel <a href="../datenstrukturen/05-spielstand.html">„Datenstrukturen“</a> haben Sie gesehen: Wird ein Spielstand als Wert übergeben, bekommt die Funktion eine Kopie aller Felder. Was bedeutet das jetzt, wo ein Feld der Kopf einer Liste ist?</p>
+      <ol>
+        <li>Schreiben Sie eine Funktion, die einen Spielstand <em>als Wert</em> erhält und darin das Inventar leert.</li>
+        <li>Legen Sie in <code>text_ausgeben</code> einen Spielstand an, nehmen Sie einen Gegenstand in sein Inventar auf, rufen Sie die Funktion auf und geben Sie danach das Inventar des Originals aus.</li>
+        <li>Notieren Sie vorher, was Sie erwarten. Führen Sie den Versuch mit dem Prüfwerkzeug aus. Entfernen Sie ihn danach wieder.</li>
+      </ol>
+      <details><summary>Selbstkontrolle: Was beim Kopieren passiert</summary><p>Die Kopie enthält denselben Kopf-Pointer wie das Original, also zeigen beide auf dieselben Einträge. Die Einträge selbst werden nicht kopiert. Die Funktion gibt sie frei und setzt nur den Kopf <em>ihrer Kopie</em> auf <code>NULL</code>. Der Kopf des Originals zeigt danach weiter auf freigegebenen Speicher. Das Prüfwerkzeug meldet beim Ausgeben <code>heap-use-after-free</code>. Ein Spielstand mit Inventar wird deshalb nur noch über einen Pointer weitergegeben.</p></details>
+      <form class="self-check" data-hint="Überlegen Sie, was bei einer Kopie des Spielstands mit dem Kopf der Liste und mit den Einträgen geschieht.">
+        <fieldset><legend>Welche Aussagen stimmen, wenn das Inventar im Spielstand liegt?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Eine Kopie des Spielstands teilt sich die Einträge mit dem Original.</label>
+          <label><input type="checkbox"> Eine Kopie des Spielstands enthält eine eigene Kopie aller Einträge.</label>
+          <label><input type="checkbox" data-correct="true"> Ein lokaler Spielstand in <code>text_ausgeben</code> muss sein Inventar vor dem Ende der Funktion freigeben.</label>
+          <label><input type="checkbox"> <code>aufraeumen</code> gibt auch die Inventare lokaler Spielstände frei.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die erste und die dritte Aussage stimmen. Beim Kopieren einer Struktur wird jedes Feld kopiert, beim Inventar also nur der Pointer auf den ersten Eintrag. <code>aufraeumen</code> kennt nur den laufenden Spielstand. Einen lokalen Spielstand kann nur die Funktion freigeben, der er gehört.</p></details>
+      </form>
+    </section>
+
+    <section class="content-section" aria-labelledby="aufgabe-leertaste">
+      <h2 id="aufgabe-leertaste">2. Aufgabe: Aufnehmen und Tür öffnen mit der Leertaste</h2>
+      <p>Mit der Leertaste handelt die Figur auf dem Feld, auf dem sie steht. Die genauen Regeln stehen in <a href="materialien/tresorraub-inventar/INVENTAR.md">INVENTAR.md</a>, Abschnitt „Leertaste“. Kurz: Liegt auf dem Feld ein Gegenstand, wird er aufgenommen. Sonst öffnet sich die verschlossene Tür, wenn die Figur direkt daneben steht und den Schlüssel im Inventar hat; der Schlüssel wird dabei verbraucht. Nur eine erfolgreiche Handlung zählt als Zug.</p>
+      <ol>
+        <li>Entwerfen Sie eine Funktion, die diese Regeln für einen Spielstand ausführt. Verwenden Sie Ihre Funktionen von Seite 3 und 4. Wird ein Gegenstand aufgenommen, liegt er danach nicht mehr auf dem Feld; die Beute verlässt den Tresor.</li>
+        <li>Kann ein Eintrag nicht angelegt werden, weil kein Speicher zu bekommen ist, meldet die Funktion einen Fehler. Der Spielstand bleibt dann unverändert. Legen Sie im Vertrag fest, wie der Fehler gemeldet wird.</li>
+        <li>Steht die Figur auf einem Feld, auf dem ein Gegenstand liegt, soll der Fenstertitel das zeigen: <code>Position (3, 5) | Zuege 2/60 | Hier liegt: Schluessel</code>. Erweitern Sie dafür Ihre Funktion für die Statuszeile. Sonst bleibt die Statuszeile wie bisher.</li>
+        <li>Rufen Sie Ihre Funktion in <code>taste_gedrueckt</code> bei <code>SDLK_SPACE</code> auf. Geben Sie danach eine Meldung und das Inventar im Terminal aus. Meldet Ihre Funktion einen Speicherfehler, gibt <code>taste_gedrueckt</code> einen negativen Wert zurück.</li>
+      </ol>
+      <details><summary>Hinweis: Liegt hier etwas?</summary><p>Welche Felder Ihres Spielstands verraten, ob ein Gegenstand noch auf seinem Feld liegt? Eine eigene Funktion, die zu einem Feld den Namen des dort liegenden Gegenstands liefert oder <code>NULL</code>, hilft beim Aufnehmen und bei der Statuszeile.</p></details>
+      <details><summary>Hinweis: Direkt neben der Tür</summary><p>„Direkt neben“ heißt: ein Schritt nach links, rechts, oben oder unten. Diese Bedingung kennen Sie aus dem Kapitel <a href="../datenstrukturen/04-strukturen.html">„Datenstrukturen“</a>: Der Rasterabstand zur Tür ist 1.</p></details>
+      <h3>Testen</h3>
+      <p>Testen Sie im Textmodus mit einem eigenen Spielstand. Wie im Kapitel <a href="../pointer/03-spielzustand-veraendern.html">„Pointer und Datenaustausch“</a> müssen Sie die Figur nicht hinlaufen lassen; setzen Sie ihre Position direkt. Notieren Sie Ihre Erwartungen, bevor Sie das Programm ausführen. Beginnen Sie mit dem Startzustand und führen Sie die Schritte nacheinander aus:</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th scope="col">Schritt</th><th scope="col">Meldung</th><th scope="col">Züge danach</th><th scope="col">Inventar danach</th></tr></thead>
+        <tbody>
+          <tr><td>Leertaste auf dem Startfeld (3, 7)</td><td></td><td></td><td></td></tr>
+          <tr><td>Figur auf (5, 3), Leertaste</td><td></td><td></td><td></td></tr>
+          <tr><td>Figur auf (3, 5), Statuszeile ausgeben</td><td></td><td></td><td></td></tr>
+          <tr><td>Leertaste</td><td></td><td></td><td></td></tr>
+          <tr><td>Figur auf (5, 3), Leertaste</td><td></td><td></td><td></td></tr>
+          <tr><td>Figur auf (11, 7), Leertaste</td><td></td><td></td><td></td></tr>
+          <tr><td>Figur auf (13, 1), Leertaste</td><td></td><td></td><td></td></tr>
+        </tbody>
+      </table></div>
+      <details><summary>Selbstkontrolle: Erwartete Ergebnisse</summary>
+        <div class="table-wrap"><table>
+          <thead><tr><th scope="col">Schritt</th><th scope="col">Meldung</th><th scope="col">Züge danach</th><th scope="col">Inventar danach</th></tr></thead>
+          <tbody>
+            <tr><td>Leertaste auf (3, 7)</td><td>nichts zu tun</td><td>0</td><td>leer</td></tr>
+            <tr><td>(5, 3), Leertaste</td><td>ohne Schlüssel bleibt die Tür zu</td><td>0</td><td>leer</td></tr>
+            <tr><td>(3, 5), Statuszeile</td><td><code>Position (3, 5) | Zuege 0/60 | Hier liegt: Schluessel</code></td><td>0</td><td>leer</td></tr>
+            <tr><td>Leertaste</td><td>Schlüssel aufgenommen</td><td>1</td><td>Schluessel</td></tr>
+            <tr><td>(5, 3), Leertaste</td><td>Tür geöffnet, Schlüssel verbraucht</td><td>2</td><td>leer</td></tr>
+            <tr><td>(11, 7), Leertaste</td><td>Münze aufgenommen</td><td>3</td><td>Muenze</td></tr>
+            <tr><td>(13, 1), Leertaste</td><td>Beute aufgenommen</td><td>4</td><td>Beute, Muenze</td></tr>
+          </tbody>
+        </table></div>
+        <p>Nach dem Aufnehmen zeigt die Statuszeile auf (3, 5) wieder nur Position und Züge, und in der Textausgabe fehlt der Schlüssel auf dem Spielfeld. Die Tür ist offen, der Tresor leer. Denken Sie daran, das Inventar dieses Spielstands am Ende freizugeben.</p>
+      </details>
+      <p>Spielen Sie danach im Fenster: Laufen Sie zum Schlüssel, nehmen Sie ihn auf, öffnen Sie die Tür und holen Sie Münze und Beute. Achten Sie auf Fenstertitel und Zugzahl.</p>
+      <p>Das Spielfeld zeigt Ihre Änderungen schon jetzt: Der Schlüssel verschwindet, die Tür öffnet sich, der Tresor ist leer. <code>zeichne</code> liest dafür die Felder, die Ihre Funktion verändert. Das Inventar selbst sehen Sie vorerst nur im Terminal; im Fenster erscheint es nach Abschnitt 3.</p>
+      <form class="self-check" data-hint="Gehen Sie die Regeln in INVENTAR.md der Reihe nach durch: Was wird zuerst geprüft, und wann zählt ein Zug?">
+        <fieldset><legend>Welche Aussagen zur Leertaste stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Drückt man die Leertaste auf einem Feld ohne Gegenstand und nicht neben der Tür, bleibt die Zugzahl gleich.</label>
+          <label><input type="checkbox"> Die Figur öffnet die Tür, indem sie mit dem Schlüssel auf das Türfeld läuft.</label>
+          <label><input type="checkbox" data-correct="true"> Nach dem Öffnen der Tür ist der Schlüssel nicht mehr im Inventar, und sein Eintrag ist freigegeben.</label>
+          <label><input type="checkbox"> Ein aufgenommener Gegenstand bleibt zusätzlich auf seinem Feld liegen.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die erste und die dritte Aussage stimmen. Nur eine erfolgreiche Handlung zählt als Zug. Die verschlossene Tür blockiert weiterhin die Bewegung; geöffnet wird sie mit der Leertaste vom Nachbarfeld aus. Beim Aufnehmen wechselt der Gegenstand vom Feld ins Inventar, er ist also nie an beiden Stellen zugleich.</p></details>
+      </form>
+    </section>
+
+    <section class="content-section" aria-labelledby="abschnitt-3">
+      <h2 id="abschnitt-3">3. Das Inventar zeichnen</h2>
+      <p>Ergänzen Sie <code>zeichne</code>: Nach dem Spielfeld durchläuft die Funktion das Inventar und zeichnet für jeden Eintrag das passende Piktogramm aus INVENTAR.md, von links nach rechts in der Reihenfolge der Liste. Der erste Platz beginnt bei <code>INVENTAR_X</code> und <code>INVENTAR_Y</code> unter dem Spielfeld, jeder weitere liegt <code>FELDGROESSE</code> Pixel weiter rechts. Geben Sie einen Fehler einer Zeichenfunktion sofort zurück.</p>
+      <details><summary>Selbstkontrolle: Was Sie sehen</summary><p>Zu Beginn ist unter dem Spielfeld nichts zu sehen. Nach dem Aufnehmen erscheint der Schlüssel; auf dem Spielfeld liegt er nicht mehr. Nach dem Öffnen der Tür verschwindet er wieder, und die Tür ist offen. Nach Münze und Beute steht die Beute links, die Münze rechts daneben. Weil <code>zeichne</code> das Inventar nur liest, verändert es die Liste nicht.</p></details>
+    </section>
+
+    <section class="content-section" aria-labelledby="abschnitt-4">
+      <h2 id="abschnitt-4">4. Fehlerfälle zu Ende denken</h2>
+      <p>In Ihrem Programm gibt es zwei Arten von „es hat nicht geklappt“:</p>
+      <ul>
+        <li><strong>Spielfälle:</strong> Die Tür bleibt ohne Schlüssel zu, auf dem Feld gibt es nichts zu tun, ein Gegenstand ist schon im Inventar oder das Inventar ist voll. Das gehört zum Spiel. Die Spielerin bekommt eine Meldung, und das Spiel läuft weiter. Die letzten beiden Fälle kommen mit den drei Gegenständen im Spiel nicht vor; Ihre Funktionen behandeln sie trotzdem.</li>
+        <li><strong>Programmfehler:</strong> <code>malloc</code> liefert <code>NULL</code>. Dann kann das Programm seine Aufgabe nicht mehr erfüllen.</li>
+      </ul>
+      <p>Laut <code>tresorraub.h</code> liefert <code>taste_gedrueckt</code> bei einem Fehler, nach dem das Programm nicht sinnvoll weiterlaufen kann, einen negativen Wert. Das Gerüst beendet das Programm dann und ruft vorher <code>aufraeumen</code> auf. Prüfen Sie Ihr Programm:</p>
+      <ol>
+        <li>Liefert <code>taste_gedrueckt</code> für alle Spielfälle 0 und für einen Speicherfehler einen negativen Wert?</li>
+        <li>Spielen Sie auf Papier durch, was passiert, wenn <code>malloc</code> beim Aufnehmen der Beute fehlschlägt: In welchem Zustand sind Inventar, Tresor und Zugzahl? Wird beim Beenden aller Speicher freigegeben?</li>
+      </ol>
+      <p>Einen Speicherfehler können Sie nicht ohne Weiteres auslösen. Deshalb ist die Prüfung auf Papier hier wichtig.</p>
+      <details><summary>Selbstkontrolle: Ein fehlgeschlagenes malloc</summary><p>Ihre Funktion zum Aufnehmen liefert einen Fehler, bevor sie den Kopf verändert. Das Inventar enthält also genau die Gegenstände wie vor dem Tastendruck. Die Beute liegt weiter im Tresor, und die Zugzahl bleibt gleich, denn die Handlung war nicht erfolgreich. <code>taste_gedrueckt</code> gibt den Fehler als negativen Wert weiter. Das Gerüst ruft <code>aufraeumen</code> auf, und alle vorhandenen Einträge werden freigegeben. Es entsteht weder ein Leck noch ein Zugriff auf ungültigen Speicher.</p></details>
+      <form class="self-check" data-hint="Unterscheiden Sie zwischen dem, was im Spiel passieren darf, und dem, was das Programm nicht mehr beheben kann.">
+        <fieldset><legend>Welche Aussagen zu den Fehlerfällen stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox"> Bleibt die Tür ohne Schlüssel zu, sollte <code>taste_gedrueckt</code> einen negativen Wert liefern.</label>
+          <label><input type="checkbox" data-correct="true"> Schlägt <code>malloc</code> fehl, bleibt der Spielstand so, wie er vor dem Tastendruck war.</label>
+          <label><input type="checkbox" data-correct="true"> Auch nach einem Speicherfehler wird der vorhandene Speicher beim Beenden freigegeben.</label>
+          <label><input type="checkbox"> Einen Speicherfehler kann man ignorieren, weil der Gegenstand beim nächsten Tastendruck aufgenommen wird.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die zweite und dritte Aussage stimmen. Eine verschlossene Tür ist ein normaler Spielfall und kein Grund, das Programm zu beenden. Ein Speicherfehler dagegen zeigt, dass das System keinen Speicher mehr hergibt. Weiterzuspielen, als wäre nichts passiert, würde zu einem Spielstand führen, der nicht mehr zu den Tastendrücken passt.</p></details>
+      </form>
+      <p class="work-result"><strong>Ihr Ergebnis:</strong> Ein Spielstand, der sein Inventar besitzt und freigibt, eine getestete Funktion für die Leertaste, ein Fenstertitel mit „Hier liegt“, das Inventar unter dem Spielfeld und Ihre Überlegungen zu den Fehlerfällen.</p>
+      <p><strong>Ausblick:</strong> Auf Seite 6 legt die Figur die Gegenstände wieder ab. Dabei leeren Sie die Liste Schritt für Schritt und verteilen die Gegenstände auf dem Spielfeld.</p>
+    </section>
+
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="04-entfernen-aufraeumen.html">← Zurück: Entfernen, aufräumen und Besitz</a></li>
+      <li><a href="06-ablegen.html">Weiter: Gegenstände ablegen →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>
