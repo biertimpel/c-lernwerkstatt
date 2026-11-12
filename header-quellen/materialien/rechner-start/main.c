@@ -7,6 +7,7 @@ int addiere(int a, int b) {
 int multipliziere(int a, int b) {
     return a * b;
 }
+
 int main(void) {
     int a = 4;
     int b = 7;

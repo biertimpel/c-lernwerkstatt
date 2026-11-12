@@ -46,9 +46,10 @@ Makefiles werden im Kapitel „Header und Quelldateien“ eingeführt.
 | II | `datenstrukturen/` | Arrays, Zeichenketten und Strukturen |
 | II | `pointer/` | Pointer und Datenaustausch |
 | II | `dynamischer-speicher/` | Dynamischer Speicher und Listen, in Vorbereitung |
-| II | `in-vorbereitung.html?thema=objektorientierung` | Objektorientierung in C |
-| II | `in-vorbereitung.html?thema=spielbausteine` | Die Spielbausteine zusammenführen |
 | II | `in-vorbereitung.html?thema=datei-ein-ausgabe` | Datei-Ein- und -Ausgabe |
+| II | `in-vorbereitung.html?thema=config` | Config |
+| II | `in-vorbereitung.html?thema=objektorientierung` | Objektorientierung in C |
+| II | `in-vorbereitung.html?thema=spielbausteine` | Die Spielbausteine zusammenführen & Refactoring |
 | II | `lernstand-2/` | Lernstandscheck II – Licht aus |
 | III | `projektplanung/` | Projekt planen |
 | III | `projekt-grundumfang/` | Technischen Projektgrundumfang umsetzen |
