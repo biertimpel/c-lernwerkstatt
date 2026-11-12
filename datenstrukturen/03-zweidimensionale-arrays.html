@@ -55,13 +55,13 @@ for (int i = 0; i &lt; ANZAHL; i++) {
     </section>
     <section class="content-section" aria-labelledby="abschnitt-2">
       <h2 id="abschnitt-2">2. Koordinaten und Zugriff</h2>
-      <p>Wie beim SDL2-Fenster aus dem Kapitel „Manpages“ liegt (0, 0) links oben. Die x-Koordinate wächst nach rechts, die y-Koordinate nach unten. Eine Zeile des Arrays entspricht also einem festen y-Wert. Überlegen Sie, in welcher Reihenfolge Sie die beiden Indizes beim Zugriff auf das Feld (x, y) schreiben müssen. Prüfen Sie Ihre Antwort an einem Feld, bei dem Vertauschen ein anderes Zeichen liefert.</p>
+      <p>Wie beim SDL2-Fenster aus dem Kapitel <a href="../manpages/04-fenster-gestalten.html">„Manpages und Bibliotheksdokumentation“</a> liegt (0, 0) links oben. Die x-Koordinate wächst nach rechts, die y-Koordinate nach unten. Eine Zeile des Arrays entspricht also einem festen y-Wert. Überlegen Sie, in welcher Reihenfolge Sie die beiden Indizes beim Zugriff auf das Feld (x, y) schreiben müssen. Prüfen Sie Ihre Antwort an einem Feld, bei dem Vertauschen ein anderes Zeichen liefert.</p>
       <h3>Den Grundriss auf zwei Arten ausgeben</h3>
       <ol>
         <li>Geben Sie den Grundriss zeilenweise aus, also mit einer Ausgabe pro Zeile.</li>
         <li>Geben Sie ihn Feld für Feld mit zwei verschachtelten Schleifen aus. Welche Schleife läuft außen, welche innen? Achten Sie darauf, wie weit die Schleife über die Spalten läuft: Das Array hat eine Spalte mehr, als das Spielfeld Felder hat. Was ändert sich, wenn Sie die beiden Schleifen vertauschen?</li>
         <li>Zählen Sie die Wandfelder und die freien Felder. Notieren Sie vorher eine Schätzung.</li>
-        <li>Zeichnen Sie den Grundriss im Fenster: Ersetzen Sie das Beispiel in <code>zeichne</code> durch zwei verschachtelte Schleifen, die für jedes Feld das Piktogramm für Wand oder Boden zeichnen. Wie berechnen Sie aus (x, y) die Pixelposition? Die README des Startmaterials hilft dabei. Geben Sie einen Fehler einer Zeichenfunktion sofort zurück, wie im Kapitel „Manpages“.</li>
+        <li>Zeichnen Sie den Grundriss im Fenster: Ersetzen Sie das Beispiel in <code>zeichne</code> durch zwei verschachtelte Schleifen, die für jedes Feld das Piktogramm für Wand oder Boden zeichnen. Wie berechnen Sie aus (x, y) die Pixelposition? Die README des Startmaterials hilft dabei. Geben Sie einen Fehler einer Zeichenfunktion sofort zurück, wie im Kapitel <a href="../manpages/03-rueckgaben-und-fehler.html">„Manpages und Bibliotheksdokumentation“</a>.</li>
       </ol>
       <details><summary>Selbstkontrolle: Ausgabe und Zählung</summary><p>Beide Textausgaben müssen genau den Grundriss von oben ergeben. Im Fenster erscheint derselbe Grundriss aus Wand- und Bodenfeldern. Vertauschen Sie nur die beiden Schleifen und lassen den Zugriff unverändert, erscheint das Spielfeld gekippt: 15 Zeilen mit je 9 Zeichen. Der Grundriss hat 57 Wandfelder und 78 freie Felder, zusammen 135.</p></details>
       <form class="self-check" data-hint="Der erste Index wählt die Zeile, der zweite die Spalte. Wofür braucht jede Zeile Platz?">

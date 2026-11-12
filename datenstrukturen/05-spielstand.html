@@ -16,7 +16,7 @@
     <noscript><p>Ohne JavaScript können Sie die Fragen anhand der aufklappbaren Erklärungen selbst prüfen.</p></noscript>
     <section class="content-section" aria-labelledby="abschnitt-1">
       <h2 id="abschnitt-1">1. Was ein Spielstand wissen muss</h2>
-      <p>Laut Spielbeschreibung aus „Vom Problem zum Programm II“ enthält die Textausgabe des Spielstands die Position der Spielfigur, den Inhalt des Inventars, die verbrauchten Züge sowie die Zustände von Tür, Tresor und einsammelbaren Gegenständen. Alle Positionen finden Sie in <a href="materialien/tresorraub-daten/SPIELFELD.md">SPIELFELD.md</a>.</p>
+      <p>Laut Spielbeschreibung aus <a href="../vom-problem-zum-programm-2/index.html">„Vom Problem zum Programm II“</a> enthält die Textausgabe des Spielstands die Position der Spielfigur, den Inhalt des Inventars, die verbrauchten Züge sowie die Zustände von Tür, Tresor und einsammelbaren Gegenständen. Alle Positionen finden Sie in <a href="materialien/tresorraub-daten/SPIELFELD.md">SPIELFELD.md</a>.</p>
       <p>Entwerfen Sie einen Strukturtyp, der einen vollständigen Spielstand beschreibt. Halten Sie in Ihrer Projektnotiz fest, welche Felder er enthält und warum. Folgende Fragen helfen bei der Entscheidung:</p>
       <ul>
         <li>Welche Daten ändern sich während des Spiels, welche bleiben immer gleich?</li>
@@ -24,7 +24,7 @@
         <li>Wie stellen Sie das Inventar dar? Es kann höchstens Schlüssel, Beute und Münze enthalten.</li>
         <li>Welche Typen aus den vorigen Seiten können Sie wiederverwenden?</li>
       </ul>
-      <p>Vergleichen Sie Ihren Entwurf mit Ihrem Plan aus „Vom Problem zum Programm II“. Was hat sich geändert, und warum?</p>
+      <p>Vergleichen Sie Ihren Entwurf mit Ihrem Plan aus <a href="../vom-problem-zum-programm-2/index.html">„Vom Problem zum Programm II“</a>. Was hat sich geändert, und warum?</p>
       <details><summary>Denkhilfe: Zwei Darstellungen abwägen</summary><p>Spielen Sie für beide Varianten gedanklich durch, was beim Aufnehmen des Schlüssels geändert werden muss. Was passiert in jeder Variante mit dem Feld, auf dem der Schlüssel lag? Wie finden Sie heraus, ob die Tür offen ist? Es gibt keine allein richtige Lösung. Entscheidend ist, dass Sie Ihre Wahl begründen können.</p></details>
       <form class="self-check" data-hint="Denken Sie an die Regeln aus der Spielbeschreibung und an die Fragen aus Abschnitt 1.">
         <fieldset><legend>Welche Aussagen zum Entwurf des Spielstands stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
@@ -54,7 +54,7 @@
       <h2 id="abschnitt-3">3. Eine Beobachtung für das nächste Kapitel</h2>
       <p>Schreiben Sie eine Funktion, die einen Spielstand als Parameter erhält und darin die Zahl der verbrauchten Züge um eins erhöht. Rufen Sie sie auf und geben Sie den Spielstand danach aus. Notieren Sie vorher Ihre Erwartung.</p>
       <p>Erinnern Sie sich an zwei frühere Beobachtungen: Auf der Seite <a href="../funktionen-debugging/02-funktionen.html">Funktionen</a> haben Sie gelernt, dass Parameter Kopien der übergebenen Werte erhalten. Auf <a href="04-strukturen.html">Seite 4</a> haben Sie ausprobiert, dass das auch für Strukturen gilt: Eine Funktion, die ein Feld einer übergebenen Position ändert, verändert die Position des Aufrufers nicht. Überlegen Sie jetzt: Was wird bei Ihrem Spielstand alles kopiert? Wie groß ist er laut <code>sizeof</code>? Ein Array lässt sich nicht mit <code>=</code> zuweisen. Wird ein Array, das Feld einer Struktur ist, beim Kopieren der Struktur mitkopiert?</p>
-      <p>Für die Bewegung der Spielfigur muss eine Funktion den Spielstand des Aufrufers verändern können. Wie das geht, lernen Sie im Kapitel „Pointer und Datenaustausch“. Bewahren Sie Ihr Programm dafür auf.</p>
+      <p>Für die Bewegung der Spielfigur muss eine Funktion den Spielstand des Aufrufers verändern können. Wie das geht, lernen Sie im Kapitel <a href="../pointer/02-kopie-und-original.html">„Pointer und Datenaustausch“</a>. Bewahren Sie Ihr Programm dafür auf.</p>
       <details><summary>Selbstkontrolle: Kopie des Spielstands</summary><p>Der Spielstand des Aufrufers bleibt unverändert, auch die Zahl der Züge. Beim Kopieren einer Struktur werden alle Felder kopiert, auch ein enthaltenes Array wie der Grundriss. Enthält Ihr Spielstand den Grundriss, sind das allein dafür 144 Bytes bei jedem Aufruf.</p></details>
       <form class="self-check" data-hint="Vergleichen Sie, was bei Arrays und bei Strukturen mit dem Zuweisungsoperator erlaubt ist.">
         <fieldset><legend>Welche Aussagen zum Kopieren stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
