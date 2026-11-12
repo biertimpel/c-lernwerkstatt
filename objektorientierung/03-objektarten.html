@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Objektarten mit Methoden</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+  <script src="selbstkontrollen.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header><h1>Objektarten mit Methoden</h1><p>Daten und Verhalten einer Art in einer Struktur bündeln und Objekte über eine gemeinsame Schnittstelle ansprechen.</p></header>
+    <noscript><p>Ohne JavaScript können Sie die Fragen anhand der aufklappbaren Erklärungen selbst prüfen.</p></noscript>
+
+    <section class="content-section" aria-labelledby="abschnitt-1">
+      <h2 id="abschnitt-1">1. Art und Objekt</h2>
+      <p>Im Spiel gibt es eine Tür, einen Tresor und, auf <a href="05-neue-objektart.html">Seite 5</a>, zwei Münzen. Die beiden Münzen sind zwei verschiedene <strong>Objekte</strong>: Jede hat ihre eigene Position und liegt oder liegt nicht. Sie gehören aber zur selben <strong>Art</strong>: Sie heißen gleich, sehen gleich aus und verhalten sich gleich. Man nennt ein einzelnes Objekt auch eine <strong>Instanz</strong> seiner Art.</p>
+      <p>Diese Trennung lässt sich in C direkt abbilden:</p>
+      <ul>
+        <li>Eine Struktur für die <strong>Art</strong> enthält, was alle Objekte dieser Art gemeinsam haben: Name, Aussehen und Verhalten. Das Verhalten steht als Funktionspointer darin. Solche Funktionen nennt man <strong>Methoden</strong>. Jede Art gibt es genau einmal.</li>
+        <li>Eine Struktur für das <strong>Objekt</strong> enthält, was jedes Objekt für sich hat, und einen Pointer auf seine Art.</li>
+        <li>Wer ein Objekt benutzt, ruft die Methode über diesen Pointer auf und muss die Art nicht kennen.</li>
+      </ul>
+      <p>Ein kleines Beispiel außerhalb des Spiels: Geräte, die man einschalten kann.</p>
+      <pre><code>typedef struct Geraet Geraet;      /* den Namen schon bekannt machen */
+
+typedef struct {
+    const char *name;
+    void (*einschalten)(Geraet *selbst);   /* Methode */
+} Geraeteart;
+
+struct Geraet {
+    const Geraeteart *art;          /* auf welche Art zeigt dieses Gerät? */
+    int zaehler;                    /* eigene Daten jedes Geräts */
+};
+
+static void lampe_einschalten(Geraet *selbst) {
+    selbst-&gt;zaehler = 100;
+    printf("Lampe leuchtet mit %d Prozent\n", selbst-&gt;zaehler);
+}
+
+static void klingel_einschalten(Geraet *selbst) {
+    selbst-&gt;zaehler++;
+    printf("Klingel laeutet zum %d. Mal\n", selbst-&gt;zaehler);
+}
+
+static const Geraeteart LAMPE = {"Lampe", lampe_einschalten};
+static const Geraeteart KLINGEL = {"Klingel", klingel_einschalten};
+
+/* in einer Funktion: */
+Geraet geraete[] = {{&amp;LAMPE, 0}, {&amp;KLINGEL, 0}, {&amp;KLINGEL, 5}};
+for (size_t i = 0; i &lt; 3; i++) {
+    geraete[i].art-&gt;einschalten(&amp;geraete[i]);
+}
+geraete[1].art-&gt;einschalten(&amp;geraete[1]);</code></pre>
+      <p>Einige Einzelheiten:</p>
+      <ul>
+        <li><code>typedef struct Geraet Geraet;</code> macht den Namen bekannt, bevor die Struktur vollständig beschrieben ist. Die Art braucht ihn schon für den Parameter ihrer Methode, das Gerät braucht umgekehrt die Art. Einen Strukturnamen hinter <code>struct</code> kennen Sie vom <code>Eintrag</code> der Liste aus dem Kapitel <a href="../dynamischer-speicher/03-verkettete-liste.html">„Dynamischer Speicher und Listen“</a>.</li>
+        <li>Jede Methode bekommt das Objekt, für das sie aufgerufen wird, als Parameter. Hier heißt er <code>selbst</code>. Über ihn erreicht die Methode die Daten genau dieses Objekts.</li>
+        <li>Die Arten sind <code>static const</code>: Es gibt jede nur einmal in dieser Datei, und niemand kann sie verändern. Auch die Methoden sind <code>static</code>; erreichbar sind sie nur über die Art. Das ist eine Form von <strong>Kapselung</strong>.</li>
+      </ul>
+      <p>Probieren Sie das Beispiel in <code>text_ausgeben</code> aus. Notieren Sie vorher Ihre Erwartung.</p>
+      <ol>
+        <li>Was gibt das Beispiel aus? Warum zählen die beiden Klingeln getrennt?</li>
+        <li>Zeichnen Sie ein Speicherbild für <code>geraete[2]</code>: das Gerät, seine Art und die Funktion, auf die die Art zeigt.</li>
+        <li>Ergänzen Sie eine dritte Art, ein Radio, und ein Radio im Array. Was mussten Sie an der Schleife ändern?</li>
+        <li>Versuchen Sie nach den Definitionen <code>LAMPE.name = "Licht";</code>. Was meldet der Compiler?</li>
+      </ol>
+      <details><summary>Selbstkontrolle: Ihre Beobachtungen</summary>
+        <ol>
+          <li><code>Lampe leuchtet mit 100 Prozent</code>, <code>Klingel laeutet zum 1. Mal</code>, <code>Klingel laeutet zum 6. Mal</code>, <code>Klingel laeutet zum 2. Mal</code>. Beide Klingeln teilen sich Art und Methode, aber jede hat ihren eigenen <code>zaehler</code>.</li>
+          <li><code>geraete[2]</code> enthält den Zähler 5 (nach dem Aufruf 6) und einen Pointer auf <code>KLINGEL</code>. <code>KLINGEL</code> enthält einen Pointer auf den Namen und einen auf <code>klingel_einschalten</code>, die im Programmcode liegt. <code>geraete[1]</code> zeigt auf dieselbe Art.</li>
+          <li>Nichts. Die Schleife ruft nur <code>einschalten</code> über die Art auf. Sie kennt weder Lampe noch Klingel noch Radio.</li>
+          <li>Einen Fehler: <code>assignment of member 'name' in read-only object</code> bei GCC. Die Art ist <code>const</code>.</li>
+        </ol>
+      </details>
+    </section>
+
+    <section class="content-section" aria-labelledby="abschnitt-2">
+      <h2 id="abschnitt-2">2. Was gehört in die Art, was in das Objekt?</h2>
+      <p>Übertragen Sie die Idee auf den Tresorraub, noch ohne etwas zu programmieren. Kreuzen Sie in der Tabelle für jede Eigenschaft an, ob sie zur Art oder zum einzelnen Objekt gehört.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th scope="col">Eigenschaft</th><th scope="col">gehört zur Art</th><th scope="col">gehört zum Objekt</th></tr></thead>
+        <tbody>
+          <tr><td>Name, etwa „Schluessel“</td><td></td><td></td></tr>
+          <tr><td>Position auf dem Spielfeld</td><td></td><td></td></tr>
+          <tr><td>Zeichen in der Textausgabe</td><td></td><td></td></tr>
+          <tr><td>Piktogramm im Fenster</td><td></td><td></td></tr>
+          <tr><td>liegt auf dem Feld</td><td></td><td></td></tr>
+          <tr><td>Tür ist offen</td><td></td><td></td></tr>
+          <tr><td>Tresor ist voll</td><td></td><td></td></tr>
+          <tr><td>kann ins Inventar</td><td></td><td></td></tr>
+          <tr><td>was bei der Leertaste geschieht</td><td></td><td></td></tr>
+          <tr><td>ob die Figur das Feld betreten darf</td><td></td><td></td></tr>
+        </tbody>
+      </table></div>
+      <details><summary>Hinweis: Eine Frage, die immer hilft</summary><p>Fragen Sie bei jeder Eigenschaft: Kann sie für zwei Objekte derselben Art verschieden sein? Zwei Münzen können an verschiedenen Orten liegen. Zwei Türen könnten eine offen und eine geschlossen sein. Was für alle Objekte einer Art immer gleich ist, gehört zur Art.</p></details>
+      <details><summary>Selbstkontrolle: Eine mögliche Aufteilung</summary>
+        <div class="table-wrap"><table>
+          <thead><tr><th scope="col">Eigenschaft</th><th scope="col">Art</th><th scope="col">Objekt</th><th scope="col">Begründung</th></tr></thead>
+          <tbody>
+            <tr><td>Name, etwa „Schluessel“</td><td>✓</td><td></td><td>alle Schlüssel heißen gleich</td></tr>
+            <tr><td>Position auf dem Spielfeld</td><td></td><td>✓</td><td>zwei Münzen liegen an verschiedenen Orten</td></tr>
+            <tr><td>Zeichen in der Textausgabe</td><td>✓</td><td></td><td>hängt aber vom Zustand ab, siehe unten</td></tr>
+            <tr><td>Piktogramm im Fenster</td><td>✓</td><td></td><td>hängt ebenfalls vom Zustand ab</td></tr>
+            <tr><td>liegt auf dem Feld</td><td></td><td>✓</td><td>eine Münze kann aufgenommen sein, die andere nicht</td></tr>
+            <tr><td>Tür ist offen</td><td></td><td>✓</td><td>zwei Türen könnten verschieden sein</td></tr>
+            <tr><td>Tresor ist voll</td><td></td><td>✓</td><td>gilt für diesen einen Tresor</td></tr>
+            <tr><td>kann ins Inventar</td><td>✓</td><td></td><td>gilt für alle Schlüssel, für keine Tür</td></tr>
+            <tr><td>was bei der Leertaste geschieht</td><td>✓</td><td></td><td>Verhalten: eine Methode</td></tr>
+            <tr><td>ob die Figur das Feld betreten darf</td><td>✓</td><td></td><td>Verhalten: eine Methode, die den Zustand des Objekts liest</td></tr>
+          </tbody>
+        </table></div>
+        <p>Das Aussehen hängt teilweise vom Zustand ab: Eine offene Tür sieht anders aus als eine geschlossene. Die Art kann deshalb zwei Zeichen und zwei Piktogramme haben, oder eine Methode, die anhand des Objekts das passende liefert. Beides ist vertretbar. Ob die Figur ein Feld betreten darf, ist für alle Türen dieselbe Regel; das Ergebnis hängt aber davon ab, ob <em>diese</em> Tür offen ist.</p>
+      </details>
+      <p>Überlegen Sie dann, welche Methoden das Spiel braucht. Gehen Sie dazu Ihre Liste von <a href="01-wo-steckt-der-schluessel.html#abschnitt-1">Seite 1</a> durch: An welchen Stellen fragt das Programm heute, um welches Objekt es sich handelt, und was will es dort wissen oder tun?</p>
+      <details><summary>Selbstkontrolle: Mögliche Methoden</summary><p>Zwei Stellen verlangen echtes Verhalten, das je nach Art anders ist: die Leertaste (aufnehmen, Tür mit Schlüssel öffnen, Beute aus dem Tresor nehmen) und die Bewegung (eine geschlossene Tür versperrt das Feld). Das Aussehen ist meist nur eine Angabe und kein Verhalten. Aufnehmen und Ablegen funktionieren für alle Gegenstände gleich; sie brauchen keine eigene Methode je Art, sondern nur die Angabe, dass ein Objekt ins Inventar kann.</p></details>
+      <form class="self-check" data-hint="Überlegen Sie für jede Aussage, ob sie die Art oder das einzelne Objekt betrifft.">
+        <fieldset><legend>Welche Aussagen zu Art und Objekt stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Zwei Münzen zeigen auf dieselbe Art, haben aber jede eine eigene Position.</label>
+          <label><input type="checkbox"> Für eine zweite Münze braucht man eine zweite Art „Münze“.</label>
+          <label><input type="checkbox" data-correct="true"> Der Aufruf <code>o-&gt;art-&gt;methode(o, …)</code> führt die Methode der Art aus, auf die <code>o</code> zeigt.</label>
+          <label><input type="checkbox"> Eine Methode erreicht die Daten ihres Objekts auch ohne den Parameter <code>selbst</code>, weil sie zur Art gehört.</label>
+          <label><input type="checkbox" data-correct="true"> Wer Objekte über die Art aufruft, muss seinen Code nicht ändern, wenn eine neue Art dazukommt.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Richtig sind die erste, dritte und fünfte Aussage. Eine Art kann beliebig viele Objekte haben. Die Art kennt ihre Objekte nicht; welches Objekt gemeint ist, erfährt die Methode nur über ihren Parameter.</p></details>
+      </form>
+      <details><summary>Vertiefung: Eigene Daten je Art durch Einbettung</summary>
+        <p>In diesem Kapitel genügt eine gemeinsame Struktur für alle Objekte, auch wenn einzelne Felder nur für manche Arten Bedeutung haben, etwa „offen“ nur für Türen. Bei vielen Arten mit sehr verschiedenen Daten wird das unübersichtlich. Eine Alternative ist die <strong>Einbettung</strong>: Eine Struktur für eine bestimmte Art enthält als <em>erstes</em> Feld die gemeinsame Objektstruktur und danach ihre eigenen Felder.</p>
+        <pre><code>typedef struct {
+    Objekt basis;     /* muss das erste Feld sein */
+    int code;         /* nur für diese Art */
+} Zahlenschloss;</code></pre>
+        <p>Ein Pointer auf ein <code>Zahlenschloss</code> lässt sich dann als Pointer auf ein <code>Objekt</code> weitergeben, weil C garantiert, dass das erste Feld am Anfang der Struktur liegt. Die Methode des Zahlenschlosses wandelt ihren Parameter zurück in einen Pointer auf <code>Zahlenschloss</code>. Das ist nur dann richtig, wenn das Objekt tatsächlich ein Zahlenschloss ist; sonst greift die Methode auf Speicher zu, der ihr nicht gehört. Diese Technik ist die Grundlage der Vererbung in Sprachen wie C++. Sie ist für Ihr Projekt nützlich, aber im Tresorraub nicht nötig.</p>
+      </details>
+      <p class="work-result"><strong>Ihr Ergebnis:</strong> Sie können erklären, wie Art, Objekt und Methode zusammenhängen, und haben eine Aufteilung der Eigenschaften des Tresorraubs auf Art und Objekt.</p>
+    </section>
+
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="02-funktionspointer.html">← Zurück: Funktionen als Werte</a></li>
+      <li><a href="04-objekte-im-spiel.html">Weiter: Gegenstände als Objekte →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>

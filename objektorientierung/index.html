@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Objektorientierung in C</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="../uebersicht.html#block-2">← Zur Kursübersicht</a></p>
+    <header>
+      <h1>Objektorientierung in C</h1>
+      <p>Daten und Verhalten einer Objektart an einer Stelle bündeln, sodass eine neue Art von Objekt keine Änderungen quer durch das Programm verlangt.</p>
+    </header>
+    <section class="content-section" aria-labelledby="ziele">
+      <h2 id="ziele">Lernziele und Arbeitsweise</h2>
+      <p>In Ihrem Tresorraub gibt es Schlüssel, Münze, Beute, Tür, Tresor und Ausgang. Was einen Schlüssel ausmacht, steht bisher an vielen Stellen verteilt: in Feldern des Spielstands, beim Zeichnen, beim Aufnehmen, beim Ablegen. In diesem Kapitel bauen Sie das Spiel so um, dass jede Objektart an einer Stelle beschrieben ist und der übrige Code nur noch eine gemeinsame Schnittstelle benutzt. Diese Denkweise heißt <strong>Objektorientierung</strong>. C hat dafür keine eigenen Sprachmittel wie Klassen, aber alles, was Sie brauchen: Strukturen, Pointer und Funktionspointer.</p>
+      <ul>
+        <li>Erkennen, wann Fallunterscheidungen nach der Art eines Objekts über ein Programm verstreut sind.</li>
+        <li>Feste Mengen von Werten mit <code>enum</code> benennen.</li>
+        <li>Funktionspointer lesen, anlegen und aufrufen.</li>
+        <li>Daten und Verhalten einer Objektart in einer Struktur bündeln und Objekte über eine gemeinsame Schnittstelle ansprechen.</li>
+        <li>Ein Programm umbauen, ohne sein Verhalten zu ändern, und das mit einem Vergleichslauf belegen.</li>
+      </ul>
+      <p>Sie brauchen dafür Strukturen aus dem Kapitel <a href="../datenstrukturen/04-strukturen.html">„Datenstrukturen“</a>, Pointer aus dem Kapitel <a href="../pointer/index.html">„Pointer und Datenaustausch“</a>, <code>static</code> aus dem Kapitel <a href="../header-quellen/02-uebersetzen-und-linken.html#variablen">„Header und Quelldateien“</a> und das Inventar aus dem Kapitel <a href="../dynamischer-speicher/index.html">„Dynamischer Speicher und Listen“</a>. Eine Tabelle aus Strukturen haben Sie schon im Kapitel <a href="../config/03-spielregeln.html">„Config“</a> für die Spielregeln verwendet; hier kommt Verhalten dazu.</p>
+    </section>
+    <section class="content-section" aria-labelledby="unterseiten">
+      <h2 id="unterseiten">Unterseiten</h2>
+      <ol>
+        <li><a href="01-wo-steckt-der-schluessel.html">Wo steckt der Schlüssel?</a></li>
+        <li><a href="02-funktionspointer.html">Funktionen als Werte</a></li>
+        <li><a href="03-objektarten.html">Objektarten mit Methoden</a></li>
+        <li><a href="04-objekte-im-spiel.html">Gegenstände als Objekte</a></li>
+        <li><a href="05-neue-objektart.html">Eine neue Objektart</a></li>
+      </ol>
+    </section>
+    <section class="content-section" aria-labelledby="tresorraub">
+      <h2 id="tresorraub">Ihr durchgehendes Programm: Die Objekte des Tresorraubs</h2>
+      <p>Auf Seite 1 untersuchen Sie Ihr Spiel und halten sein Verhalten mit einem Vergleichslauf fest. Die Seiten 2 und 3 führen die Werkzeuge an kleinen Beispielen ein. Auf Seite 4 bauen Sie das Spiel um, ohne dass sich im Spiel etwas ändert. Auf Seite 5 zeigt sich, was der Umbau gebracht hat: Eine Geheimtür und eine zweite Münze kommen mit wenigen Zeilen hinzu.</p>
+      <p>Das <a href="materialien/tresorraub-objekte.zip" download>Startmaterial (ZIP)</a> enthält eine <code>tresorraub.c</code> mit dem Stand am Ende des Kapitels „Config“, den Vergleichslauf <code>ablauf.c</code> und die Beschreibung der neuen Objekte in <a href="materialien/tresorraub-objekte/OBJEKTE.md">OBJEKTE.md</a>. Sie können auch mit Ihrer eigenen <code>tresorraub.c</code> weiterarbeiten. Wie, steht in der <a href="materialien/tresorraub-objekte/README.md">README</a>.</p>
+    </section>
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="01-wo-steckt-der-schluessel.html">Weiter: Wo steckt der Schlüssel? →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>

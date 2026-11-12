@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Eine neue Objektart</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+  <script src="selbstkontrollen.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header><h1>Eine neue Objektart</h1><p>Eine Geheimtür und eine zweite Münze ergänzen und sehen, was der Umbau gebracht hat.</p></header>
+    <noscript><p>Ohne JavaScript können Sie die Fragen anhand der aufklappbaren Erklärungen selbst prüfen.</p></noscript>
+
+    <section class="content-section" aria-labelledby="aufgabe-neu">
+      <h2 id="aufgabe-neu">1. Aufgabe: Geheimtür und zweite Münze</h2>
+      <p>Ergänzen Sie das Spiel um die beiden Objekte aus <code>OBJEKTE.md</code>:</p>
+      <ul>
+        <li>eine <strong>Geheimtür</strong> auf (6, 6), die geschlossen wie eine Wand aussieht und sich vom Nachbarfeld aus mit der Leertaste ohne Schlüssel öffnet,</li>
+        <li>eine <strong>zweite Münze</strong> auf (12, 7), die sich genau wie die erste verhält.</li>
+      </ul>
+      <p>Notieren Sie vorher: Welche Stellen in <code>tresorraub.c</code> werden Sie voraussichtlich ändern müssen? Vergleichen Sie danach mit dem, was Sie tatsächlich geändert haben, und mit Ihrem Gedankenexperiment von <a href="01-wo-steckt-der-schluessel.html#abschnitt-1">Seite 1</a>.</p>
+      <details><summary>Hinweis: Was die Geheimtür mit der Tür gemeinsam hat</summary><p>Beide versperren geschlossen das Feld und lassen sich vom Nachbarfeld aus öffnen. Prüfen Sie, welche Methoden der Tür Sie unverändert für die Geheimtür verwenden können und welche anders sein müssen. Eine Methode darf in mehreren Arten stehen.</p></details>
+      <details><summary>Hinweis: Das Feld (6, 6)</summary><p>Im Grundriss ist (6, 6) bisher eine Wand. Eine Wand kann die Figur nie betreten, auch nicht, wenn dort eine offene Geheimtür steht. Ändern Sie das Feld im Grundriss zu Boden; das Aussehen als Wand übernimmt die geschlossene Geheimtür.</p></details>
+    </section>
+
+    <section class="content-section" aria-labelledby="abschnitt-pruefen">
+      <h2 id="abschnitt-pruefen">2. Ihre Lösung prüfen</h2>
+      <p>Starten Sie den Vergleichslauf und vergleichen Sie mit <code>vorher.txt</code>. Jetzt <em>soll</em> sich etwas ändern. Überlegen Sie vorher, welche Zeilen sich ändern werden und welche nicht.</p>
+      <details><summary>Selbstkontrolle: Der Vergleichslauf</summary><p>Alle Meldungen und Statuszeilen bleiben gleich: Die Folge der Tasten führt weder neben die Geheimtür noch auf die zweite Münze. Alle Prüfsummen ändern sich, denn die zweite Münze ist in jedem Bild zu sehen. Ändern sich auch Meldungen oder Statuszeilen, hat Ihre Ergänzung etwas am bisherigen Verhalten verändert.</p></details>
+      <p>Prüfen Sie dann im Fenster:</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th scope="col">Situation</th><th scope="col">Erwartetes Verhalten</th></tr></thead>
+        <tbody>
+          <tr><td>Spielstart</td><td>(6, 6) sieht aus wie eine Wand; auf (11, 7) und (12, 7) liegt je eine Münze</td></tr>
+          <tr><td>Von (5, 6) nach rechts gehen</td><td>Die Figur bleibt stehen; kein Zug</td></tr>
+          <tr><td>Leertaste auf (5, 6)</td><td><code>Geheimtuer geoeffnet.</code>; ein Zug; (6, 6) zeigt die offene Tür</td></tr>
+          <tr><td>Nach rechts gehen, dann noch einmal</td><td>Die Figur steht auf (6, 6), dann auf (7, 6)</td></tr>
+          <tr><td>Leertaste auf (7, 6)</td><td><code>Hier gibt es nichts zu tun.</code></td></tr>
+          <tr><td>Beide Münzen aufnehmen</td><td><code>Inventar (2): Muenze Muenze</code></td></tr>
+          <tr><td>L neben (6, 6)</td><td>Auf das Feld der Geheimtür wird nichts abgelegt</td></tr>
+        </tbody>
+      </table></div>
+      <details><summary>Selbstkontrolle: Was Sie ändern mussten</summary><p>Für die zweite Münze genügt eine Zeile im Startzustand: ein weiteres Objekt der vorhandenen Art. Für die Geheimtür kommen eine neue Art, eine neue Methode für die Leertaste, eine Zeile im Startzustand und das Feld im Grundriss dazu. Die Methode für das Betreten kann sie mit der Tür teilen. Leertaste, Bewegung, Ablegen, Textausgabe und Zeichnen bleiben unverändert. Mussten Sie dort etwas ändern, steckt in diesen Funktionen noch Wissen über einzelne Arten.</p></details>
+      <form class="self-check" data-hint="Unterscheiden Sie zwischen einem weiteren Objekt einer vorhandenen Art und einer Art mit neuem Verhalten.">
+        <fieldset><legend>Welche Aussagen stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Ein weiteres Objekt einer vorhandenen Art braucht keinen neuen Code, nur neue Daten.</label>
+          <label><input type="checkbox" data-correct="true"> Eine Art mit eigenem Verhalten braucht mindestens eine eigene Methode.</label>
+          <label><input type="checkbox"> Für die Geheimtür muss die Funktion für die Leertaste einen neuen Fall bekommen.</label>
+          <label><input type="checkbox"> Zwei Münzen können nicht gleichzeitig im Inventar sein, weil sie denselben Namen haben.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Richtig sind die ersten beiden Aussagen. Die Leertaste ruft die Methode jedes Objekts auf und kennt die Geheimtür nicht. Das Inventar unterscheidet Objekte, nicht Namen.</p></details>
+      </form>
+      <p class="work-result"><strong>Ihr Ergebnis:</strong> Ein Spiel mit Geheimtür und zweiter Münze. Sie können an Ihrem eigenen Code zeigen, welche Stellen eine neue Objektart betrifft und welche nicht.</p>
+    </section>
+
+    <section class="content-section" aria-labelledby="ausblick">
+      <h2 id="ausblick">3. Ausblick</h2>
+      <p>Jede Objektart bündelt jetzt ihre Daten und ihr Verhalten. Damit ist sie auch eine natürliche Grenze, wenn Sie das Spiel später auf mehrere Dateien aufteilen, wie im Kapitel <a href="../header-quellen/01-header-und-quellen.html">„Header und Quelldateien“</a>: Eine Datei kann eine oder mehrere Arten enthalten, und nur das, was andere Teile brauchen, steht im Header. Auch für Ihr Projekt am Ende des Kurses ist das ein bewährtes Muster, sobald es viele verschiedene Dinge mit eigenem Verhalten gibt.</p>
+    </section>
+
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="04-objekte-im-spiel.html">← Zurück: Gegenstände als Objekte</a></li>
+      <li><a href="../in-vorbereitung.html?thema=spielbausteine">Weiter: Die Spielbausteine zusammenführen &amp; Refactoring →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>

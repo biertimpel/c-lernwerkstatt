@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Wo steckt der Schlüssel?</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+  <script src="selbstkontrollen.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header><h1>Wo steckt der Schlüssel?</h1><p>Das eigene Programm untersuchen, sein Verhalten festhalten und feste Mengen von Werten mit <code>enum</code> benennen.</p></header>
+    <noscript><p>Ohne JavaScript können Sie die Fragen anhand der aufklappbaren Erklärungen selbst prüfen.</p></noscript>
+
+    <section class="content-section" aria-labelledby="abschnitt-1">
+      <h2 id="abschnitt-1">1. Eine Objektart im Programm suchen</h2>
+      <p>Stellen Sie sich vor, Sie sollen dem Tresorraub eine neue Art von Gegenstand hinzufügen. Dazu müssen Sie wissen, an welchen Stellen das Programm die vorhandenen Arten behandelt. Suchen Sie in <code>tresorraub.c</code> alle Stellen, an denen der Schlüssel vorkommt. Ihr Editor kann nach <code>chluessel</code> suchen; damit finden Sie <code>Schluessel</code> und <code>schluessel</code>.</p>
+      <p>Notieren Sie für jede Stelle die Funktion oder Struktur und was dort mit dem Schlüssel geschieht. Machen Sie dasselbe für die Tür.</p>
+      <details><summary>Selbstkontrolle: Die Stellen im Startmaterial</summary>
+        <p>Der Schlüssel steckt an zehn Stellen: in den Feldern <code>schluessel</code> und <code>schluessel_liegt</code> der Struktur <code>Spielstand</code> und in neun Funktionen:</p>
+        <ul>
+          <li><code>startzustand</code> legt fest, wo der Schlüssel zu Beginn liegt.</li>
+          <li><code>gegenstand_auf</code> liefert den Namen <code>"Schluessel"</code>, wenn die Figur auf seinem Feld steht. Daraus entsteht in der Statuszeile „Hier liegt: Schluessel“.</li>
+          <li><code>feldzeichen</code> liefert für die Textausgabe das Zeichen <code>k</code>. <code>spielfeld_ausgeben</code> erklärt dieses Zeichen in der Legende unter dem Spielfeld.</li>
+          <li><code>vom_feld_nehmen</code> merkt sich beim Aufnehmen, dass der Schlüssel nicht mehr auf dem Feld liegt; <code>auf_feld_legen</code> legt ihn beim Ablegen wieder hin.</li>
+          <li><code>handeln</code> sucht ihn im Inventar, um die Tür zu öffnen.</li>
+          <li><code>feld_zeichnen</code> zeichnet sein Piktogramm auf dem Spielfeld, <code>zeichne</code> im Inventar unter dem Spielfeld.</li>
+        </ul>
+        <p>Die Tür steckt im <code>Spielstand</code>, in <code>startzustand</code>, <code>feldzeichen</code>, <code>spielfeld_ausgeben</code>, <code>figur_bewegen</code>, <code>handeln</code>, <code>feld_frei</code> und <code>feld_zeichnen</code>. Haben Sie mit Ihrer eigenen Datei gearbeitet, sehen die Namen anders aus, das Bild aber vermutlich ähnlich.</p>
+      </details>
+      <p>Überlegen Sie nun: Eine zweite Münze soll ins Spiel. Sie verhält sich genau wie die erste. Was müssten Sie im bisherigen Programm alles ändern? Und was, wenn stattdessen eine Geheimtür dazukommt, die ohne Schlüssel aufgeht?</p>
+      <details><summary>Selbstkontrolle: Gedankenexperiment</summary><p>Für die zweite Münze bräuchte der Spielstand zwei weitere Felder, und jede der Stellen von oben bräuchte einen weiteren Fall. Das Inventar speichert Namen; zwei Münzen hätten denselben Namen, und die Regel „jeder Gegenstand höchstens einmal“ würde die zweite ablehnen. Für die Geheimtür wären es fast dieselben Stellen wie für die Tür. Jede neue Art und jedes weitere Objekt verlangt Änderungen quer durch das Programm, und jede vergessene Stelle ist ein Fehler. Genau das soll sich in diesem Kapitel ändern.</p></details>
+    </section>
+
+    <section class="content-section" aria-labelledby="abschnitt-2">
+      <h2 id="abschnitt-2">2. Das Verhalten festhalten</h2>
+      <p>Sie werden Ihr Spiel in diesem Kapitel stark umbauen. Danach soll es sich genauso verhalten wie vorher. Wie können Sie das prüfen, ohne jedes Mal das ganze Spiel durchzuspielen?</p>
+      <p>Dafür liegt im Startmaterial der Vergleichslauf <code>ablauf.c</code>. Er startet Ihr Spiel über dieselben Funktionen wie das Gerüst, drückt eine feste Folge von 54 Tasten und gibt nach jeder Taste die Meldungen, die Statuszeile und eine Prüfsumme des gezeichneten Bildes aus. Ändert sich auch nur ein Pixel, ändert sich die Prüfsumme.</p>
+      <ol>
+        <li>Bauen Sie den Vergleichslauf mit <code>make ablauf</code> und speichern Sie seine Ausgabe: <code>./ablauf &gt; vorher.txt</code>. Diese Datei bewahren Sie bis zum Ende des Kapitels auf.</li>
+        <li>Lesen Sie <code>vorher.txt</code>. Welche Spielsituationen kommen vor?</li>
+        <li>Ändern Sie probeweise eine Meldung in <code>tresorraub.c</code>, etwa „Hier gibt es nichts zu tun.“, bauen Sie neu und vergleichen Sie mit <code>./ablauf &gt; nachher.txt</code> und <code>diff vorher.txt nachher.txt</code>. Machen Sie die Änderung danach rückgängig.</li>
+      </ol>
+      <details><summary>Selbstkontrolle: Der Vergleichslauf</summary><p>Die Folge enthält eine Wand und eine verschlossene Tür als Hindernis, die Tür ohne Schlüssel, Aufnehmen, Ablegen und Wiederaufnehmen des Schlüssels, das Öffnen der Tür, Münze und Beute, Ablegen von zwei Gegenständen, ein leeres Inventar und eine Taste ohne Bedeutung. Nach der geänderten Meldung zeigt <code>diff</code> genau die Zeilen mit dieser Meldung. Nach dem Zurücksetzen ist die Ausgabe von <code>diff</code> leer.</p></details>
+      <p>Ein solcher Test beschreibt nicht, wie das Spiel sein <em>soll</em>, sondern wie es <em>ist</em>. Er ersetzt keine Tests, die Regeln prüfen. Für einen Umbau ist er trotzdem sehr nützlich: Jede Abweichung ist entweder ein Fehler oder eine Änderung, die Sie erklären können.</p>
+    </section>
+
+    <section class="content-section" aria-labelledby="abschnitt-3">
+      <h2 id="abschnitt-3">3. Feste Mengen von Werten: <code>enum</code></h2>
+      <p>Im Startmaterial stehen die Ergebnisse von <code>inventar_aufnehmen</code> als <code>#define</code>: <code>AUFGENOMMEN</code>, <code>SCHON_VORHANDEN</code>, <code>INVENTAR_VOLL</code> und zwei negative Fehler. Die Funktion liefert aber ein <code>int</code>. Dass nur diese fünf Werte gemeint sind, steht nirgends im Code.</p>
+      <p>Für eine feste Menge benannter Werte gibt es in C den <strong>Aufzählungstyp</strong> <code>enum</code>:</p>
+      <pre><code>typedef enum {
+    ROT,          /* 0 */
+    GELB,         /* 1 */
+    GRUEN         /* 2 */
+} Ampel;
+
+Ampel a = GELB;</code></pre>
+      <p>Jeder Name ist eine ganzzahlige Konstante. Ohne Angabe beginnt die Zählung bei 0 und steigt um 1. Mit <code>= wert</code> legen Sie einen Wert selbst fest; die folgenden Namen zählen von dort weiter. Probieren Sie in <code>text_ausgeben</code> aus und notieren Sie vorher Ihre Erwartung:</p>
+      <ol>
+        <li>Geben Sie <code>ROT</code>, <code>GELB</code> und <code>GRUEN</code> mit <code>%d</code> aus.</li>
+        <li>Ergänzen Sie die Aufzählung so: <code>AUS = -1, ROT, GELB, GRUEN</code>. Welche Werte haben die Namen jetzt?</li>
+        <li>Schreiben Sie eine Funktion mit einem <code>switch</code> über eine <code>Ampel</code>, die zu jedem Wert einen Text liefert, und lassen Sie einen <code>case</code> weg. Was meldet der Compiler mit <code>-Wall</code>?</li>
+        <li>Weisen Sie <code>a = 7;</code> zu. Was meldet der Compiler, was liefert Ihre Funktion?</li>
+      </ol>
+      <details><summary>Selbstkontrolle: Ihre Beobachtungen</summary>
+        <ol>
+          <li><code>0 1 2</code>.</li>
+          <li><code>AUS</code> ist −1, <code>ROT</code> 0, <code>GELB</code> 1, <code>GRUEN</code> 2.</li>
+          <li>GCC und Clang warnen: <code>enumeration value 'GRUEN' not handled in switch [-Wswitch]</code>. Das hilft, wenn später ein Wert dazukommt: Der Compiler zeigt jede Fallunterscheidung, die ihn noch nicht kennt. Die Warnung erscheint nur, wenn der <code>switch</code> keinen <code>default</code> hat.</li>
+          <li>Der Compiler meldet nichts, und die Funktion landet in keinem <code>case</code>. Ein <code>enum</code> ist in C nur ein benanntes <code>int</code>; es dokumentiert, welche Werte gemeint sind, verhindert andere aber nicht.</li>
+        </ol>
+      </details>
+      <form class="self-check" data-hint="Denken Sie daran, wie die Zählung ohne und mit = weitergeht und was C bei der Zuweisung prüft.">
+        <fieldset><legend>Welche Aussagen zu <code>typedef enum { FEHLER = -1, OK, VOLL } Ergebnis;</code> stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> <code>OK</code> hat den Wert 0 und <code>VOLL</code> den Wert 1.</label>
+          <label><input type="checkbox"> <code>OK</code> hat den Wert 1, weil die Zählung immer bei 1 beginnt.</label>
+          <label><input type="checkbox"> Der Compiler verhindert, dass eine Variable vom Typ <code>Ergebnis</code> den Wert 5 bekommt.</label>
+          <label><input type="checkbox" data-correct="true"> Ein <code>switch</code> ohne <code>default</code>, der <code>VOLL</code> vergisst, führt mit <code>-Wall</code> zu einer Warnung.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die erste und die vierte Aussage stimmen. Nach <code>FEHLER = -1</code> zählt C weiter: 0, 1. Ein <code>enum</code> ist ein ganzzahliger Typ; andere Werte lassen sich zuweisen, ohne dass der Compiler einschreitet. Die Warnung für einen fehlenden <code>case</code> gibt es trotzdem.</p></details>
+      </form>
+    </section>
+
+    <section class="content-section" aria-labelledby="aufgabe-ergebnisse">
+      <h2 id="aufgabe-ergebnisse">4. Aufgabe: Ergebnisse als Aufzählung</h2>
+      <p>Ersetzen Sie die <code>#define</code>-Konstanten für die Ergebnisse von <code>inventar_aufnehmen</code> durch einen eigenen Aufzählungstyp und verwenden Sie ihn als Rückgabetyp. Überall, wo das Ergebnis gespeichert oder unterschieden wird, soll dieser Typ stehen.</p>
+      <details><summary>Hinweis: Negative Fehler</summary><p>Die Fehler sollen negativ bleiben, denn so unterscheidet der übrige Code sie von Spielfällen. Ein Name in einem <code>enum</code> kann einen negativen Wert bekommen, und die folgenden zählen von dort weiter.</p></details>
+      <p>Bauen Sie danach den Vergleichslauf neu und prüfen Sie mit <code>diff</code>, dass sich nichts geändert hat.</p>
+      <details><summary>Selbstkontrolle: Ihre Aufzählung</summary>
+        <ul>
+          <li>Die fünf <code>#define</code>-Zeilen sind verschwunden. An ihrer Stelle steht ein Typ, etwa <code>Aufnahme</code>, mit denselben fünf Namen.</li>
+          <li>Die Werte sind gleich geblieben: <code>FEHLER_NAME</code> −2, <code>FEHLER_SPEICHER</code> −1, <code>AUFGENOMMEN</code> 0, <code>SCHON_VORHANDEN</code> 1, <code>INVENTAR_VOLL</code> 2. Fängt die Aufzählung mit <code>FEHLER_NAME = -2</code> an, ergeben sich die übrigen Werte von selbst.</li>
+          <li>Der neue Typ steht an zwei Stellen: als Rückgabetyp von <code>inventar_aufnehmen</code> und bei der Variablen in <code>handeln</code>, die das Ergebnis speichert. Der Kommentar über <code>inventar_aufnehmen</code> passt noch.</li>
+          <li>Die Abfragen in <code>handeln</code> brauchen keine Änderung: Ein Wert vom Typ <code>Aufnahme</code> lässt sich wie bisher mit <code>&lt; 0</code> und <code>==</code> vergleichen.</li>
+          <li>Das Programm übersetzt ohne Warnungen, und <code>diff vorher.txt nachher.txt</code> zeigt nichts.</li>
+        </ul>
+      </details>
+      <p class="work-result"><strong>Ihr Ergebnis:</strong> Eine Liste der Stellen, an denen Schlüssel und Tür vorkommen, die Datei <code>vorher.txt</code> und ein Aufzählungstyp für die Ergebnisse beim Aufnehmen, ohne dass sich das Verhalten geändert hat.</p>
+    </section>
+
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="index.html">← Zurück: Kapitelübersicht</a></li>
+      <li><a href="02-funktionspointer.html">Weiter: Funktionen als Werte →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>

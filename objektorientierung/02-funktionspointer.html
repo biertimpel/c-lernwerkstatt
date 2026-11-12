@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Funktionen als Werte</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+  <script src="selbstkontrollen.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header><h1>Funktionen als Werte</h1><p>Mit Funktionspointern speichern, welche Funktion später aufgerufen werden soll.</p></header>
+    <noscript><p>Ohne JavaScript können Sie die Fragen anhand der aufklappbaren Erklärungen selbst prüfen.</p></noscript>
+
+    <section class="content-section" aria-labelledby="abschnitt-1">
+      <h2 id="abschnitt-1">1. Ein Pointer auf eine Funktion</h2>
+      <p>Auch eine Funktion liegt im Speicher, im Bereich für den Programmcode, den Sie im Kapitel <a href="../dynamischer-speicher/01-lebensdauer.html">„Dynamischer Speicher und Listen“</a> kennengelernt haben. Sie hat also eine Adresse, und diese Adresse lässt sich in einer Variablen speichern. Über diese Variable können Sie die Funktion später aufrufen. Das Programm entscheidet dann zur Laufzeit, <em>welche</em> Funktion es aufruft.</p>
+      <pre><code>int plus(int a, int b) { return a + b; }
+int minus(int a, int b) { return a - b; }
+
+int (*rechnung)(int a, int b);   /* Pointer auf eine Funktion mit zwei int, Ergebnis int */
+
+rechnung = plus;                 /* ohne (): die Funktion selbst, nicht ihr Ergebnis */
+printf("%d\n", rechnung(7, 2));
+rechnung = minus;
+printf("%d\n", rechnung(7, 2));</code></pre>
+      <p>Lesen Sie die Deklaration von innen nach außen: <code>rechnung</code> ist ein Pointer (<code>*rechnung</code>) auf eine Funktion mit den Parametern <code>(int a, int b)</code>, die <code>int</code> liefert. Die Klammern um <code>*rechnung</code> sind nötig. Ohne sie hieße die Zeile: eine Funktion <code>rechnung</code>, die einen <code>int *</code> liefert.</p>
+      <p>Weil diese Schreibweise schwer zu lesen ist, gibt man dem Typ meist mit <code>typedef</code> einen Namen:</p>
+      <pre><code>typedef int (*Rechnung)(int a, int b);
+
+Rechnung r = plus;</code></pre>
+      <p>Probieren Sie in <code>text_ausgeben</code> aus. Notieren Sie vor jedem Schritt Ihre Erwartung.</p>
+      <ol>
+        <li>Übernehmen Sie das Beispiel. Was wird ausgegeben?</li>
+        <li>Legen Sie ein Array <code>Rechnung tabelle[] = {plus, minus};</code> an und rufen Sie beide Einträge in einer Schleife mit denselben Zahlen auf.</li>
+        <li>Schreiben Sie versehentlich <code>Rechnung r = plus(7, 2);</code>. Was meldet der Compiler?</li>
+        <li>Schreiben Sie eine Funktion <code>double halb(double x)</code> und weisen Sie sie <code>r</code> zu. Was meldet der Compiler?</li>
+        <li>Was würde ein Aufruf über einen Funktionspointer bewirken, der <code>NULL</code> ist? Führen Sie diesen Versuch nicht aus, sondern überlegen Sie, wie Sie sich davor schützen.</li>
+      </ol>
+      <details><summary>Selbstkontrolle: Ihre Beobachtungen</summary>
+        <ol>
+          <li><code>9</code> und <code>5</code>. Derselbe Aufruf <code>rechnung(7, 2)</code> führt je nach gespeicherter Adresse andere Funktionen aus.</li>
+          <li>Die Schleife ruft nacheinander <code>plus</code> und <code>minus</code> auf. Ein Array von Funktionspointern ist eine Tabelle von Verhalten.</li>
+          <li>Hier wird <code>plus</code> aufgerufen, und das Ergebnis 9 ist ein <code>int</code>, keine Funktion. GCC warnt <code>makes pointer from integer without a cast [-Wint-conversion]</code>, Clang meldet einen Fehler.</li>
+          <li>Die Signatur passt nicht. GCC warnt <code>from incompatible pointer type</code>, Clang meldet einen Fehler. Nur Funktionen mit genau passenden Parametern und passendem Ergebnis gehören in einen Funktionspointer.</li>
+          <li>Das ist undefiniertes Verhalten, meist stürzt das Programm ab. Prüfen Sie einen Funktionspointer, der <code>NULL</code> sein darf, vor dem Aufruf, wie jeden anderen Pointer.</li>
+        </ol>
+      </details>
+    </section>
+
+    <section class="content-section" aria-labelledby="abschnitt-2">
+      <h2 id="abschnitt-2">2. Funktionspointer im Spiel: die Piktogramme</h2>
+      <p>Öffnen Sie <code>piktogramme/piktogramme.h</code>. Alle Funktionen, die ein Piktogramm zeichnen, haben dieselbe Signatur: Renderer, x, y und Skalierung, Ergebnis <code>int</code>. Sie passen also alle in denselben Funktionspointertyp.</p>
+      <ol>
+        <li>Legen Sie in <code>tresorraub.c</code> mit <code>typedef</code> einen Typ für einen Pointer auf eine solche Zeichenfunktion an.</li>
+        <li>Zeichnen Sie probeweise in <code>zeichne</code> eine Reihe aus Schlüssel, Münze und Beute über dem Spielfeld, mit einem Array dieses Typs und einer Schleife. Ein Fehler beim Zeichnen soll wie bisher sofort zurückgegeben werden.</li>
+        <li>Vergleichen Sie Ihre Schleife mit dem Zeichnen des Inventars in <code>zeichne</code>. Welche Fallunterscheidung ließe sich mit einem Funktionspointer einsparen, wenn jeder Eintrag sein Piktogramm schon kennen würde?</li>
+      </ol>
+      <details><summary>Hinweis: Wohin in <code>y</code>?</summary><p>Das Spielfeld beginnt bei <code>RAND_OBEN</code>. Ein Piktogramm ist <code>FELDGROESSE</code> Pixel hoch. Über dem Spielfeld ist Platz, wenn die Reihe bei einem kleineren <code>y</code> beginnt.</p></details>
+      <details><summary>Selbstkontrolle: Was Sie gesehen haben</summary><p>Die Schleife ruft für jeden Eintrag des Arrays dieselbe Zeile auf und zeichnet trotzdem drei verschiedene Bilder. Das Inventar entscheidet dagegen bisher mit <code>strcmp</code> anhand des Namens, welche Funktion es aufruft. Würde jeder Eintrag einen Pointer auf seine Zeichenfunktion mitbringen, entfiele diese Kette. Entfernen Sie den Versuch danach wieder; der Vergleichslauf aus <a href="01-wo-steckt-der-schluessel.html#abschnitt-2">Seite 1</a> sollte wieder dasselbe zeigen wie vorher.</p></details>
+      <form class="self-check" data-hint="Lesen Sie die Deklarationen von innen nach außen und prüfen Sie, ob Parameter und Ergebnis passen.">
+        <fieldset><legend>Gegeben ist <code>typedef int (*Piktogramm)(SDL_Renderer *renderer, int x, int y, int skalierung);</code>. Welche Zeilen sind richtig?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> <code>Piktogramm p = zeichne_muenze;</code></label>
+          <label><input type="checkbox"> <code>Piktogramm p = zeichne_muenze(renderer, 0, 0, 2);</code></label>
+          <label><input type="checkbox" data-correct="true"> <code>Piktogramm bilder[] = {zeichne_schluessel, zeichne_beute};</code></label>
+          <label><input type="checkbox" data-correct="true"> <code>int ergebnis = bilder[1](renderer, x, y, SKALIERUNG);</code></label>
+          <label><input type="checkbox"> <code>Piktogramm p = zeichne_galerie;</code></label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Richtig sind die erste, dritte und vierte Zeile. Die zweite ruft die Funktion auf und speichert ihr <code>int</code>-Ergebnis. <code>zeichne_galerie</code> erhält nur den Renderer und passt deshalb nicht zum Typ.</p></details>
+      </form>
+      <p class="work-result"><strong>Ihr Ergebnis:</strong> Sie können Funktionspointer deklarieren, mit <code>typedef</code> benennen, zuweisen und aufrufen, und Sie haben einen Typ für die Zeichenfunktionen der Piktogramme.</p>
+    </section>
+
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="01-wo-steckt-der-schluessel.html">← Zurück: Wo steckt der Schlüssel?</a></li>
+      <li><a href="03-objektarten.html">Weiter: Objektarten mit Methoden →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>

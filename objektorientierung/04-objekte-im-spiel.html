@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Gegenstände als Objekte</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+  <script src="selbstkontrollen.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header><h1>Gegenstände als Objekte</h1><p>Das Spiel auf Objektarten mit Methoden umbauen, ohne sein Verhalten zu ändern.</p></header>
+    <noscript><p>Ohne JavaScript können Sie die Fragen anhand der aufklappbaren Erklärungen selbst prüfen.</p></noscript>
+
+    <section class="content-section" aria-labelledby="aufgabe-umbau">
+      <h2 id="aufgabe-umbau">1. Aufgabe: Das Spiel auf Objekte umbauen</h2>
+      <p>Bauen Sie <code>tresorraub.c</code> so um, dass Schlüssel, Münze, Beute, Tür, Tresor und Ausgang Objekte mit einer Art sind, wie auf <a href="03-objektarten.html">Seite 3</a>. Am Ende soll gelten:</p>
+      <ul>
+        <li>Jede Objektart ist an genau einer Stelle beschrieben: Name, Aussehen und Verhalten.</li>
+        <li>Der Spielstand enthält die Objekte statt einzelner Felder wie <code>schluessel_liegt</code> oder <code>tuer_offen</code>.</li>
+        <li>Leertaste, Bewegung, Ablegen, Textausgabe, Statuszeile und Zeichnen arbeiten mit allen Objekten gleich. Sie enthalten keine Fallunterscheidung nach einzelnen Arten und keine Vergleiche mit Namen wie <code>"Schluessel"</code>.</li>
+        <li>Das Inventar merkt sich, welches Objekt darin ist, statt einen Namen zu speichern.</li>
+        <li>Der Vergleichslauf liefert genau dieselbe Ausgabe wie <code>vorher.txt</code>.</li>
+      </ul>
+      <p>Wie Sie Typen, Felder und Methoden nennen und zuschneiden, entscheiden Sie. Gehen Sie in kleinen Schritten vor und vergleichen Sie nach jedem Schritt mit dem Vergleichslauf:</p>
+      <ol>
+        <li><strong>Typen anlegen.</strong> Eine Struktur für die Art, eine für das Objekt. Beschreiben Sie die sechs Arten.</li>
+        <li><strong>Objekte in den Spielstand.</strong> Legen Sie die Objekte im Startzustand an. Stellen Sie zuerst die Textausgabe und das Zeichnen um; beide lesen nur.</li>
+        <li><strong>Bewegung.</strong> Ob die Figur ein Feld betreten darf, entscheidet das Objekt auf diesem Feld.</li>
+        <li><strong>Inventar.</strong> Einträge verweisen auf Objekte. Aufnehmen, Entfernen, Ausgeben und Zeichnen passen Sie an.</li>
+        <li><strong>Leertaste und Ablegen.</strong> Die Leertaste fragt die Objekte, die in Frage kommen, in einer festen Reihenfolge. Das erste, das zuständig ist, handelt.</li>
+        <li><strong>Aufräumen.</strong> Entfernen Sie die alten Felder und Funktionen, die nicht mehr gebraucht werden.</li>
+      </ol>
+      <details><summary>Hinweis: Reihenfolge bei der Leertaste</summary><p>Lesen Sie in <code>INVENTAR.md</code> nach: Zuerst zählt, was auf dem Feld der Figur liegt, danach die Tür auf einem Nachbarfeld. Überlegen Sie, wer prüft, ob ein Objekt zuständig ist: die aufrufende Funktion oder die Methode selbst. Eine Methode, die auch melden kann „für mich gibt es hier nichts zu tun“, hält die aufrufende Funktion frei von Wissen über einzelne Arten. Für die möglichen Ergebnisse bietet sich ein Aufzählungstyp an wie auf <a href="01-wo-steckt-der-schluessel.html#aufgabe-ergebnisse">Seite 1</a>.</p></details>
+      <details><summary>Hinweis: Woran erkennt die Tür den Schlüssel?</summary><p>Die Tür braucht einen Schlüssel aus dem Inventar. Statt Namen zu vergleichen, kann sie fragen, ob ein Objekt im Inventar die Art „Schlüssel“ hat. Zwei Pointer auf dieselbe Art sind gleich, denn jede Art gibt es nur einmal. Die Art „Schlüssel“ muss dafür vor der Methode der Tür definiert sein.</p></details>
+      <details><summary>Hinweis: Tresor und Beute</summary><p>Die Beute ist ein eigener Gegenstand, der zu Beginn nicht auf dem Feld liegt, sondern im Tresor. Der Tresor kann sich merken, welches Objekt er enthält. Nimmt die Figur es heraus, ist der Tresor leer und sieht anders aus. Abgelegte Beute kommt nicht in den Tresor zurück.</p></details>
+      <details><summary>Hinweis: Wem gehören die Objekte?</summary><p>Die Objekte gehören dem Spielstand und leben so lange wie er. Das Inventar enthält nur Einträge, die auf Objekte zeigen. Beim Aufräumen gibt das Inventar seine Einträge frei, aber nicht die Objekte. Wird der Schlüssel an der Tür verbraucht, verschwindet sein Eintrag aus dem Inventar; das Objekt bleibt im Spielstand, liegt aber nirgends mehr.</p></details>
+      <details><summary>Hinweis: Den Spielstand nicht mehr kopieren</summary><p>Im Kapitel <a href="../dynamischer-speicher/05-inventar-im-spiel.html#abschnitt-1">„Dynamischer Speicher und Listen“</a> haben Sie gesehen, dass eine Kopie des Spielstands dieselbe Liste benutzt wie das Original. Jetzt enthält der Spielstand zusätzlich Pointer auf seine eigenen Objekte, etwa vom Tresor auf die Beute. Gibt eine Funktion den Startzustand als Wert zurück, zeigen diese Pointer nach dem Kopieren in den lokalen Spielstand der Funktion, der nicht mehr existiert. Lassen Sie den Startzustand deshalb über einen Pointer in den Spielstand des Aufrufers schreiben.</p></details>
+      <details><summary>Hinweis: Wenn der Vergleichslauf abweicht</summary><p>Suchen Sie mit <code>diff</code> die erste abweichende Zeile. Die Zeile <code>Taste …</code> darüber zeigt, welche Taste den Unterschied auslöst. Weicht nur die Prüfsumme ab, liegt es am Zeichnen; weicht die Statuszeile oder eine Meldung ab, an der Spiellogik. Prüfen Sie vor allem die Reihenfolge, in der Ihre Funktionen die Objekte durchgehen: Sie entscheidet, welches Zeichen gewinnt, wenn die Figur auf einem Gegenstand steht, und welcher Gegenstand bei der Leertaste zuerst dran ist.</p></details>
+    </section>
+
+    <section class="content-section" aria-labelledby="abschnitt-pruefen">
+      <h2 id="abschnitt-pruefen">2. Ihre Lösung prüfen</h2>
+      <ol>
+        <li>Der Vergleichslauf: <code>./ablauf &gt; nachher.txt</code> und <code>diff vorher.txt nachher.txt</code> zeigen keinen Unterschied.</li>
+        <li>Suchen Sie in <code>tresorraub.c</code> noch einmal nach <code>chluessel</code>, <code>tuer</code> und <code>tresor</code>, ohne auf Groß- und Kleinschreibung zu achten. Wo kommen Schlüssel, Tür und Tresor jetzt noch vor? Vergleichen Sie mit Ihrer Liste von Seite 1.</li>
+        <li>Spielen Sie im Fenster mit <code>inventar_groesse = 1</code> in <code>regeln.txt</code>: Mit dem Schlüssel im Inventar bleibt die Münze liegen, und auf dem Tresor bleibt die Beute im Tresor.</li>
+        <li>Prüfen Sie mit den Prüfwerkzeugen wie im Kapitel <a href="../dynamischer-speicher/02-speicher-anfordern.html#abschnitt-3">„Dynamischer Speicher und Listen“</a>, dass nach Aufnehmen, Tür öffnen und Ablegen kein Speicher verloren geht. Starten Sie dazu auch den Vergleichslauf mit den Prüfwerkzeugen.</li>
+      </ol>
+      <details><summary>Selbstkontrolle: Wo die Arten jetzt stehen</summary><p>Schlüssel, Tür und Tresor kommen nur noch in ihrer eigenen Art, in den Methoden dieser Art und im Startzustand vor. Die Tür nennt außerdem die Art „Schlüssel“, weil sie ihn braucht. Die Legende der Textausgabe nennt die Zeichen; das ist ein Text für Menschen und darf bleiben. Statt zehn Stellen für den Schlüssel sind es noch drei bis vier.</p></details>
+      <form class="self-check" data-hint="Denken Sie an Besitz und Lebensdauer: Wer legt die Objekte an, und wer zeigt nur auf sie?">
+        <fieldset><legend>Welche Aussagen treffen auf eine gelungene Lösung zu?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Beim Aufräumen gibt das Inventar seine Einträge frei, aber keine Objekte.</label>
+          <label><input type="checkbox"> Wird der Schlüssel an der Tür verbraucht, gibt das Programm das Schlüsselobjekt mit <code>free</code> frei.</label>
+          <label><input type="checkbox" data-correct="true"> Die Funktion für die Leertaste ruft Methoden auf, ohne zu wissen, welche Arten es gibt.</label>
+          <label><input type="checkbox"> Gibt <code>startzustand</code> den Spielstand als Wert zurück, zeigt der Tresor danach auf die Beute im Spielstand des Aufrufers.</label>
+          <label><input type="checkbox" data-correct="true"> Zwei Münzen sind im Inventar zwei verschiedene Einträge, auch wenn sie gleich heißen.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Richtig sind die erste, dritte und fünfte Aussage. Die Objekte liegen im Spielstand, nicht auf dem Heap; <code>free</code> dürfte für sie nicht aufgerufen werden. Bei einer Rückgabe als Wert zeigt der Pointer des Tresors in den lokalen Spielstand der Funktion, nicht in die Kopie. Weil das Inventar auf Objekte zeigt, sind zwei Münzen zwei verschiedene Einträge.</p></details>
+      </form>
+      <p class="work-result"><strong>Ihr Ergebnis:</strong> Ein Spiel, das sich genau wie vorher verhält, in dem aber jede Objektart an einer Stelle beschrieben ist und der übrige Code nur Methoden und Angaben der Arten benutzt.</p>
+    </section>
+
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="03-objektarten.html">← Zurück: Objektarten mit Methoden</a></li>
+      <li><a href="05-neue-objektart.html">Weiter: Eine neue Objektart →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>
