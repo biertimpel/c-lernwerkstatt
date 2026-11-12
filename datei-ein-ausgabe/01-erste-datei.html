@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Programmierung in C · Eine erste Datei schreiben</title>
+<link rel="stylesheet" href="../kurs.css">
+<link rel="stylesheet" href="lektion.css">
+<script src="selbstkontrollen.js" defer></script>
+<script src="dateiverbindung.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#inhalt">Zum Inhalt</a>
+<main id="inhalt">
+<p><a href="index.html">← Zur Kapitelübersicht</a></p>
+<header><h1>Eine erste Datei schreiben</h1>
+<p>Mit C-Code eine Textdatei erzeugen und das gespeicherte Ergebnis im Texteditor überprüfen.</p>
+</header>
+<noscript><p>Ohne JavaScript können Sie die Fragen anhand der aufklappbaren Erklärungen selbst prüfen.</p></noscript>
+<section class="content-section"><h2>Theorie und Hintergrund</h2>
+<h3>Dateien im Programm und im Texteditor</h3>
+<p>Eine Textdatei enthält Zeichen, die Sie in einem Texteditor lesen können. Ihr C-Programm kann eine solche Datei selbst anlegen, beschreiben und wieder lesen. Es verwendet dafür Funktionen aus <code>&lt;stdio.h&gt;</code>.</p>
+<p>Unterscheiden Sie den Zugriff des Programms von der Nutzung des Texteditors. Wenn Ihr Programm <code>fopen</code> aufruft, richtet die C-Bibliothek den Dateizugriff für das laufende Programm ein. Es öffnet sich dadurch kein Editorfenster. Wenn Sie anschließend die Datei im Texteditor öffnen, sehen Sie sich unabhängig davon das gespeicherte Ergebnis an.</p>
+<h3>Eine Dateiverbindung öffnen: fopen</h3>
+<pre><code>FILE *datei = fopen(&quot;notiz.txt&quot;, &quot;w&quot;);</code></pre>
+<p>Der erste Parameter ist der Dateiname. Der zweite Parameter legt fest, ob das Programm die Datei lesen oder beschreiben möchte. Er heißt <strong>Öffnungsmodus</strong>.</p>
+<div class="table-wrap"><table><thead><tr><th scope="col">Modus</th><th scope="col">Bedeutung</th><th scope="col">Verhalten beim Öffnen</th></tr></thead><tbody><tr><td><code>"w"</code></td><td><em>write</em>: schreiben</td><td>Existiert die Datei noch nicht, wird sie angelegt. Existiert sie bereits, wird ihr bisheriger Inhalt bei erfolgreichem Öffnen gelöscht. Neue Ausgaben beginnen in einer leeren Datei.</td></tr><tr><td><code>"r"</code></td><td><em>read</em>: lesen</td><td>Die Datei muss bereits vorhanden sein. Ihr Inhalt bleibt erhalten. Das Lesen beginnt am Dateianfang.</td></tr></tbody></table></div>
+<p>Bei Erfolg liefert <code>fopen</code> einen Pointer. Bei einem Fehler liefert die Funktion <code>NULL</code>, etwa wenn das Verzeichnis nicht existiert oder der Zugriff nicht erlaubt ist. Prüfen Sie dieses Ergebnis, bevor Sie über <code>datei</code> lesen, schreiben oder schließen.</p>
+<h3>Was bedeutet FILE *? Was ist ein Stream?</h3>
+<p>Die C-Bibliothek organisiert Ein- und Ausgaben als <strong>Datenstrom</strong>, auf Englisch <strong>Stream</strong>. Daten werden darüber nacheinander gelesen oder geschrieben. Bei unserem Dateizugriff stellt dieser Datenstrom die Verbindung zwischen dem Programm und der Textdatei her. Im Folgenden sprechen wir dafür von einer <strong>Dateiverbindung</strong>.</p>
+<p>Zu dieser Verbindung verwaltet die Bibliothek Informationen, zum Beispiel die aktuelle Lese- oder Schreibposition und aufgetretene Fehler. Dafür stellt sie den Typ <code>FILE</code> bereit. Die Variable <code>datei</code> aus dem Beispiel hat den Typ <code>FILE *</code> und speichert die Adresse dieses Verwaltungsobjekts.</p>
+<p>Das Ziel des Pointers ist also weder der gespeicherte Text noch die Datei auf dem Datenträger. Sie bearbeiten die Felder des <code>FILE</code>-Objekts auch nicht selbst. Stattdessen übergeben Sie den Pointer an Dateifunktionen. Die folgende Abbildung zeigt einen erfolgreichen Ablauf.</p>
+<div class="diagram"><svg viewBox="0 0 760 270" role="img" aria-labelledby="file-title file-desc"><title id="file-title">FILE-Pointer, Verwaltungsobjekt und Datei</title><desc id="file-desc">Die Variable zeigt auf ein FILE-Verwaltungsobjekt der C-Bibliothek. Dieses verwaltet die Verbindung zur Datei auf dem Datenträger.</desc><defs><marker id="spitze" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#244bcc"/></marker></defs><rect id="pointer-box" x="10" y="60" width="180" height="130" rx="7"/><text x="25" y="90">FILE *datei</text><text id="pointer-text" x="25" y="125" class="small">NULL</text><rect id="stream-box" x="280" y="40" width="215" height="170" rx="7"/><text x="298" y="75">FILE-Objekt</text><text x="298" y="104" class="small">C-Bibliothek verwaltet:</text><text x="298" y="134" class="small">Verbindung, Position,</text><text x="298" y="160" class="small">Puffer und Fehlerstatus</text><rect id="disk-box" x="590" y="60" width="160" height="130" rx="7"/><text x="605" y="90">notiz.txt</text><text id="disk-text" x="605" y="125" class="small">Datei auf Datenträger</text><path id="pointer-link" d="M190 120 H280" stroke="#244bcc" stroke-width="3" marker-end="url(#spitze)"/><text x="203" y="104" class="small">zeigt auf</text><path id="stream-link" d="M495 120 H590" stroke="#244bcc" stroke-width="3" stroke-dasharray="6 4" marker-end="url(#spitze)"/><text x="505" y="104" class="small">Dateizugriff</text><text id="file-phase" x="14" y="245">Vor dem Öffnen</text></svg><div class="step-text" aria-live="polite"><p id="file-explanation"></p></div><pre><code id="file-code"></code></pre><div class="controls"><button type="button" id="file-prev">← Zurück</button><span id="file-step"></span><button type="button" id="file-next">Weiter →</button><button type="button" id="file-reset">Von vorn</button></div><noscript><p>fopen erzeugt bei Erfolg die Dateiverbindung. FILE * zeigt auf das Verwaltungsobjekt, nicht auf Dateiinhalte auf der Festplatte. fprintf schreibt über diese Verbindung. fclose beendet die Verbindung, die Datei bleibt erhalten.</p></noscript></div><form class="self-check" data-hint="Unterscheiden Sie die Pointervariable, das Verwaltungsobjekt und den Dateiinhalt."><fieldset><legend>Nach einem erfolgreichen fopen: Welche Aussagen stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p><label><input type="checkbox" data-correct="true"> datei enthält einen Pointer auf ein Verwaltungsobjekt der Bibliothek.</label><label><input type="checkbox"> datei ist ein Array mit dem Inhalt der Datei.</label><label><input type="checkbox" data-correct="true"> Dateizugriffe erfolgen über Bibliotheksfunktionen wie fprintf.</label><label><input type="checkbox"> Eine Änderung von *datei ist der normale Weg, Text in die Datei zu schreiben.</label></fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite"></p><details><summary>Erklärung anzeigen</summary>
+<p>Der Pointer dient den Bibliotheksfunktionen als Zugang zur geöffneten Dateiverbindung. Der gespeicherte Text liegt nicht in der Pointervariablen.</p>
+</details>
+</form>
+<h3>Text schreiben: fprintf</h3>
+<p>Sie kennen <code>printf</code> für Ausgaben im Terminal. <code>fprintf</code> verwendet dieselben Platzhalter, erhält aber als ersten Parameter die Dateiverbindung.</p>
+<pre><code>int geschrieben = fprintf(datei, &quot;Messwert: %d\n&quot;, wert);</code></pre>
+<p>Die Zeichen und der Wert von <code>wert</code> werden in die geöffnete Datei ausgegeben. <code>\n</code> beendet die Textzeile. Der Rückgabewert ist bei Erfolg die Anzahl der ausgegebenen Zeichen. Ein negativer Rückgabewert meldet einen Schreibfehler.</p>
+<h3>Puffer und Abschluss: fclose</h3>
+<p>Eine Ausgabe muss nicht sofort in der Datei ankommen. Die Bibliothek kann die Zeichen zunächst in einem <strong>Puffer</strong> sammeln. Ein Puffer ist hier ein vorübergehender Speicherbereich im Arbeitsspeicher. Mehrere kleine Ausgaben können dadurch gemeinsam weitergeschrieben werden.</p>
+<p>Beim Aufruf von <code>fclose(datei)</code> versucht die Bibliothek, die noch im Ausgabepuffer liegenden Zeichen in die Datei zu schreiben. Anschließend wird die Dateiverbindung geschlossen und ihre Verwaltung freigegeben. Deshalb kann noch beim Schließen ein Schreibfehler auftreten, obwohl <code>fprintf</code> zuvor keinen Fehler gemeldet hat. Prüfen Sie also auch den Rückgabewert von <code>fclose</code>. Dabei bedeutet <code>0</code> Erfolg, <code>EOF</code> einen Fehler. <code>EOF</code> ist ein in <code>&lt;stdio.h&gt;</code> definierter Wert.</p>
+<p>Nach jedem erfolgreichen <code>fopen</code> muss Ihr Programm die Verbindung durch einen Aufruf von <code>fclose</code> schließen. Ein Schreibfehler schließt sie nicht automatisch. Kehren Sie in diesem Fall sofort aus Ihrer Funktion zurück, ohne zu schließen, bleibt die Verbindung offen. Planen Sie den Fehlerfall deshalb so, dass auch dann <code>fclose</code> erreicht wird.</p>
+<p>Nach <code>fclose</code> darf dieser Pointer nicht mehr für Dateizugriffe verwendet werden. Rufen Sie <code>fclose</code> für dieselbe Verbindung auch nach einer Fehlermeldung nicht erneut auf. Geschlossen wird der Zugang des Programms zur Datei. Die gespeicherte Datei bleibt vorhanden und kann später erneut geöffnet werden.</p>
+<form class="self-check" data-hint="Beachten Sie den Zeitpunkt, zu dem der alte Inhalt gelöscht wird."><fieldset><legend>Sie öffnen eine vorhandene notiz.txt mit "w". Was trifft zu?</legend><p>Eine oder mehrere Antworten können richtig sein.</p><label><input type="checkbox" data-correct="true"> Bei erfolgreichem Öffnen wird der bisherige Inhalt entfernt.</label><label><input type="checkbox"> Der vorhandene Inhalt bleibt erhalten und wird ergänzt.</label><label><input type="checkbox" data-correct="true"> Auch nach erfolgreichem fprintf kann fclose einen Fehler melden.</label><label><input type="checkbox"> Bei fopen == NULL muss anschließend fclose(NULL) aufgerufen werden.</label></fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite"></p><details><summary>Erklärung anzeigen</summary>
+<p>write beginnt mit einer leeren Datei. Liefert fopen NULL, wurde keine Verbindung geöffnet. Liefert fopen einen gültigen Pointer, muss diese Verbindung nach dem Schreiben geschlossen werden.</p>
+</details>
+</form>
+<p>Zum Nachschlagen: <a href="https://sourceware.org/glibc/manual/latest/html_node/Opening-Streams.html">fopen</a>, <a href="https://man7.org/linux/man-pages/man3/printf.3.html">fprintf</a> und <a href="https://man7.org/linux/man-pages/man3/fclose.3.html">fclose</a>.</p>
+</section>
+<section class="content-section"><h2>Aufgabe: Eine erste Datei schreiben</h2>
+<p>Verwenden Sie für diesen ersten Versuch das <a href="materialien/tresorraub-dateien.zip" download>Startmaterial herunterladen</a>. Bearbeiten Sie die Funktion <code>text_ausgeben</code> in <code>tresorraub.c</code>. Die Datei <code>notiz.txt</code> soll Ihr Programm erzeugen; legen Sie sie nicht von Hand im Texteditor an.</p>
+<ol>
+<li>Legen Sie in <code>text_ausgeben</code> eine ganze Zahl mit dem Wert <code>7</code> an. Lassen Sie das Programm <code>notiz.txt</code> mit <code>fopen</code> im Modus <code>"w"</code> öffnen.</li>
+<li>Lassen Sie das Programm mit <code>fprintf</code> die Zeile <code>Messwert: 7</code> ausgeben und danach die Verbindung mit <code>fclose</code> schließen. Prüfen Sie die Rückgabewerte aller drei Dateifunktionen. Bei einem Fehler soll eine verständliche Meldung im Terminal erscheinen.</li>
+<li>Speichern Sie Ihren Quelltext im Editor. Wechseln Sie im Terminal in den Ordner des Startmaterials, übersetzen Sie mit <code>make</code> und starten Sie mit <code>./programm --text</code>.</li>
+<li>Öffnen Sie erst nach diesem Programmlauf die erzeugte <code>notiz.txt</code> im Texteditor. Welchen Inhalt hat sie? Schließen Sie sie anschließend wieder.</li>
+<li>Ändern Sie in Ihrem C-Code die Zahl von <code>7</code> auf <code>9</code>. Übersetzen und starten Sie das Programm erneut. Öffnen Sie danach wieder <code>notiz.txt</code> im Texteditor. Wurde die alte Zeile ergänzt oder ersetzt? Begründen Sie die Beobachtung mit dem Öffnungsmodus.</li>
+</ol>
+<details><summary>Hinweis: Wo entsteht die Datei?</summary>
+<p>Ein relativer Dateiname wie notiz.txt bezieht sich auf das Arbeitsverzeichnis des laufenden Programms. Starten Sie es im Ordner des Startmaterials, entsteht die Datei dort. Das Arbeitsverzeichnis muss nicht der Ordner sein, in dem die Quelldatei liegt.</p>
+</details>
+<details><summary>Selbstkontrolle: Ergebnis</summary>
+<p>Nach dem ersten Lauf enthält notiz.txt die Zeile Messwert: 7. Nach dem zweiten Lauf enthält sie nur Messwert: 9. Bereits das erfolgreiche Öffnen mit "w" entfernt den alten Inhalt. Die neue Ausgabe wird nicht angehängt.</p>
+</details>
+</section>
+<nav aria-label="Seitennavigation"><ul class="navlinks"><li><a href="index.html">← Zurück: Kapitelübersicht</a></li><li><a href="02-spielstandformat.html">Weiter: Ein Spielstandformat festlegen →</a></li></ul></nav>
+</main>
+</body>
+</html>

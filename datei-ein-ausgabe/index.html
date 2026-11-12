@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Programmierung in C · Datei-Ein- und -Ausgabe</title>
+<link rel="stylesheet" href="../kurs.css">
+<link rel="stylesheet" href="lektion.css">
+<script src="selbstkontrollen.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#inhalt">Zum Inhalt</a>
+<main id="inhalt">
+<p><a href="../uebersicht.html">← Zur Kursübersicht</a></p>
+<header><h1>Datei-Ein- und -Ausgabe</h1>
+<p>Spielstände in einer Textdatei speichern und später wieder laden.</p>
+</header>
+<section class="content-section"><h2>Lernziele</h2>
+<ul>
+<li>Dateien zum Lesen und Schreiben öffnen und wieder schließen.</li>
+<li>Parameter und Rückgabewerte der verwendeten Dateifunktionen erklären und prüfen.</li>
+<li>Die veränderlichen Daten eines Spielstands in einem Textformat speichern.</li>
+<li>Beim Laden eine Inventarliste mit neuen Listeneinträgen aufbauen.</li>
+<li>Fehlerhafte Dateien erkennen und den bisherigen Spielstand bei einem Ladefehler erhalten.</li>
+</ul>
+</section>
+<section class="content-section"><h2>Theorie und Hintergrund</h2>
+<p>Bisher befindet sich der aktuelle Spielstand im Arbeitsspeicher. Wenn Sie das Programm beenden, gehen diese Daten verloren. In einer Datei bleiben sie erhalten. Damit können Sie das Spiel später an derselben Stelle fortsetzen.</p>
+<p>Mit <strong>F5</strong> speichern Sie den aktuellen Stand in <code>spielstand.txt</code>. Mit <strong>F9</strong> laden Sie ihn wieder. Speichern und Laden verbrauchen keinen Zug.</p>
+</section>
+<section class="content-section"><h2>Materialien und Aufgaben</h2>
+<ol>
+<li><a href="01-erste-datei.html">Eine erste Datei schreiben</a></li>
+<li><a href="02-spielstandformat.html">Ein Spielstandformat festlegen</a></li>
+<li><a href="03-spielstand-speichern.html">Den aktuellen Spielstand speichern</a></li>
+<li><a href="04-spielstand-laden.html">Einen Spielstand wiederherstellen</a></li>
+<li><a href="05-fehler-behandeln.html">Fehlende und ungültige Dateien behandeln</a></li>
+</ol>
+<p><a href="materialien/tresorraub-dateien.zip" download>Startmaterial herunterladen</a> enthält das gemeinsame SDL2-Gerüst, das Spiel mit dem Inventar aus „Dynamischer Speicher und Listen“ sowie die Dateien für die folgenden Aufgaben. Sie können auch mit Ihrer eigenen <code>tresorraub.c</code> weiterarbeiten.</p>
+<p>Arbeiten Sie in <code>tresorraub.c</code>. Mit <code>make</code> übersetzen Sie das Programm. <code>./programm --text</code> führt <code>text_ausgeben</code> ohne Fenster aus. <code>./programm</code> startet das Spielfenster. <code>programm.c</code>, <code>tresorraub.h</code> und die Piktogramme sind vorbereitet.</p>
+</section>
+<nav aria-label="Seitennavigation"><ul class="navlinks"><li><a href="01-erste-datei.html">Weiter: Eine erste Datei schreiben →</a></li></ul></nav>
+</main>
+</body>
+</html>

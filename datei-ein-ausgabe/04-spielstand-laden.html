@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Programmierung in C · Einen Spielstand wiederherstellen</title>
+<link rel="stylesheet" href="../kurs.css">
+<link rel="stylesheet" href="lektion.css">
+<script src="selbstkontrollen.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#inhalt">Zum Inhalt</a>
+<main id="inhalt">
+<p><a href="index.html">← Zur Kapitelübersicht</a></p>
+<header><h1>Einen Spielstand wiederherstellen</h1>
+<p>Den gespeicherten Fortschritt einlesen und den laufenden Spielstand nach erfolgreicher Prüfung ersetzen.</p>
+</header>
+<noscript><p>Ohne JavaScript können Sie die Fragen anhand der aufklappbaren Erklärungen selbst prüfen.</p></noscript>
+<section class="content-section"><h2>Theorie und Hintergrund</h2>
+<h3>Aus Text wieder Werte lesen: fscanf</h3>
+<p>Zum Laden öffnen Sie die Datei mit <code>fopen</code> im Modus <code>"r"</code>. Danach liest Ihr Programm den Dateiinhalt. Die Datei muss dafür nicht im Texteditor geöffnet sein.</p>
+<p><code>fscanf</code> arbeitet ähnlich wie das bekannte <code>scanf</code>. Als ersten Parameter erhält es zusätzlich die Dateiverbindung. Die weiteren Parameter geben das Format und die Ziele für die gelesenen Werte an. Die Ziele übergeben Sie wie bei <code>scanf</code> als Adressen.</p>
+<pre><code>int gelesen = fscanf(datei, &quot;%d&quot;, &amp;wert);</code></pre>
+<p>Für eine einzelne Zahl erwarten Sie den Rückgabewert <code>1</code>. Er bedeutet, dass genau ein Wert erfolgreich zugewiesen wurde. Steht dort ein Wort statt einer Zahl, kann die Funktion <code>0</code> liefern. Ist schon vor der ersten Zuweisung das Dateiende erreicht oder ein Lesefehler aufgetreten, liefert sie <code>EOF</code>. Nur nach der erwarteten Anzahl erfolgreicher Zuweisungen dürfen Sie mit den gelesenen Werten weiterarbeiten.</p>
+<p>Für Wörter verwenden Sie <code>%s</code> mit einer Längenbegrenzung. Bei einem Array mit 16 Zeichen lässt <code>%15s</code> Platz für höchstens 15 gelesene Zeichen und das abschließende Nullzeichen.</p>
+<pre><code>char wort[16];
+int gelesen = fscanf(datei, &quot;%15s&quot;, wort);</code></pre>
+<p>Das Array übergeben Sie hier ohne zusätzliches <code>&amp;</code>, wie im Pointer-Kapitel behandelt. <code>%s</code> überspringt zunächst Leerzeichen und Zeilenumbrüche und liest dann bis zum nächsten Leerraum. Jeder erfolgreiche Leseaufruf setzt die Position in der Datei weiter. Der nächste Aufruf liest dort weiter. Kennwörter wie <code>FIGUR</code> vergleichen Sie nach dem Einlesen mit <code>strcmp</code>.</p>
+<h3>Zahlen aus einer veränderten Datei prüfen</h3>
+<p>Eine Speicherdatei kann von Hand verändert worden sein. Die Prüfung „eine Zahl gelesen“ genügt deshalb nicht immer. Insbesondere lässt sich eine Zahl, die gar nicht in <code>int</code> passt, mit <code>%d</code> nicht zuverlässig abfangen. Für solche Dateien lesen Sie die Zahl zuerst als begrenztes Wort ein und wandeln dieses danach mit <code>strtol</code> um.</p>
+<p><code>strtol</code> aus <code>&lt;stdlib.h&gt;</code> wandelt einen Text in eine Zahl vom Typ <code>long</code> um. Die <code>10</code> steht für das Dezimalsystem. Über den zweiten Parameter schreibt die Funktion in den Pointer <code>ende</code>, wo die erkannte Zahl im Text endet. Damit sie den Pointer <code>ende</code> verändern kann, erhält sie dessen Adresse <code>&amp;ende</code>.</p>
+<pre><code>char text[] = &quot;12&quot;;
+char *ende;
+errno = 0;
+long zahl = strtol(text, &amp;ende, 10);</code></pre>
+<p><code>errno</code> aus <code>&lt;errno.h&gt;</code> ist eine Fehleranzeige der Bibliothek. Vor diesem Aufruf setzen Sie sie auf <code>0</code>. Ist die Zahl selbst für <code>long</code> zu groß oder zu klein, meldet <code>strtol</code> dort <code>ERANGE</code>. Prüfen Sie nach dem Umwandeln die folgenden Bedingungen.</p>
+<ul>
+<li><code>ende != text</code>: Mindestens eine Ziffer wurde verarbeitet.</li>
+<li><code>*ende == '\0'</code>: Das ganze Wort war eine Zahl. Bei <code>12abc</code> zeigt <code>ende</code> auf das <code>a</code>; dieses Wort wird abgelehnt.</li>
+<li><code>errno != ERANGE</code>: Der Wertebereich von <code>long</code> wurde nicht überschritten.</li>
+<li>Die Zahl liegt zwischen <code>INT_MIN</code> und <code>INT_MAX</code> aus <code>&lt;limits.h&gt;</code>, bevor sie als <code>int</code> gespeichert wird.</li>
+</ul>
+<p>Erst danach prüfen Sie die Spielregel für den Wert, etwa „Zugzahl nicht negativ“ oder „Türzustand ist 0 oder 1“. Die Prüfung des Datentyps und die Prüfung der Spielregel sind zwei verschiedene Schritte.</p>
+<h3>Den bisherigen Spielstand erhalten</h3>
+<p>Angenommen, eine Datei enthält zunächst eine gültige Position und danach einen unzulässigen Inventarnamen. Würden Sie beim Lesen sofort den laufenden Spielstand ändern, wäre dessen Position bereits überschrieben, obwohl Sie die Datei anschließend ablehnen müssen.</p>
+<p>Legen Sie deshalb einen zweiten Spielstand nur für den Ladeversuch an, zunächst mit dem bekannten Startzustand und leerem Inventar. Tragen Sie die gelesenen Werte dort ein. Der laufende Spielstand bleibt in dieser Zeit unverändert.</p>
+<p>Kopieren Sie dafür nicht einfach den laufenden Spielstand mit einer Strukturzuweisung. Diese würde zwar den Pointer auf den ersten Inventareintrag kopieren, aber keine neuen Einträge anlegen. Beide Strukturen würden dieselbe Liste verwenden. Änderungen oder Freigaben an dieser Liste würden dann auch das bisherige Spiel betreffen.</p>
+<p>Erzeugen Sie für das geladene Inventar eigene Einträge mit den vorhandenen Inventarfunktionen. Auch die Reihenfolge muss erhalten bleiben. Die bisherige Aufnahmefunktion fügt vorne ein. Wenn Sie zuerst Beute und danach Muenze aufnehmen, steht anschließend Muenze vor Beute. Berücksichtigen Sie das beim Wiederaufbau.</p>
+<h3>Einen Ladeversuch abschließen</h3>
+<p>Prüfen Sie zuerst die gesamte Datei und den neu aufgebauten Spielstand. Auch der Abschluss <code>ENDE</code> muss vorhanden sein. <code>ferror(datei)</code> zeigt an, ob beim Lesen ein Dateifehler aufgetreten ist. Ein Wert ungleich 0 meldet einen Fehler. Schließen Sie anschließend die Verbindung mit <code>fclose</code> und prüfen Sie dessen Ergebnis.</p>
+<p><strong>Bei einem Fehler</strong> geben Sie ausschließlich die Inventareinträge frei, die Sie für diesen Ladeversuch neu angelegt haben. Der bisherige Spielstand einschließlich seines Inventars bleibt erhalten.</p>
+<p><strong>Bei Erfolg</strong> geben Sie das bisherige Inventar frei und ersetzen Sie den bisherigen Spielstand durch den neu aufgebauten. Dessen Einträge gehören jetzt dem laufenden Spiel. Sie dürfen sie anschließend nicht noch einmal als vorübergehende Daten des Ladeversuchs freigeben.</p>
+<form class="self-check" data-hint="Trennen Sie die bisherige Inventarliste von der neuen Liste des Ladeversuchs."><fieldset><legend>Ein Ladeversuch hat einen neuen Inventareintrag angelegt. Dann schlägt das Anlegen des zweiten fehl. Was ist richtig?</legend><p>Eine oder mehrere Antworten können richtig sein.</p><label><input type="checkbox" data-correct="true"> Den nur für diesen Versuch angelegten Eintrag wieder freigeben.</label><label><input type="checkbox"> Das bisherige Inventar vorsorglich ebenfalls leeren.</label><label><input type="checkbox" data-correct="true"> Den laufenden Spielstand unverändert lassen.</label><label><input type="checkbox"> Die neue Liste einfach durch Zuweisung ihres Kopfs auf NULL freigeben.</label></fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite"></p><details><summary>Erklärung anzeigen</summary>
+<p>Nur die für den fehlgeschlagenen Versuch neu angelegten Einträge werden freigegeben. Eine Zuweisung von NULL allein gibt keinen mit malloc angeforderten Speicher frei.</p>
+</details>
+</form>
+<p>Zum Nachschlagen: <a href="https://man7.org/linux/man-pages/man3/fscanf.3.html">fscanf</a>, <a href="https://sourceware.org/glibc/manual/latest/html_node/Parsing-of-Integers.html">strtol</a> und <a href="https://man7.org/linux/man-pages/man3/ferror.3.html">ferror</a>.</p>
+</section>
+<section class="content-section"><h2>Aufgabe: Einen Spielstand wiederherstellen</h2>
+<ol>
+<li>Entwerfen Sie eine Ladefunktion. Legen Sie ihre Parameter und Rückgabewerte fest. Bei einem Fehlschlag soll der übergebene Spielstand vollständig erhalten bleiben.</li>
+<li>Öffnen Sie die Datei zum Lesen. Lesen und prüfen Sie Kennzeichnung, Version, alle Daten und den Abschluss in einem eigenen neuen Spielstand. Nutzen Sie das vereinbarte Format und die Prüfregeln aus <a href="materialien/tresorraub-dateien/FORMAT.md">FORMAT.md</a>.</li>
+<li>Bauen Sie das Inventar mit eigenen neuen Listeneinträgen auf. Erhalten Sie die gespeicherte Reihenfolge und berücksichtigen Sie fehlgeschlagene Speicheranforderungen.</li>
+<li>Schließen Sie die Datei und beenden Sie den Ladeversuch wie oben beschrieben. Bei Erfolg übernimmt der laufende Spielstand die neuen Daten, bei einem Fehler bleiben die bisherigen Daten erhalten.</li>
+<li>Ergänzen Sie in <code>taste_gedrueckt</code> den Fall <code>SDLK_F9</code> zum Laden von <code>spielstand.txt</code>. Geben Sie im Terminal eine Meldung aus. Ein behandelter Ladefehler soll das Spiel nicht beenden. Laden verbraucht keinen Zug.</li>
+<li>Speichern Sie einen erkennbaren Zustand mit F5. Bewegen Sie die Figur anschließend, ohne erneut zu speichern. Drücken Sie F9. Position, Zugzahl und Inventar sollen wieder dem gespeicherten Zeitpunkt entsprechen. Die Änderungen seit F5 werden dabei verworfen.</li>
+<li>Beenden und starten Sie das Programm neu. Laden Sie dieselbe Datei erneut. Prüfen Sie, ob derselbe gespeicherte Fortschritt auch nach einem Neustart wiederhergestellt wird.</li>
+</ol>
+<details><summary>Hinweis: Reihenfolge beim Einfügen</summary>
+<p>Sie können die Namen zunächst in einem begrenzten Array sammeln und dann in umgekehrter Reihenfolge mit der vorhandenen Aufnahmefunktion einfügen. Oder Sie erweitern die Liste am Ende. Entscheidend ist die Reihenfolge der fertigen Liste.</p>
+</details>
+<details><summary>Selbstkontrolle: Beispiel mit Inventar</summary>
+<p>beispiele/inventar.txt stellt Position (5, 3), 23 Züge, eine offene Tür und das Inventar Beute vor Muenze her. Der Schlüssel ist bereits verbraucht. Nach dem Laden verwendet das Inventar eigene neu angelegte Einträge.</p>
+</details>
+</section>
+<nav aria-label="Seitennavigation"><ul class="navlinks"><li><a href="03-spielstand-speichern.html">← Zurück: Den aktuellen Spielstand speichern</a></li><li><a href="05-fehler-behandeln.html">Weiter: Fehlende und ungültige Dateien behandeln →</a></li></ul></nav>
+</main>
+</body>
+</html>
