@@ -19,7 +19,7 @@
 
     <section class="content-section" aria-labelledby="abschnitt-1">
       <h2 id="abschnitt-1">1. Eine gemeinsame Schnittstelle</h2>
-      <p>Im Kapitel „Manpages“ haben Sie bereits mit mehreren Dateien gearbeitet: Ihre Funktion <code>zeichne</code> stand in <code>zeichnung.c</code>, aufgerufen wurde sie aber von <code>main</code> in <code>programm.c</code>. Damit das klappt, bindet <code>programm.c</code> die Datei <code>zeichnung.h</code> ein. Auf dieser Seite lernen Sie, wie dieses Zusammenspiel funktioniert, und bauen es selbst.</p>
+      <p>Im Kapitel <a href="../manpages/04-fenster-gestalten.html">„Manpages und Bibliotheksdokumentation“</a> haben Sie bereits mit mehreren Dateien gearbeitet: Ihre Funktion <code>zeichne</code> stand in <code>zeichnung.c</code>, aufgerufen wurde sie aber von <code>main</code> in <code>programm.c</code>. Damit das klappt, bindet <code>programm.c</code> die Datei <code>zeichnung.h</code> ein. Auf dieser Seite lernen Sie, wie dieses Zusammenspiel funktioniert, und bauen es selbst.</p>
       <p>Eine <strong>Funktionsdeklaration</strong> macht eine Funktion bekannt. Sie nennt den Rückgabetyp, den Namen und die Parameter und endet mit einem Semikolon:</p>
       <pre><code>int addiere(int a, int b);</code></pre>
       <p>Die <strong>Funktionsdefinition</strong> enthält zusätzlich den Funktionskörper, also den Code, der beim Aufruf ausgeführt wird:</p>
@@ -36,7 +36,7 @@
           <tr><td><code>main.c</code></td><td><code>main</code>, ruft die Funktionen auf und gibt die Ergebnisse aus</td></tr>
         </tbody>
       </table></div>
-      <p>Der Header beschreibt die <strong>Schnittstelle</strong>: Welche Funktionen stehen zur Verfügung, und wie werden sie aufgerufen? Solange die Signatur gleich bleibt, können Sie die Berechnung in <code>calc.c</code> verändern, ohne die Aufrufe in <code>main.c</code> anzupassen. An diese Arbeit mit Schnittstellen knüpft später das Kapitel „Objektorientierung in C“ an.</p>
+      <p>Der Header beschreibt die <strong>Schnittstelle</strong>: Welche Funktionen stehen zur Verfügung, und wie werden sie aufgerufen? Solange die Signatur gleich bleibt, können Sie die Berechnung in <code>calc.c</code> verändern, ohne die Aufrufe in <code>main.c</code> anzupassen. An diese Arbeit mit Schnittstellen knüpft später das Kapitel <a href="../in-vorbereitung.html?thema=objektorientierung">„Objektorientierung in C“</a> an.</p>
       <noscript><p>Ohne JavaScript können Sie Ihre Antworten mit der aufklappbaren Erklärung selbst prüfen.</p></noscript>
       <form class="self-check" data-hint="Unterscheiden Sie, was eine Deklaration bekannt macht und was nur in der Definition steht.">
         <fieldset><legend>Welche Aussagen über <code>int addiere(int a, int b);</code> stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
@@ -162,7 +162,7 @@ Produkt: 28</code></pre>
       <p>Arbeiten Sie mit Ihrer Lösung der Aufgabe. Notieren Sie vor jedem Schritt, was Sie erwarten.</p>
       <ol>
         <li>Entfernen Sie in <code>calc.h</code> vorübergehend die drei Zeilen des Include-Schutzes. Schreiben Sie in <code>main.c</code> die Zeile <code>#include "calc.h"</code> ein zweites Mal und übersetzen Sie. Was meldet der Compiler?</li>
-        <li>Kopieren Sie die folgenden Zeilen in <code>calc.h</code> und übersetzen Sie erneut. Sie legen einen neuen Datentyp <code>Punkt</code> an, der zwei Zahlen zusammenfasst. Solche <strong>Strukturen</strong> lernen Sie erst im nächsten Kapitel „Datenstrukturen“ kennen. Wie sie funktionieren, müssen Sie hier noch nicht verstehen. Für den Versuch genügt: Diese Zeilen definieren einen Typ, und Typen stehen später oft in Headern.
+        <li>Kopieren Sie die folgenden Zeilen in <code>calc.h</code> und übersetzen Sie erneut. Sie legen einen neuen Datentyp <code>Punkt</code> an, der zwei Zahlen zusammenfasst. Solche <strong>Strukturen</strong> lernen Sie erst im nächsten Kapitel <a href="../datenstrukturen/04-strukturen.html">„Datenstrukturen“</a> kennen. Wie sie funktionieren, müssen Sie hier noch nicht verstehen. Für den Versuch genügt: Diese Zeilen definieren einen Typ, und Typen stehen später oft in Headern.
           <pre><code>typedef struct {
     int x;
     int y;

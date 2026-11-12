@@ -80,7 +80,7 @@ calc.o: calc.c calc.h
 
     <section class="content-section" aria-labelledby="spielgeruest">
       <h2 id="spielgeruest">3. Abschluss: Die Aufteilung im Spielgerüst wiedererkennen</h2>
-      <p>Laden Sie das <a href="materialien/spielgeruest.zip" download>Spielgerüst</a> herunter und entpacken Sie es. Es ist das Startmaterial des nächsten Kapitels „Datenstrukturen“. Mit demselben Gerüst arbeiten Sie im ganzen Tresorraub-Spiel von Block 2. Für diese Aufgabe genügt das Lesen; orientieren Sie sich an Dateinamen, Include-Anweisungen und Funktionsnamen.</p>
+      <p>Laden Sie das <a href="materialien/spielgeruest.zip" download>Spielgerüst</a> herunter und entpacken Sie es. Es ist das Startmaterial des nächsten Kapitels <a href="../datenstrukturen/index.html">„Datenstrukturen“</a>. Mit demselben Gerüst arbeiten Sie im ganzen Tresorraub-Spiel von Block 2. Für diese Aufgabe genügt das Lesen; orientieren Sie sich an Dateinamen, Include-Anweisungen und Funktionsnamen.</p>
       <ol>
         <li>In welcher Datei steht <code>main</code>?</li>
         <li>In welcher Datei entwickeln Sie Ihren eigenen Code?</li>
@@ -101,7 +101,7 @@ calc.o: calc.c calc.h
           </tbody>
         </table></div>
         <p><code>tresorraub.h</code> deklariert sechs Funktionen: <code>text_ausgeben</code>, <code>spiel_starten</code>, <code>taste_gedrueckt</code>, <code>zeichne</code>, <code>spiel_status</code> und <code>aufraeumen</code>. Das Gerüst in <code>programm.c</code> ruft sie auf, definiert werden sie in <code>tresorraub.c</code>. Der Header bindet <code>SDL.h</code> und <code>stddef.h</code> ein, weil die Signaturen Typen aus diesen Headern verwenden. Der Include-Schutz <code>TRESORRAUB_H</code> verhindert, dass der Inhalt in einer Quelldatei doppelt verarbeitet wird.</p>
-        <p><code>tresorraub.h</code> bleibt in allen folgenden Kapiteln gleich. In „Datenstrukturen“ schreiben Sie <code>text_ausgeben</code> und <code>zeichne</code>; die übrigen Funktionen stehen in <code>tresorraub.c</code> zunächst als Platzhalter und kommen in späteren Kapiteln dazu. Die Piktogramme sind eine weitere Quelldatei mit eigenem Header: <code>piktogramme/piktogramme.c</code> und <code>piktogramme/piktogramme.h</code>.</p>
+        <p><code>tresorraub.h</code> bleibt in allen folgenden Kapiteln gleich. In <a href="../datenstrukturen/index.html">„Datenstrukturen“</a> schreiben Sie <code>text_ausgeben</code> und <code>zeichne</code>; die übrigen Funktionen stehen in <code>tresorraub.c</code> zunächst als Platzhalter und kommen in späteren Kapiteln dazu. Die Piktogramme sind eine weitere Quelldatei mit eigenem Header: <code>piktogramme/piktogramme.c</code> und <code>piktogramme/piktogramme.h</code>.</p>
       </details>
     </section>
 
