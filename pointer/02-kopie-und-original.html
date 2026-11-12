@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Kopie und Original vergleichen</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+  <script src="speicheransicht.js" defer></script>
+  <script src="selbstkontrollen.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header>
+      <h1>Kopie und Original vergleichen</h1>
+      <p class="intro">Verfolgen Sie im Speichermodell, wie sich eine Wertkopie von einer übergebenen Adresse unterscheidet.</p>
+    </header>
+
+    <section class="content-section" aria-labelledby="abschnitt-1">
+      <h2 id="abschnitt-1">1. Was bekommt eine Funktion?</h2>
+      <p>Beim Aufruf einer Funktion bekommt jeder Parameter eine Kopie dessen, was der Aufrufer übergibt. Das kennen Sie schon aus Block 1 und aus „Datenstrukturen“. Entscheidend ist, <em>was</em> übergeben und damit kopiert wird:</p>
+      <ul>
+        <li><strong>Sie übergeben einen Spielstand</strong>, zum Beispiel <code>s</code>. Dann kopiert C den ganzen Spielstand mit allen Feldern in den Parameter. Die Funktion arbeitet mit ihrer eigenen Kopie. Ändert sie ein Feld, ändert sie nur diese Kopie. Der Spielstand <code>s</code> beim Aufrufer bleibt, wie er war.</li>
+        <li><strong>Sie übergeben die Adresse eines Spielstands</strong>, also <code>&amp;s</code>. Dann kopiert C nur diese Adresse in den Parameter. Der Parameter ist ein Pointer vom Typ <code>Spielstand *</code> und enthält dieselbe Adresse wie <code>&amp;s</code>. Er zeigt deshalb auf denselben Spielstand: auf <code>s</code> beim Aufrufer. Ändert die Funktion über diesen Pointer ein Feld, ändert sie <code>s</code> selbst.</li>
+      </ul>
+      <p>Kopiert wird also in beiden Fällen. Der Unterschied ist, ob eine Kopie der Daten entsteht oder eine Kopie der Adresse, unter der die Daten liegen. Das ist wie bei einem Zettel mit einer Hausadresse: Wer eine Kopie des Zettels bekommt, findet trotzdem dasselbe Haus.</p>
+      <p>Bei einem Pointer <code>p</code> auf einen Spielstand lesen Sie mit <code>p-&gt;zuege</code> das Feld <code>zuege</code>. Das ist die Kurzform von <code>(*p).zuege</code>. Die Klammern sorgen dafür, dass zuerst das Ziel bestimmt wird und erst dann das Feld.</p>
+
+      <h3>So lesen Sie die Speicheransicht</h3>
+      <p>Der Arbeitsspeicher ist in einzelne <strong>Bytes</strong> unterteilt. Diese Bytes sind fortlaufend durchnummeriert. Die Nummer eines Bytes nennen wir seine <strong>Adresse</strong>. Die Ansicht unten zeigt einen kleinen Ausschnitt des Speichers, damit Sie verfolgen können, was beim Ausführen eines Programms passiert.</p>
+      <ul>
+        <li><strong>Links</strong> steht der C-Code. Die hervorgehobene Zeile wird gerade ausgeführt. Mit den Pfeilen oben rechts gehen Sie Schritt für Schritt weiter, darüber steht, was im aktuellen Schritt passiert. Über „Beispiel“ wechseln Sie zwischen vier Programmen: eine Zahl und eine Struktur, jeweils einmal als Kopie und einmal über einen Pointer übergeben.</li>
+        <li><strong>Rechts</strong> ist jedes Kästchen ein Byte. Die Zahl darin ist seine Adresse.</li>
+        <li>Eine Variable belegt mehrere aufeinanderfolgende Bytes, ein <code>int</code> hier 4 und ein Pointer 8. Diese Bytes sind gemeinsam umrandet, und in der Umrandung steht der Wert der Variablen. Bei einer Struktur hat jedes Feld seinen eigenen Block. Rechts daneben stehen Name und Größe. Die Adresse einer Variablen ist die Adresse ihres ersten Bytes. Ändert sich ein Wert, ist sein Block farbig hinterlegt.</li>
+        <li>Ein Pointer enthält als Wert eine Adresse. Der Pfeil führt von ihm zu dem Byte, auf das er zeigt.</li>
+      </ul>
+      <p>Das Modell ist vereinfacht: Es beginnt bei Adresse 0 und zeigt nur wenige Bytes. In einem echten Programm sind die Adressen sehr viel größer, wie Sie auf Seite 1 mit <code>%p</code> gesehen haben.</p>
+      <div class="speicheransicht" data-memory-explorer data-memory-mode="werte" aria-label="Speicherausschnitt Schritt für Schritt">
+        <div class="memory-toolbar">
+          <label>Beispiel
+            <select data-memory-case>
+              <option value="0">Zahl verdoppeln: Wertkopie</option>
+              <option value="1">Zahl verdoppeln: Pointer</option>
+              <option value="2">Geburtstag: Kopie der Struktur</option>
+              <option value="3">Geburtstag: Pointer auf die Struktur</option>
+            </select>
+          </label>
+          <div class="step-controls">
+            <button type="button" data-memory-prev aria-label="Vorheriger Speicherschritt">←</button>
+            <span data-memory-step></span>
+            <button type="button" data-memory-next aria-label="Nächster Speicherschritt">→</button>
+          </div>
+        </div>
+        <p data-memory-note aria-live="polite" class="memory-note"></p>
+        <div class="memory-layout">
+          <div><h4>C-Code</h4><pre data-memory-code></pre><p data-memory-output hidden>Ausgabe: <code></code></p></div>
+          <div>
+            <h4>Speicherausschnitt</h4>
+            <p class="klein">Zahl im Kästchen: Adresse des Bytes. Umrandet: eine Variable mit ihrem Wert.</p>
+            <div class="memory-region" data-memory-region>
+              <div class="memory-grid" data-memory-grid role="img" aria-label="Modellspeicher"></div>
+              <svg data-memory-links aria-hidden="true"><defs><marker id="memory-arrow-werte" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L7 3.5 L0 7 Z" fill="currentColor"/></marker></defs><g data-memory-arrows></g></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+      <noscript><p>Ohne JavaScript: Bei Übergabe eines <code>int</code> oder einer Struktur ändert sich nur der Parameter. Bei Übergabe der Adresse kann die Funktion das Original ändern.</p></noscript>
+      <noscript><p>Ohne JavaScript können Sie Ihre Antworten mit der aufklappbaren Erklärung selbst prüfen.</p></noscript>
+      <form class="self-check" data-hint="Überlegen Sie, was beim Aufruf mit &amp;s in den Parameter kopiert wird und wohin der Parameter danach zeigt.">
+        <fieldset><legend>Eine Funktion <code>void zug_zaehlen_original(Spielstand *p)</code> erhöht <code>p-&gt;zuege</code>. Was stimmt beim Aufruf <code>zug_zaehlen_original(&amp;s);</code>?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> <code>p</code> enthält die Adresse von <code>s</code>.</label>
+          <label><input type="checkbox"> Beim Aufruf wird der ganze Spielstand in den Parameter kopiert.</label>
+          <label><input type="checkbox" data-correct="true"> <code>p-&gt;zuege++</code> verändert <code>s</code> beim Aufrufer.</label>
+          <label><input type="checkbox"> Nach dem <code>return</code> hat <code>s</code> wieder die alte Zugzahl.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die erste und die dritte Aussage stimmen. Kopiert wird nur die Adresse <code>&amp;s</code>. Der Parameter <code>p</code> zeigt deshalb auf <code>s</code> beim Aufrufer, und jede Änderung über <code>p</code> verändert <code>s</code> selbst. Nach dem <code>return</code> verschwindet nur der Parameter <code>p</code>, die Änderung an <code>s</code> bleibt. Den ganzen Spielstand kopiert C nur, wenn Sie <code>s</code> selbst übergeben.</p></details>
+      </form>
+    </section>
+
+    <section class="content-section" aria-labelledby="aufgabe-b">
+      <h2 id="aufgabe-b">2. Aufgabe: Den Spielstand des Aufrufers verändern</h2>
+      <p>Sie brauchen zwei Funktionen, die Sie im Kapitel „Datenstrukturen“ auf der Seite „Ein Spielstand als Datenstruktur“ geschrieben haben:</p>
+      <ul>
+        <li>die Funktion, die einen Spielstand im Startzustand liefert. Im Startmaterial heißt sie <code>startzustand</code>.</li>
+        <li>die Funktion aus dem Versuch am Ende jener Seite: Sie erhält einen Spielstand als Wert und erhöht darin die Zugzahl um eins. Im Startmaterial heißt sie <code>zug_zaehlen</code>.</li>
+      </ul>
+      <p>Arbeiten Sie mit Ihrem eigenen Programm weiter, heißen Ihre Funktionen vielleicht anders. Setzen Sie dann im folgenden Code Ihre Namen ein. Legen Sie in <code>text_ausgeben</code> einen Spielstand an, rufen Sie die Funktion zum Erhöhen der Zugzahl auf und geben Sie die Zugzahl aus. Notieren Sie vorher, welchen Wert Sie erwarten.</p>
+      <pre><code>Spielstand s = startzustand();
+zug_zaehlen(s);
+printf("%d\n", s.zuege);</code></pre>
+      <p>Ergänzen Sie eine zweite Funktion <code>zug_zaehlen_original</code>. Sie erhält einen <code>Spielstand *</code> und erhöht das Feld <code>zuege</code> über <code>-&gt;</code>. Rufen Sie sie mit <code>zug_zaehlen_original(&amp;s);</code> auf und geben Sie <code>s.zuege</code> erneut aus. Wie können Sie den Feldzugriff auch mit <code>*</code> und <code>.</code> schreiben? Erklären Sie den Unterschied zwischen den Aufrufen mithilfe der Speicheransicht.</p>
+      <details><summary>Hinweis: Die Adresse eines Spielstands übergeben</summary><p><code>startzustand()</code> liefert den Startzustand als Wert. Speichern Sie ihn zuerst in <code>s</code>. <code>&amp;s</code> liefert dann die Adresse dieser Variable. In Ihrer neuen Funktion bezeichnen <code>p-&gt;zuege</code> und <code>(*p).zuege</code> dasselbe Feld, wenn der Parameter <code>p</code> heißt.</p></details>
+      <details><summary>Selbstkontrolle: Ergebnis der beiden Funktionsaufrufe</summary><p>Nach <code>zug_zaehlen(s)</code> hat <code>s</code> noch <code>0</code> Züge. Nach <code>zug_zaehlen_original(&amp;s)</code> steht im selben <code>s</code> die Zahl <code>1</code>.</p></details>
+    </section>
+
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="01-werte-und-speicheradressen.html">← Zurück: Werte und Speicheradressen untersuchen</a></li>
+      <li><a href="03-spielzustand-veraendern.html">Weiter: Einen bestehenden Spielzustand verändern →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>

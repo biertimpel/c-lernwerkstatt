@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Einen bestehenden Spielzustand verändern</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+  <script src="selbstkontrollen.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header>
+      <h1>Einen bestehenden Spielzustand verändern</h1>
+      <p class="intro">Schreiben Sie die Spiellogik für einen Schritt der Figur: das Zielfeld prüfen und den Spielstand über einen Pointer ändern.</p>
+    </header>
+
+    <section class="content-section" aria-labelledby="abschnitt-1">
+      <h2 id="abschnitt-1">1. Lesen, <code>NULL</code> und Lebensdauer</h2>
+      <h3>Nur lesen mit <code>const</code></h3>
+      <p>Über einen Pointer kann eine Funktion den Spielstand des Aufrufers verändern. Das haben Sie auf Seite 2 genutzt. Viele Funktionen sollen den Spielstand aber nur <em>lesen</em>, zum Beispiel die Statuszeile oder das Zeichnen des Spielfelds. Sie könnten den Spielstand dafür als Wert übergeben, dann bekäme die Funktion aber jedes Mal eine Kopie des ganzen Spielstands. Besser ist ein Pointer, bei dem Sie festlegen, dass über ihn nur gelesen werden darf.</p>
+      <p>Dafür gibt es <code>const</code>. Auf der Seite <a href="../funktionen-debugging/02-funktionen.html">Funktionen</a> haben Sie damit eine Variable festgelegt, die sich nicht mehr verändern lässt. Vor einem Pointer-Parameter bedeutet <code>const</code>: Über diesen Pointer darf die Funktion das Ziel nur lesen, nicht verändern.</p>
+      <pre><code>void zug_zaehlen_original(Spielstand *p);       /* darf den Spielstand verändern */
+int spielstand_lesen(const Spielstand *p, …);   /* darf ihn nur lesen */</code></pre>
+      <p>Steht in einer Funktion mit <code>const Spielstand *p</code> trotzdem eine Zuweisung wie <code>p-&gt;zuege = 5;</code>, bricht der Compiler mit einem Fehler ab. Das hat zwei Vorteile: Wer nur den Funktionskopf liest, sieht sofort, dass die Funktion den Spielstand nicht verändert. Und wenn Sie sich in der Funktion versehentlich doch verschreiben, fällt das schon beim Übersetzen auf.</p>
+      <h3><code>NULL</code> und Lebensdauer</h3>
+      <p>Ein Pointer muss nicht immer auf etwas zeigen. Der besondere Wert <code>NULL</code> bedeutet: <strong>Dieser Pointer zeigt auf nichts.</strong> Eine Funktion kann zum Beispiel <code>NULL</code> bekommen, wenn der Aufrufer gerade keinen Spielstand hat. Im Kapitel „Dynamischer Speicher“ begegnet Ihnen <code>NULL</code> noch häufiger.</p>
+      <p>Über einen <code>NULL</code>-Pointer dürfen Sie nicht zugreifen. Ein Ausdruck wie <code>p-&gt;zuege</code> mit <code>p == NULL</code> bringt das Programm in der Regel sofort zum Absturz. Kann eine Funktion <code>NULL</code> bekommen, prüft sie das deshalb vor dem ersten Zugriff und reagiert passend. Ein Beispiel, das nichts mit dem Spiel zu tun hat:</p>
+      <pre><code>void uhrzeit_ausgeben(const Uhrzeit *u) {
+    if (u == NULL) {
+        printf("Keine Uhrzeit vorhanden.\n");
+        return;
+    }
+    printf("%d:%02d\n", u-&gt;stunde, u-&gt;minute);
+}</code></pre>
+      <p>Eine zweite Gefahr erkennt diese Prüfung nicht. <strong>Ein Pointer ist nur so lange brauchbar, wie sein Ziel existiert.</strong> Zeigt ein Pointer zum Beispiel auf eine lokale Variable einer Funktion, gibt es diese Variable nach dem <code>return</code> nicht mehr. Der Pointer enthält aber weiterhin ihre alte Adresse. Er ist also nicht <code>NULL</code>, und trotzdem darf nicht mehr über ihn zugegriffen werden. Einen Versuch dazu machen Sie im Kapitel „Dynamischer Speicher“.</p>
+      <p>Für das Spiel heißt das: Im Fenster muss der Spielstand so lange existieren wie das ganze Programm. Er wird einmal angelegt und nicht nach jedem Tastendruck neu. Wie Sie eine solche Variable anlegen, lernen Sie auf Seite 4. Die Tasteneingabe verändert sie dann über einen Pointer, Zeichnen und Statuszeile lesen sie über einen <code>const</code>-Pointer.</p>
+      <noscript><p>Ohne JavaScript können Sie Ihre Antworten mit der aufklappbaren Erklärung selbst prüfen.</p></noscript>
+      <form class="self-check" data-hint="Unterscheiden Sie: Was verbietet const, was erkennt eine NULL-Prüfung, und was passiert mit lokalen Variablen nach dem return?">
+        <fieldset><legend>Eine Funktion hat den Kopf <code>int spielstand_lesen(const Spielstand *p, char ziel[], size_t groesse)</code>. Welche Aussagen stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Die Funktion darf <code>p-&gt;zuege</code> lesen.</label>
+          <label><input type="checkbox" data-correct="true"> Eine Zeile <code>p-&gt;zuege = 5;</code> in der Funktion bricht beim Übersetzen ab.</label>
+          <label><input type="checkbox" data-correct="true"> Kann <code>p</code> <code>NULL</code> sein, muss die Prüfung vor dem ersten Zugriff auf <code>p-&gt;</code> stehen.</label>
+          <label><input type="checkbox"> Zeigt ein Pointer auf eine lokale Variable, wird er nach dem <code>return</code> dieser Funktion automatisch <code>NULL</code>.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die ersten drei Aussagen stimmen. <code>const</code> erlaubt über <code>p</code> nur das Lesen; eine Zuweisung meldet der Compiler als Fehler. Ein Zugriff über einen <code>NULL</code>-Pointer bringt das Programm in der Regel zum Absturz, deshalb gehört die Prüfung vor den ersten Zugriff. Ein Pointer auf eine lokale Variable behält nach dem <code>return</code> die alte Adresse. Er ist nicht <code>NULL</code>, darf aber trotzdem nicht mehr benutzt werden. Eine <code>NULL</code>-Prüfung erkennt diesen Fehler nicht.</p></details>
+      </form>
+    </section>
+
+    <section class="content-section" aria-labelledby="aufgabe-c">
+      <h2 id="aufgabe-c">2. Aufgabe: Einen Schritt der Figur ausführen</h2>
+      <p>Schreiben Sie <code>figur_bewegen</code>. Die Funktion erhält einen <code>Spielstand *</code> und die Änderung der x- und y-Koordinate als <code>int</code>. Sie gibt als <code>bool</code> zurück, ob der Schritt ausgeführt wurde. Übergeben Sie jeweils einen der vier Schritte zu einem benachbarten Feld.</p>
+      <p>In dieser Aufgabe geht es nur um die <strong>Spiellogik</strong>: Darf die Figur das Zielfeld betreten, und wie verändert sich dann der Spielstand? Sie rufen <code>figur_bewegen</code> dafür im Textmodus direkt auf und prüfen die Ergebnisse. Fenster und Tastatur brauchen Sie hier noch nicht.</p>
+      <ul>
+        <li>Prüfen Sie den Pointer auf <code>NULL</code>, bevor Sie auf ein Feld zugreifen.</li>
+        <li>Bestimmen Sie das Zielfeld und prüfen Sie Spielfeldgrenzen und Wände mit Ihren vorhandenen Abfragen. Prüfen Sie auch, ob das Zielfeld die Tür ist und sie laut Spielstand verschlossen ist. Die Tür startet wie in „Datenstrukturen“ verschlossen und blockiert die Bewegung.</li>
+        <li>Ändern Sie nur bei einer erfolgreichen Bewegung Position und Zugzahl und geben Sie <code>true</code> zurück. Andernfalls geben Sie <code>false</code> zurück.</li>
+        <li>Erlaubt sind nur die vier Schritte zu einem benachbarten Feld: <code>(1, 0)</code>, <code>(-1, 0)</code>, <code>(0, 1)</code> und <code>(0, -1)</code>. Jede andere Änderung, etwa <code>(2, 0)</code> oder <code>(1, 1)</code>, ist ungültig. Die Funktion verändert dann nichts und gibt <code>false</code> zurück.</li>
+      </ul>
+      <details><summary>Hinweis: Das Zielfeld prüfen</summary><p>Berechnen Sie die Zielkoordinaten zunächst in einer eigenen Variable. Prüfen Sie die Grenzen vor einem Zugriff auf das Spielfeld-Array. Solange das Ziel nicht feststeht, müssen Sie weder Position noch Zugzahl im Spielstand ändern.</p></details>
+      <p>Passen Sie die Funktion für die Statuszeile an (im Startmaterial <code>spielstand_lesen</code>). Sie soll den Spielstand über <code>const Spielstand *</code> lesen und die bekannte Statuszeile füllen. Passen Sie die Aufrufe an den neuen Parametertyp an. Rufen Sie Bewegung und Status im Textmodus mit der Adresse desselben Spielstands auf. Probieren Sie auch einen Aufruf der Bewegungsfunktion mit <code>NULL</code>.</p>
+      <h3>Testen</h3>
+      <p>Notieren Sie Ihre erwarteten Ergebnisse, bevor Sie das Programm ausführen. Testen Sie mindestens diese Folge von Aufrufen, beginnend mit dem Startzustand:</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th scope="col">Aufruf</th><th scope="col">Rückgabe</th><th scope="col">Position danach</th><th scope="col">Züge danach</th></tr></thead>
+        <tbody>
+          <tr><td>Start</td><td>–</td><td>(3, 7)</td><td>0</td></tr>
+          <tr><td>Schritt nach rechts</td><td></td><td></td><td></td></tr>
+          <tr><td>Schritt nach rechts</td><td></td><td></td><td></td></tr>
+          <tr><td>Schritt nach unten</td><td></td><td></td><td></td></tr>
+        </tbody>
+      </table></div>
+      <p>Ergänzen Sie eigene Testfälle mit erwarteten Ergebnissen, mindestens für:</p>
+      <ul>
+        <li>die verschlossene Tür und die geöffnete Tür. Sie müssen die Figur dafür nicht hinlaufen lassen: Setzen Sie im Test die Position der Figur direkt auf ein Feld neben der Tür und das Feld für den Türzustand auf den gewünschten Wert.</li>
+        <li>einen ungültigen Schritt, etwa <code>(2, 0)</code> oder <code>(1, 1)</code>,</li>
+        <li>einen Aufruf mit <code>NULL</code> statt eines Spielstands.</li>
+      </ul>
+      <details><summary>Selbstkontrolle: Erwartete Ergebnisse</summary>
+        <p>Die vorgegebene Folge:</p>
+        <table><thead><tr><th scope="col">Aufruf</th><th scope="col">Rückgabe</th><th scope="col">Position danach</th><th scope="col">Züge danach</th></tr></thead><tbody>
+          <tr><td>Start</td><td>–</td><td>(3, 7)</td><td>0</td></tr>
+          <tr><td>Schritt nach rechts</td><td><code>true</code></td><td>(4, 7)</td><td>1</td></tr>
+          <tr><td>Schritt nach rechts</td><td><code>true</code></td><td>(5, 7)</td><td>2</td></tr>
+          <tr><td>Schritt nach unten, gegen die Wand</td><td><code>false</code></td><td>(5, 7)</td><td>2</td></tr>
+        </tbody></table>
+        <p>Steht die Figur auf (5, 3) und ist die Tür verschlossen, liefert ein Schritt nach rechts <code>false</code>. Position und Zugzahl bleiben gleich. Ist die Tür offen, gelangt die Figur auf das Türfeld (6, 3), und die Zugzahl steigt um eins. Ein ungültiger Schritt liefert <code>false</code> und verändert nichts. Ein Aufruf mit <code>NULL</code> liefert <code>false</code>, ohne auf einen Spielstand zuzugreifen.</p>
+      </details>
+      <p><strong>Ausblick:</strong> Auf Seite 4 schließen Sie die fertige Funktion <code>figur_bewegen</code> an Tastatur und Anzeige an. Dann ruft ein Tastendruck die Funktion auf, und das Fenster zeigt den veränderten Spielstand.</p>
+    </section>
+
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="02-kopie-und-original.html">← Zurück: Kopie und Original vergleichen</a></li>
+      <li><a href="04-eingaben-und-bewegung.html">Weiter: Spiellogik an Tastatur und Anzeige anschließen →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>

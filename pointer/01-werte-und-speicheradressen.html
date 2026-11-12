@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Werte und Speicheradressen untersuchen</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+  <script src="selbstkontrollen.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header>
+      <h1>Werte und Speicheradressen untersuchen</h1>
+      <p class="intro">Lesen und schreiben Sie über Pointer und unterscheiden Sie Werte von Adressen.</p>
+    </header>
+
+    <section class="content-section" aria-labelledby="abschnitt-1">
+      <h2 id="abschnitt-1">1. Eine Adresse speichern und benutzen</h2>
+      <p>Eine Variable hat einen Wert und liegt an einer Adresse im Speicher. Mit <code>&amp;var</code> erhalten Sie die Adresse von <code>var</code>. Ein <strong>Pointer</strong> kann diese Adresse speichern. Man sagt: Der Pointer <strong>zeigt auf</strong> die Variable. Sie ist sein <strong>Ziel</strong>.</p>
+      <pre><code>int var = 10;
+int *p = &amp;var;     // p speichert die Adresse von var
+int vorher = *p;   // Wert am Ziel lesen
+*p = 20;           // Wert am Ziel schreiben</code></pre>
+      <p>In der Deklaration <code>int *p</code> gehört das Sternchen zum Pointertyp. Im Ausdruck <code>*p</code> bedeutet es: auf das Ziel zugreifen.</p>
+      <h3>Vorhersagen und ausprobieren</h3>
+      <p>Schreiben Sie die Versuche in <code>text_ausgeben</code> und starten Sie mit <code>./programm --text</code>. Notieren Sie vor jedem Schritt, was Sie erwarten.</p>
+      <ol>
+        <li>Legen Sie <code>int var = 10;</code> und <code>int *p = &amp;var;</code> an. Was zeigen die Ausgaben von <code>var</code> und <code>*p</code>? Geben Sie beide Werte aus. Vergleichen Sie anschließend die Adressen <code>p</code> und <code>&amp;var</code>.</li>
+        <li>Schreiben Sie <code>*p = 20;</code>. Welchen Wert hat <code>var</code> jetzt? Geben Sie <code>var</code> erneut aus und erklären Sie die Änderung.</li>
+      </ol>
+      <details><summary>Hinweis: Eine Adresse ausgeben</summary><p>Verwenden Sie <code>printf("%p\n", (void *)p);</code>. Der Platzhalter <code>%p</code> erwartet einen Pointer vom Typ <code>void *</code>. Vergleichen Sie Adressen aus demselben Programmlauf, denn bei jedem Start können sie anders aussehen.</p></details>
+      <details><summary>Selbstkontrolle: Werte und Adressen</summary><p><code>var</code> und <code>*p</code> liefern beide 10. <code>p</code> und <code>&amp;var</code> ergeben dieselbe Adresse, denn <code>p</code> enthält genau die Adresse von <code>var</code>. Nach <code>*p = 20;</code> hat <code>var</code> den Wert 20: Die Zuweisung über den Pointer schreibt in das Ziel, also in <code>var</code> selbst.</p></details>
+      <details><summary>Freiwillige Vertiefung: Ein Pointer auf einen Pointer</summary>
+        <p>Auch <code>p</code> ist eine Variable und hat eine eigene Adresse. Ein weiterer Pointer kann deshalb auf <code>p</code> zeigen: <code>int **pp = &amp;p;</code>. Dann liefert <code>*pp</code> den Pointer <code>p</code> und <code>**pp</code> den Wert von <code>var</code>. Für die weiteren Aufgaben dieses Kapitels brauchen Sie das nicht.</p>
+        <p>Ergänzen Sie <code>int **pp = &amp;p;</code> und geben Sie <code>**pp</code> aus. Auf welche Variable zeigt <code>pp</code> direkt? Über welche beiden Schritte gelangen Sie zum Wert?</p>
+        <details><summary>Selbstkontrolle: Pointer auf einen Pointer</summary><p><code>pp</code> zeigt direkt auf <code>p</code>. Der erste Schritt <code>*pp</code> führt zu <code>p</code>, der zweite zum Ziel von <code>p</code>, also zu <code>var</code>. Nach <code>*p = 20;</code> liefert <code>**pp</code> deshalb 20.</p></details>
+      </details>
+    </section>
+
+    <section class="content-section" aria-labelledby="abschnitt-2">
+      <h2 id="abschnitt-2">2. Rückblick: Arrays und Zeichenketten</h2>
+      <p>Im Kapitel „Datenstrukturen“ sind Ihnen zwei Dinge begegnet, die dort noch nicht erklärt wurden. Mit Pointern können Sie beide jetzt verstehen.</p>
+      <h3>Warum eine Funktion die Länge eines Arrays nicht kennt</h3>
+      <p>Erinnern Sie sich an die Seite „Strukturen“: Übergeben Sie einer Funktion eine Struktur, bekommt die Funktion eine Kopie mit allen Feldern. Bei einem Array ist das anders. C kopiert beim Aufruf <em>nicht</em> das ganze Array, sondern übergibt nur die <strong>Adresse des ersten Elements</strong>. Der Parameter <code>int werte[]</code> sieht zwar aus wie ein Array, ist aber in Wahrheit ein Pointer. Sie könnten genauso <code>int *werte</code> schreiben.</p>
+      <p>Das erklärt die Beobachtung aus „Datenstrukturen“:</p>
+      <pre><code>void zeige_groesse(int werte[]) {
+    printf("in der Funktion: %zu\n", sizeof(werte));   
+}
+
+int zuege[5] = {41, 60, 37, 52, 61};
+printf("beim Aufrufer: %zu\n", sizeof(zuege));         
+zeige_groesse(zuege);</code></pre>
+      <p>Probieren Sie das Beispiel in <code>text_ausgeben</code> aus. Was meldet der Compiler? Verlängern Sie danach das Array auf zehn Elemente und vergleichen Sie beide Ausgaben erneut. Kreuzen Sie an, was Sie beobachten.</p>
+      <noscript><p>Ohne JavaScript können Sie Ihre Antworten mit der aufklappbaren Erklärung selbst prüfen.</p></noscript>
+      <form class="self-check" data-hint="Vergleichen Sie, wie sich die beiden Ausgaben verändern, wenn das Array länger wird.">
+        <fieldset><legend>Welche Beobachtungen treffen zu?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Beim Aufrufer liefert <code>sizeof</code> die Größe aller Elemente zusammen.</label>
+          <label><input type="checkbox"> In der Funktion liefert <code>sizeof</code> ebenfalls die Größe aller Elemente zusammen.</label>
+          <label><input type="checkbox" data-correct="true"> Die Ausgabe in der Funktion bleibt gleich, wenn das Array länger wird.</label>
+          <label><input type="checkbox"> <code>sizeof(werte) / sizeof(werte[0])</code> liefert in der Funktion die Anzahl der Elemente.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die erste und dritte Aussage stimmen. Beim Aufrufer wächst der Wert mit der Länge des Arrays, in der Funktion nicht. Deshalb liefert die Division in der Funktion nicht die Anzahl der Elemente, sondern auf üblichen Systemen immer 2. Warum das so ist, steht im nächsten Absatz.</p></details>
+      </form>
+      <p><strong>Die Erklärung:</strong> Beim Aufrufer ist <code>zuege</code> das ganze Array, 5 Elemente zu je 4 Bytes, zusammen 20 Bytes. In der Funktion ist <code>werte</code> dagegen nur ein Pointer. <code>sizeof(werte)</code> misst deshalb die Größe eines Pointers, auf üblichen Systemen 8 Bytes, egal wie lang das Array ist. Die Zahl der Elemente steckt in einem Pointer nicht drin. Darauf weisen auch die Warnungen von GCC und Clang hin.</p>
+      <p>Die Funktion erfährt die Länge also nur, wenn Sie sie als eigenen Parameter mitgeben, etwa als <code>size_t anzahl</code>. Berechnen Sie sie dort, wo das ganze Array vorliegt: beim Aufrufer.</p>
+      <p>Weil die Funktion die Adresse des Originals bekommt, gilt außerdem: Mit <code>werte[0] = 99;</code> verändert sie das Array des Aufrufers, nicht eine Kopie. Bei Strukturen ist das, wie Sie wissen, anders. Wie Sie dasselbe für eine Struktur erreichen, lernen Sie auf den nächsten Seiten.</p>
+      <details><summary>Für Interessierte: Zweidimensionale Arrays übergeben</summary><p>Auch bei einem zweidimensionalen Array wie dem Grundriss bekommt die Funktion nur die Adresse des Anfangs, hier der ersten Zeile. Um die Zeile <code>y</code> zu finden, muss sie aber wissen, wie lang eine Zeile ist. Deshalb darf im Parameter nur die Zeilenzahl fehlen, die Spaltenzahl muss dastehen: <code>char feld[][BREITE + 1]</code>. Die Zahl der Zeilen geben Sie wie bei einem eindimensionalen Array bei Bedarf als eigenen Parameter mit.</p></details>
+      <h3>Warum <code>==</code> zwei gleiche Texte für verschieden hält</h3>
+      <p>Im Kapitel „Datenstrukturen“ haben Sie zwei Zeichen-Arrays mit <code>==</code> verglichen. Wiederholen Sie den Versuch jetzt mit Ihrem Wissen über Adressen:</p>
+      <pre><code>char a[] = "Beute";
+char b[] = "Beute";
+printf("%d\n", a == b);
+printf("%d\n", strcmp(a, b));</code></pre>
+      <p>Probieren Sie das Beispiel in <code>text_ausgeben</code> aus. Was meldet der Compiler? Geben Sie zusätzlich die Adressen von <code>a</code> und <code>b</code> mit <code>%p</code> aus, wie in Abschnitt 1. Ändern Sie danach den Inhalt von <code>b</code> in <code>"Muenze"</code> und vergleichen Sie erneut. Kreuzen Sie an, was Sie beobachten.</p>
+      <form class="self-check" data-hint="Vergleichen Sie die Ausgaben für gleichen und für verschiedenen Inhalt und sehen Sie sich die beiden Adressen an.">
+        <fieldset><legend>Welche Beobachtungen treffen zu?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> <code>a == b</code> liefert 0, obwohl beide Arrays denselben Text enthalten.</label>
+          <label><input type="checkbox" data-correct="true"> Die Adressen von <code>a</code> und <code>b</code> sind verschieden.</label>
+          <label><input type="checkbox"> <code>strcmp(a, b)</code> liefert 1, weil die Texte gleich sind.</label>
+          <label><input type="checkbox"> Mit dem Inhalt <code>"Muenze"</code> in <code>b</code> ändert sich das Ergebnis von <code>a == b</code>.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die ersten beiden Aussagen stimmen. <code>a == b</code> liefert immer 0, egal was in den Arrays steht. <code>strcmp</code> liefert bei gleichem Inhalt 0 und erst bei verschiedenem Inhalt einen anderen Wert. Warum das so ist, steht im nächsten Absatz.</p></details>
+      </form>
+      <p><strong>Die Erklärung:</strong> Für Zeichenketten gilt dieselbe Regel wie für Arrays als Parameter. Steht ein Zeichen-Array in einem Vergleich mit <code>==</code>, verwendet C nicht den Text, sondern die Adresse seines ersten Zeichens.</p>
+      <ul>
+        <li><code>a</code> und <code>b</code> sind zwei getrennte Arrays, also zwei getrennte Speicherbereiche mit verschiedenen Adressen. Dass sie dieselben Zeichen enthalten, spielt für <code>==</code> keine Rolle.</li>
+        <li><code>a == b</code> vergleicht deshalb nur die beiden Adressen. Die sind immer verschieden, das Ergebnis ist immer 0. Darauf weisen auch die Warnungen von GCC und Clang hin.</li>
+        <li><code>strcmp(a, b)</code> geht dagegen Zeichen für Zeichen bis zum Nullzeichen vor und vergleicht die Inhalte. Sind sie gleich, liefert die Funktion 0.</li>
+      </ul>
+      <p>Das ist die Erklärung für die Selbstkontrolle „Vergleich mit == und strcmp“ aus „Datenstrukturen“: Dort stand, dass <code>==</code> prüft, ob beide Seiten dieselbe Stelle im Speicher bezeichnen. Diese Stelle ist die Adresse, die Sie gerade mit <code>%p</code> ausgegeben haben.</p>
+    </section>
+
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="index.html">← Zurück: Kapitelübersicht</a></li>
+      <li><a href="02-kopie-und-original.html">Weiter: Kopie und Original vergleichen →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>
