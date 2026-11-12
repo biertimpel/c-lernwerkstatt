@@ -36,6 +36,30 @@ nicht zu überfordern.
   vorher eingeführt? (Im Grundkurs bisher nicht, nur Binärdarstellung auf
   der Seite „Datentypen“.)
 
+### Stack und Heap erklären
+
+- **Idee:** Erklären, wie Stack und Heap organisiert sind: Stack-Frames bei
+  Funktionsaufrufen (Rücksprungadresse, Parameter, lokale Variablen,
+  Stack-Pointer), Wachstumsrichtung, Grenzen der Stackgröße; Heap als vom
+  Laufzeitsystem verwalteter Bereich, wie `malloc` und `free` Blöcke
+  vergeben und zurücknehmen, Fragmentierung.
+- **Betroffenes Kapitel:** Speicherorganisation und Funktionsaufrufe;
+  Anknüpfung an „Dynamischer Speicher und Listen“ aus dem Grundkurs.
+- **Nutzen für die Studierenden:** Der Grundkurs führt die Begriffe nur ein
+  (Seite „Lebensdauer und Speicherbereiche“, Abschnitt 2: Stack für lokale
+  Variablen fester Größe, Heap für dynamisch angeforderten Speicher) und
+  verweist für die Theorie ausdrücklich auf „Betriebs- und
+  Kommunikationssysteme“ und „Rechnerarchitektur“. Diese Zusage muss hier
+  eingelöst werden.
+- **Mögliche Umsetzung:**
+  - Speicherbild aus dem Grundkurs aufgreifen und verfeinern.
+  - Versuch: Adressen lokaler Variablen in verschachtelten Aufrufen und von
+    `malloc`-Blöcken ausgeben und die Lage der Bereiche vergleichen.
+  - Den Versuch „Adresse einer lokalen Variablen zurückgeben“ aus dem
+    Grundkurs mit Stack-Frames erklären.
+- **Offene Fragen:** Abgrenzung zu „Betriebs- und Kommunikationssysteme“:
+  Was erklärt welche Vorlesung (z. B. virtueller Speicher dort)?
+
 ## Vorlage für eine Idee
 
 - **Idee:**
