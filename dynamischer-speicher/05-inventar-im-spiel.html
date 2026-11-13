@@ -45,6 +45,7 @@
 
     <section class="content-section" aria-labelledby="aufgabe-leertaste">
       <h2 id="aufgabe-leertaste">2. Aufgabe: Aufnehmen und Tür öffnen mit der Leertaste</h2>
+      <p>Im <a href="../vom-problem-zum-programm-2/index.html#zielbild">Zielbild</a> nimmt die Figur Gegenstände beim Betreten auf und öffnet die Tür beim Betreten des Türfelds. Im Tresorraub geschieht beides mit der Leertaste: So kann die Figur einen Gegenstand auch liegen lassen, und das Aufnehmen bleibt getrennt von der Bewegung, die Sie im Kapitel „Pointer und Datenaustausch“ geschrieben haben. Solche Änderungen an einer ersten Beschreibung sind beim Programmieren normal; im Kapitel „Spielende“ blicken Sie darauf zurück.</p>
       <p>Mit der Leertaste handelt die Figur auf dem Feld, auf dem sie steht. Die genauen Regeln stehen in <a href="materialien/tresorraub-inventar/INVENTAR.md">INVENTAR.md</a>, Abschnitt „Leertaste“. Kurz: Liegt auf dem Feld ein Gegenstand, wird er aufgenommen. Sonst öffnet sich die verschlossene Tür, wenn die Figur direkt daneben steht und den Schlüssel im Inventar hat; der Schlüssel wird dabei verbraucht. Nur eine erfolgreiche Handlung zählt als Zug.</p>
       <ol>
         <li>Entwerfen Sie eine Funktion, die diese Regeln für einen Spielstand ausführt. Verwenden Sie Ihre Funktionen von Seite 3 und 4. Wird ein Gegenstand aufgenommen, liegt er danach nicht mehr auf dem Feld; die Beute verlässt den Tresor.</li>

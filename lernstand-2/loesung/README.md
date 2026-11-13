@@ -1,5 +1,9 @@
 # Musterlösung Lernstandscheck II „Licht aus“ – nur für Lehrende
 
+Der Lernstandscheck ist eine freiwillige Selbstkontrolle ohne Abgabe und
+Bewertung. Lösung und Erwartungshorizont dienen als Grundlage für
+Rückmeldungen, wenn Studierende ihren Stand im Kurs zeigen oder Fragen haben.
+
 Eine mögliche Lösung aller Aufgaben. Grundlage ist das Startmaterial (Ende
 des Kapitels „Spielende“, Teil 2). Die Entwurfsentscheidungen stehen am
 Anfang von `tresorraub.c`.
@@ -101,7 +105,7 @@ am Ende benennt Abweichungen ehrlich.
 - `make test`: 0 fehlgeschlagen. Die einzige Prüfung, die die Zahl der
   Objekte betrifft, erlaubt bereits 8 bis `MAX_OBJEKTE`.
 - Prüftabelle deckt die genannten Bereiche ab, mit beobachtetem Verhalten,
-  nicht nur erwartetem. Gute Abgaben enthalten eigene Tests mit erfundenen
+  nicht nur erwartetem. Gute Lösungen enthalten eigene Tests mit erfundenen
   Zeiten.
 - Beschreibung ordnet die Änderungen Modulen zu und erklärt das
   Zusammenspiel Schalter → Spielstand → `spiel_aktualisieren` →
