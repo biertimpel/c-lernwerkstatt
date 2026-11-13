@@ -3,40 +3,132 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>C-Lernwerkstatt · Umfassender Lernstandscheck</title>
-  <link rel="stylesheet" href="../kurs.css">
+  <title>Programmierung in C · Lernstandscheck II – Licht aus</title>
+  <style>
+    :root { color-scheme: light; --ink: #000; --blue: #244bcc; --line: #d9dfe9; --paper: #f5f6f9; }
+    * { box-sizing: border-box; }
+    body { max-width: 1050px; margin: 36px auto; padding: 0 20px; font: 16px/1.6 system-ui, sans-serif; color: var(--ink); background: var(--paper); }
+    header { margin-bottom: 30px; }
+    h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.2; margin: 0 0 20px; }
+    h2 { font-size: 24px; line-height: 1.3; margin: 0 0 16px; }
+    h3 { font-size: 19px; line-height: 1.4; margin: 0 0 14px; }
+    h4 { font-size: 16px; margin: 24px 0 10px; }
+    p { margin: 0 0 16px; }
+    ul, ol { padding-left: 24px; }
+    li { margin-bottom: 8px; }
+    a { color: var(--blue); text-underline-offset: .18em; }
+    :focus-visible { outline: 3px solid #f2ab32; outline-offset: 4px; }
+    .skip { position: absolute; top: -90px; left: 20px; padding: 8px 14px; background: white; }
+    .skip:focus { top: 12px; }
+    .content-section { background: white; border: 1px solid var(--line); border-radius: 10px; padding: 22px 24px; margin: 22px 0; }
+    .content-section > :last-child, .hint > :last-child { margin-bottom: 0; }
+    .hint { margin-top: 26px; padding: 20px 22px; border: 1px solid var(--line); border-left: 4px solid var(--blue); border-radius: 6px; background: #f5f7ff; }
+    .hint summary { font-size: 19px; line-height: 1.4; font-weight: 700; cursor: pointer; }
+    .hint[open] summary { margin-bottom: 16px; }
+    code { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: .92em; }
+    p code, li code { overflow-wrap: anywhere; }
+    pre { overflow-x: auto; padding: 16px; border: 1px solid var(--line); border-radius: 6px; background: white; line-height: 1.5; margin: 0 0 16px; }
+    .material-note { border-left: 3px solid var(--line); padding-left: 14px; }
+    @media (max-width: 680px) {
+      body { margin-top: 24px; padding: 0 16px; }
+      .content-section { padding: 18px; }
+      .hint { padding: 16px; }
+    }
+    @media print {
+      body { max-width: none; margin: 0; padding: 0; background: white; font-size: 11pt; }
+      .skip { display: none; }
+      .content-section { padding: 16px; }
+      .hint { background: white; }
+      h2, h3, h4 { break-after: avoid; }
+      pre { white-space: pre-wrap; overflow-wrap: anywhere; break-inside: avoid; }
+    }
+  </style>
 </head>
 <body>
-  <a class="skip" href="#inhalt">Zum Inhalt</a>
-  <main id="inhalt">
-    <p><a href="../uebersicht.html#woche-8">← Zur Kursübersicht</a></p>
-    <header>
-      <p class="eyebrow">Termin 8.2</p>
-      <h1>Umfassender Lernstandscheck</h1>
-      <span class="status">Material in Vorbereitung</span>
-    </header>
-    <section class="content-section" aria-labelledby="ziele">
-      <h2 id="ziele">Lernziele</h2>
-      <ul>
-      <li>Die bis dahin benötigten C-Kompetenzen in einer größeren Aufgabe verbinden.</li>
-      <li>Eine vorbereitete Aufgabenstellung innerhalb von 90 Minuten selbstständig bearbeiten.</li>
-      <li>Verbleibende Schwierigkeiten und nächste Lernschritte festhalten.</li>
-      </ul>
-    </section>
-    <section class="content-section" aria-labelledby="einfuehrung">
-      <h2 id="einfuehrung">Einführung und Materialien</h2>
-      <p>Die Einführung und die zugehörigen Materialien werden hier ergänzt.</p>
-    </section>
-    <section class="content-section" aria-labelledby="aufgaben">
-      <h2 id="aufgaben">Aufgaben</h2>
-      <p>Aufgabenstellung, Voraussetzungen und erwartetes Ergebnis werden hier ergänzt.</p>
-    </section>
-    <section class="content-section" aria-labelledby="hinweise">
-      <h2 id="hinweise">Hinweise und Selbstcheck</h2>
-      <p>Hier folgen abgestufte Hinweise und Fragen zur Überprüfung Ihres Verständnisses.</p>
-    </section>
-    <aside class="notice"><p>Dieser 90-Minuten-Check dient der Lernstandsbestimmung. Die konkrete Aufgabenstellung wird vor dem Termin festgelegt. Der Kursabschluss ist unbenotet.</p></aside>
-    <footer><a href="../uebersicht.html#woche-8">Zur Kursübersicht</a></footer>
-  </main>
+<a class="skip" href="#inhalt">Zum Inhalt</a>
+<main id="inhalt">
+  <header>
+    <h1>Lernstandscheck II – Licht aus</h1>
+    <p>Erweitern Sie Ihren Tresorraub um einen Lichtschalter. Damit kann die Spielfigur vorübergehend das Licht ausschalten und an den Wächtern vorbeikommen. Anschließend geht das Licht automatisch wieder an.</p>
+    <p>Planen Sie zunächst, welche Daten und Programmteile Sie dafür ergänzen oder verändern müssen. Nutzen Sie die vorhandene Programmstruktur und setzen Sie die Erweiterung in den folgenden Schritten um.</p>
+  </header>
+
+  <section class="content-section" aria-labelledby="schalter">
+    <h2 id="schalter">1. Einen Lichtschalter einbauen</h2>
+    <p>Ergänzen Sie einen Lichtschalter als neuen Objekttyp im vorhandenen Objektmodell. Die Spielfigur soll ihn über die bereits verwendete Interaktionsmöglichkeit betätigen können.</p>
+    <p>Für die Lichtmechanik gelten folgende Regeln.</p>
+    <ul>
+      <li>Zu Beginn ist das Licht eingeschaltet. Die Wächter erkennen die Spielfigur nach den bisherigen Regeln.</li>
+      <li>Wird der Schalter betätigt, geht das Licht aus. Solange es ausgeschaltet ist, können die Wächter die Spielfigur nicht erkennen.</li>
+      <li>Der Lichtzustand muss im Spielfenster erkennbar sein. Auch bei ausgeschaltetem Licht soll das Spiel weiterhin bedienbar bleiben.</li>
+      <li>Die übrigen Spielregeln gelten weiterhin.</li>
+    </ul>
+    <p>Für diesen ersten Zwischenstand darf das Licht nach dem Ausschalten dauerhaft ausgeschaltet bleiben.</p>
+  </section>
+
+  <section class="content-section" aria-labelledby="spielfeld">
+    <h2 id="spielfeld">2. Die Lichtmechanik im Spiel notwendig machen</h2>
+    <p>Verändern Sie die Anordnung des Spielfelds mithilfe der Config. Platzieren Sie den Schlüssel und gegebenenfalls einen Wächter so, dass die Figur das Licht ausschalten muss, um den Schlüssel zu erreichen, ohne entdeckt zu werden.</p>
+    <p>Achten Sie darauf, dass der Schalter vorher erreichbar ist. Das vollständige Spiel soll mit der neuen Anordnung weiterhin lösbar sein.</p>
+    <p>Spielen Sie Ihren Entwurf durch und prüfen Sie, ob die Lichtmechanik tatsächlich benötigt wird. Passen Sie die Positionen bei Bedarf an.</p>
+  </section>
+
+  <section class="content-section" aria-labelledby="licht-an">
+    <h2 id="licht-an">3. Das Licht automatisch wieder einschalten</h2>
+    <p>Erweitern Sie die Lichtmechanik um eine begrenzte Dauer. Nach dem Betätigen des Schalters beginnt die Zeit zu laufen. Sobald die Dauer abgelaufen ist, geht das Licht automatisch wieder an.</p>
+    <ul>
+      <li>Die Dauer wird in Sekunden über die Config festgelegt.</li>
+      <li>Die Zeit läuft unabhängig von Tastendrücken weiter. Das Licht muss auch dann wieder angehen, wenn die Spielfigur stehen bleibt.</li>
+      <li>Während die Zeit läuft, bleibt das Spiel bedienbar.</li>
+      <li>Bei erneutem Betätigen des Schalters beginnt die eingestellte Dauer von vorn.</li>
+      <li>Sobald das Licht wieder eingeschaltet ist, erkennen die Wächter die Figur wieder. Steht sie dann in einem Erkennungsbereich, gilt die vorhandene Regel für die Entdeckung.</li>
+      <li>Prüfen Sie den eingelesenen Config-Wert. Behandeln Sie unzulässige Einstellungen entsprechend der vorhandenen Fehlerbehandlung.</li>
+    </ul>
+    <p>Probieren Sie unterschiedliche Einstellungen aus. Wählen Sie eine Dauer, mit der Ihr Spiel lösbar bleibt und die begrenzte Dunkelheit eine Rolle bei der Planung des Weges spielt.</p>
+
+    <details class="hint">
+      <summary id="timer-hinweis">Hinweis zur Zeitsteuerung</summary>
+      <p>Stellen Sie sich eine Stoppuhr vor. Beim Start merken Sie sich einen Zeitpunkt. Während das Spiel weiterläuft, prüfen Sie regelmäßig, wie viel Zeit seitdem vergangen ist. Sobald die eingestellte Dauer erreicht ist, führen Sie die gewünschte Aktion aus.</p>
+      <p>SDL2 bringt dafür <code>SDL_GetTicks64()</code> mit. Der Aufruf liefert die seit der Initialisierung von SDL vergangenen Millisekunden. Dafür benötigen Sie weder einen eigenen Thread noch einen Interrupt oder eine zusätzliche Bibliothek.</p>
+
+      <h4>Die benötigten Werte merken</h4>
+      <p>Für eine einfache Zeitschaltuhr brauchen Sie den Startzeitpunkt, die gewünschte Dauer und die Information, ob sie gerade läuft. Diese Werte müssen zwischen den Durchläufen der Spielschleife erhalten bleiben. Die folgenden Namen sind Beispiele.</p>
+      <pre><code>Uint64 start_ms = 0;
+Uint64 dauer_ms = 5000;
+bool timer_laeuft = false;</code></pre>
+      <p><code>Uint64</code> ist ein von SDL bereitgestellter Typ für nicht negative ganze Zahlen. Er passt zum Rückgabewert von <code>SDL_GetTicks64()</code>. <code>bool</code> kennen Sie aus <code>&lt;stdbool.h&gt;</code>; die SDL-Typen und die Zeitfunktion stehen über <code>&lt;SDL.h&gt;</code> zur Verfügung.</p>
+      <p>Die <code>5000</code> im Beispiel entsprechen fünf Sekunden. Für Ihr Spiel verwenden Sie die Dauer aus der Config. Sekunden rechnen Sie durch Multiplikation mit 1000 in Millisekunden um, beispielsweise mit <code>(Uint64)dauer_sekunden * 1000</code>. Die Umwandlung vor der Multiplikation lässt die Berechnung im größeren Ganzzahltyp stattfinden.</p>
+
+      <h4>Beim Betätigen starten oder neu starten</h4>
+      <pre><code>start_ms = SDL_GetTicks64();
+timer_laeuft = true;</code></pre>
+      <p>Speichern Sie den Startzeitpunkt beim Betätigen des Schalters. Bei einer erneuten Betätigung wird er durch den neuen Zeitpunkt ersetzt. Setzen Sie ihn nicht bei jeder Zeitprüfung neu, sonst würde die eingestellte Dauer nie erreicht.</p>
+
+      <h4>Während des Spiels den Ablauf prüfen</h4>
+      <pre><code>if (timer_laeuft
+    &amp;&amp; SDL_GetTicks64() - start_ms &gt;= dauer_ms) {
+    timer_laeuft = false;
+    /* Hier die Aktion nach Ablauf ausführen. */
+}</code></pre>
+      <p>Die Differenz aus aktuellem Zeitpunkt und Startzeitpunkt ist die verstrichene Zeit. Verwenden Sie <code>&gt;=</code>, weil die Spielschleife nicht genau in der Millisekunde des Ablaufs prüfen muss.</p>
+      <p><strong>Diese Prüfung gehört in den regelmäßig ausgeführten Teil der Spiellogik vor der Darstellung.</strong> Sie muss bei jedem Durchlauf der Spielschleife erreicht werden, auch ohne Tastendruck. Eine Prüfung ausschließlich in der Tastaturverarbeitung genügt dafür nicht. Nach Ablauf schalten Sie das Licht wieder ein und prüfen die Erkennung durch die Wächter.</p>
+      <p>Warten Sie die Dauer nicht mit einer eigenen Warteschleife oder einem langen <code>SDL_Delay</code> ab. Das würde die Verarbeitung von Eingaben und die Darstellung in dieser Zeit anhalten. Die Spielschleife soll weiterarbeiten und bei jedem Durchlauf nur kurz prüfen, ob die Zeit bereits abgelaufen ist.</p>
+      <p>Die <a href="https://wiki.libsdl.org/SDL2/SDL_GetTicks64">Dokumentation von SDL_GetTicks64</a> enthält die Signatur und die Beschreibung des Rückgabewerts. Die für diese Aufgabe benötigten Schritte stehen vollständig in diesem Hinweis.</p>
+    </details>
+  </section>
+
+  <section class="content-section" aria-labelledby="pruefen">
+    <h2 id="pruefen">Die Erweiterung überprüfen</h2>
+    <p>Überlegen Sie sich geeignete Prüfsituationen für die einzelnen Teile Ihrer Erweiterung. Halten Sie jeweils kurz fest, welches Verhalten Sie erwarten und was Sie tatsächlich beobachten.</p>
+    <p>Berücksichtigen Sie dabei den Schalter, die Erkennung durch Wächter, das automatische Wiedereinschalten und unterschiedliche Config-Einstellungen. Prüfen Sie außerdem einen vollständigen Spielablauf vom Start bis zur erfolgreichen Flucht.</p>
+    <p>Halten Sie kurz fest, welche Programmteile Sie verändert haben und wie diese zusammenarbeiten.</p>
+  </section>
+
+  <section class="content-section" aria-labelledby="materialien">
+    <h2 id="materialien">Materialien</h2>
+    <p>Sie können mit Ihrem eigenen Spiel vom Ende des vorherigen Kapitels weiterarbeiten. Alternativ erhalten Sie eine funktionierende Grundversion als gemeinsamen Ausgangspunkt.</p>
+    <p class="material-note">Das Startmaterial wird hier nach Fertigstellung des Refactoring-Kapitels ergänzt.</p>
+  </section>
+</main>
 </body>
 </html>
