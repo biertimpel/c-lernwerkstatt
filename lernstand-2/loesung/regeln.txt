@@ -1,0 +1,18 @@
+# Spielregeln für den Tresorraub
+# Format und erlaubte Werte: REGELN.md und Lernstandscheck II
+# Fehlt eine Regel, gilt ihr Standardwert.
+
+zuglimit = 60
+reichweite_waechter_1 = 1
+reichweite_waechter_2 = 2
+inventar_groesse = 3
+
+# Der Schlüssel liegt im Wachbereich des ersten Wächters:
+# erreichbar nur im Dunkeln.
+waechter_1_x = 1
+waechter_1_y = 6
+schluessel_x = 1
+schluessel_y = 7
+lichtschalter_x = 5
+lichtschalter_y = 7
+licht_dauer = 5

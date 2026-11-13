@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Wann ist das Spiel zu Ende?</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+  <script src="selbstkontrollen.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header><h1>Wann ist das Spiel zu Ende?</h1><p>Sieg, Entdeckung und Zuglimit in den Tresorraub einbauen.</p></header>
+    <noscript><p>Ohne JavaScript können Sie die Fragen anhand der aufklappbaren Erklärungen selbst prüfen.</p></noscript>
+
+    <section class="content-section" aria-labelledby="abschnitt-1">
+      <h2 id="abschnitt-1">1. Was dem Spiel noch fehlt</h2>
+      <p>Bauen Sie das Startmaterial mit <code>make</code>, starten Sie <code>./programm</code> und drücken Sie hoch, hoch, links. Die Figur steht jetzt direkt neben dem Wächter auf (1, 5), mitten im markierten Bereich. Es passiert nichts. Auch das Zuglimit wirkt nicht: Setzen Sie in <code>regeln.txt</code> <code>zuglimit = 3</code> und gehen Sie ein paar Schritte. Die Statuszeile zeigt bald <code>Zuege 4/3</code>, und das Spiel läuft weiter.</p>
+      <p>Im Zielbild aus dem Kapitel <a href="../vom-problem-zum-programm-2/index.html#zielbild">„Vom Problem zum Programm II“</a> steht, wie es sein soll: Wer entdeckt wird oder den Ausgang nicht rechtzeitig mit der Beute erreicht, verliert. Wer den Ausgang mit der Beute erreicht, gewinnt, auch noch im 60. Zug. Gewinn und Niederlage sind im Fenster zu erkennen.</p>
+      <p>Die genauen Regeln stehen in <a href="materialien/tresorraub-ende/ENDE.md"><code>ENDE.md</code></a>. Lesen Sie die Datei jetzt einmal ganz. Notieren Sie dabei, welche Funktionen Ihrer <code>tresorraub.c</code> von jeder Regel betroffen sind.</p>
+      <p>Setzen Sie <code>regeln.txt</code> danach wieder auf das Original zurück und halten Sie das bisherige Verhalten fest:</p>
+      <pre><code>make ablauf
+./ablauf &gt; vorher.txt</code></pre>
+    </section>
+
+    <section class="content-section" aria-labelledby="abschnitt-2">
+      <h2 id="abschnitt-2">2. Ein Zustand statt vieler Wahrheitswerte</h2>
+      <p>Naheliegend wäre es, für jedes mögliche Ende ein eigenes Feld im Spielstand anzulegen:</p>
+      <pre><code>bool gewonnen;
+bool entdeckt;
+bool zeit_abgelaufen;</code></pre>
+      <p>Drei Wahrheitswerte ergeben acht Kombinationen. Sinnvoll sind davon nur vier: Das Spiel läuft noch, oder es ist auf genau eine Weise zu Ende. Was soll das Programm tun, wenn <code>gewonnen</code> und <code>entdeckt</code> beide wahr sind? Jede Funktion, die die Felder liest, müsste sich diese Frage neu stellen.</p>
+      <p>Ein Aufzählungstyp, wie Sie ihn auf <a href="../objektorientierung/01-wo-steckt-der-schluessel.html#abschnitt-3">Seite 1 des Kapitels „Objektorientierung in C“</a> kennengelernt haben, erlaubt nur die sinnvollen Fälle:</p>
+      <pre><code>typedef enum {
+    LAEUFT,
+    GEWONNEN,
+    ENTDECKT,
+    ZEIT_ABGELAUFEN
+} Spielzustand;</code></pre>
+      <p>Ein einziges Feld <code>zustand</code> dieses Typs im Spielstand beantwortet dann jede Frage nach dem Spielende. „Ist das Spiel vorbei?“ heißt <code>s-&gt;zustand != LAEUFT</code>. Ein <code>switch</code> über den Zustand, zum Beispiel für den Text in der Statuszeile, wird von <code>-Wall</code> geprüft: Fehlt ein Fall, warnt der Compiler.</p>
+      <form class="self-check" data-hint="Überlegen Sie, wie viele Zustände es wirklich gibt und was der Compiler über einen Aufzählungstyp weiß.">
+        <fieldset><legend>Welche Aussagen über <code>Spielzustand</code> stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Mit einem Feld vom Typ <code>Spielzustand</code> kann das Spiel nicht gleichzeitig gewonnen und entdeckt sein.</label>
+          <label><input type="checkbox" data-correct="true"> Kommt später ein fünfter Zustand hinzu, zeigt <code>-Wall</code> jeden <code>switch</code>, der ihn noch nicht behandelt.</label>
+          <label><input type="checkbox"> Der Compiler verhindert, dass dem Feld eine beliebige ganze Zahl zugewiesen wird.</label>
+          <label><input type="checkbox"> Für jedes Ende braucht der Spielstand trotzdem ein eigenes Feld.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Richtig sind die ersten beiden Aussagen. Ein Feld hat immer genau einen Wert, deshalb schließen sich die Zustände aus. Die Warnung bei <code>switch</code> heißt <code>-Wswitch</code> und gehört zu <code>-Wall</code>. Typsicher ist ein <code>enum</code> in C aber nicht: Eine Zuweisung wie <code>s-&gt;zustand = 7;</code> übersetzt ohne Fehler.</p></details>
+      </form>
+    </section>
+
+    <section class="content-section" aria-labelledby="abschnitt-3">
+      <h2 id="abschnitt-3">3. Wo gehört welche Regel hin?</h2>
+      <h3>Gewinnen: Verhalten des Ausgangs</h3>
+      <p>Ob das Spiel gewonnen ist, entscheidet sich, wenn die Figur den Ausgang betritt. Das ist Verhalten einer Objektart, genau wie das Öffnen der Tür. Im Kapitel „Objektorientierung in C“ haben Sie dafür Methoden kennengelernt: <code>benutzen</code> für die Leertaste und <code>betretbar</code> für die Frage, ob die Figur auf ein Feld darf. Für den Ausgang fehlt eine dritte Methode: Was geschieht, <em>nachdem</em> die Figur ein Feld betreten hat? Dafür bekommt die Objektart ein weiteres Feld für einen Funktionspointer. Beim Ausgang zeigt es auf eine Funktion, die prüft, ob die Beute im Inventar ist, und dann das Spiel gewinnt. Bei allen anderen Arten steht dort <code>NULL</code>: Beim Betreten passiert nichts. Die Bewegung setzt die Figur auf das Zielfeld und ruft für jedes Objekt auf diesem Feld die neue Methode auf, sofern sie nicht <code>NULL</code> ist. So enthält die Bewegung keine Abfrage wie „Ist das der Ausgang?“, genau wie die Leertaste keine Abfrage „Ist das die Tür?“ enthält. Käme später eine Falltür dazu, bekäme nur ihre Art eine eigene Methode.</p>
+      <h3>Verlieren: nach jedem Zug</h3>
+      <p>Entdeckt werden und die Zeit verlieren hängen an keinem Objekt, sondern an jedem Zug. Prüfen Sie beides deshalb an der Stelle, an der ein Zug gezählt wird. Dann gilt die Prüfung für Schritte, Aufnehmen, Tür öffnen und Ablegen gleichermaßen, und keine Stelle wird vergessen.</p>
+      <h3>Die Reihenfolge entscheidet</h3>
+      <p>Was passiert, wenn die Figur im 60. Zug mit der Beute den Ausgang betritt? Das hängt davon ab, in welcher Reihenfolge Ihr Programm die Regeln anwendet:</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th scope="col">Reihenfolge A</th><th scope="col">Reihenfolge B</th></tr></thead>
+        <tbody>
+          <tr><td>1. Figur auf den Ausgang setzen</td><td>1. Figur auf den Ausgang setzen</td></tr>
+          <tr><td>2. Methode des Ausgangs: gewonnen</td><td>2. Zug zählen: 60, Prüfung: Zuglimit erreicht, Zeit abgelaufen</td></tr>
+          <tr><td>3. Zug zählen: 60, Prüfung: Spiel schon zu Ende, nichts zu tun</td><td>3. Methode des Ausgangs: ?</td></tr>
+        </tbody>
+      </table></div>
+      <form class="self-check" data-hint="Lesen Sie im Zielbild nach, was im 60. Zug gelten soll, und gehen Sie beide Spalten Schritt für Schritt durch.">
+        <fieldset><legend>Welche Aussagen stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Nur Reihenfolge A erfüllt die Regel, dass ein Sieg im 60. Zug zählt.</label>
+          <label><input type="checkbox" data-correct="true"> In Reihenfolge B müsste die Methode des Ausgangs ein schon verlorenes Spiel wieder auf gewonnen setzen, damit der Sieg zählt.</label>
+          <label><input type="checkbox"> Die Reihenfolge ist egal, weil beide Regeln im selben Zug angewendet werden.</label>
+          <label><input type="checkbox"> Damit Reihenfolge A funktioniert, muss die Prüfung nach dem Zug den Ausgang kennen.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Richtig sind die ersten beiden Aussagen. In Reihenfolge A steht der Sieg schon fest, bevor gezählt wird; die Prüfung muss nur wissen, dass ein beendetes Spiel nicht mehr geprüft wird. Den Ausgang kennt sie nicht. Reihenfolge B ließe sich nur retten, wenn ein Ende wieder rückgängig gemacht würde. Das macht jede weitere Regel schwerer zu durchschauen.</p></details>
+      </form>
+    </section>
+
+    <section class="content-section" aria-labelledby="abschnitt-4">
+      <h2 id="abschnitt-4">4. Ein beendetes Spiel bleibt beendet</h2>
+      <p>Nach dem Spielende darf sich nichts mehr ändern: keine Bewegung, kein Aufnehmen, kein Ablegen, kein weiterer Zug. Dafür gibt es zwei Stellen, und beide sind nützlich:</p>
+      <ul>
+        <li><strong>In <code>taste_gedrueckt</code>:</strong> Hier entscheidet sich, welche Tasten nach dem Ende noch wirken (N und F9) und wann die Meldung <code>Das Spiel ist vorbei.</code> erscheint.</li>
+        <li><strong>In den Funktionen selbst:</strong> Bewegen, Leertaste und Ablegen prüfen am Anfang den Zustand und tun nach dem Ende nichts. So ist das Spiel auch dann geschützt, wenn eine Funktion von anderer Stelle aufgerufen wird, zum Beispiel aus einem Test in Teil 2.</li>
+      </ul>
+      <p>Auch über Dateien soll sich ein Ende nicht umgehen lassen. Ein beendetes Spiel wird nicht gespeichert. Und ein Spielstand, in dem das Spiel schon vorbei wäre, wird nicht geladen, etwa wenn die Figur darin auf einem überwachten Feld steht. Sonst würde ein ungültiger Zustand entstehen: ein laufendes Spiel mit einer entdeckten Figur. Das ist dieselbe Idee wie im Kapitel <a href="../datei-ein-ausgabe/06-fehler-behandeln.html#abschnitt-2">„Datei-Ein- und -Ausgabe“</a>: Lesbar bedeutet noch nicht gültig.</p>
+      <p>Mit N beginnt ein neues Spiel. Der laufende Spielstand besitzt aber noch seine Inventarliste. Bevor der Startzustand ihn überschreibt, muss sie freigegeben werden, sonst geht Speicher verloren, wie im Kapitel <a href="../dynamischer-speicher/04-entfernen-aufraeumen.html#abschnitt-3">„Dynamischer Speicher und Listen“</a>.</p>
+      <form class="self-check" data-hint="Gehen Sie für jede Aussage durch, was passiert, wenn die Figur gerade entdeckt wurde.">
+        <fieldset><legend>Die Figur wurde gerade entdeckt. Welche Aussagen stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Mit F9 kann ein gespeicherter, noch laufender Spielstand geladen werden.</label>
+          <label><input type="checkbox" data-correct="true"> Drückt man jetzt F5, bleibt <code>spielstand.txt</code> unverändert.</label>
+          <label><input type="checkbox"> Die Leertaste kann noch einen Gegenstand auf dem Feld der Figur aufnehmen, weil das kein Schritt ist.</label>
+          <label><input type="checkbox"> Ein Spielstand mit <code>ZUEGE 60</code> lässt sich bei Zuglimit 60 laden, weil 60 Züge erlaubt sind.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Richtig sind die ersten beiden Aussagen. Nach dem Ende ändert keine Aktion das Spiel. Ein Spielstand mit 60 Zügen bei Zuglimit 60 wäre schon zu Ende: Nach dem 60. Zug ist entweder gewonnen oder die Zeit abgelaufen. Laden lehnt ihn deshalb ab.</p></details>
+      </form>
+    </section>
+
+    <section class="content-section" aria-labelledby="aufgabe-ende">
+      <h2 id="aufgabe-ende">5. Aufgabe: Das Spielende einbauen</h2>
+      <p>Bauen Sie das Spielende laut <code>ENDE.md</code> in Ihre <code>tresorraub.c</code> ein. Wie Sie es zeichnen, kommt auf <a href="02-wasted.html">Seite 2</a>; hier geht es um die Spiellogik und um Meldungen und Statuszeile.</p>
+      <ol>
+        <li><strong>Zustand.</strong> Legen Sie den Aufzählungstyp <code>Spielzustand</code> und das Feld <code>zustand</code> im Spielstand an. Der Startzustand setzt <code>LAEUFT</code>.</li>
+        <li><strong>Gewinnen.</strong> Ergänzen Sie die Objektarten um eine Methode für das Betreten eines Feldes und schreiben Sie sie für den Ausgang. Rufen Sie sie in der Bewegung auf.</li>
+        <li><strong>Verlieren.</strong> Prüfen Sie nach jedem gezählten Zug auf Entdeckung und Zuglimit.</li>
+        <li><strong>Nach dem Ende.</strong> Schützen Sie Bewegen, Leertaste und Ablegen und stellen Sie <code>taste_gedrueckt</code> um. Ergänzen Sie die Taste N.</li>
+        <li><strong>Statuszeile.</strong> Hängen Sie den Zusatz für das Spielende an.</li>
+        <li><strong>Speichern und Laden.</strong> Verweigern Sie das Speichern eines beendeten Spiels und lehnen Sie beim Laden Spielstände ab, in denen das Spiel schon zu Ende wäre.</li>
+      </ol>
+      <details><summary>Hinweis: Wo werden Züge gezählt?</summary><p>Suchen Sie in Ihrer Datei nach der Stelle, an der <code>zuege</code> erhöht wird. Im Startmaterial ist das die Funktion <code>zug_zaehlen_original</code> aus dem Kapitel <a href="../pointer/02-kopie-und-original.html#aufgabe-b">„Pointer und Datenaustausch“</a>; alle Aktionen, die einen Zug kosten, rufen sie auf. Erhöhen Sie <code>zuege</code> an einer anderen Stelle direkt, ändern Sie das zuerst.</p></details>
+      <details><summary>Hinweis: Die neue Methode für alle Arten</summary><p>Fügen Sie das Feld für die Methode in der Struktur der Objektart ein und tragen Sie in jeder Art einen Wert ein, bei fast allen <code>NULL</code>. Die Bewegung geht nach dem Setzen der Figur alle Objekte durch, die auf dem Zielfeld liegen, und ruft die Methode auf, wenn sie nicht <code>NULL</code> ist. Erst danach zählt sie den Zug. Die Methode des Ausgangs prüft, ob die Beute im Inventar ist; die Art „Beute“ kennt sie über ihren Pointer, wie die Tür den Schlüssel.</p></details>
+      <details><summary>Hinweis: Laden prüfen, ohne den Ausgang beim Namen zu nennen</summary><p>Wann wäre ein geladenes Spiel schon zu Ende? Wenn die Figur überwacht ist, wenn das Zuglimit erreicht ist, und wenn sie auf einem Feld steht, dessen Betreten etwas auslöst. Die letzte Bedingung lässt sich allgemein formulieren: Liegt auf dem Feld der Figur ein Objekt mit einer Methode für das Betreten? Dann muss das Laden nichts vom Ausgang wissen, und eine spätere Falltür wäre gleich mit abgedeckt.</p></details>
+      <details><summary>Hinweis: Wenn N das Programm beendet oder Speicher verliert</summary><p>Rufen Sie für N dieselbe Funktion auf wie das Gerüst beim Start. Prüfen Sie dort, ob die Inventarliste freigegeben wird, bevor der Startzustand den Spielstand neu füllt. Beim ersten Start ist die Liste leer; das Freigeben einer leeren Liste ist harmlos. Mit <code>-fsanitize=address</code> zeigt sich ein Verlust beim Beenden des Programms.</p></details>
+    </section>
+
+    <section class="content-section" aria-labelledby="abschnitt-pruefen">
+      <h2 id="abschnitt-pruefen">6. Ihre Lösung prüfen</h2>
+      <p>Prüfen Sie im Fenster und im Terminal. Ein Zeilenumbruch in der Spalte „Tasten“ heißt: neue Situation, vorher N drücken.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th scope="col">Tasten</th><th scope="col">Erwartetes Verhalten</th></tr></thead>
+        <tbody>
+          <tr><td>hoch, hoch, links</td><td><code>Entdeckt!</code>; Titel <code>Position (2, 5) | Zuege 3/60 | WASTED: entdeckt</code></td></tr>
+          <tr><td>danach rechts, Leertaste, L, F5</td><td>jeweils <code>Das Spiel ist vorbei. N: neues Spiel, F9: Spielstand laden.</code>; Position und Zugzahl bleiben; <code>spielstand.txt</code> bleibt unverändert</td></tr>
+          <tr><td>N</td><td><code>Neues Spiel.</code>; Titel <code>Position (3, 7) | Zuege 0/60</code></td></tr>
+          <tr><td>hoch, rechts, fünfmal hoch, dreimal links</td><td>Die Figur steht auf dem Ausgang (1, 1): <code>Ohne Beute geht es noch nicht hinaus.</code>; Zug 10; das Spiel läuft weiter</td></tr>
+          <tr><td><code>zuglimit = 3</code> in <code>regeln.txt</code>, N, dann hoch, runter, hoch</td><td><code>Die Zeit ist abgelaufen.</code>; Titel endet mit <code>Zuege 3/3 | WASTED: Zeit abgelaufen</code></td></tr>
+          <tr><td>Weg zur Beute und zum Ausgang (<code>zuglimit</code> wieder 60)</td><td><code>Mit der Beute entkommen!</code>; Titel endet mit <code>| Entkommen!</code></td></tr>
+          <tr><td>wie eben, aber <code>zuglimit</code> genau auf die Zugzahl Ihres Weges gesetzt</td><td>Auch jetzt <code>Mit der Beute entkommen!</code>, nicht <code>Die Zeit ist abgelaufen.</code></td></tr>
+          <tr><td>F5 im laufenden Spiel, in <code>spielstand.txt</code> <code>ZUEGE</code> auf 60 setzen, F9</td><td><code>Laden fehlgeschlagen</code>; das Spiel läuft unverändert weiter</td></tr>
+        </tbody>
+      </table></div>
+      <p>Starten Sie dann den Vergleichslauf und vergleichen Sie mit <code>vorher.txt</code>. Jetzt <em>soll</em> sich etwas ändern. Überlegen Sie vorher, ab welcher Taste.</p>
+      <pre><code>make ablauf
+./ablauf &gt; nachher.txt
+diff vorher.txt nachher.txt</code></pre>
+      <details><summary>Selbstkontrolle: Der Vergleichslauf</summary><p>Bis Zug 21 ist alles gleich. Im 22. Zug betritt die Folge der Tasten das Feld (9, 3) im Bereich des Wächters auf (9, 5): Ab hier steht <code>Entdeckt!</code> und in der Statuszeile <code>WASTED: entdeckt</code>. Für alle weiteren Tasten außer F9 erscheint <code>Das Spiel ist vorbei.</code>, Position und Zugzahl bleiben bei (9, 3) und 22. Das abschließende F9 lädt den Spielstand, den die Folge in Zug 11 gespeichert hat; das zweite F5 kurz davor speichert nicht mehr. Die Prüfsumme in Zug 22 ändert sich erst, wenn Sie auf Seite 2 das Zeichnen ergänzen. Bewahren Sie <code>nachher.txt</code> auf; auf Seite 2 vergleichen Sie damit.</p></details>
+      <p class="work-result"><strong>Ihr Ergebnis:</strong> Ein Tresorraub, der gewonnen und verloren werden kann. Sie können begründen, warum der Sieg eine Methode des Ausgangs ist und das Verlieren nach jedem Zug geprüft wird.</p>
+    </section>
+
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="index.html">← Zurück: Kapitelübersicht</a></li>
+      <li><a href="02-wasted.html">Weiter: WASTED: das Spielende zeigen →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>

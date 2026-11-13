@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Module und Unit Tests</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+  <script src="selbstkontrollen.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header><h1>Module und Unit Tests</h1><p>Den Tresorraub auf Module mit vorgegebenen Headern verteilen und mit einer Test-Suite zeigen, dass dabei nichts verloren gegangen ist.</p></header>
+    <noscript><p>Ohne JavaScript können Sie die Fragen anhand der aufklappbaren Erklärungen selbst prüfen.</p></noscript>
+
+    <section class="content-section" aria-labelledby="abschnitt-1">
+      <h2 id="abschnitt-1">1. Aus einer Datei werden Module</h2>
+      <p>Ihre <code>tresorraub.c</code> hat inzwischen weit über tausend Zeilen. Wer etwas am Speichern ändern will, muss sich durch Spielfeld, Regeln, Objekte und Zeichnen scrollen, und jede Funktion kann jede andere aufrufen. Im Kapitel <a href="../header-quellen/01-header-und-quellen.html">„Header und Quelldateien“</a> haben Sie einen Rechner auf mehrere Dateien verteilt. Jetzt tun Sie dasselbe mit dem Spiel.</p>
+      <p>Ein <strong>Modul</strong> ist ein Paar aus Header und Quelldatei mit einer klar umrissenen Aufgabe. Der Header ist die Schnittstelle: Er nennt, was andere Teile benutzen dürfen. Alles andere bleibt mit <code>static</code> in der Quelldatei, wie im Kapitel <a href="../header-quellen/02-uebersetzen-und-linken.html#variablen">„Header und Quelldateien“</a>. Die Header für den Tresorraub sind vorgegeben; Sie finden sie im Ordner <code>module/</code> des Startmaterials.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th scope="col">Modul</th><th scope="col">Aufgabe</th><th scope="col">Zum Beispiel</th></tr></thead>
+        <tbody>
+          <tr><td><code>spielfeld</code></td><td>Beschreibt den Raum, unabhängig von allem, was darin geschieht: Größe des Spielfelds, Punkte und Abstände, wo Wände sind und welche Felder ein Wächter überwacht. Der Grundriss selbst bleibt privat; andere Module fragen nur, ob ein Feld begehbar oder eine Wand ist.</td><td><code>punkt_gleich</code>, <code>ueberwacht</code>, <code>begehbar</code></td></tr>
+          <tr><td><code>regeln</code></td><td>Kennt die einstellbaren Spielregeln: Zuglimit, Reichweiten der Wächter und Inventargröße. Liefert die Standardwerte und liest <code>regeln.txt</code> wie im Kapitel „Config“. Wie eine Zeile ausgewertet wird, bleibt in der Quelldatei.</td><td><code>regeln_standard</code>, <code>regeln_laden</code></td></tr>
+          <tr><td><code>spiel.h</code></td><td>Enthält nur Typen, die fast alle anderen Module brauchen: den Spielzustand, Objektart und Objekt, das Inventar und den Spielstand. Es gibt keine Quelldatei dazu, weil diese Typen keine eigenen Funktionen haben. So steht jede Typdefinition genau einmal im Programm.</td><td><code>Spielzustand</code>, <code>Objektart</code>, <code>Objekt</code>, <code>Spielstand</code></td></tr>
+          <tr><td><code>inventar</code></td><td>Verwaltet die verkettete Liste aus dem Kapitel „Dynamischer Speicher und Listen“: Einträge anlegen, suchen, entfernen und freigeben. Das Modul weiß nichts über Tasten, Spielfeld oder Meldungen im Spiel; es arbeitet nur mit der Liste und den Objekten, auf die sie zeigt.</td><td><code>inventar_aufnehmen</code>, <code>inventar_leeren</code></td></tr>
+          <tr><td><code>objekte</code></td><td>Beschreibt, was es im Spiel gibt und wie es sich verhält: alle Objektarten mit ihren Methoden für Leertaste, Betretbarkeit und Betreten. Füllt den Startzustand und beantwortet Fragen wie „Welches Objekt liegt auf diesem Feld?“ oder „Wie sieht dieses Objekt gerade aus?“. Die Arten selbst bleiben privat.</td><td><code>startzustand</code>, <code>objekt_auf</code>, <code>objekt_bild</code></td></tr>
+          <tr><td><code>spiellogik</code></td><td>Führt die Aktionen der Spielerin oder des Spielers aus und hält die Regeln dabei ein: einen Schritt gehen, die Leertaste, Ablegen, Züge zählen und nach jedem Zug das Spielende prüfen. Dazu kommen die Textausgabe des Spielfelds und die Statuszeile. Das Modul weiß nicht, welche Taste gedrückt wurde, und zeichnet nichts ins Fenster.</td><td><code>figur_bewegen</code>, <code>handeln</code>, <code>spielstand_lesen</code></td></tr>
+          <tr><td><code>speicherstand</code></td><td>Schreibt den Spielstand in eine Datei und liest ihn wieder ein, im Format Version 2 aus <code>FORMAT.md</code>. Beim Laden prüft es alle Regeln, bevor es den laufenden Spielstand verändert. Wie eine Datei Wort für Wort gelesen wird, bleibt in der Quelldatei.</td><td><code>spielstand_speichern</code>, <code>spielstand_laden</code></td></tr>
+          <tr><td><code>tresorraub.c</code></td><td>Verbindet das Spiel mit dem Gerüst: Es hält den laufenden Spielstand, übersetzt Tasten in Aufrufe der Spiellogik, liefert die Statuszeile für den Fenstertitel und zeichnet Spielfeld, Inventar und Spielende. Es hat keinen eigenen Header; seine Schnittstelle zum Gerüst ist <code>tresorraub.h</code>.</td><td><code>taste_gedrueckt</code>, <code>zeichne</code></td></tr>
+        </tbody>
+      </table></div>
+      <p>Die Module bauen aufeinander auf: <code>spielfeld</code> braucht niemanden, <code>regeln</code> braucht das Spielfeld, <code>spiel.h</code> beide, und alle weiteren Module brauchen <code>spiel.h</code>. Ganz oben steht <code>tresorraub.c</code>, das alle Module benutzt, aber von keinem benutzt wird. Lesen Sie jetzt alle Header einmal durch. Die Kommentare beschreiben, was jede Funktion tut und was sie zurückgibt.</p>
+      <p>Zwei Dinge sind neu. Der Grundriss ist privat in <code>spielfeld.c</code>; wer wissen will, ob ein Feld eine Wand ist, fragt <code>ist_wand</code>. Und <code>zug_zaehlen_original</code> heißt jetzt <code>zug_zaehlen</code>: Der Zusatz stammt aus dem Kapitel „Pointer und Datenaustausch“, in dem es eine Kopie und ein Original gab. Umbenennen ist ein typischer Teil eines Umbaus, sobald ein Name nicht mehr passt.</p>
+      <form class="self-check" data-hint="Überlegen Sie, was ein Header verspricht und was static für eine Funktion bedeutet.">
+        <fieldset><legend>Welche Aussagen stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Die Objektart „Schlüssel“ kann <code>static</code> in <code>objekte.c</code> stehen, weil kein anderes Modul sie beim Namen braucht.</label>
+          <label><input type="checkbox" data-correct="true"> Eine Hilfsfunktion, die nur <code>spiellogik.c</code> benutzt, steht nicht im Header und ist <code>static</code>.</label>
+          <label><input type="checkbox"> <code>spielfeld.h</code> bindet <code>spiel.h</code> ein, damit es den Spielstand kennt.</label>
+          <label><input type="checkbox"> Weil <code>tresorraub.c</code> keinen eigenen Header hat, kann das Gerüst seine Funktionen nicht aufrufen.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Richtig sind die ersten beiden Aussagen. Das Spielfeld steht ganz unten und kennt den Spielstand nicht; sonst würden sich die Header gegenseitig einbinden. Das Gerüst ruft die Funktionen aus <code>tresorraub.c</code> über <code>tresorraub.h</code> auf; dieser Header ist die Schnittstelle zwischen Gerüst und Spiel.</p></details>
+      </form>
+    </section>
+
+    <section class="content-section" aria-labelledby="abschnitt-2">
+      <h2 id="abschnitt-2">2. Unit Tests</h2>
+      <p>Das Aufteilen ist ein Refactoring, wie Sie es im Kapitel <a href="../vom-problem-zum-programm/05-erweitern-und-ueberarbeiten.html#refactoring">„Vom Problem zum Programm I“</a> kennengelernt haben: Die Struktur ändert sich, das Verhalten nicht. Dabei ändert sich jede Zeile Ihres Programms in irgendeiner Weise: Sie wandert in eine andere Datei, bekommt ein <code>static</code> dazu oder verliert eines, ruft eine umbenannte Funktion auf. Wie zeigen Sie, dass das Spiel danach noch genau dasselbe tut?</p>
+      <p>Einen Weg kennen Sie: den Vergleichslauf <code>ablauf.c</code>. Er drückt eine feste Folge von Tasten und hält fest, was passiert. Das ist ein <strong>Charakterisierungstest</strong>: Er weiß nicht, was richtig ist, er bemerkt nur, ob sich etwas ändert. Und er prüft nur, was seine Tasten erreichen. Ein Sieg im 60. Zug oder ein abgelehnter Spielstand kommen darin nicht vor.</p>
+      <p>Die Test-Suite <code>module/tests.c</code> arbeitet anders. Jeder Test ruft <strong>eine Funktion über ihren Header</strong> auf und prüft das Ergebnis gegen eine Regel aus den Beschreibungen. So ein Test heißt <strong>Unit Test</strong>, weil er eine einzelne Einheit prüft. Ein Beispiel:</p>
+      <pre><code>/* Entdeckt: Schritt in den Bereich des Waechters auf (1, 5) */
+neuer_stand(&amp;s);
+s.figur = (Punkt){3, 5};
+PRUEFE(figur_bewegen(&amp;s, -1, 0) &amp;&amp; s.zustand == ENTDECKT);</code></pre>
+      <p>Der Test drückt keine Tasten. Er stellt den Spielstand direkt her, den er braucht, ruft genau eine Funktion auf und prüft das Ergebnis. <code>PRUEFE</code> ist ein kleines Makro am Anfang von <code>tests.c</code>: Ist die Bedingung falsch, gibt es die Zeile des Tests und die Bedingung aus. Am Ende steht, wie viele Prüfungen fehlgeschlagen sind.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th scope="col"></th><th scope="col">Vergleichslauf <code>ablauf.c</code></th><th scope="col">Unit Tests <code>tests.c</code></th></tr></thead>
+        <tbody>
+          <tr><td>prüft</td><td>das ganze Spiel über Tasten</td><td>einzelne Funktionen über ihren Header</td></tr>
+          <tr><td>woher die Erwartung kommt</td><td>aus einem früheren Lauf</td><td>aus den Regeln in den Beschreibungen</td></tr>
+          <tr><td>was er findet</td><td>dass sich etwas geändert hat</td><td>welche Funktion welche Regel verletzt</td></tr>
+          <tr><td>was er nicht findet</td><td>Fehler, die schon im alten Programm steckten: Sie stehen auch in <code>vorher.txt</code> und fallen beim Vergleich deshalb nicht auf. Außerdem Fälle, die seine Tasten nicht erreichen.</td><td>Fehler im Zusammenspiel, die kein Test vorsieht</td></tr>
+        </tbody>
+      </table></div>
+      <p>Bei einem größeren Umbau sind umfassende Unit Tests besonders wertvoll. Nach jedem Schritt zeigen sie in Sekunden, ob die Funktionalität erhalten geblieben ist, und wenn nicht, an welcher Stelle. Je mehr Regeln die Tests abdecken, desto mutiger können Sie umbauen. In diesem Kurs bekommen Sie die Test-Suite geliefert. In Ihrem Projekt lohnt es sich, für die wichtigsten Regeln selbst solche Tests zu schreiben.</p>
+      <form class="self-check" data-hint="Vergleichen Sie, woher die beiden Prüfungen wissen, was richtig ist.">
+        <fieldset><legend>Welche Aussagen stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Hätte Ihr Spiel schon in Teil 1 einen Sieg im 60. Zug falsch behandelt, würde der Vergleichslauf das in Teil 2 nicht bemerken.</label>
+          <label><input type="checkbox" data-correct="true"> Ein Unit Test kann einen Spielstand herstellen, den man mit Tasten nur mühsam erreicht.</label>
+          <label><input type="checkbox"> Wenn alle Unit Tests bestehen, ist das Spiel fehlerfrei.</label>
+          <label><input type="checkbox"> Ein Unit Test für <code>figur_bewegen</code> braucht ein Fenster.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Richtig sind die ersten beiden Aussagen. Der Vergleichslauf vergleicht nur mit einem früheren Lauf und erreicht den 60. Zug nicht. Tests zeigen nur die Fehler, nach denen sie suchen. <code>figur_bewegen</code> arbeitet nur mit dem Spielstand und braucht kein Fenster; deshalb lässt sich die Spiellogik getrennt vom Zeichnen prüfen.</p></details>
+      </form>
+    </section>
+
+    <section class="content-section" aria-labelledby="aufgabe-module">
+      <h2 id="aufgabe-module">3. Aufgabe: Das Spiel in Module aufteilen</h2>
+      <p>Verteilen Sie Ihren Code aus Teil 1 auf die Module. Die Header verändern Sie nicht; passen Sie Ihren Code an sie an. Am Ende gilt:</p>
+      <ul>
+        <li>Im Ordner <code>module/</code> gibt es zu jedem Header außer <code>spiel.h</code> eine Quelldatei und dazu <code>tresorraub.c</code> mit den Funktionen für das Gerüst.</li>
+        <li>Jede Funktion, die nicht im Header steht, ist <code>static</code>. Auch der Grundriss und die Objektarten sind <code>static</code>.</li>
+        <li><code>make -C module test</code> meldet <code>0 fehlgeschlagen</code>.</li>
+        <li>Der Vergleichslauf der Module liefert dieselbe Ausgabe wie Ihr <code>vorher.txt</code> von Seite 2.</li>
+      </ul>
+      <p>Arbeiten Sie in kleinen Schritten, nach denen jeweils alles übersetzt:</p>
+      <ol>
+        <li><strong>Gerüst anlegen.</strong> Kopieren Sie Ihre <code>tresorraub.c</code> in den Ordner <code>module/</code>. Legen Sie dort die sechs Quelldateien <code>spielfeld.c</code>, <code>regeln.c</code>, <code>inventar.c</code>, <code>objekte.c</code>, <code>spiellogik.c</code> und <code>speicherstand.c</code> an, jede zunächst nur mit der Zeile, die ihren eigenen Header einbindet.</li>
+        <li><strong>Header statt eigener Typen.</strong> Ersetzen Sie in <code>module/tresorraub.c</code> Ihre Typen und Konstanten durch <code>#include</code>-Zeilen für die Header. Heißt eine Funktion bei Ihnen anders als im Header oder gibt sie etwas anderes zurück, passen Sie Ihre Funktion an; die Kommentare im Header sind die Vereinbarung. Bringen Sie <code>make -C module test</code> zum Laufen; noch stehen alle Funktionen in <code>tresorraub.c</code>. Spätestens jetzt sollten alle Tests bestehen.</li>
+        <li><strong>Modul für Modul verschieben,</strong> von unten nach oben: Spielfeld, Regeln, Inventar, Objekte, Spiellogik, Speicherstand. Nach jedem Modul: <code>make -C module test</code>. Schlägt danach ein Test fehl, liegt der Fehler im letzten Schritt.</li>
+        <li><strong>Aufräumen.</strong> Was jetzt noch in <code>tresorraub.c</code> steht, gehört zum Gerüst. Prüfen Sie jedes <code>static</code> und jedes <code>#include</code>: Braucht diese Datei es wirklich?</li>
+      </ol>
+      <details><summary>Hinweis: Die ersten Compilermeldungen</summary><p><code>redefinition of 'Punkt'</code> oder <code>conflicting types</code>: Ein Typ steht noch in Ihrer Datei und im Header. Löschen Sie Ihre Fassung. <code>static declaration of '…' follows non-static declaration</code>: Der Header macht eine Funktion öffentlich, die bei Ihnen <code>static</code> ist. Entfernen Sie das <code>static</code>. <code>implicit declaration of function 'ist_wand'</code>: Diese Funktion gibt es bei Ihnen noch nicht; schreiben Sie sie, bevor Sie den Grundriss nach <code>spielfeld.c</code> verschieben.</p></details>
+      <details><summary>Hinweis: Meldungen des Linkers</summary><p>Wie auf <a href="../header-quellen/02-uebersetzen-und-linken.html#abschnitt-2">Seite 2 des Kapitels „Header und Quelldateien“</a>: <code>multiple definition of '…'</code> heißt, eine Funktion steht jetzt in zwei Quelldateien; löschen Sie sie in <code>tresorraub.c</code>. <code>undefined reference to '…'</code> heißt, eine Funktion aus einem Header ist in keiner Quelldatei definiert, oder sie ist versehentlich <code>static</code>.</p></details>
+      <details><summary>Hinweis: Wohin mit dieser Funktion?</summary><p>Fragen Sie: Wessen Aufgabe ist das? <code>feldzeichen</code> beantwortet eine Frage der Spiellogik (welches Zeichen steht in der Textausgabe), auch wenn sie Objekte kennt. Eine Funktion, die ein Feld im Fenster zeichnet, gehört zu <code>zeichne</code> und damit nach <code>tresorraub.c</code>. Die Methoden der Objektarten stehen bei ihren Arten in <code>objekte.c</code>, auch wenn sie das Inventar benutzen. Was eine Funktion braucht, bindet ihre Quelldatei über den passenden Header ein.</p></details>
+      <details><summary>Hinweis: Wenn ein Test fehlschlägt</summary><p>Öffnen Sie <code>module/tests.c</code> an der genannten Zeile. Darüber steht in einem Kommentar, welche Regel der Test prüft, und die Zeilen davor zeigen, welchen Spielstand er herstellt. Spielen Sie den Fall im Kopf oder mit <code>gdb</code> mit Ihrer Funktion durch. Weicht nur ein Text ab, etwa in der Statuszeile, vergleichen Sie Buchstabe für Buchstabe mit <code>ENDE.md</code> und <code>INVENTAR.md</code>.</p></details>
+      <details><summary>Selbstkontrolle: Wohin gehören diese Funktionen?</summary>
+        <p>Entscheiden Sie zuerst selbst, dann vergleichen Sie mit der Tabelle.</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th scope="col">Funktion oder Wert der Musterlösung</th><th scope="col">Modul</th><th scope="col">öffentlich?</th></tr></thead>
+          <tbody>
+            <tr><td>Grundriss</td><td><code>spielfeld.c</code></td><td>nein, nur über <code>ist_wand</code> und <code>begehbar</code></td></tr>
+            <tr><td>Tabelle der Regelangaben</td><td><code>regeln.c</code></td><td>nein</td></tr>
+            <tr><td>Objektarten und ihre Methoden, auch <code>ausgang_betreten</code></td><td><code>objekte.c</code></td><td>nein</td></tr>
+            <tr><td>Objekt anlegen für den Startzustand</td><td><code>objekte.c</code></td><td>nein</td></tr>
+            <tr><td><code>spielende_pruefen</code>, <code>zug_zaehlen</code></td><td><code>spiellogik.c</code></td><td>ja; <code>zug_zaehlen</code> brauchen auch die Methoden in <code>objekte.c</code></td></tr>
+            <tr><td>Text für den Zusatz in der Statuszeile</td><td><code>spiellogik.c</code></td><td>nein</td></tr>
+            <tr><td>freies Nachbarfeld zum Ablegen suchen</td><td><code>spiellogik.c</code></td><td>nein</td></tr>
+            <tr><td>Struktur <code>Gelesen</code> und das Einlesen einer Datei</td><td><code>speicherstand.c</code></td><td>nein</td></tr>
+            <tr><td>ein Feld im Fenster zeichnen</td><td><code>tresorraub.c</code></td><td>nein</td></tr>
+            <tr><td>der laufende Spielstand</td><td><code>tresorraub.c</code></td><td>nein, <code>static</code> wie im Kapitel <a href="../pointer/04-eingaben-und-bewegung.html#static">„Pointer und Datenaustausch“</a></td></tr>
+          </tbody>
+        </table></div>
+        <p><code>objekte.c</code> und <code>spiellogik.c</code> benutzen sich gegenseitig: Die Methoden zählen Züge, die Bewegung ruft Methoden auf. Das ist erlaubt, weil sie sich über ihre Header kennen und keiner der beiden Header den anderen einbindet.</p>
+      </details>
+    </section>
+
+    <section class="content-section" aria-labelledby="abschnitt-pruefen">
+      <h2 id="abschnitt-pruefen">4. Ihre Lösung prüfen</h2>
+      <pre><code>make -C module test
+./module/ablauf &gt; nachher.txt
+diff vorher.txt nachher.txt</code></pre>
+      <ol>
+        <li>Die Test-Suite endet mit <code>0 fehlgeschlagen</code>. Fehlermeldungen davor wie <code>unbekannte Regel "zuglimt"</code> gehören zu Tests, die genau das prüfen.</li>
+        <li><code>diff</code> zeigt keinen Unterschied. Starten Sie den Vergleichslauf in dem Ordner, in dem <code>vorher.txt</code> und <code>regeln.txt</code> liegen, also mit <code>./module/ablauf</code>.</li>
+        <li>Bauen Sie mit <code>-fsanitize=address</code> wie in der <a href="materialien/tresorraub-ende/README.md">README</a> und lassen Sie die Tests noch einmal laufen. Es darf kein Speicherfehler gemeldet werden.</li>
+        <li>Spielen Sie eine Runde mit <code>./module/programm</code> bis zum Sieg.</li>
+      </ol>
+      <details><summary>Selbstkontrolle: Ein Blick auf die Module</summary><p>In der Musterlösung hat <code>spielfeld.c</code> etwa 50 Zeilen, <code>inventar.c</code> 80, <code>regeln.c</code> 140, <code>tresorraub.c</code> 180, <code>objekte.c</code> 200, <code>spiellogik.c</code> 220 und <code>speicherstand.c</code> 290. Ihre Zahlen dürfen abweichen. Ist eine Ihrer Dateien viel größer als die anderen, prüfen Sie, ob sie mehr als eine Aufgabe hat. Steht in <code>tresorraub.c</code> noch etwas anderes als die Funktionen aus <code>tresorraub.h</code>, das Zeichnen und der laufende Spielstand, gehört es in ein Modul.</p></details>
+      <p class="work-result"><strong>Ihr Ergebnis:</strong> Der Tresorraub besteht aus sechs Modulen mit klaren Schnittstellen und dem Anschluss an das Gerüst. Test-Suite und Vergleichslauf belegen, dass er sich genauso verhält wie vorher.</p>
+    </section>
+
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="02-wasted.html">← Zurück: WASTED: das Spielende zeigen</a></li>
+      <li><a href="04-rueckblick.html">Weiter: Rückblick auf Block 2 →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>
