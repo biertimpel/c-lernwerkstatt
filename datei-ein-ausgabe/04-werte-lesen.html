@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Werte aus einer Datei lesen</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+  <script src="selbstkontrollen.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header><h1>Werte aus einer Datei lesen</h1><p>Mit <code>fscanf</code> Wörter und Zahlen lesen, das Dateiende richtig erkennen und Zahlen sicher prüfen.</p></header>
+    <noscript><p>Ohne JavaScript können Sie die Fragen anhand der aufklappbaren Erklärungen selbst prüfen.</p></noscript>
+
+    <section class="content-section" aria-labelledby="abschnitt-1">
+      <h2 id="abschnitt-1">1. Aus Text wieder Werte lesen: <code>fscanf</code></h2>
+      <p>Zum Lesen öffnen Sie die Datei mit <code>fopen</code> im Modus <code>"r"</code>. Danach liest Ihr Programm den Dateiinhalt. Die Datei muss dafür nicht im Texteditor geöffnet sein.</p>
+      <p><code>fscanf</code> arbeitet ähnlich wie das bekannte <code>scanf</code>. Als ersten Parameter erhält es zusätzlich die Dateiverbindung; <code>scanf(…)</code> ist dasselbe wie <code>fscanf(stdin, …)</code>. Die weiteren Parameter geben das Format und die Ziele für die gelesenen Werte an. Die Ziele übergeben Sie wie bei <code>scanf</code> als Adressen.</p>
+      <pre><code>int gelesen = fscanf(datei, "%d", &amp;wert);</code></pre>
+      <p>Für eine einzelne Zahl erwarten Sie den Rückgabewert <code>1</code>. Er bedeutet, dass genau ein Wert erfolgreich zugewiesen wurde. Steht dort ein Wort statt einer Zahl, liefert die Funktion <code>0</code>. Ist schon vor der ersten Zuweisung das Dateiende erreicht oder ein Lesefehler aufgetreten, liefert sie <code>EOF</code>. Nur nach der erwarteten Anzahl erfolgreicher Zuweisungen dürfen Sie mit den gelesenen Werten weiterarbeiten.</p>
+      <p>Für Wörter verwenden Sie <code>%s</code> mit einer Längenbegrenzung. Bei einem Array mit 16 Zeichen lässt <code>%15s</code> Platz für höchstens 15 gelesene Zeichen und das abschließende Nullzeichen.</p>
+      <pre><code>char wort[16];
+int gelesen = fscanf(datei, "%15s", wort);</code></pre>
+      <p>Das Array übergeben Sie hier ohne zusätzliches <code>&amp;</code>, wie im Kapitel <a href="../pointer/01-werte-und-speicheradressen.html#abschnitt-2">„Pointer und Datenaustausch“</a> behandelt. <code>%s</code> überspringt zunächst Leerzeichen und Zeilenumbrüche und liest dann bis zum nächsten Leerraum. Jeder erfolgreiche Leseaufruf setzt die Position in der Datei weiter. Der nächste Aufruf liest dort weiter. Kennwörter wie <code>FIGUR</code> vergleichen Sie nach dem Einlesen mit <code>strcmp</code>.</p>
+    </section>
+
+    <section class="content-section" aria-labelledby="abschnitt-2">
+      <h2 id="abschnitt-2">2. Das Dateiende richtig erkennen</h2>
+      <p>Die Funktion <code>feof(datei)</code> meldet, ob ein Leseversuch bereits <em>über</em> das Dateiende hinaus gelesen hat. Sie sagt nicht voraus, ob der nächste Leseversuch noch etwas findet. Eine häufige Falle sieht deshalb so aus:</p>
+      <pre><code>/* Falsch: zählt den letzten Wert doppelt */
+while (!feof(datei)) {
+    fscanf(datei, "%d", &amp;wert);
+    summe += wert;
+}</code></pre>
+      <p>Probieren Sie es aus: Schreiben Sie mit Ihrem Programm aus <a href="01-erste-datei.html#aufgabe-erste-datei">Seite 1</a> eine Datei mit der Zeile <code>4 8 15</code>, lesen Sie sie mit dieser Schleife und geben Sie Summe und Zahl der Durchläufe aus. Notieren Sie vorher Ihre Erwartung. Schreiben Sie die Schleife dann so, dass sie den Rückgabewert von <code>fscanf</code> als Bedingung verwendet.</p>
+      <details><summary>Selbstkontrolle: Die Falle mit <code>feof</code></summary><p>Die falsche Schleife läuft viermal und liefert 42 statt 27. Nach dem Lesen von 15 ist das Dateiende noch nicht „bemerkt“. Der vierte Aufruf von <code>fscanf</code> scheitert und liefert <code>EOF</code>; <code>wert</code> behält 15, und 15 wird ein zweites Mal addiert. Richtig ist <code>while (fscanf(datei, "%d", &amp;wert) == 1)</code>. Erst nach dem Ende der Schleife fragen Sie mit <code>feof</code> und <code>ferror</code>, warum sie geendet hat: Dateiende, Lesefehler oder ein Text, der keine Zahl ist.</p></details>
+    </section>
+
+    <section class="content-section" aria-labelledby="abschnitt-3">
+      <h2 id="abschnitt-3">3. Zahlen aus einer veränderten Datei prüfen</h2>
+      <p>Eine Speicherdatei kann von Hand verändert worden sein. Die Prüfung „eine Zahl gelesen“ genügt deshalb nicht immer. Insbesondere lässt sich eine Zahl, die gar nicht in <code>int</code> passt, mit <code>%d</code> nicht zuverlässig abfangen; das Verhalten ist dann nicht festgelegt. Für solche Dateien lesen Sie die Zahl zuerst als begrenztes Wort ein und wandeln dieses danach mit <code>strtol</code> um.</p>
+      <p><code>strtol</code> aus <code>&lt;stdlib.h&gt;</code> wandelt einen Text in eine Zahl vom Typ <code>long</code> um. Die <code>10</code> steht für das Dezimalsystem. Über den zweiten Parameter schreibt die Funktion in den Pointer <code>ende</code>, wo die erkannte Zahl im Text endet. Damit sie den Pointer <code>ende</code> verändern kann, erhält sie dessen Adresse <code>&amp;ende</code>.</p>
+      <pre><code>char text[] = "12";
+char *ende;
+errno = 0;
+long zahl = strtol(text, &amp;ende, 10);</code></pre>
+      <p><code>errno</code> kennen Sie von <a href="01-erste-datei.html#abschnitt-6"><code>perror</code></a>. Vor diesem Aufruf setzen Sie sie auf <code>0</code>. Ist die Zahl selbst für <code>long</code> zu groß oder zu klein, meldet <code>strtol</code> dort <code>ERANGE</code>. Prüfen Sie nach dem Umwandeln die folgenden Bedingungen.</p>
+      <ul>
+        <li><code>ende != text</code>: Mindestens eine Ziffer wurde verarbeitet.</li>
+        <li><code>*ende == '\0'</code>: Das ganze Wort war eine Zahl. Bei <code>12abc</code> zeigt <code>ende</code> auf das <code>a</code>; dieses Wort wird abgelehnt.</li>
+        <li><code>errno != ERANGE</code>: Der Wertebereich von <code>long</code> wurde nicht überschritten.</li>
+        <li>Die Zahl liegt zwischen <code>INT_MIN</code> und <code>INT_MAX</code> aus <code>&lt;limits.h&gt;</code>, bevor sie als <code>int</code> gespeichert wird.</li>
+      </ul>
+      <p>Erst danach prüfen Sie die Spielregel für den Wert, etwa „Zugzahl nicht negativ“ oder „Türzustand ist 0 oder 1“. Die Prüfung des Datentyps und die Prüfung der Spielregel sind zwei verschiedene Schritte.</p>
+      <form class="self-check" data-hint="Überlegen Sie für jedes Wort, wohin ende nach strtol zeigt.">
+        <fieldset><legend>Welche Wörter weist eine Prüfung nach diesen vier Bedingungen als Zahl für ein <code>int</code> ab?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox"> <code>-1</code></label>
+          <label><input type="checkbox" data-correct="true"> <code>12abc</code></label>
+          <label><input type="checkbox" data-correct="true"> <code>FIGUR</code></label>
+          <label><input type="checkbox" data-correct="true"> <code>999999999999999999999999</code></label>
+          <label><input type="checkbox"> <code>0</code></label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p><code>12abc</code> hat einen Rest, bei <code>FIGUR</code> bleibt <code>ende</code> am Anfang, und die lange Zahl führt zu <code>ERANGE</code>. <code>-1</code> und <code>0</code> sind gültige <code>int</code>-Werte; ob eine negative Zugzahl erlaubt ist, entscheidet erst die Spielregel.</p></details>
+      </form>
+    </section>
+
+    <section class="content-section" aria-labelledby="abschnitt-4">
+      <h2 id="abschnitt-4">4. Weitere Funktionen zum Lesen und Schreiben</h2>
+      <p>Für den Spielstand genügen <code>fprintf</code> und <code>fscanf</code>. <code>&lt;stdio.h&gt;</code> bietet daneben Funktionen, die zeichenweise oder zeilenweise arbeiten:</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th scope="col">Funktion</th><th scope="col">Wirkung</th><th scope="col">Ende oder Fehler</th></tr></thead>
+        <tbody>
+          <tr><td><code>fgetc(datei)</code></td><td>liest ein Zeichen und liefert es als <code>int</code></td><td><code>EOF</code>; deshalb das Ergebnis in einem <code>int</code> speichern, nicht in einem <code>char</code></td></tr>
+          <tr><td><code>fputc(zeichen, datei)</code></td><td>schreibt ein Zeichen</td><td><code>EOF</code></td></tr>
+          <tr><td><code>fgets(zeile, groesse, datei)</code></td><td>liest eine Zeile, höchstens <code>groesse − 1</code> Zeichen</td><td><code>NULL</code></td></tr>
+          <tr><td><code>fputs(text, datei)</code></td><td>schreibt eine Zeichenkette ohne Platzhalter</td><td><code>EOF</code></td></tr>
+        </tbody>
+      </table></div>
+      <p><code>fgets</code> setzen Sie im Kapitel <a href="../config/01-zeilen-lesen.html">„Config“</a> ein, um eine Datei Zeile für Zeile auszuwerten.</p>
+      <p>Zum Nachschlagen: <a href="https://man7.org/linux/man-pages/man3/fscanf.3.html">fscanf</a>, <a href="https://man7.org/linux/man-pages/man3/strtol.3.html">strtol</a>, <a href="https://man7.org/linux/man-pages/man3/ferror.3.html">feof und ferror</a>, <a href="https://man7.org/linux/man-pages/man3/fgetc.3.html">fgetc und fgets</a>, <a href="https://man7.org/linux/man-pages/man3/fputc.3.html">fputc und fputs</a>.</p>
+    </section>
+
+    <section class="content-section" aria-labelledby="aufgabe-kopf">
+      <h2 id="aufgabe-kopf">5. Aufgabe: Den Kopf eines Spielstands lesen</h2>
+      <p>Bevor Sie auf der nächsten Seite einen ganzen Spielstand laden, üben Sie das Lesen am Anfang der Datei. Schreiben Sie in <code>text_ausgeben</code> einen Versuch, der <code>beispiele/start.txt</code> öffnet und die ersten beiden Zeilen liest: das Kennwort <code>TRESORRAUB</code> mit der Versionsnummer und das Kennwort <code>FIGUR</code> mit den beiden Koordinaten. Zahlen lesen Sie als Wort und prüfen sie mit <code>strtol</code> wie in Abschnitt 3. Geben Sie die gelesenen Werte aus oder melden Sie auf <code>stderr</code>, was nicht stimmt. Schließen Sie die Datei in jedem Fall.</p>
+      <p>Die Hilfsfunktionen, die hier entstehen, zum Beispiel „ein Kennwort erwarten“ oder „eine Zahl lesen“, können Sie auf der nächsten Seite weiterverwenden. Wie Sie sie zuschneiden, entscheiden Sie.</p>
+      <p>Prüfen Sie Ihren Versuch mit Kopien der Datei, die Sie in Ihrem Editor verändern:</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th scope="col">Erste Zeilen der Kopie</th><th scope="col">Erwartetes Ergebnis</th></tr></thead>
+        <tbody>
+          <tr><td>unverändert</td><td>Version 1, Figur auf (3, 7)</td></tr>
+          <tr><td><code>TRESORRAUB 1</code> / <code>FIGUR 3 sieben</code></td><td>Meldung: y ist keine Zahl</td></tr>
+          <tr><td><code>TRESORRAUB 1</code> / <code>FIGUR 3 7x</code></td><td>Meldung: y ist keine Zahl</td></tr>
+          <tr><td><code>TRESORRAUB 1</code> / <code>POSITION 3 7</code></td><td>Meldung: Kennwort <code>FIGUR</code> erwartet</td></tr>
+          <tr><td>leere Datei</td><td>Meldung: Kennwort <code>TRESORRAUB</code> fehlt</td></tr>
+          <tr><td><code>TRESORRAUB 99999999999999999999</code></td><td>Meldung: Version ist keine gültige Zahl</td></tr>
+        </tbody>
+      </table></div>
+      <details><summary>Selbstkontrolle: Ihr Versuch</summary><p>Ihr Code prüft bei jedem <code>fscanf</code>, ob er 1 liefert, und vergleicht Kennwörter mit <code>strcmp</code>. Zahlen gehen über ein begrenztes Wort und <code>strtol</code> mit allen vier Bedingungen. Nach dem ersten Fehler liest er nicht weiter, schließt die Datei genau einmal und gibt eine Meldung aus, an der man erkennt, was nicht stimmt. Die Koordinaten prüfen Sie hier nur als Zahlen; ob die Figur auf einem begehbaren Feld steht, folgt auf <a href="06-fehler-behandeln.html">Seite 6</a>.</p></details>
+      <p class="work-result"><strong>Ihr Ergebnis:</strong> Hilfsfunktionen, die Kennwörter und Zahlen aus einer Datei sicher lesen, und ein Versuch, der ihre Fehlerfälle zeigt.</p>
+    </section>
+
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="03-spielstand-speichern.html">← Zurück: Den aktuellen Spielstand speichern</a></li>
+      <li><a href="05-spielstand-laden.html">Weiter: Einen Spielstand wiederherstellen →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>

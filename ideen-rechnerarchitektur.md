@@ -36,6 +36,53 @@ nicht zu überfordern.
   vorher eingeführt? (Im Grundkurs bisher nicht, nur Binärdarstellung auf
   der Seite „Datentypen“.)
 
+### Stack und Heap erklären
+
+- **Idee:** Erklären, wie Stack und Heap organisiert sind: Stack-Frames bei
+  Funktionsaufrufen (Rücksprungadresse, Parameter, lokale Variablen,
+  Stack-Pointer), Wachstumsrichtung, Grenzen der Stackgröße; Heap als vom
+  Laufzeitsystem verwalteter Bereich, wie `malloc` und `free` Blöcke
+  vergeben und zurücknehmen, Fragmentierung.
+- **Betroffenes Kapitel:** Speicherorganisation und Funktionsaufrufe;
+  Anknüpfung an „Dynamischer Speicher und Listen“ aus dem Grundkurs.
+- **Nutzen für die Studierenden:** Der Grundkurs führt die Begriffe nur ein
+  (Seite „Lebensdauer und Speicherbereiche“, Abschnitt 2: Stack für lokale
+  Variablen fester Größe, Heap für dynamisch angeforderten Speicher) und
+  verweist für die Theorie ausdrücklich auf „Betriebs- und
+  Kommunikationssysteme“ und „Rechnerarchitektur“. Diese Zusage muss hier
+  eingelöst werden.
+- **Mögliche Umsetzung:**
+  - Speicherbild aus dem Grundkurs aufgreifen und verfeinern.
+  - Versuch: Adressen lokaler Variablen in verschachtelten Aufrufen und von
+    `malloc`-Blöcken ausgeben und die Lage der Bereiche vergleichen.
+  - Den Versuch „Adresse einer lokalen Variablen zurückgeben“ aus dem
+    Grundkurs mit Stack-Frames erklären.
+- **Offene Fragen:** Abgrenzung zu „Betriebs- und Kommunikationssysteme“:
+  Was erklärt welche Vorlesung (z. B. virtueller Speicher dort)?
+
+### Verkettete Listen im Speicherbild
+
+- **Idee:** Eine verkettete Liste Schritt für Schritt im Speicherbild
+  zeigen: Wo liegen der Kopf-Pointer (statische Daten oder Stack), wo die
+  einzelnen Knoten (Heap), welche Adressen stehen in den
+  Nachfolger-Pointern, und wie verändert sich das Bild beim Einfügen,
+  Entfernen und Freigeben.
+- **Betroffenes Kapitel:** Speicherorganisation, Stack und Heap; Anknüpfung
+  an „Dynamischer Speicher und Listen“ aus dem Grundkurs.
+- **Nutzen für die Studierenden:** Der Grundkurs zeigt Listen bewusst nur
+  als Kästchen-und-Pfeile-Skizze (Seite „Eine verkettete Liste“). Das
+  Speicherbild macht sichtbar, dass Knoten verstreut auf dem Heap liegen,
+  dass ein Pfeil nur eine gespeicherte Adresse ist und was nach `free` mit
+  einem Bereich passiert (Use-after-free, Leck bei verlorenem Pointer).
+- **Mögliche Umsetzung:**
+  - Die Speicheransicht der Pointer-Lektion (`pointer/speicheransicht.js`)
+    um einen Heap-Bereich und Beispiele für Listen erweitern: vorne
+    einfügen, Knoten in der Mitte entfernen, Liste leeren.
+  - Versuch in C: Adressen von Kopf und Knoten mit `%p` ausgeben und mit
+    dem Speicherbild vergleichen.
+- **Offene Fragen:** Gemeinsam mit dem Eintrag „Stack und Heap erklären“
+  behandeln?
+
 ## Vorlage für eine Idee
 
 - **Idee:**

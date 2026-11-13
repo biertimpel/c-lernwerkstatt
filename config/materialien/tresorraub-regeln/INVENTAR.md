@@ -34,9 +34,11 @@ Es gibt drei Gegenstände. Ihre Namen im Programm sind:
 | Pfeiltasten | Figur bewegen                            |
 | Leertaste   | Gegenstand aufnehmen oder Tür öffnen     |
 | L           | alle Gegenstände ablegen                 |
+| F5          | Spielstand speichern (`FORMAT.md`)       |
+| F9          | Spielstand laden (`FORMAT.md`)           |
 | Escape      | Programm beenden                         |
 
-Nach der Leertaste und nach L gibt Ihr Programm im Terminal eine kurze
+Nach der Leertaste, nach L, F5 und F9 gibt Ihr Programm im Terminal eine kurze
 Meldung aus, zum Beispiel was aufgenommen wurde oder warum nicht.
 
 ## Leertaste: aufnehmen und Tür öffnen

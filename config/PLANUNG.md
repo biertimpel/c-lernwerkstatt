@@ -65,10 +65,8 @@ und Leitfragen, kein Lösungsweg. Entwurf:
 
 - Das Spielgerüst bleibt unverändert. Eine Option wie `--config datei` ist
   deshalb nicht möglich; die Datei hat einen festen Namen.
-- Startmaterial = Musterlösung von „Datei-Ein- und -Ausgabe“ ohne Versuche.
-  Bis dieses Kapitel vorliegt, dient der Endstand von „Dynamischer Speicher
-  und Listen“ als Platzhalter. Branch `feature/config` baut vorerst auf
-  `feature/dynamischer-speicher` auf.
+- Startmaterial = Musterlösung von „Datei-Ein- und -Ausgabe“ (mit F5/F9).
+  Branch `feature/config` enthält `feature/datei-ein-ausgabe` per Merge.
 
 ## Entscheidungen
 
@@ -81,12 +79,20 @@ und Leitfragen, kein Lösungsweg. Entwurf:
 - Datei fehlerhaft: erster Fehler mit Zeilennummer nach `stderr`, keine
   Werte übernommen („alles oder nichts“), negative Rückgabe.
 - Fehlende Regeln in der Datei: Standardwerte.
+- Spielstände (F9) werden mit den geltenden Regeln geladen. Mehr
+  Inventareinträge als `inventar_groesse`: Laden mit Meldung abbrechen,
+  laufender Spielstand bleibt (Beschluss 13.11.).
 
 ## Seiten
 
+Gekürzt am 13.11., damit nichts aus „Datei-Ein- und -Ausgabe“ doppelt geübt
+wird (Weckzeit-Aufgabe, `fgets`-Grundlagen, fehlende Datei, Teile der
+`strtol`-Tabelle entfallen).
+
 1. Eine Textdatei Zeile für Zeile lesen (`fgets`, Zeilennummern,
    Kommentare, zu lange Zeilen; Versuche mit `wecker.txt`)
-2. Name und Wert auswerten (`strchr`, `sscanf` für den Namen, `strtol` mit
-   Endzeiger, Bereich; Aufgabe: Weckzeit einlesen)
+2. Name und Wert auswerten (`strchr`, `sscanf` für den Namen, `strtol` als
+   Wiederholung aus dem Datei-Kapitel mit Leerraum nach der Zahl, Bereich;
+   nur Versuche)
 3. Aufgabe: Spielregeln aus `regeln.txt` lesen; Prüftabelle; Ausblick
    „Eigene Level“ aufklappbar

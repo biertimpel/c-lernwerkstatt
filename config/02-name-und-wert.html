@@ -31,17 +31,14 @@
 
     <section class="content-section" aria-labelledby="abschnitt-2">
       <h2 id="abschnitt-2">2. Den Wert in eine Zahl umwandeln</h2>
-      <p>Hinter dem <code>=</code> steht Text, Ihr Programm braucht aber eine Zahl. Für die Umwandlung bietet die Standardbibliothek mehrere Funktionen an. Schlagen Sie <code>strtol</code> nach: Was bedeuten die drei Parameter? Wohin zeigt der Endzeiger nach dem Aufruf?</p>
+      <p>Hinter dem <code>=</code> steht Text, Ihr Programm braucht aber eine Zahl. <code>strtol</code> und seinen Endzeiger kennen Sie aus dem Kapitel <a href="../datei-ein-ausgabe/04-werte-lesen.html#abschnitt-3">„Datei-Ein- und -Ausgabe“</a>. Dort war jede Zahl ein eigenes Wort, und nach der Zahl durfte nichts mehr folgen. Hier ist der Wert der Rest einer Zeile: Vor und nach der Zahl dürfen Leerzeichen stehen, und am Ende steht meist das <code>'\n'</code>. Die Bedingung „<code>*ende == '\0'</code>“ ist deshalb zu streng.</p>
       <p>Probieren Sie <code>strtol(text, &amp;ende, 10)</code> mit den folgenden Texten aus und geben Sie jeweils den Wert und den Rest ab <code>ende</code> in eckigen Klammern aus. Füllen Sie die Tabelle zuerst mit Ihrer Erwartung.</p>
       <div class="table-wrap"><table>
         <thead><tr><th scope="col">Text</th><th scope="col">Ihre Erwartung: Wert</th><th scope="col">Ihre Erwartung: Rest</th></tr></thead>
         <tbody>
           <tr><td><code>" 45\n"</code></td><td></td><td></td></tr>
           <tr><td><code>"45 Minuten"</code></td><td></td><td></td></tr>
-          <tr><td><code>"4.5"</code></td><td></td><td></td></tr>
           <tr><td><code>"  \n"</code></td><td></td><td></td></tr>
-          <tr><td><code>"-3"</code></td><td></td><td></td></tr>
-          <tr><td><code>"0x10"</code></td><td></td><td></td></tr>
         </tbody>
       </table></div>
       <details><summary>Selbstkontrolle: Ergebnisse</summary>
@@ -50,16 +47,13 @@
           <tbody>
             <tr><td><code>" 45\n"</code></td><td>45</td><td><code>"\n"</code></td></tr>
             <tr><td><code>"45 Minuten"</code></td><td>45</td><td><code>" Minuten"</code></td></tr>
-            <tr><td><code>"4.5"</code></td><td>4</td><td><code>".5"</code></td></tr>
             <tr><td><code>"  \n"</code></td><td>0</td><td><code>ende</code> zeigt auf den Anfang von <code>text</code></td></tr>
-            <tr><td><code>"-3"</code></td><td>−3</td><td><code>""</code></td></tr>
-            <tr><td><code>"0x10"</code></td><td>0</td><td><code>"x10"</code></td></tr>
           </tbody>
         </table></div>
-        <p>Führender Leerraum wird übersprungen, danach liest <code>strtol</code> so viele Ziffern wie möglich. Steht gar keine Zahl da, ist das Ergebnis 0, und <code>ende</code> bleibt am Anfang. Ob der ganze Wert eine Zahl war, verrät also erst der Endzeiger: Er darf nicht am Anfang stehen, und dahinter darf nur Leerraum folgen.</p>
+        <p>Führender Leerraum wird übersprungen, danach liest <code>strtol</code> so viele Ziffern wie möglich. Steht gar keine Zahl da, ist das Ergebnis 0, und <code>ende</code> bleibt am Anfang. Ob der ganze Wert eine Zahl war, verrät also erst der Endzeiger: Er darf nicht am Anfang stehen, und dahinter darf nur Leerraum folgen. Für Leerraum gibt es <code>isspace</code> aus <code>&lt;ctype.h&gt;</code>.</p>
       </details>
       <p>Zwei Abkürzungen sind verlockend, aber für eine Config ungeeignet: <code>atoi("4x")</code> liefert 4 und meldet nichts. <code>sscanf(text, "%d", &amp;wert)</code> liefert für <code>"45 Minuten"</code> die Rückgabe 1, der Rest fällt ebenfalls nicht auf. Ein Tippfehler in der Datei würde so still zu einem falschen Wert.</p>
-      <p>Zum Schluss prüfen Sie den Bereich: Eine Stunde liegt zwischen 0 und 23, eine Minute zwischen 0 und 59. Ein Wert wie <code>99999999999999999999</code> passt nicht einmal in ein <code>long</code>; <code>strtol</code> liefert dann den größten möglichen Wert, und auch der fällt bei der Bereichsprüfung auf.</p>
+      <p>Zum Schluss prüfen Sie den Bereich: Eine Stunde liegt zwischen 0 und 23, eine Minute zwischen 0 und 59. Ein Wert wie <code>99999999999999999999</code> passt nicht einmal in ein <code>long</code>; <code>strtol</code> liefert dann den größten möglichen Wert und setzt <code>errno</code> auf <code>ERANGE</code>. Weil die erlaubten Bereiche hier klein sind, fällt auch dieser Wert schon bei der Bereichsprüfung auf; die Prüfung von <code>errno</code> schadet aber nicht.</p>
       <form class="self-check" data-hint="Spielen Sie jede Zeile mit strtol im Kopf durch: Wo steht ende danach, und was folgt dahinter?">
         <fieldset><legend>Welche Werte für <code>minute</code> soll Ihr Programm als Fehler melden?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
           <label><input type="checkbox"> <code>minute = 45</code></label>
@@ -71,34 +65,7 @@
         </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
         <details><summary>Erklärung anzeigen</summary><p>Fehler sind „45 Minuten“ und „4.5“ (nach der Zahl folgt mehr als Leerraum), der leere Wert (<code>ende</code> bleibt am Anfang) und 60 (außerhalb von 0 bis 59). Leerzeichen vor und nach der Zahl sind erlaubt.</p></details>
       </form>
-    </section>
-
-    <section class="content-section" aria-labelledby="aufgabe-weckzeit">
-      <h2 id="aufgabe-weckzeit">3. Aufgabe: Die Weckzeit einlesen</h2>
-      <p>Schreiben Sie eine Funktion, die <code>wecker.txt</code> liest und die Weckzeit in eine Struktur mit <code>stunde</code> und <code>minute</code> schreibt. Rufen Sie sie in <code>text_ausgeben</code> auf und geben Sie die Uhrzeit aus, zum Beispiel <code>Weckzeit 06:45</code>. Die Funktion soll:</p>
-      <ul>
-        <li>Leerzeilen und Kommentare überspringen,</li>
-        <li>jede andere Zeile in Name und Wert zerlegen und die Zahl mit <code>strtol</code> prüfen,</li>
-        <li>nur die Namen <code>stunde</code> und <code>minute</code> annehmen und ihre Bereiche prüfen,</li>
-        <li>beim ersten Fehler aufhören und ihn mit Zeilennummer und Grund melden, zum Beispiel <code>wecker.txt, Zeile 4: Wert von "minute" ist keine ganze Zahl</code>,</li>
-        <li>die Datei in jedem Fall wieder schließen und dem Aufrufer über ihre Rückgabe mitteilen, ob alles geklappt hat.</li>
-      </ul>
-      <p>Wie Sie die Funktion aufteilen und welche Parameter sie bekommt, entscheiden Sie. Fehlermeldungen gehören nach <code>stderr</code>; schlagen Sie dazu <code>fprintf</code> nach.</p>
-      <details><summary>Hinweis: Aufteilung</summary><p>Eine Funktion für das Öffnen, die Schleife und das Schließen, und eine zweite für eine einzelne Zeile, halten den Code übersichtlich. Die zweite kann den Grund eines Fehlers mit <code>snprintf</code> in ein Array schreiben, das die erste dann zusammen mit der Zeilennummer ausgibt. <code>snprintf</code> kennen Sie aus dem Kapitel <a href="../datenstrukturen/02-zeichenketten.html">„Datenstrukturen“</a>.</p></details>
-      <details><summary>Hinweis: Was gilt, wenn nur eine Angabe in der Datei steht?</summary><p>Legen Sie vor dem Lesen Standardwerte fest, zum Beispiel 7:00 Uhr. Was die Datei nicht nennt, behält dann seinen Standardwert.</p></details>
-      <p>Prüfen Sie Ihre Funktion, indem Sie <code>wecker.txt</code> nacheinander so verändern:</p>
-      <div class="table-wrap"><table>
-        <thead><tr><th scope="col">Inhalt</th><th scope="col">Erwartetes Ergebnis</th></tr></thead>
-        <tbody>
-          <tr><td>unverändert</td><td><code>Weckzeit 06:45</code></td></tr>
-          <tr><td>nur <code>stunde = 9</code></td><td><code>Weckzeit 09:00</code>: Stunde aus der Datei, Minute vom Standard 7:00</td></tr>
-          <tr><td>Zeile 2 lautet <code>stunde = 24</code></td><td>Fehler in Zeile 2: Wert außerhalb von 0 bis 23</td></tr>
-          <tr><td>Zeile 4 lautet <code>sekunde = 10</code></td><td>Fehler in Zeile 4: unbekannter Name</td></tr>
-          <tr><td>Zeile 4 lautet <code>minute 45</code></td><td>Fehler in Zeile 4: kein <code>=</code></td></tr>
-          <tr><td>Datei umbenannt</td><td>Meldung, dass die Datei fehlt</td></tr>
-        </tbody>
-      </table></div>
-      <p class="work-result"><strong>Ihr Ergebnis:</strong> Eine Funktion, die eine Datei mit Zeilen der Form <code>name = wert</code> liest, jede Angabe prüft und Fehler mit Zeilennummer meldet.</p>
+      <p class="work-result"><strong>Ihr Ergebnis:</strong> Versuche, die eine Zeile in Name und Wert zerlegen, den Namen prüfen und den Wert sicher in eine Zahl umwandeln. Diese Bausteine setzen Sie auf Seite 3 zusammen.</p>
     </section>
 
     <nav aria-label="Seitennavigation"><ul class="navlinks">
