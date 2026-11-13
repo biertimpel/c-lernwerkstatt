@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Strukturen</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+  <script src="selbstkontrollen.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header><h1>Strukturen</h1><p>Werte unterschiedlicher Bedeutung zu einem eigenen Datentyp zusammenfassen.</p></header>
+    <noscript><p>Ohne JavaScript können Sie die Fragen anhand der aufklappbaren Erklärungen selbst prüfen.</p></noscript>
+    <section class="content-section" aria-labelledby="abschnitt-1">
+      <h2 id="abschnitt-1">1. Werte, die zusammengehören</h2>
+      <p>Eine Position im Spielfeld besteht aus zwei Koordinaten. Mit zwei getrennten Variablen müssen Sie bei jeder Funktion zwei Parameter übergeben und darauf achten, dass x und y nicht vertauscht werden. Eine Funktion kann außerdem nur einen Wert zurückgeben, also keine ganze Position.</p>
+      <p>Eine <strong>Struktur</strong> fasst mehrere Werte zu einem neuen Datentyp zusammen. Die einzelnen Werte heißen <strong>Felder</strong> und dürfen unterschiedliche Typen haben. Ein Beispiel, das nichts mit dem Spiel zu tun hat:</p>
+      <pre><code>typedef struct {
+    int stunde;
+    int minute;
+} Uhrzeit;
+
+Uhrzeit beginn = {8, 30};
+Uhrzeit ende = {.stunde = 10, .minute = 0};
+printf("%d:%02d\n", beginn.stunde, beginn.minute);</code></pre>
+      <p>Mit <code>typedef</code> erhält der neue Typ den Namen <code>Uhrzeit</code>. Ein Feld erreichen Sie mit einem Punkt: <code>beginn.minute</code>. Bei der Initialisierung können Sie die Werte in der Reihenfolge der Felder angeben oder die Felder mit Namen ansprechen.</p>
+      <h3>Mit und ohne <code>typedef</code></h3>
+      <p>Eine Struktur lässt sich auch ohne <code>typedef</code> definieren. Dann bekommt sie hinter dem Wort <code>struct</code> einen Namen, und der Typ heißt <code>struct Uhrzeit</code>, also zwei Wörter. Bei jeder Verwendung schreiben Sie <code>struct</code> mit:</p>
+      <pre><code>struct Uhrzeit {
+    int stunde;
+    int minute;
+};
+
+struct Uhrzeit beginn = {8, 30};</code></pre>
+      <p>Lassen Sie <code>struct</code> hier weg und schreiben nur <code>Uhrzeit beginn</code>, meldet der Compiler einen unbekannten Typnamen. <code>typedef</code> gibt dem Strukturtyp einen zusätzlichen Namen aus einem Wort. Danach schreiben Sie wie im Beispiel oben nur noch <code>Uhrzeit beginn</code>. Am Inhalt der Struktur und am Zugriff auf die Felder ändert sich dadurch nichts.</p>
+      <p>Beide Schreibweisen lassen sich auch verbinden: <code>typedef struct Uhrzeit { … } Uhrzeit;</code>. Dann funktionieren <code>struct Uhrzeit</code> und <code>Uhrzeit</code>. Diese Form brauchen Sie später im Kapitel <a href="../dynamischer-speicher/03-verkettete-liste.html">„Dynamischer Speicher und Listen“</a>, wenn eine Struktur auf eine Struktur desselben Typs verweisen soll. In diesem Kapitel können Sie frei wählen. Bleiben Sie aber innerhalb Ihres Programms bei einer Schreibweise.</p>
+      <h3>Einen Typ für Positionen</h3>
+      <p>Definieren Sie einen eigenen Strukturtyp für eine Position im Spielfeld. Legen Sie damit die Startposition der Spielfigur aus <a href="materialien/tresorraub-daten/SPIELFELD.md">SPIELFELD.md</a> an. Probieren Sie dann aus und notieren Sie jeweils vorher Ihre Erwartung:</p>
+      <ol>
+        <li>Weisen Sie eine Position einer zweiten Variablen zu und ändern Sie danach ein Feld der zweiten Variablen. Was passiert mit der ersten?</li>
+        <li>Vergleichen Sie zwei Positionen mit <code>==</code>. Was meldet der Compiler? Entfernen Sie den Vergleich danach wieder, damit sich Ihr Programm übersetzen lässt.</li>
+        <li>Schreiben Sie eine Funktion, die eine Position als Parameter erhält und darin ein Feld ändert. Geben Sie die Position nach dem Aufruf aus. Was beobachten Sie?</li>
+      </ol>
+      <details><summary>Selbstkontrolle: Ihre Beobachtungen</summary><p>Bei der Zuweisung werden alle Felder kopiert. Danach sind beide Variablen unabhängig voneinander. Strukturen lassen sich nicht mit <code>==</code> vergleichen, der Compiler bricht mit einem Fehler ab. Einen Vergleich schreiben Sie deshalb als eigene Funktion. Auch beim Aufruf einer Funktion wird kopiert: Die Funktion arbeitet mit einer Kopie, die Position des Aufrufers bleibt unverändert. Das kennen Sie schon von der Seite <a href="../funktionen-debugging/02-funktionen.html">Funktionen</a>: Parameter erhalten Kopien der übergebenen Werte. Für Strukturen gilt dasselbe wie für <code>int</code>. Wie eine Funktion das Original ändern kann, lernen Sie im Kapitel <a href="../pointer/02-kopie-und-original.html">„Pointer und Datenaustausch“</a>.</p></details>
+      <form class="self-check" data-hint="Bei einer Zuweisung und bei einem Funktionsaufruf wird eine Struktur kopiert.">
+        <fieldset><legend>Gegeben ist <code>Uhrzeit a = {8, 30}; Uhrzeit b = a; b.minute = 45;</code>. Welche Aussagen stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> <code>a.minute</code> ist weiterhin 30.</label>
+          <label><input type="checkbox"> <code>a == b</code> liefert 0, weil sich die Minuten unterscheiden.</label>
+          <label><input type="checkbox" data-correct="true"> Eine Funktion, die <code>a</code> als Parameter erhält und ein Feld ändert, verändert <code>a</code> beim Aufrufer nicht.</label>
+          <label><input type="checkbox"> Nach <code>b = a</code> verweisen <code>a</code> und <code>b</code> auf dieselben Daten.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die erste und dritte Aussage stimmen. Bei der Zuweisung entsteht eine unabhängige Kopie. Strukturen lassen sich nicht mit <code>==</code> vergleichen, der Ausdruck <code>a == b</code> wird gar nicht übersetzt.</p></details>
+      </form>
+    </section>
+    <section class="content-section" aria-labelledby="abschnitt-2">
+      <h2 id="abschnitt-2">2. Wächter beschreiben</h2>
+      <p>Ein Wächter steht auf einem Feld und überwacht alle Felder bis zu einer bestimmten <strong>Reichweite</strong>. Im Spielfeld gibt es zwei Wächter mit unterschiedlicher Reichweite. Ihre Daten stehen in <a href="materialien/tresorraub-daten/SPIELFELD.md">SPIELFELD.md</a>.</p>
+      <ol>
+        <li>Definieren Sie einen Strukturtyp für einen Wächter. Eine Struktur darf als Feld auch eine andere Struktur enthalten.</li>
+        <li>Legen Sie ein Array mit beiden Wächtern an. Wie greifen Sie auf die x-Koordinate des zweiten Wächters zu?</li>
+        <li>Geben Sie alle Wächter mit einer Schleife aus.</li>
+      </ol>
+      <p>Überlegen Sie: Welche Vorteile hat ein Array von Wächtern gegenüber zwei einzelnen Variablen? Was müssten Sie ändern, wenn ein dritter Wächter hinzukommt?</p>
+    </section>
+    <section class="content-section" aria-labelledby="abschnitt-3">
+      <h2 id="abschnitt-3">3. Aufgabe: Überwachte Felder</h2>
+      <p>Für dieses Kapitel gilt folgende Regel: Der <strong>Rasterabstand</strong> zweier Felder ist die Summe aus waagerechtem und senkrechtem Abstand. Diagonale Abkürzungen gibt es nicht, genau wie bei der Bewegung der Spielfigur. Ein Feld ist überwacht, wenn sein Rasterabstand zu mindestens einem Wächter höchstens dessen Reichweite beträgt. Das Feld des Wächters selbst gehört dazu. Wände spielen dabei keine Rolle.</p>
+      <ol>
+        <li>Entwerfen Sie eine Funktion für den Rasterabstand zweier Positionen. Schlagen Sie nach, ob die C-Bibliothek eine Funktion für den Betrag einer ganzen Zahl anbietet, und in welchem Header sie steht.</li>
+        <li>Entwerfen Sie eine Funktion, die für eine Position feststellt, ob sie überwacht ist. Welche Daten braucht sie als Parameter?</li>
+        <li>Erweitern Sie Ihre Ausgaben des Grundrisses von Seite 3: Markieren Sie freie, überwachte Felder im Text mit einem eigenen Zeichen und im Fenster mit dem Piktogramm für Überwachung.</li>
+      </ol>
+      <p>Notieren Sie Testfälle, bevor Sie implementieren. Denken Sie an Felder genau an der Grenze der Reichweite, an das Feld des Wächters selbst und daran, dass der Abstand von A nach B gleich dem von B nach A sein muss.</p>
+      <details><summary>Denkhilfe: Testfälle an der Grenze</summary><p>Ein Wächter mit Reichweite 2 steht auf (9, 5). Welche Felder in Zeile 5 sind überwacht? Welches ist das erste Feld rechts davon, das nicht mehr überwacht ist? Gibt es ein überwachtes Feld, das weder in derselben Zeile noch in derselben Spalte liegt?</p></details>
+      <details><summary>Selbstkontrolle: Erwartete Ergebnisse</summary><p>Der Rasterabstand von (1, 5) nach (3, 6) beträgt 3, ebenso in umgekehrter Richtung. Die Startposition (3, 7) ist nicht überwacht. (2, 5), (9, 7) und (11, 5) sind überwacht, (12, 5) nicht mehr. Insgesamt sind 17 freie Felder überwacht.</p></details>
+      <form class="self-check" data-hint="Lesen Sie den Ausdruck von links nach rechts: erst das Array-Element, dann die Felder.">
+        <fieldset><legend>Ein Wächter hat die Felder <code>position</code> (eine Struktur mit <code>x</code> und <code>y</code>) und <code>reichweite</code>. Die Wächter stehen im Array <code>waechter</code>. Welche Aussagen stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> <code>waechter[1].position.x</code> ist die x-Koordinate des zweiten Wächters.</label>
+          <label><input type="checkbox"> <code>waechter.position[1].x</code> ist die x-Koordinate des zweiten Wächters.</label>
+          <label><input type="checkbox" data-correct="true"> Ein Wächter mit Reichweite 0 überwacht nur sein eigenes Feld.</label>
+          <label><input type="checkbox"> Ein Wächter auf (9, 5) mit Reichweite 2 überwacht das Feld (11, 6).</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die erste und dritte Aussage stimmen. Der Index gehört zum Array, die Feldnamen folgen danach. Der Rasterabstand von (9, 5) nach (11, 6) beträgt 2 + 1 = 3 und liegt damit außerhalb der Reichweite 2.</p></details>
+      </form>
+      <p class="work-result"><strong>Ihr Ergebnis:</strong> Strukturtypen für Positionen und Wächter, ein Array mit beiden Wächtern, zwei getestete Funktionen und eine Ausgabe des Spielfelds mit markierten Überwachungsbereichen, im Text und im Fenster.</p>
+    </section>
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="03-zweidimensionale-arrays.html">← Zurück: Das Spielfeld als zweidimensionales Array</a></li>
+      <li><a href="05-spielstand.html">Weiter: Ein Spielstand als Datenstruktur →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>

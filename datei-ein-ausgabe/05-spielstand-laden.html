@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Einen Spielstand wiederherstellen</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+  <script src="selbstkontrollen.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header><h1>Einen Spielstand wiederherstellen</h1><p>Den gespeicherten Fortschritt einlesen und den laufenden Spielstand erst nach erfolgreicher Prüfung ersetzen.</p></header>
+    <noscript><p>Ohne JavaScript können Sie die Fragen anhand der aufklappbaren Erklärungen selbst prüfen.</p></noscript>
+
+    <section class="content-section" aria-labelledby="abschnitt-1">
+      <h2 id="abschnitt-1">1. Den bisherigen Spielstand erhalten</h2>
+      <p>Angenommen, eine Datei enthält zunächst eine gültige Position und danach einen unzulässigen Inventarnamen. Würden Sie beim Lesen sofort den laufenden Spielstand ändern, wäre dessen Position bereits überschrieben, obwohl Sie die Datei anschließend ablehnen müssen.</p>
+      <p>Legen Sie deshalb einen zweiten Spielstand nur für den Ladeversuch an, zunächst mit dem bekannten Startzustand und leerem Inventar. Tragen Sie die gelesenen Werte dort ein. Der laufende Spielstand bleibt in dieser Zeit unverändert.</p>
+      <p>Kopieren Sie dafür nicht einfach den laufenden Spielstand mit einer Strukturzuweisung. Diese würde zwar den Pointer auf den ersten Inventareintrag kopieren, aber keine neuen Einträge anlegen. Beide Strukturen würden dieselbe Liste verwenden, wie im Versuch im Kapitel <a href="../dynamischer-speicher/05-inventar-im-spiel.html#abschnitt-1">„Dynamischer Speicher und Listen“</a>. Änderungen oder Freigaben an dieser Liste würden dann auch das bisherige Spiel betreffen.</p>
+      <p>Erzeugen Sie für das geladene Inventar eigene Einträge mit den vorhandenen Inventarfunktionen. Auch die Reihenfolge muss erhalten bleiben. Die bisherige Aufnahmefunktion fügt vorne ein. Wenn Sie zuerst Beute und danach Muenze aufnehmen, steht anschließend Muenze vor Beute. Berücksichtigen Sie das beim Wiederaufbau.</p>
+    </section>
+
+    <section class="content-section" aria-labelledby="abschnitt-2">
+      <h2 id="abschnitt-2">2. Einen Ladeversuch abschließen</h2>
+      <p>Prüfen Sie zuerst die gesamte Datei und den neu aufgebauten Spielstand. Auch der Abschluss <code>ENDE</code> muss vorhanden sein. <code>ferror(datei)</code> zeigt an, ob beim Lesen ein Dateifehler aufgetreten ist. Ein Wert ungleich 0 meldet einen Fehler. Schließen Sie anschließend die Verbindung mit <code>fclose</code> und prüfen Sie dessen Ergebnis.</p>
+      <p><strong>Bei einem Fehler</strong> geben Sie ausschließlich die Inventareinträge frei, die Sie für diesen Ladeversuch neu angelegt haben. Der bisherige Spielstand einschließlich seines Inventars bleibt erhalten.</p>
+      <p><strong>Bei Erfolg</strong> geben Sie das bisherige Inventar frei und ersetzen Sie den bisherigen Spielstand durch den neu aufgebauten. Dessen Einträge gehören jetzt dem laufenden Spiel. Sie dürfen sie anschließend nicht noch einmal als vorübergehende Daten des Ladeversuchs freigeben. Wer was besitzt, haben Sie im Kapitel <a href="../dynamischer-speicher/04-entfernen-aufraeumen.html#abschnitt-3">„Dynamischer Speicher und Listen“</a> festgelegt.</p>
+      <form class="self-check" data-hint="Trennen Sie die bisherige Inventarliste von der neuen Liste des Ladeversuchs.">
+        <fieldset><legend>Ein Ladeversuch hat einen neuen Inventareintrag angelegt. Dann schlägt das Anlegen des zweiten fehl. Was ist richtig?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Den nur für diesen Versuch angelegten Eintrag wieder freigeben.</label>
+          <label><input type="checkbox"> Das bisherige Inventar vorsorglich ebenfalls leeren.</label>
+          <label><input type="checkbox" data-correct="true"> Den laufenden Spielstand unverändert lassen.</label>
+          <label><input type="checkbox"> Die neue Liste einfach durch Zuweisung ihres Kopfs auf <code>NULL</code> freigeben.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Nur die für den fehlgeschlagenen Versuch neu angelegten Einträge werden freigegeben. Eine Zuweisung von <code>NULL</code> allein gibt keinen mit <code>malloc</code> angeforderten Speicher frei.</p></details>
+      </form>
+    </section>
+
+    <section class="content-section" aria-labelledby="aufgabe-laden">
+      <h2 id="aufgabe-laden">3. Aufgabe: Einen Spielstand wiederherstellen</h2>
+      <ol>
+        <li>Entwerfen Sie eine Ladefunktion. Legen Sie ihre Parameter und Rückgabewerte fest. Bei einem Fehlschlag soll der übergebene Spielstand vollständig erhalten bleiben.</li>
+        <li>Öffnen Sie die Datei zum Lesen. Lesen und prüfen Sie Kennzeichnung, Version, alle Daten und den Abschluss in einem eigenen neuen Spielstand. Nutzen Sie das vereinbarte Format aus <a href="materialien/tresorraub-dateien/FORMAT.md">FORMAT.md</a> und Ihre Hilfsfunktionen von <a href="04-werte-lesen.html#aufgabe-kopf">Seite 4</a>.</li>
+        <li>Bauen Sie das Inventar mit eigenen neuen Listeneinträgen auf. Erhalten Sie die gespeicherte Reihenfolge und berücksichtigen Sie fehlgeschlagene Speicheranforderungen.</li>
+        <li>Schließen Sie die Datei und beenden Sie den Ladeversuch wie oben beschrieben. Bei Erfolg übernimmt der laufende Spielstand die neuen Daten, bei einem Fehler bleiben die bisherigen Daten erhalten.</li>
+        <li>Ergänzen Sie in <code>taste_gedrueckt</code> den Fall <code>SDLK_F9</code> zum Laden von <code>spielstand.txt</code>. Geben Sie im Terminal eine Meldung aus. Ein behandelter Ladefehler soll das Spiel nicht beenden. Laden verbraucht keinen Zug.</li>
+        <li>Speichern Sie einen erkennbaren Zustand mit F5. Bewegen Sie die Figur anschließend, ohne erneut zu speichern. Drücken Sie F9. Position, Zugzahl und Inventar sollen wieder dem gespeicherten Zeitpunkt entsprechen. Die Änderungen seit F5 werden dabei verworfen.</li>
+        <li>Beenden und starten Sie das Programm neu. Laden Sie dieselbe Datei erneut. Prüfen Sie, ob derselbe gespeicherte Fortschritt auch nach einem Neustart wiederhergestellt wird.</li>
+      </ol>
+      <p>Die Prüfregeln für widersprüchliche Spielwerte, etwa eine Figur in einer Wand, ergänzen Sie auf <a href="06-fehler-behandeln.html">Seite 6</a>. Hier genügt es, wenn Format und Zahlen stimmen.</p>
+      <details><summary>Hinweis: Reihenfolge beim Einfügen</summary><p>Sie können die Namen zunächst in einem begrenzten Array sammeln und dann in umgekehrter Reihenfolge mit der vorhandenen Aufnahmefunktion einfügen. Oder Sie erweitern die Liste am Ende. Entscheidend ist die Reihenfolge der fertigen Liste.</p></details>
+      <details><summary>Selbstkontrolle: Beispiel mit Inventar</summary><p><code>beispiele/inventar.txt</code> stellt Position (5, 3), 23 Züge, eine offene Tür und das Inventar Beute vor Muenze her. Der Schlüssel ist bereits verbraucht. Nach dem Laden verwendet das Inventar eigene neu angelegte Einträge; das alte Inventar ist freigegeben, und der Speicherprüfer meldet weder Lecks noch doppelte Freigaben.</p></details>
+      <p class="work-result"><strong>Ihr Ergebnis:</strong> Eine Ladefunktion, die einen Spielstand nur vollständig oder gar nicht übernimmt, und F9 im Spiel.</p>
+    </section>
+
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="04-werte-lesen.html">← Zurück: Werte aus einer Datei lesen</a></li>
+      <li><a href="06-fehler-behandeln.html">Weiter: Fehlende und ungültige Dateien behandeln →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>
