@@ -1,3 +1,9 @@
+/* Ihr Code fuer das Kapitel Datei-Ein- und -Ausgabe.
+   Ausgangspunkt ist der Stand am Ende des Kapitels Dynamischer Speicher und
+   Listen: Bewegung, Inventar als verkettete Liste im Spielstand, Leertaste
+   (aufnehmen, Tuer) und L (ablegen).
+   Grundriss: SPIELFELD.md. Inventar und Tasten: INVENTAR.md.
+   Spielstandformat und Pruefregeln: FORMAT.md. */
 #include "tresorraub.h"
 #include "piktogramme/piktogramme.h"
 #include <stdbool.h>
@@ -83,13 +89,13 @@ bool begehbar(Punkt p) {
     return innerhalb(p) && GRUNDRISS[p.y][p.x] != '#';
 }
 
-/* ---------- Seite 2: Einen Eintrag anlegen ---------- */
+/* ---------- Einen Eintrag anlegen ---------- */
 
 /* Der Strukturname "Eintrag" hinter struct ist noetig, weil der Typ sich
    selbst enthaelt: naechster zeigt auf einen Eintrag desselben Typs. */
 typedef struct Eintrag {
     char name[NAME_LAENGE];
-    struct Eintrag *naechster;   /* Seite 3 */
+    struct Eintrag *naechster;
 } Eintrag;
 
 /* Legt einen Eintrag auf dem Heap an. naechster ist NULL.
@@ -111,7 +117,7 @@ Eintrag *eintrag_anlegen(const char *name) {
     return neu;
 }
 
-/* ---------- Seite 3: Lesen und Aufnehmen ---------- */
+/* ---------- Lesen und Aufnehmen ---------- */
 
 typedef struct {
     Eintrag *erster;   /* NULL: Inventar ist leer */
@@ -166,7 +172,7 @@ void inventar_ausgeben(const Inventar *inventar) {
     printf("\n");
 }
 
-/* ---------- Seite 4: Entfernen und aufraeumen ---------- */
+/* ---------- Entfernen und aufraeumen ---------- */
 
 /* Entfernt den Eintrag mit diesem Namen und gibt ihn frei.
    Ergebnis: true, wenn er vorhanden war, sonst false. */
@@ -202,7 +208,7 @@ void inventar_leeren(Inventar *inventar) {
     inventar->erster = NULL;
 }
 
-/* ---------- Seite 5: Der Spielstand besitzt das Inventar ---------- */
+/* ---------- Der Spielstand besitzt das Inventar ---------- */
 
 typedef struct {
     Punkt figur;
@@ -215,7 +221,7 @@ typedef struct {
     bool tuer_offen;
     Punkt tresor;
     bool beute_im_tresor;
-    Punkt beute;          /* Seite 6: nur gueltig, wenn beute_liegt */
+    Punkt beute;          /* nur gueltig, wenn beute_liegt */
     bool beute_liegt;
     Punkt muenze;
     bool muenze_liegt;
@@ -254,7 +260,7 @@ static int statuszeile(char ziel[], size_t groesse, Punkt position, int zuege,
     return laenge < 0 || (size_t)laenge >= groesse ? -1 : 0;
 }
 
-/* Seite 5: Name des Gegenstands, der auf dem Feld p liegt, sonst NULL.
+/* Name des Gegenstands, der auf dem Feld p liegt, sonst NULL.
    Die Beute im Tresor zaehlt dazu. */
 static const char *gegenstand_auf(const Spielstand *s, Punkt p) {
     if (s->schluessel_liegt && punkt_gleich(p, s->schluessel)) {
@@ -360,7 +366,7 @@ bool figur_bewegen(Spielstand *s, int dx, int dy) {
     return true;
 }
 
-/* Seite 5: Merkt nach dem Aufnehmen, dass der Gegenstand nicht mehr auf
+/* Merkt nach dem Aufnehmen, dass der Gegenstand nicht mehr auf
    dem Feld liegt. */
 static void vom_feld_nehmen(Spielstand *s, const char *name) {
     if (strcmp(name, "Schluessel") == 0) {
@@ -374,7 +380,7 @@ static void vom_feld_nehmen(Spielstand *s, const char *name) {
     }
 }
 
-/* Seite 5: Leertaste. Liegt auf dem Feld der Figur ein Gegenstand, wird er
+/* Leertaste. Liegt auf dem Feld der Figur ein Gegenstand, wird er
    aufgenommen. Sonst wird, falls die Figur neben der verschlossenen Tuer
    steht, die Tuer mit dem Schluessel geoeffnet. Nur eine erfolgreiche
    Handlung zaehlt als Zug.
@@ -413,7 +419,7 @@ int handeln(Spielstand *s) {
     return 0;
 }
 
-/* ---------- Seite 6: Gegenstaende ablegen ---------- */
+/* ---------- Gegenstaende ablegen ---------- */
 
 /* Ein Feld ist frei, wenn es begehbar ist und dort weder Tuer, Tresor,
    Ausgang, Waechter, Figur noch ein Gegenstand ist. */
@@ -503,10 +509,16 @@ int ablegen(Spielstand *s) {
 }
 
 int text_ausgeben(void) {
-    Spielstand probe = startzustand();
-    spielfeld_ausgeben(&probe);
-    printf("Datei-Ein- und -Ausgabe: Hier entstehen Ihre Textversuche.\n");
-    inventar_leeren(&probe.inventar);
+    /* Hier entstehen Ihre Versuche und Textausgaben.
+       Starten mit: ./programm --text */
+    Spielstand s = startzustand();
+    char zeile[96];
+    spielfeld_ausgeben(&s);
+    if (spielstand_lesen(&s, zeile, sizeof(zeile)) < 0) {
+        return -1;
+    }
+    puts(zeile);
+    inventar_leeren(&s.inventar);   /* s besitzt seine Liste */
     return 0;
 }
 
@@ -590,7 +602,7 @@ int zeichne(SDL_Renderer *renderer) {
             }
         }
     }
-    /* Seite 5: das Inventar unter dem Spielfeld, in der Reihenfolge der Liste */
+    /* das Inventar unter dem Spielfeld, in der Reihenfolge der Liste */
     int x = INVENTAR_X;
     for (const Eintrag *e = spielstand.inventar.erster; e != NULL; e = e->naechster) {
         int ergebnis = 0;

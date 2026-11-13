@@ -1,3 +1,17 @@
+/* MUSTERLOESUNG fuer das Kapitel Datei-Ein- und -Ausgabe - nur fuer Lehrende.
+   Grundlage ist der Stand am Ende von "Dynamischer Speicher und Listen".
+
+   Entwurfsentscheidungen:
+   - Format laut FORMAT.md, Version 1. spielstand_speichern prueft vorher die
+     Spielregeln und schreibt nur gueltige Spielstaende.
+   - Zahlen werden als begrenztes Wort gelesen und mit strtol geprueft, damit
+     Ueberlaeufe und angehaengte Zeichen sicher abgelehnt werden.
+   - Laden ist "alles oder nichts": Gelesen wird in einen eigenen Spielstand
+     mit eigenem Inventar; erst nach allen Pruefungen ersetzt er den alten.
+   - Inventarnamen werden zuerst gesammelt und rueckwaerts aufgenommen, weil
+     inventar_aufnehmen vorne einfuegt.
+   - Fehler beim Oeffnen meldet perror mit Grund auf stderr. F5 und F9 melden
+     Erfolg oder Fehlschlag und lassen taste_gedrueckt mit 0 zurueckkehren. */
 #include "tresorraub.h"
 #include "piktogramme/piktogramme.h"
 #include <stdbool.h>
@@ -83,13 +97,13 @@ bool begehbar(Punkt p) {
     return innerhalb(p) && GRUNDRISS[p.y][p.x] != '#';
 }
 
-/* ---------- Seite 2: Einen Eintrag anlegen ---------- */
+/* ---------- Einen Eintrag anlegen ---------- */
 
 /* Der Strukturname "Eintrag" hinter struct ist noetig, weil der Typ sich
    selbst enthaelt: naechster zeigt auf einen Eintrag desselben Typs. */
 typedef struct Eintrag {
     char name[NAME_LAENGE];
-    struct Eintrag *naechster;   /* Seite 3 */
+    struct Eintrag *naechster;
 } Eintrag;
 
 /* Legt einen Eintrag auf dem Heap an. naechster ist NULL.
@@ -111,7 +125,7 @@ Eintrag *eintrag_anlegen(const char *name) {
     return neu;
 }
 
-/* ---------- Seite 3: Lesen und Aufnehmen ---------- */
+/* ---------- Lesen und Aufnehmen ---------- */
 
 typedef struct {
     Eintrag *erster;   /* NULL: Inventar ist leer */
@@ -166,7 +180,7 @@ void inventar_ausgeben(const Inventar *inventar) {
     printf("\n");
 }
 
-/* ---------- Seite 4: Entfernen und aufraeumen ---------- */
+/* ---------- Entfernen und aufraeumen ---------- */
 
 /* Entfernt den Eintrag mit diesem Namen und gibt ihn frei.
    Ergebnis: true, wenn er vorhanden war, sonst false. */
@@ -202,7 +216,7 @@ void inventar_leeren(Inventar *inventar) {
     inventar->erster = NULL;
 }
 
-/* ---------- Seite 5: Der Spielstand besitzt das Inventar ---------- */
+/* ---------- Der Spielstand besitzt das Inventar ---------- */
 
 typedef struct {
     Punkt figur;
@@ -215,7 +229,7 @@ typedef struct {
     bool tuer_offen;
     Punkt tresor;
     bool beute_im_tresor;
-    Punkt beute;          /* Seite 6: nur gueltig, wenn beute_liegt */
+    Punkt beute;          /* nur gueltig, wenn beute_liegt */
     bool beute_liegt;
     Punkt muenze;
     bool muenze_liegt;
@@ -254,7 +268,7 @@ static int statuszeile(char ziel[], size_t groesse, Punkt position, int zuege,
     return laenge < 0 || (size_t)laenge >= groesse ? -1 : 0;
 }
 
-/* Seite 5: Name des Gegenstands, der auf dem Feld p liegt, sonst NULL.
+/* Name des Gegenstands, der auf dem Feld p liegt, sonst NULL.
    Die Beute im Tresor zaehlt dazu. */
 static const char *gegenstand_auf(const Spielstand *s, Punkt p) {
     if (s->schluessel_liegt && punkt_gleich(p, s->schluessel)) {
@@ -360,7 +374,7 @@ bool figur_bewegen(Spielstand *s, int dx, int dy) {
     return true;
 }
 
-/* Seite 5: Merkt nach dem Aufnehmen, dass der Gegenstand nicht mehr auf
+/* Merkt nach dem Aufnehmen, dass der Gegenstand nicht mehr auf
    dem Feld liegt. */
 static void vom_feld_nehmen(Spielstand *s, const char *name) {
     if (strcmp(name, "Schluessel") == 0) {
@@ -374,7 +388,7 @@ static void vom_feld_nehmen(Spielstand *s, const char *name) {
     }
 }
 
-/* Seite 5: Leertaste. Liegt auf dem Feld der Figur ein Gegenstand, wird er
+/* Leertaste. Liegt auf dem Feld der Figur ein Gegenstand, wird er
    aufgenommen. Sonst wird, falls die Figur neben der verschlossenen Tuer
    steht, die Tuer mit dem Schluessel geoeffnet. Nur eine erfolgreiche
    Handlung zaehlt als Zug.
@@ -413,7 +427,7 @@ int handeln(Spielstand *s) {
     return 0;
 }
 
-/* ---------- Seite 6: Gegenstaende ablegen ---------- */
+/* ---------- Gegenstaende ablegen ---------- */
 
 /* Ein Feld ist frei, wenn es begehbar ist und dort weder Tuer, Tresor,
    Ausgang, Waechter, Figur noch ein Gegenstand ist. */
@@ -502,157 +516,254 @@ int ablegen(Spielstand *s) {
     return abgelegt;
 }
 
-/* Eine moegliche Implementierung fuer Lehrende. */
+/* ---------- Spielstand speichern und laden ---------- */
+
 #include <errno.h>
 #include <limits.h>
+
+#define SPIELSTANDDATEI "spielstand.txt"
+#define WORT_MAX 63            /* laengstes gelesenes Wort, ohne '\0' */
 
 static bool bekannter_name(const char *name) {
     return strcmp(name, "Schluessel") == 0 || strcmp(name, "Beute") == 0
         || strcmp(name, "Muenze") == 0;
 }
 
+/* Darf ein Gegenstand auf p liegen? Begehbar und nicht auf Tuer, Tresor,
+   Ausgang oder einem Waechter. */
 static bool ablage_gueltig(const Spielstand *s, Punkt p) {
     if (!begehbar(p) || punkt_gleich(p, s->tuer) || punkt_gleich(p, s->tresor)
-        || punkt_gleich(p, s->ausgang)) return false;
-    for (size_t i = 0; i < ANZAHL_WAECHTER; i++)
-        if (punkt_gleich(p, s->waechter[i].position)) return false;
+        || punkt_gleich(p, s->ausgang)) {
+        return false;
+    }
+    for (size_t i = 0; i < ANZAHL_WAECHTER; i++) {
+        if (punkt_gleich(p, s->waechter[i].position)) {
+            return false;
+        }
+    }
     return true;
 }
 
+/* Prueft die Spielregeln aus FORMAT.md fuer einen vollstaendigen Spielstand. */
 static bool speicherstand_gueltig(const Spielstand *s) {
-    if (!s || !begehbar(s->figur) || s->zuege < 0
-        || (!s->tuer_offen && punkt_gleich(s->figur, s->tuer))) return false;
-    size_t anzahl = 0;
-    for (const Eintrag *e = s->inventar.erster; e; e = e->naechster) {
-        if (++anzahl > INVENTAR_GROESSE || !bekannter_name(e->name)) return false;
-        for (const Eintrag *vor = s->inventar.erster; vor != e; vor = vor->naechster)
-            if (strcmp(vor->name, e->name) == 0) return false;
+    if (s == NULL || !begehbar(s->figur) || s->zuege < 0
+        || (!s->tuer_offen && punkt_gleich(s->figur, s->tuer))) {
+        return false;
     }
-    if ((int)inventar_enthaelt(&s->inventar, "Schluessel")
-            + (int)s->schluessel_liegt + (int)s->tuer_offen != 1
-        || (int)inventar_enthaelt(&s->inventar, "Muenze") + (int)s->muenze_liegt != 1
-        || (int)inventar_enthaelt(&s->inventar, "Beute")
-            + (int)s->beute_liegt + (int)s->beute_im_tresor != 1) return false;
-    Punkt positionen[3] = {s->schluessel, s->muenze, s->beute};
+    /* Inventar: hoechstens INVENTAR_GROESSE bekannte Namen, keiner doppelt */
+    size_t anzahl = 0;
+    for (const Eintrag *e = s->inventar.erster; e != NULL; e = e->naechster) {
+        anzahl++;
+        if (anzahl > INVENTAR_GROESSE || !bekannter_name(e->name)) {
+            return false;
+        }
+        for (const Eintrag *vorher = s->inventar.erster; vorher != e; vorher = vorher->naechster) {
+            if (strcmp(vorher->name, e->name) == 0) {
+                return false;
+            }
+        }
+    }
+    /* Jeder Gegenstand ist an genau einer Stelle. */
+    int schluessel = (int)inventar_enthaelt(&s->inventar, "Schluessel")
+                   + (int)s->schluessel_liegt + (int)s->tuer_offen;
+    int muenze = (int)inventar_enthaelt(&s->inventar, "Muenze") + (int)s->muenze_liegt;
+    int beute = (int)inventar_enthaelt(&s->inventar, "Beute")
+              + (int)s->beute_liegt + (int)s->beute_im_tresor;
+    if (schluessel != 1 || muenze != 1 || beute != 1) {
+        return false;
+    }
+    /* Ausgelegte Gegenstaende: gueltiges Feld, keine zwei auf einem Feld */
+    Punkt position[3] = {s->schluessel, s->muenze, s->beute};
     bool liegt[3] = {s->schluessel_liegt, s->muenze_liegt, s->beute_liegt};
     for (size_t i = 0; i < 3; i++) {
-        if (!begehbar(positionen[i]) || (liegt[i] && !ablage_gueltig(s, positionen[i])))
+        if (!begehbar(position[i]) || (liegt[i] && !ablage_gueltig(s, position[i]))) {
             return false;
-        for (size_t j = 0; j < i; j++)
-            if (liegt[i] && liegt[j] && punkt_gleich(positionen[i], positionen[j]))
+        }
+        for (size_t j = 0; j < i; j++) {
+            if (liegt[i] && liegt[j] && punkt_gleich(position[i], position[j])) {
                 return false;
+            }
+        }
     }
     return true;
 }
 
-/* Datei wird geschlossen, auch wenn ein Schreibfehler auftritt.
-   Fehler koennen die Zieldatei unvollstaendig hinterlassen (Modus w).
-   Der Spielstand im Speicher bleibt unveraendert. */
+/* Schreibt den Spielstand im Format aus FORMAT.md. Der Spielstand wird nur
+   gelesen. Die Datei wird auch nach einem Schreibfehler geschlossen.
+   Ergebnis: 0 bei Erfolg; -1 bei einem Dateifehler (die Datei kann dann
+   unvollstaendig sein, Modus "w"); -2, wenn der Spielstand selbst
+   ungueltig ist (dann wird nichts geschrieben). */
 int spielstand_speichern(const Spielstand *s, const char *pfad) {
-    if (!pfad || !speicherstand_gueltig(s)) return -2;
+    if (pfad == NULL || !speicherstand_gueltig(s)) {
+        return -2;
+    }
     FILE *datei = fopen(pfad, "w");
-    if (!datei) return -1;
+    if (datei == NULL) {
+        perror(pfad);
+        return -1;
+    }
     int ergebnis = 0;
-    if (fprintf(datei, "TRESORRAUB 1\nFIGUR %d %d\nZUEGE %d\nTUER %d\n"
-                "SCHLUESSEL %d %d %d\nMUENZE %d %d %d\nBEUTE %d %d %d %d\nINVENTAR %zu\n",
-                s->figur.x, s->figur.y, s->zuege, (int)s->tuer_offen,
-                s->schluessel.x, s->schluessel.y, (int)s->schluessel_liegt,
-                s->muenze.x, s->muenze.y, (int)s->muenze_liegt,
-                s->beute.x, s->beute.y, (int)s->beute_liegt,
-                (int)s->beute_im_tresor, inventar_anzahl(&s->inventar)) < 0)
+    if (fprintf(datei, "TRESORRAUB 1\nFIGUR %d %d\nZUEGE %d\nTUER %d\n",
+                s->figur.x, s->figur.y, s->zuege, (int)s->tuer_offen) < 0
+        || fprintf(datei, "SCHLUESSEL %d %d %d\nMUENZE %d %d %d\nBEUTE %d %d %d %d\n",
+                   s->schluessel.x, s->schluessel.y, (int)s->schluessel_liegt,
+                   s->muenze.x, s->muenze.y, (int)s->muenze_liegt,
+                   s->beute.x, s->beute.y, (int)s->beute_liegt,
+                   (int)s->beute_im_tresor) < 0
+        || fprintf(datei, "INVENTAR %zu\n", inventar_anzahl(&s->inventar)) < 0) {
         ergebnis = -1;
-    for (const Eintrag *e = s->inventar.erster; ergebnis == 0 && e; e = e->naechster)
-        if (fprintf(datei, "%s\n", e->name) < 0) ergebnis = -1;
-    if (ergebnis == 0 && fprintf(datei, "ENDE\n") < 0) ergebnis = -1;
-    if (fclose(datei) != 0) ergebnis = -1;
+    }
+    for (const Eintrag *e = s->inventar.erster; ergebnis == 0 && e != NULL; e = e->naechster) {
+        if (fprintf(datei, "%s\n", e->name) < 0) {
+            ergebnis = -1;
+        }
+    }
+    if (ergebnis == 0 && fprintf(datei, "ENDE\n") < 0) {
+        ergebnis = -1;
+    }
+    if (fclose(datei) != 0) {   /* schreibt den Puffer: kann noch scheitern */
+        ergebnis = -1;
+    }
     return ergebnis;
 }
 
-/* Begrenztes Wort lesen. Zahlen werden erst als Text gelesen, damit
-   strtol auch Ueberlaeufe und angehaengte Zeichen kontrolliert erkennen kann. */
-static bool wort_lesen(FILE *datei, char wort[64]) {
+/* Liest ein Wort mit hoechstens WORT_MAX Zeichen. */
+static bool wort_lesen(FILE *datei, char wort[WORT_MAX + 1]) {
     return fscanf(datei, "%63s", wort) == 1;
 }
-static bool erwartet(FILE *datei, const char *name) {
-    char wort[64];
-    return wort_lesen(datei, wort) && strcmp(wort, name) == 0;
+
+/* Liest ein Wort und prueft, ob es das erwartete Kennwort ist. */
+static bool kennwort_lesen(FILE *datei, const char *kennwort) {
+    char wort[WORT_MAX + 1];
+    return wort_lesen(datei, wort) && strcmp(wort, kennwort) == 0;
 }
+
+/* Liest eine ganze Zahl im Bereich von int. Die Zahl wird zuerst als Wort
+   gelesen, damit strtol Ueberlaeufe und angehaengte Zeichen erkennt. */
 static bool zahl_lesen(FILE *datei, int *ziel) {
-    char wort[64], *ende;
-    if (!wort_lesen(datei, wort)) return false;
+    char wort[WORT_MAX + 1];
+    if (!wort_lesen(datei, wort)) {
+        return false;
+    }
+    char *ende;
     errno = 0;
     long wert = strtol(wort, &ende, 10);
-    if (errno == ERANGE || ende == wort || *ende != '\0'
-        || wert < INT_MIN || wert > INT_MAX) return false;
+    if (ende == wort || *ende != '\0' || errno == ERANGE
+        || wert < INT_MIN || wert > INT_MAX) {
+        return false;
+    }
     *ziel = (int)wert;
     return true;
 }
+
 static bool punkt_lesen(FILE *datei, Punkt *ziel) {
     return zahl_lesen(datei, &ziel->x) && zahl_lesen(datei, &ziel->y);
 }
+
+/* Liest einen Ja/Nein-Wert: 0 oder 1. */
 static bool flag_lesen(FILE *datei, bool *ziel) {
     int wert;
-    if (!zahl_lesen(datei, &wert) || (wert != 0 && wert != 1)) return false;
-    *ziel = wert != 0;
+    if (!zahl_lesen(datei, &wert) || (wert != 0 && wert != 1)) {
+        return false;
+    }
+    *ziel = wert == 1;
     return true;
 }
 
-/* Ergebnis 0: Ziel uebernimmt neue Listeneintraege. Bei jedem Fehler:
-   Ziel unveraendert, alle nur fuer diesen Ladeversuch angelegten Eintraege frei. */
-int spielstand_laden(Spielstand *ziel, const char *pfad) {
-    if (!ziel || !pfad) return -2;
-    FILE *datei = fopen(pfad, "r");
-    if (!datei) return -1;
-    Spielstand neu = startzustand();
-    int version, anzahl;
-    char namen[INVENTAR_GROESSE][NAME_LAENGE];
-    int ergebnis = -2;
-    if (!erwartet(datei, "TRESORRAUB") || !zahl_lesen(datei, &version) || version != 1
-        || !erwartet(datei, "FIGUR") || !punkt_lesen(datei, &neu.figur)
-        || !erwartet(datei, "ZUEGE") || !zahl_lesen(datei, &neu.zuege)
-        || !erwartet(datei, "TUER") || !flag_lesen(datei, &neu.tuer_offen)
-        || !erwartet(datei, "SCHLUESSEL") || !punkt_lesen(datei, &neu.schluessel)
-        || !flag_lesen(datei, &neu.schluessel_liegt)
-        || !erwartet(datei, "MUENZE") || !punkt_lesen(datei, &neu.muenze)
-        || !flag_lesen(datei, &neu.muenze_liegt)
-        || !erwartet(datei, "BEUTE") || !punkt_lesen(datei, &neu.beute)
-        || !flag_lesen(datei, &neu.beute_liegt) || !flag_lesen(datei, &neu.beute_im_tresor)
-        || !erwartet(datei, "INVENTAR") || !zahl_lesen(datei, &anzahl)
-        || anzahl < 0 || anzahl > INVENTAR_GROESSE) goto ende;
-    for (int i = 0; i < anzahl; i++) {
-        char wort[64];
-        if (!wort_lesen(datei, wort) || !bekannter_name(wort)) goto ende;
-        for (int j = 0; j < i; j++) if (strcmp(namen[j], wort) == 0) goto ende;
-        if (snprintf(namen[i], sizeof(namen[i]), "%s", wort) < 0) goto ende;
+/* Liest Kennzeichnung und alle Werte bis einschliesslich ENDE in *neu und
+   die Inventarnamen in namen. Ergebnis: false bei einem Formatfehler. */
+static bool werte_lesen(FILE *datei, Spielstand *neu,
+                        char namen[INVENTAR_GROESSE][NAME_LAENGE], int *anzahl) {
+    int version;
+    if (!kennwort_lesen(datei, "TRESORRAUB") || !zahl_lesen(datei, &version) || version != 1
+        || !kennwort_lesen(datei, "FIGUR") || !punkt_lesen(datei, &neu->figur)
+        || !kennwort_lesen(datei, "ZUEGE") || !zahl_lesen(datei, &neu->zuege)
+        || !kennwort_lesen(datei, "TUER") || !flag_lesen(datei, &neu->tuer_offen)
+        || !kennwort_lesen(datei, "SCHLUESSEL") || !punkt_lesen(datei, &neu->schluessel)
+        || !flag_lesen(datei, &neu->schluessel_liegt)
+        || !kennwort_lesen(datei, "MUENZE") || !punkt_lesen(datei, &neu->muenze)
+        || !flag_lesen(datei, &neu->muenze_liegt)
+        || !kennwort_lesen(datei, "BEUTE") || !punkt_lesen(datei, &neu->beute)
+        || !flag_lesen(datei, &neu->beute_liegt) || !flag_lesen(datei, &neu->beute_im_tresor)
+        || !kennwort_lesen(datei, "INVENTAR") || !zahl_lesen(datei, anzahl)
+        || *anzahl < 0 || *anzahl > INVENTAR_GROESSE) {
+        return false;
     }
-    if (!erwartet(datei, "ENDE")) goto ende;
-    { char rest[64]; if (fscanf(datei, "%63s", rest) != EOF || ferror(datei)) goto ende; }
-    /* Vorne einfuegen: Namen rueckwaerts verarbeiten, um die Reihenfolge zu erhalten. */
-    for (int i = anzahl; i > 0; i--) {
-        if (inventar_aufnehmen(&neu.inventar, namen[i - 1]) != AUFGENOMMEN) {
-            ergebnis = -3;
-            goto ende;
+    for (int i = 0; i < *anzahl; i++) {
+        char wort[WORT_MAX + 1];
+        if (!wort_lesen(datei, wort) || !bekannter_name(wort)) {
+            return false;
+        }
+        int laenge = snprintf(namen[i], NAME_LAENGE, "%s", wort);
+        if (laenge < 0 || laenge >= NAME_LAENGE) {   /* kann bei bekannten Namen nicht passieren */
+            return false;
         }
     }
-    if (!speicherstand_gueltig(&neu)) goto ende;
-    ergebnis = 0;
-ende:
-    if (ferror(datei)) ergebnis = -1;
-    if (fclose(datei) != 0) ergebnis = -1;
+    if (!kennwort_lesen(datei, "ENDE")) {
+        return false;
+    }
+    char rest[WORT_MAX + 1];
+    return fscanf(datei, "%63s", rest) == EOF && !ferror(datei);   /* nur Leerraum */
+}
+
+/* Laedt einen Spielstand. Alles oder nichts: Bei einem Fehler bleibt *ziel
+   samt Inventar unveraendert, und alle fuer den Versuch angelegten Eintraege
+   sind wieder frei. Bei Erfolg gibt die Funktion das alte Inventar frei, und
+   *ziel besitzt die neuen Eintraege.
+   Ergebnis: 0 bei Erfolg; -1 Dateifehler; -2 Format oder Spielregeln
+   verletzt; -3 kein Speicher. */
+int spielstand_laden(Spielstand *ziel, const char *pfad) {
+    if (ziel == NULL || pfad == NULL) {
+        return -2;
+    }
+    FILE *datei = fopen(pfad, "r");
+    if (datei == NULL) {
+        perror(pfad);
+        return -1;
+    }
+    Spielstand neu = startzustand();   /* Ladeversuch: eigener Spielstand */
+    char namen[INVENTAR_GROESSE][NAME_LAENGE];
+    int anzahl = 0;
+    int ergebnis = werte_lesen(datei, &neu, namen, &anzahl) ? 0 : -2;
+    if (ferror(datei)) {
+        ergebnis = -1;
+    }
+    if (fclose(datei) != 0) {
+        ergebnis = -1;
+    }
+    /* Inventar rueckwaerts aufbauen: Aufnehmen fuegt vorne ein. Doppelte
+       Namen meldet inventar_aufnehmen als SCHON_VORHANDEN. */
+    for (int i = anzahl; ergebnis == 0 && i > 0; i--) {
+        int aufnahme = inventar_aufnehmen(&neu.inventar, namen[i - 1]);
+        if (aufnahme < 0) {
+            ergebnis = -3;
+        } else if (aufnahme != AUFGENOMMEN) {
+            ergebnis = -2;
+        }
+    }
+    if (ergebnis == 0 && !speicherstand_gueltig(&neu)) {
+        ergebnis = -2;
+    }
     if (ergebnis == 0) {
         inventar_leeren(&ziel->inventar);
-        *ziel = neu;  /* Besitz der neuen Eintraege geht an ziel ueber. */
+        *ziel = neu;                  /* Besitz der neuen Eintraege geht an ziel */
         neu.inventar.erster = NULL;
     }
-    inventar_leeren(&neu.inventar);
+    inventar_leeren(&neu.inventar);   /* bei einem Fehler: nur die neuen Eintraege */
     return ergebnis;
 }
 
 int text_ausgeben(void) {
-    Spielstand probe = startzustand();
-    spielfeld_ausgeben(&probe);
-    printf("Datei-Ein- und -Ausgabe: Hier entstehen Ihre Textversuche.\n");
-    inventar_leeren(&probe.inventar);
+    /* Hier entstehen Ihre Versuche und Textausgaben.
+       Starten mit: ./programm --text */
+    Spielstand s = startzustand();
+    char zeile[96];
+    spielfeld_ausgeben(&s);
+    if (spielstand_lesen(&s, zeile, sizeof(zeile)) < 0) {
+        return -1;
+    }
+    puts(zeile);
+    inventar_leeren(&s.inventar);   /* s besitzt seine Liste */
     return 0;
 }
 
@@ -684,11 +795,11 @@ int taste_gedrueckt(SDL_Keycode taste) {
             inventar_ausgeben(&spielstand.inventar);
             break;
         case SDLK_F5:
-            printf(spielstand_speichern(&spielstand, "spielstand.txt") == 0
+            printf(spielstand_speichern(&spielstand, SPIELSTANDDATEI) == 0
                    ? "Spielstand gespeichert.\n" : "Speichern fehlgeschlagen.\n");
             break;
         case SDLK_F9:
-            printf(spielstand_laden(&spielstand, "spielstand.txt") == 0
+            printf(spielstand_laden(&spielstand, SPIELSTANDDATEI) == 0
                    ? "Spielstand geladen.\n" : "Laden fehlgeschlagen, bisheriger Stand bleibt erhalten.\n");
             break;
         default: break;   /* andere Tasten veraendern nichts */
@@ -744,7 +855,7 @@ int zeichne(SDL_Renderer *renderer) {
             }
         }
     }
-    /* Seite 5: das Inventar unter dem Spielfeld, in der Reihenfolge der Liste */
+    /* das Inventar unter dem Spielfeld, in der Reihenfolge der Liste */
     int x = INVENTAR_X;
     for (const Eintrag *e = spielstand.inventar.erster; e != NULL; e = e->naechster) {
         int ergebnis = 0;

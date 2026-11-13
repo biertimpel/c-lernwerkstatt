@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Fehlende und ungültige Dateien behandeln</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+  <script src="selbstkontrollen.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header><h1>Fehlende und ungültige Dateien behandeln</h1><p>Dateifehler und ungültige Spieldaten erkennen, ohne den bisherigen Spielstand zu verlieren.</p></header>
+    <noscript><p>Ohne JavaScript können Sie die Fragen anhand der aufklappbaren Erklärungen selbst prüfen.</p></noscript>
+
+    <section class="content-section" aria-labelledby="abschnitt-1">
+      <h2 id="abschnitt-1">1. Lesbar bedeutet noch nicht gültig</h2>
+      <p>Eine Datei kann sich öffnen lassen und trotzdem keinen gültigen Spielstand enthalten. Prüfen Sie, ob das Programm auf die Datei zugreifen konnte, ob der gelesene Text zum Format passt und ob die Werte einen möglichen Spielzustand beschreiben.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th scope="col">Fehlerart</th><th scope="col">Beispiel</th><th scope="col">Reaktion des Programms</th></tr></thead>
+        <tbody>
+          <tr><td>Dateizugriff</td><td>Die Datei fehlt oder ein Leseaufruf schlägt fehl.</td><td>Ladeversuch abbrechen und eine verständliche Meldung ausgeben, bei <code>fopen</code> mit dem Grund über <code>perror</code>.</td></tr>
+          <tr><td>Dateiformat</td><td>Ein Kennwort fehlt, die Version stimmt nicht oder nach der Inventaranzahl fehlen Namen.</td><td>Die unvollständigen oder anders aufgebauten Daten ablehnen.</td></tr>
+          <tr><td>Spielwerte</td><td>Die Figur steht in einer Wand oder die Münze liegt zugleich auf dem Feld und im Inventar.</td><td>Den widersprüchlichen Zustand ablehnen.</td></tr>
+        </tbody>
+      </table></div>
+      <p>Bei allen drei Fehlerarten bleibt der bisherige Spielstand erhalten. Eventuell für den Versuch neu angelegte Listeneinträge werden freigegeben. Eine zuvor erfolgreich geöffnete Dateiverbindung wird geschlossen.</p>
+    </section>
+
+    <section class="content-section" aria-labelledby="abschnitt-2">
+      <h2 id="abschnitt-2">2. Die bekannten Spielregeln beim Laden anwenden</h2>
+      <p>Die Ladefunktion darf sich nicht darauf verlassen, dass eine Datei ausschließlich von Ihrer Speicherfunktion geschrieben wurde. Eine Person kann den Text im Editor verändern oder versehentlich Teile löschen.</p>
+      <p>Prüfen Sie Positionen zunächst gegen die Spielfeldgrenzen, bevor Sie damit auf das Raster zugreifen, wie bei <code>begehbar</code> im Kapitel <a href="../datenstrukturen/03-zweidimensionale-arrays.html">„Datenstrukturen“</a>. Prüfen Sie dann auch, ob die Daten zueinander passen. Die folgende Tabelle fasst alle Regeln zusammen; sie stehen auch in <a href="materialien/tresorraub-dateien/FORMAT.md">FORMAT.md</a>. Zu fast jeder Regel gibt es im Ordner <code>beispiele/</code> eine Datei, die genau diese eine Regel verletzt.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th scope="col">Regel</th><th scope="col">Beispieldatei, die sie verletzt</th><th scope="col">Art</th></tr></thead>
+        <tbody>
+          <tr><td>Die Datei beginnt mit <code>TRESORRAUB</code> und der Version <code>1</code>.</td><td><code>ungueltig-version.txt</code></td><td>Format</td></tr>
+          <tr><td>Alle Kennwörter und Werte stehen in der vereinbarten Reihenfolge, am Schluss <code>ENDE</code>.</td><td><code>ungueltig-unvollstaendig.txt</code></td><td>Format</td></tr>
+          <tr><td>Nach <code>ENDE</code> folgt nur noch Leerraum.</td><td><code>ungueltig-rest.txt</code></td><td>Format</td></tr>
+          <tr><td>Jede Zahl ist eine ganze Zahl im Bereich von <code>int</code>.</td><td><code>ungueltig-ueberlauf.txt</code></td><td>Format</td></tr>
+          <tr><td>Die Inventaranzahl liegt zwischen 0 und 3, und genau so viele Namen folgen.</td><td><code>ungueltig-anzahl.txt</code></td><td>Format</td></tr>
+          <tr><td>Die Zugzahl ist nicht negativ.</td><td><code>ungueltig-zuege.txt</code></td><td>Spielwert</td></tr>
+          <tr><td>Ja/Nein-Werte sind 0 oder 1.</td><td><code>ungueltig-flag.txt</code></td><td>Spielwert</td></tr>
+          <tr><td>Die Figur steht im Spielfeld auf einem begehbaren Feld und nicht in der verschlossenen Tür.</td><td><code>ungueltig-position.txt</code></td><td>Spielwert</td></tr>
+          <tr><td>Jeder Inventarname ist bekannt.</td><td><code>ungueltig-name.txt</code></td><td>Spielwert</td></tr>
+          <tr><td>Jeder Name steht höchstens einmal im Inventar.</td><td><code>ungueltig-doppelt.txt</code></td><td>Spielwert</td></tr>
+          <tr><td>Jeder Gegenstand ist an genau einer Stelle: Schlüssel auf dem Feld, im Inventar oder (bei offener Tür) verbraucht; Münze auf dem Feld oder im Inventar; Beute im Tresor, auf dem Feld oder im Inventar.</td><td><code>ungueltig-widerspruch.txt</code></td><td>Spielwert</td></tr>
+          <tr><td>Abgelegte Gegenstände liegen auf begehbaren Feldern, nicht auf Ausgang, Tür, Tresor oder einem Wächter und nicht zu zweit auf einem Feld.</td><td>keine; legen Sie selbst eine Kopie an</td><td>Spielwert</td></tr>
+        </tbody>
+      </table></div>
+      <p>Die Dateien <code>start.txt</code>, <code>inventar.txt</code> und <code>abgelegt.txt</code> erfüllen alle Regeln und müssen angenommen werden.</p>
+      <form class="self-check" data-hint="Überlegen Sie, was fopen tatsächlich überprüft und was erst Ihre Ladefunktion prüft.">
+        <fieldset><legend>Welche Prüfungen braucht eine Ladefunktion?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Die Figur steht innerhalb des Feldes und nicht in einer Wand.</label>
+          <label><input type="checkbox"> Eine erfolgreich geöffnete Datei enthält automatisch gültige Spieldaten.</label>
+          <label><input type="checkbox" data-correct="true"> Die Münze darf nicht zugleich im Inventar und auf dem Spielfeld sein.</label>
+          <label><input type="checkbox" data-correct="true"> Bei einem fehlgeschlagenen Laden wird der bisherige Zustand erhalten.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Dateizugriff, Format und Spielregeln müssen getrennt geprüft werden. Erfolgreiches Öffnen sagt noch nichts über den Inhalt aus.</p></details>
+      </form>
+    </section>
+
+    <section class="content-section" aria-labelledby="abschnitt-3">
+      <h2 id="abschnitt-3">3. Fehler gezielt ausprobieren</h2>
+      <p>Für eine Fehlerprüfung verändern Sie immer nur einen Punkt an einer gültigen Beispieldatei. Dann wissen Sie, welche Bedingung das Programm erkennen soll. Notieren Sie vor dem Laden den bisherigen Spielstand und das erwartete Ergebnis.</p>
+      <p>Nach einem abgelehnten Ladeversuch reicht eine Fehlermeldung allein nicht als Beleg. Prüfen Sie zusätzlich, ob Position, Zugzahl und Inventar unverändert sind und ob Sie weiterspielen können. Laden Sie danach auch wieder eine gültige Datei. So erkennen Sie, ob die Fehlerbehandlung die weitere Benutzung beeinträchtigt.</p>
+    </section>
+
+    <section class="content-section" aria-labelledby="aufgabe-fehler">
+      <h2 id="aufgabe-fehler">4. Aufgabe: Fehlende und ungültige Dateien behandeln</h2>
+      <p>Ergänzen Sie Ihre Ladefunktion um die Regeln aus Abschnitt 2. Die Dateien im Ordner <code>beispiele/</code> sind für diese Aufgabe vorbereitet. Verändern Sie diese Originale nicht; verwenden Sie für eigene Änderungen eine Kopie.</p>
+      <ol>
+        <li>Prüfen Sie zuerst die gültigen Dateien <code>start.txt</code>, <code>inventar.txt</code> und <code>abgelegt.txt</code>. Rufen Sie dafür Ihre Ladefunktion im Textmodus mit dem jeweiligen Dateinamen auf, zum Beispiel <code>beispiele/start.txt</code>. Vergleichen Sie den geladenen Zustand mit dem Dateiinhalt.</li>
+        <li>Versuchen Sie eine nicht vorhandene Datei zu laden. Überprüfen Sie die Fehlermeldung und den Erhalt des bisherigen Spielstands.</li>
+        <li>Laden Sie nacheinander die vorbereiteten ungültigen Dateien. Notieren Sie vor jedem Versuch, welche Regel verletzt wird. Kontrollieren Sie danach, dass das Laden abgelehnt wurde und der bisherige Zustand vollständig erhalten ist.</li>
+        <li>Legen Sie selbst eine Kopie von <code>abgelegt.txt</code> an, in der die Münze auf dem Ausgang (1, 1) liegt, und eine, in der Beute und Münze auf demselben Feld liegen. Beide müssen abgelehnt werden.</li>
+        <li>Prüfen Sie einen Ladefehler auch im Spielfenster. Legen Sie eine Kopie einer ungültigen Beispieldatei unter dem Namen <code>spielstand.txt</code> im Arbeitsverzeichnis ab und drücken Sie F9. Können Sie nach der Meldung mit demselben Spielstand weiterspielen?</li>
+        <li>Laden Sie wiederholt unterschiedliche gültige und ungültige Dateien. Prüfen Sie mit den Werkzeugen aus dem Kapitel <a href="../dynamischer-speicher/02-speicher-anfordern.html#abschnitt-3">„Dynamischer Speicher und Listen“</a> auf vergessene und doppelte Freigaben. Beenden Sie das Programm auch einmal mit gefülltem, geladenem Inventar. <code>aufraeumen</code> muss dessen Einträge freigeben.</li>
+      </ol>
+      <details><summary>Selbstkontrolle: Erwartete Ergebnisse</summary><p><code>start.txt</code>, <code>inventar.txt</code> und <code>abgelegt.txt</code> werden angenommen. Die Dateien mit <code>ungueltig-</code> im Namen und Ihre beiden eigenen Kopien werden abgelehnt. Jede Ablehnung lässt den bisherigen Spielstand erhalten. <code>abgelegt.txt</code> ergibt Position (5, 3), 24 Züge, eine offene Tür und ein leeres Inventar. Die Beute liegt auf (5, 2), die Münze auf (5, 4).</p></details>
+      <p class="work-result"><strong>Ihr Ergebnis:</strong> Speichern und Laden mit F5 und F9, die jede der vorbereiteten ungültigen Dateien ablehnen, den bisherigen Spielstand dabei erhalten und keinen Speicher verlieren.</p>
+    </section>
+
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="05-spielstand-laden.html">← Zurück: Einen Spielstand wiederherstellen</a></li>
+      <li><a href="../in-vorbereitung.html?thema=config">Weiter: Config →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>

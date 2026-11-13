@@ -1,57 +1,95 @@
-# Musterlösung Datei-Ein- und -Ausgabe
+# Musterlösung „Datei-Ein- und -Ausgabe“ – nur für Lehrende
 
-Eine mögliche Umsetzung auf Basis von Dynamischer Speicher und Listen,
-Commit b21b114. Eigene Funktionszuschnitte sind gleichwertig. programm.c,
-tresorraub.h und piktogramme/ werden unverändert aus dem Startmaterial benutzt.
-Die Lösung wird auf keiner Seite verlinkt und ist nicht im Startmaterial-ZIP.
+Eine mögliche Lösung der Aufgaben auf den Seiten 3, 5 und 6. Grundlage ist der
+Stand am Ende des Kapitels „Dynamischer Speicher und Listen“ (Startmaterial).
+Andere Funktionszuschnitte und Rückgabekonventionen sind ebenso vertretbar,
+solange Format und Verhalten aus `FORMAT.md` eingehalten werden. Die
+Entwurfsentscheidungen stehen am Anfang von `tresorraub.c`.
 
-## Ausführen
+Dieser Ordner wird nicht in das Startmaterial gepackt und auf keiner
+Kursseite verlinkt. Er ist aber im öffentlichen Repository und über GitHub
+Pages abrufbar.
 
-    make
-    make test
-    ./programm --text
-    ./programm
+## Inhalt
 
-F5 speichert und F9 lädt spielstand.txt im Arbeitsverzeichnis. L bleibt Ablegen.
-F5 und F9 verbrauchen keinen Zug. Ein intern behandelter Dateifehler lässt den
-Callback mit 0 zurückkehren, sodass das Gerüst das Spiel weiterführt.
+- `tresorraub.c`: Lösung, ersetzt `tresorraub.c` aus dem Startmaterial. Die
+  Versuche der Seiten 1, 2 und 4 sind nicht enthalten.
+- `tests.c`: 89 Prüfungen: alle Beispieldateien, Rundlauf Speichern–Laden,
+  Grenzen, unbekannte und doppelte Namen, Widersprüche, Listenreihenfolge,
+  eigene Adressen nach dem Laden, Freigaben, fehlschlagendes `malloc` (vor
+  und nach einem neuen Eintrag), fehlschlagendes Öffnen und Schließen,
+  `/dev/full` unter Linux, F5/F9 über `taste_gedrueckt`, Statuszeile und
+  Zeichnen mit dem Software-Renderer. Zählt eigene `malloc`/`free`- und
+  `fopen`/`fclose`-Aufrufe.
+- `Makefile`: verwendet Gerüst und Piktogramme aus
+  `../materialien/tresorraub-dateien`.
 
-## Erwartungshorizont
+## Bauen und prüfen
 
-- Seite 1: FILE * zeigt auf ein Verwaltungsobjekt, nicht auf Dateiinhalt.
-  fprintf und fclose werden geprüft. Ein neues Öffnen mit w ersetzt Inhalt.
-- Seite 2: Inventarnamen in Listenreihenfolge. Keine Pointerwerte speichern.
-- Seite 3: Schreiben verändert den Spielstand nicht. Ein Fehler kann bei w
-  eine unvollständige Zieldatei hinterlassen. Kein transaktionales Dateisystem.
-- Seite 4: eigener neuer Zustand, eigene Einträge, bei Fehler nur diese freigeben.
-  Bei Erfolg altes Inventar freigeben und Besitz am neuen Inventar übernehmen.
-  Zahlen werden zunächst als begrenzte Wörter gelesen und mit strtol geprüft,
-  damit auch Werte außerhalb int kontrolliert abgelehnt werden.
-- Seite 5: start.txt, inventar.txt, abgelegt.txt akzeptieren. Alle ungueltig-*
-  ablehnen. inventar.txt: (5,3), 23 Züge, Tür offen, Beute vor Muenze.
-  abgelegt.txt: (5,3), 24 Züge, Tür offen, Inventar leer, Beute (5,2), Münze (5,4).
+```sh
+make
+make test
+./programm --text
+./programm            # F5 speichert, F9 lädt spielstand.txt
+```
 
-## Prüfung
+Mit Speicherprüfung (Linux):
 
-89 Prüfungen: gültige und ungültige Dateien, Grenzen, doppelte/ unbekannte
-Namen, widersprüchliche Zustände, Listenreihenfolge, eigene Adressen, Freigaben,
-kontrolliert fehlgeschlagenes malloc (vor und nach einem neuen Eintrag),
-fehlgeschlagenes Öffnen und Schließen, /dev/full unter Linux,
-F5/F9 über die echte Tastenfunktion, Statuszeile und Darstellung per SDL2-
-Software-Renderer. Alle Dateiverbindungen und Listeneinträge sind am Ende frei.
+```sh
+make clean
+make CFLAGS="-std=c17 -Wall -Wextra -Wpedantic -Werror -g -fsanitize=address,undefined"
+make test
+```
 
-Geprüft mit GCC und -std=c17 -Wall -Wextra -Wpedantic -Werror.
-Zusätzlich AddressSanitizer/UndefinedBehaviorSanitizer bestanden.
-LeakSanitizer ist in der Prüfumgebung wegen ptrace nicht ausführbar. Dafür
-zählt tests.c zusätzlich die eigenen malloc/free- und fopen/fclose-Aufrufe.
-Clang ist hier nicht verfügbar; der zweite Compilercheck steht noch aus:
+Geprüft mit SDL 2.30 unter Linux mit GCC und Clang, übersetzt mit
+`-std=c17 -Wall -Wextra -Wpedantic -Werror`, mit GCC zusätzlich mit
+`-fsanitize=address,undefined` (einschließlich LeakSanitizer).
 
-    make clean
-    make CC=clang
-    make test CC=clang
+## Erwartungshorizont für Fragen ohne Code
 
-Für AddressSanitizer in dieser Umgebung:
+**Seite 1**
 
-    make clean
-    make CFLAGS="-std=c17 -Wall -Wextra -Wpedantic -Werror -g -fsanitize=address,undefined"
-    ASAN_OPTIONS=detect_leaks=0 make test
+- `FILE *` zeigt auf ein Verwaltungsobjekt der Bibliothek, nicht auf den
+  Dateiinhalt.
+- `"w"`: nach zwei Läufen nur `Messwert: 9`; `"a"`: danach dreimal
+  `Messwert: 9`. `fehlt/notiz.txt`: `perror` meldet „No such file or
+  directory“ auf `stderr`, auch bei umgeleiteter Ausgabe im Terminal sichtbar.
+- Rückgaben: `fopen` auf `NULL`, `fprintf` auf negativ, `fclose` auf ungleich
+  0; nach einem Schreibfehler trotzdem genau einmal `fclose`.
+
+**Seite 2**
+
+- Veränderlich: Figur, Züge, Tür, Lage und Zustand der Gegenstände,
+  Inventar in Reihenfolge. Fest: Grundriss, Ausgang, Tür- und
+  Tresorposition, Wächter. Keine Adressen speichern.
+- Text statt binär: lesbar, keine Pointer, unabhängig vom Speicherlayout.
+
+**Seite 3**
+
+- Vertrag z. B. `int spielstand_speichern(const Spielstand *, const char *)`,
+  0 Erfolg, negativ Fehler; Erfolg erst nach erfolgreichem `fclose`.
+- Startzustand gespeichert ist identisch mit `beispiele/start.txt`.
+- F5 verbraucht keinen Zug und liefert auch bei einem Dateifehler 0 an das
+  Gerüst.
+
+**Seite 4**
+
+- `feof`-Falle: vier Durchläufe, Summe 42 statt 27; richtig ist
+  `while (fscanf(...) == 1)`.
+- MC: abgelehnt werden `12abc`, `FIGUR` und die überlange Zahl.
+- Versuch mit dem Dateikopf: Meldungen laut Tabelle; Datei wird in jedem
+  Fall genau einmal geschlossen.
+
+**Seite 5**
+
+- Eigener Spielstand für den Ladeversuch, eigene Einträge; bei Fehler nur
+  diese freigeben; bei Erfolg altes Inventar freigeben und Besitz übernehmen.
+- `inventar.txt`: (5, 3), 23 Züge, Tür offen, Beute vor Muenze.
+
+**Seite 6**
+
+- `start.txt`, `inventar.txt`, `abgelegt.txt` werden angenommen, alle
+  `ungueltig-*` und die beiden eigenen Kopien (Münze auf dem Ausgang, zwei
+  Gegenstände auf einem Feld) abgelehnt.
+- `abgelegt.txt`: (5, 3), 24 Züge, Tür offen, Inventar leer, Beute (5, 2),
+  Münze (5, 4).

@@ -11,8 +11,8 @@ Termine und Projektphasen mit ihren Themen und Lernzielen erreichbar.
 Die Weihnachtspause ist als Planungsannahme markiert. Die beiden konkreten
 Wochentage und endgültigen Kursdaten werden im Kurs bekanntgegeben.
 
-Die erste Programmieraufgabe ist vorhanden. Alle weiteren Seiten sind zunächst
-Kapitelgerüste mit Lernzielen sowie Bereichen für Einführung, Aufgaben und Hinweise.
+Mehrere Kapitel enthalten ausgearbeitete Aufgaben und Materialien. Weitere
+Themen sind als Kapitelgerüste oder vorbereitete Themenaufrufe angelegt.
 Unfertige Inhalte sind sichtbar als „in Vorbereitung“ gekennzeichnet.
 
 ## Startkapitel
@@ -28,32 +28,38 @@ Die Kursübersicht verlinkt diese Fassung.
 
 ## Themenordner
 
-Jeder weitere Themenordner enthält zunächst eine `index.html`. Materialien und
-zusätzliche Aufgaben können später direkt im jeweiligen Ordner ergänzt werden.
+Die Kursübersicht in `uebersicht.html` führt durch die Kapitel. Die Reihenfolge
+von Block II orientiert sich an den Voraussetzungen der Spielbausteine.
+Makefiles werden im Kapitel „Header und Quelldateien“ eingeführt.
 
-| Termin / Woche | Ordner | Thema |
+| Block | Ordner / Themenaufruf | Thema |
 | --- | --- | --- |
-| 1.1 | `start/` | Start |
-| 1.2 | `variablen/` | Variablen, Datentypen und Berechnungen |
-| 2.1 | `kontrollfluss/` | Bedingungen und Schleifen |
-| 2.2 | `randbedingungen/` | Komplexerer Kontrollfluss und Randbedingungen |
-| 3.1 | `funktionen-debugging/` | Funktionen, Programmzerlegung und Debugging |
-| 3.2 | `lernstand-1/` | Grundlagencheck |
-| 4.1 | `arrays-zeichenketten/` | Manpages, Arrays, Zeichenketten und Listenmodelle |
-| 4.2 | `pointer/` | Pointer und Datenaustausch |
-| 5.1 | `verkettete-listen/` | Verkettete Listen mit Pointern umsetzen |
-| 5.2 | `speicheraufbau/` | Speicheraufbau: Text, Data, Heap und Stack |
-| 6.1 | `dynamischer-speicher/` | Dynamischer Speicher und Strukturen |
-| 6.2 | `header-quellen/` | Header, Quelldateien und Schnittstellen |
-| 7.1 | `kompilieren-make/` | Kompilieren, Linken und Makefiles |
-| 7.2 | `modularisierung-praxis/` | Programmzerlegung in Dateien: praktische Aufgabe |
-| 8.1 | `wiederholung/` | Wiederholung |
-| 8.2 | `lernstand-2/` | Umfassender Lernstandscheck |
-| 9 | `projektplanung/` | Projekt planen |
-| 10 | `projekt-grundumfang/` | Technischen Projektgrundumfang umsetzen |
-| 11–12 | `projekt-verbesserung/` | Projekt verbessern, erweitern und prüfen |
-| 13 | `vortragsvorbereitung/` | Implementierung abschließen und Vortrag vorbereiten |
-| 14–15 | `abschluss/` | Projektpräsentationen und Abschluss |
+| I | `start/` | Einführung |
+| I | `variablen/` | Variablen, Datentypen und Berechnungen |
+| I | `kontrollfluss/` | Bedingungen und Schleifen |
+| I | `funktionen-debugging/` | Programmzerlegung, Funktionen und Debugging |
+| I | `vom-problem-zum-programm/` | Vom Problem zum Programm I |
+| I | `lernstand-1/` | Lernstandscheck I |
+| II | `vom-problem-zum-programm-2/` | Vom Problem zum Programm II |
+| II | `manpages/` | Manpages und Bibliotheksdokumentation |
+| II | `header-quellen/` | Header und Quelldateien einschließlich Makefile-Grundlagen |
+| II | `datenstrukturen/` | Arrays, Zeichenketten und Strukturen |
+| II | `pointer/` | Pointer und Datenaustausch |
+| II | `dynamischer-speicher/` | Dynamischer Speicher und Listen, in Vorbereitung |
+| II | `in-vorbereitung.html?thema=datei-ein-ausgabe` | Datei-Ein- und -Ausgabe |
+| II | `in-vorbereitung.html?thema=config` | Config |
+| II | `in-vorbereitung.html?thema=objektorientierung` | Objektorientierung in C |
+| II | `in-vorbereitung.html?thema=spielbausteine` | Die Spielbausteine zusammenführen & Refactoring |
+| II | `lernstand-2/` | Lernstandscheck II – Licht aus |
+| III | `projektplanung/` | Projekt planen |
+| III | `projekt-grundumfang/` | Technischen Projektgrundumfang umsetzen |
+| III | `projekt-verbesserung/` | Projekt verbessern, erweitern und prüfen |
+| III | `vortragsvorbereitung/` | Vortrag vorbereiten |
+| III | `abschluss/` | Projektpräsentationen und Abschluss |
+
+`kompilieren-make/index.html` bleibt als Weiterleitung auf die Makefile-Unterseite
+erhalten. Es gibt kein separates Makefiles-Kapitel mehr. Weitere ältere
+Themenordner bleiben vorerst bestehen, sind aber nicht Teil der Kapitelkette.
 
 `kurs.css` enthält die gemeinsame Gestaltung. Links und Stylesheets sind relativ,
 damit die Website auch unter dem GitHub-Pages-Projektpfad funktioniert.

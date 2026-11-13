@@ -1,4 +1,4 @@
-# Inventar für das Kapitel „Dynamischer Speicher und Listen“
+# Inventar des Tresorraubs
 
 Diese Datei beschreibt die Regeln für das Inventar des Tresorraubs. Sie
 enthält keinen Code. Wie Sie das Inventar im Programm darstellen, entscheiden
@@ -28,17 +28,19 @@ Es gibt drei Gegenstände. Ihre Namen im Programm sind:
 
 ## Tasten im Fenster
 
-| Taste       | Wirkung                                             | Seite |
-|-------------|-----------------------------------------------------|-------|
-| Pfeiltasten | Figur bewegen, wie im Kapitel „Pointer“             | –     |
-| Leertaste   | Gegenstand aufnehmen oder Tür öffnen                | 5     |
-| L           | alle Gegenstände ablegen                            | 6     |
-| Escape      | Programm beenden                                    | –     |
+| Taste       | Wirkung                                  |
+|-------------|------------------------------------------|
+| Pfeiltasten | Figur bewegen                            |
+| Leertaste   | Gegenstand aufnehmen oder Tür öffnen     |
+| L           | alle Gegenstände ablegen                 |
+| F5          | Spielstand speichern (`FORMAT.md`)       |
+| F9          | Spielstand laden (`FORMAT.md`)           |
+| Escape      | Programm beenden                         |
 
-Nach der Leertaste und nach L gibt Ihr Programm im Terminal eine kurze
+Nach der Leertaste, nach L, F5 und F9 gibt Ihr Programm im Terminal eine kurze
 Meldung aus, zum Beispiel was aufgenommen wurde oder warum nicht.
 
-## Leertaste: aufnehmen und Tür öffnen (Seite 5)
+## Leertaste: aufnehmen und Tür öffnen
 
 1. Liegt auf dem Feld der Figur ein Gegenstand, wird er aufgenommen. Er
    liegt danach nicht mehr auf dem Feld. Die Beute nimmt die Figur auf dem
@@ -51,7 +53,7 @@ Meldung aus, zum Beispiel was aufgenommen wurde oder warum nicht.
 
 Nur eine erfolgreiche Handlung zählt als Zug: aufnehmen oder Tür öffnen.
 
-## Taste L: ablegen (Seite 6)
+## Taste L: ablegen
 
 - Die Gegenstände werden in der Reihenfolge des Inventars abgelegt, also von
   vorne nach hinten.

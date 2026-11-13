@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Speicher anfordern und freigeben</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+  <script src="selbstkontrollen.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header><h1>Speicher anfordern und freigeben</h1><p>Mit <code>malloc</code> und <code>free</code> arbeiten und Speicherfehler sichtbar machen.</p></header>
+    <noscript><p>Ohne JavaScript können Sie die Fragen anhand der aufklappbaren Erklärungen selbst prüfen.</p></noscript>
+    <section class="content-section" aria-labelledby="abschnitt-1">
+      <h2 id="abschnitt-1">1. In der Dokumentation nachschlagen</h2>
+      <p>Dynamischen Speicher fordern Sie mit <code>malloc</code> an und geben ihn mit <code>free</code> wieder frei. Beide Funktionen sind neu für Sie. Schlagen Sie sie nach, wie Sie es im Kapitel <a href="../manpages/index.html">„Manpages und Bibliotheksdokumentation“</a> geübt haben. Beide stehen auf derselben <a href="https://man7.org/linux/man-pages/man3/malloc.3.html">Manpage zu <code>malloc</code></a>. Notieren Sie:</p>
+      <ul>
+        <li>In welcher Header-Datei stehen die Funktionen?</li>
+        <li>Was gibt man <code>malloc</code> als Parameter mit, und in welcher Einheit?</li>
+        <li>Was liefert <code>malloc</code> bei Erfolg, was bei einem Fehler?</li>
+        <li>Welchen Inhalt hat der neue Speicher?</li>
+        <li>Was passiert bei <code>free(NULL)</code>? Was gilt für den Speicher nach <code>free</code>?</li>
+      </ul>
+      <details><summary>Selbstkontrolle: Ihre Notizen</summary><p>Beide Funktionen stehen in <code>&lt;stdlib.h&gt;</code>. <code>malloc</code> erhält die gewünschte Größe in Bytes und liefert einen Pointer auf den neuen Speicher. Kann kein Speicher reserviert werden, liefert sie <code>NULL</code>. Der neue Speicher ist nicht initialisiert, er enthält also unbestimmte Werte. <code>free</code> gibt einen von <code>malloc</code> gelieferten Bereich frei. <code>free(NULL)</code> tut nichts. Nach <code>free</code> darf der Bereich nicht mehr benutzt und nicht ein zweites Mal freigegeben werden.</p></details>
+    </section>
+    <section class="content-section" aria-labelledby="abschnitt-2">
+      <h2 id="abschnitt-2">2. Das Grundmuster</h2>
+      <p>Das folgende Beispiel verwendet den Typ <code>Uhrzeit</code> aus dem Kapitel <a href="../datenstrukturen/04-strukturen.html">„Datenstrukturen“</a>. Es zeigt die vier Schritte, die bei dynamischem Speicher immer gleich sind:</p>
+      <pre><code>Uhrzeit *wecker = malloc(sizeof(*wecker));   /* 1. anfordern */
+if (wecker == NULL) {                         /* 2. Erfolg prüfen */
+    printf("Kein Speicher mehr frei.\n");
+    return -1;
+}
+wecker-&gt;stunde = 6;                           /* 3. benutzen */
+wecker-&gt;minute = 45;
+printf("%d:%02d\n", wecker-&gt;stunde, wecker-&gt;minute);
+free(wecker);                                 /* 4. freigeben */
+wecker = NULL;</code></pre>
+      <ul>
+        <li><strong>Anfordern:</strong> <code>sizeof(*wecker)</code> ist die Größe des Objekts, auf das <code>wecker</code> zeigt. Das funktioniert wie <code>sizeof(zuege[0])</code> im Kapitel <a href="../datenstrukturen/01-eindimensionale-arrays.html">„Datenstrukturen“</a>: Ändern Sie später den Typ von <code>wecker</code>, passt sich die Größe von selbst an.</li>
+        <li><strong>Erfolg prüfen:</strong> Erst wenn feststeht, dass <code>malloc</code> nicht <code>NULL</code> geliefert hat, dürfen Sie den Speicher benutzen.</li>
+        <li><strong>Benutzen:</strong> Über den Pointer erreichen Sie die Felder mit <code>-&gt;</code>, wie im Kapitel <a href="../pointer/02-kopie-und-original.html">„Pointer und Datenaustausch“</a>.</li>
+        <li><strong>Freigeben:</strong> <code>free</code> gibt den Speicher zurück. Danach zeigt <code>wecker</code> zwar noch auf die alte Adresse, aber dort liegt nichts mehr, was Ihnen gehört. Mit <code>wecker = NULL</code> machen Sie das sichtbar.</li>
+      </ul>
+      <p>Probieren Sie das Beispiel in <code>text_ausgeben</code> aus. Übernehmen Sie dafür die Typdefinition von <code>Uhrzeit</code> aus <a href="../datenstrukturen/04-strukturen.html">„Datenstrukturen“</a> in Ihre <code>tresorraub.c</code>, oberhalb von <code>text_ausgeben</code>, und binden Sie <code>&lt;stdlib.h&gt;</code> ein, falls das noch nicht geschehen ist. Fordern Sie danach auf dieselbe Weise ein Array mit fünf <code>int</code>-Werten an, füllen Sie es und geben Sie es wieder frei. Wie berechnen Sie die Größe, die Sie <code>malloc</code> übergeben?</p>
+      <form class="self-check" data-hint="Lesen Sie in Ihren Notizen nach, was malloc liefert und welchen Inhalt der neue Speicher hat.">
+        <fieldset><legend>Welche Aussagen zum Grundmuster stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Der Rückgabewert von <code>malloc</code> muss vor der ersten Benutzung mit <code>NULL</code> verglichen werden.</label>
+          <label><input type="checkbox"> <code>malloc</code> setzt alle Felder des neuen Speichers auf 0.</label>
+          <label><input type="checkbox" data-correct="true"> <code>sizeof(*wecker)</code> passt sich an, wenn sich der Typ von <code>wecker</code> ändert.</label>
+          <label><input type="checkbox"> Nach <code>free(wecker)</code> darf man <code>wecker-&gt;stunde</code> noch lesen, solange man keinen neuen Speicher anfordert.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die erste und dritte Aussage stimmen. Der Inhalt von neuem Speicher ist unbestimmt. Nach <code>free</code> ist jeder Zugriff undefiniertes Verhalten, unabhängig davon, was das Programm danach tut.</p></details>
+      </form>
+    </section>
+    <section class="content-section" aria-labelledby="abschnitt-3">
+      <h2 id="abschnitt-3">3. Versuche: Speicherfehler sichtbar machen</h2>
+      <p>Bauen Sie in Ihr Beispiel nacheinander vier typische Fehler ein. Notieren Sie jeweils vorher, was Sie erwarten. Führen Sie jeden Versuch zuerst normal aus und dann mit dem Prüfwerkzeug für Ihr System. Die Befehle stehen in der <a href="materialien/tresorraub-inventar/README.md">README des Startmaterials</a>.</p>
+      <ol>
+        <li><strong>Zugriff nach dem Freigeben:</strong> Geben Sie <code>wecker-&gt;stunde</code> nach <code>free(wecker)</code> aus, ohne <code>wecker = NULL</code>.</li>
+        <li><strong>Doppelt freigeben:</strong> Rufen Sie <code>free(wecker)</code> zweimal hintereinander auf.</li>
+        <li><strong>Freigeben vergessen:</strong> Lassen Sie <code>free(wecker)</code> ganz weg.</li>
+        <li><strong>Reihenfolge vertauscht:</strong> Schreiben Sie <code>wecker = NULL;</code> vor <code>free(wecker);</code> statt danach. Sieht das nach einem Fehler aus?</li>
+      </ol>
+      <p>Entfernen Sie die Fehler danach wieder.</p>
+      <details><summary>Selbstkontrolle: Was die Werkzeuge melden</summary><p>Ohne Prüfwerkzeug läuft der erste Versuch oft ohne jede Meldung durch und gibt eine beliebige Zahl aus. Der zweite kann abstürzen oder unauffällig bleiben, der dritte fällt gar nicht auf. Der AddressSanitizer meldet beim ersten Versuch „heap-use-after-free“ und beim zweiten einen „double-free“, jeweils mit der Zeile im Quelltext. Den dritten Fehler meldet unter Linux der LeakSanitizer mit „detected memory leaks“, unter macOS das Werkzeug <code>leaks</code>.</p><p>Der vierte Versuch sieht harmlos aus und läuft ohne Absturz und ohne Compilerwarnung. Trotzdem ist es derselbe Fehler wie der dritte: Nach <code>wecker = NULL</code> kennt das Programm die Adresse des Speichers nicht mehr. <code>free(wecker)</code> ist dann <code>free(NULL)</code> und tut nichts. Der Speicher bleibt belegt, und niemand kann ihn mehr freigeben. Das Prüfwerkzeug meldet ein Speicherleck. Merken Sie sich deshalb: Erst freigeben, solange Sie die Adresse noch haben, dann den Pointer auf <code>NULL</code> setzen.</p></details>
+      <form class="self-check" data-hint="Was beweist ein Programmlauf ohne Fehlermeldung bei undefiniertem Verhalten?">
+        <fieldset><legend>Welche Aussagen zu Speicherfehlern stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Ein Programm, das ohne Fehlermeldung läuft, kann trotzdem Speicherfehler enthalten.</label>
+          <label><input type="checkbox"> Vergessenes <code>free</code> ist unproblematisch, weil das Betriebssystem den Speicher sofort zurückholt.</label>
+          <label><input type="checkbox" data-correct="true"> <code>wecker = NULL</code> nach <code>free</code> verhindert, dass ein späterer Zugriff unbemerkt alten Speicher liest.</label>
+          <label><input type="checkbox"> Ein Speicherbereich darf zweimal freigegeben werden, wenn dazwischen nichts anderes passiert.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die erste und dritte Aussage stimmen. Das Betriebssystem holt den Speicher erst beim Programmende zurück. Bei einem lange laufenden Programm, das immer wieder Speicher anfordert, wächst der Verbrauch bis dahin immer weiter. Ein Zugriff über <code>NULL</code> bricht das Programm in der Regel sofort ab, statt unbemerkt falsche Werte zu liefern.</p></details>
+      </form>
+    </section>
+    <section class="content-section" aria-labelledby="abschnitt-4">
+      <h2 id="abschnitt-4">4. Aufgabe: Einen Inventareintrag anlegen</h2>
+      <p>Das Inventar soll mit dem Spiel mitwachsen und wieder schrumpfen. Statt eines Arrays mit fester Länge bekommt deshalb jeder Gegenstand im Inventar einen eigenen kleinen Speicherblock auf dem Heap. Diesen Block nennen wir einen <strong>Eintrag</strong>. Er wird angefordert, wenn die Figur den Gegenstand aufnimmt, und freigegeben, wenn der Gegenstand das Inventar wieder verlässt.</p>
+      <p>Auf dieser Seite schreiben Sie nur das Anlegen eines einzelnen Eintrags. Wie mehrere Einträge zu einem Inventar zusammenhängen, lernen Sie auf Seite 3. Dort bekommt der Eintrag dafür ein weiteres Feld. Für den Anfang genügt der Name des Gegenstands, wie er in <a href="materialien/tresorraub-inventar/INVENTAR.md">INVENTAR.md</a> steht.</p>
+      <ol>
+        <li>Definieren Sie einen Strukturtyp für einen Eintrag. Wie groß wählen Sie das Zeichen-Array für den Namen?</li>
+        <li>Entwerfen Sie eine Funktion, die zu einem Namen einen neuen Eintrag auf dem Heap anlegt und einen Pointer darauf zurückgibt. Kann sie keinen Eintrag anlegen, liefert sie <code>NULL</code>.</li>
+        <li>Der Name soll mit <code>snprintf</code> in den Eintrag kopiert werden, wie im Kapitel <a href="../datenstrukturen/02-zeichenketten.html">„Datenstrukturen“</a>. Ist der Name zu lang, liefert die Funktion ebenfalls <code>NULL</code>.</li>
+        <li>Schreiben Sie in den Vertrag der Funktion, wer den neuen Eintrag später freigeben muss.</li>
+      </ol>
+      <p>Testen Sie in <code>text_ausgeben</code>: einen Eintrag anlegen, ausgeben und freigeben, sowie einen zu langen Namen. Prüfen Sie beide Fälle mit dem Prüfwerkzeug.</p>
+      <details><summary>Denkhilfe: Der Fehlerpfad bei zu langem Namen</summary><p>In welcher Reihenfolge passieren <code>malloc</code> und <code>snprintf</code>? Wenn der Name nicht passt, ist der Speicher dann schon angefordert? Wer gibt ihn frei, wenn die Funktion <code>NULL</code> liefert und der Aufrufer deshalb gar keinen Pointer darauf bekommt?</p></details>
+      <details><summary>Selbstkontrolle: Erwartete Ergebnisse</summary><p>Der angelegte Eintrag enthält den Namen, und nach dem Freigeben meldet das Prüfwerkzeug nichts. Bei einem zu langen Namen muss Ihre Funktion den bereits angeforderten Speicher selbst freigeben, bevor sie <code>NULL</code> liefert. Sonst meldet das Prüfwerkzeug ein Speicherleck, denn kein Aufrufer kann diesen Speicher mehr erreichen. Im Vertrag steht: Bei Erfolg besitzt der Aufrufer den Eintrag und muss ihn freigeben. Bei <code>NULL</code> ist nichts freizugeben.</p></details>
+      <p class="work-result"><strong>Ihr Ergebnis:</strong> Ihre Notizen zu <code>malloc</code> und <code>free</code>, Ihre Beobachtungen zu den vier Speicherfehlern und eine getestete Funktion zum Anlegen eines Eintrags mit Vertrag.</p>
+    </section>
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="01-lebensdauer.html">← Zurück: Lebensdauer und Speicherbereiche</a></li>
+      <li><a href="03-verkettete-liste.html">Weiter: Eine verkettete Liste →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>
