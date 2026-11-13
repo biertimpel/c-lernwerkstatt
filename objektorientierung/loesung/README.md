@@ -25,7 +25,6 @@ Pages abrufbar.
   Inventar laut `regeln.txt`, Speicherfehler beim Laden, F5/F9 über die
   Taste) und `zeichne`. Vorhandene `regeln.txt` und `spielstand.txt` werden
   gesichert und wiederhergestellt.
-  Eine vorhandene `regeln.txt` wird gesichert und wiederhergestellt.
 - `Makefile`: verwendet Gerüst, Piktogramme und `ablauf.c` aus
   `../materialien/tresorraub-objekte`.
 

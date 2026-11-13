@@ -25,7 +25,7 @@
   </main>
   <script>
     (() => {
-      const themen = {"kontrollfluss":"Bedingungen und Schleifen","funktionen-debugging":"Programmzerlegung, Funktionen und Debugging","lernstand-1":"Lernstandscheck I","manpages":"Manpages","arrays-zeichenketten":"Datenstrukturen","pointer":"Pointer und Datenaustausch","dynamischer-speicher":"Dynamischer Speicher und Listen","kompilieren-make":"Makefiles","header-quellen":"Header und Quelldateien","lernstand-2":"Lernstandscheck II","projektplanung":"Projekt","abschluss":"Präsentation","datei-ein-ausgabe":"Datei-Ein- und -Ausgabe","config":"Config","objektorientierung":"Objektorientierung in C","spielbausteine":"Die Spielbausteine zusammenführen & Refactoring"};
+      const themen = {"kontrollfluss":"Bedingungen und Schleifen","funktionen-debugging":"Programmzerlegung, Funktionen und Debugging","lernstand-1":"Lernstandscheck I","manpages":"Manpages","arrays-zeichenketten":"Datenstrukturen","pointer":"Pointer und Datenaustausch","dynamischer-speicher":"Dynamischer Speicher und Listen","kompilieren-make":"Makefiles","header-quellen":"Header und Quelldateien","lernstand-2":"Lernstandscheck II","projektplanung":"Projekt","abschluss":"Präsentation","datei-ein-ausgabe":"Datei-Ein- und -Ausgabe","config":"Config","objektorientierung":"Objektorientierung in C","spielbausteine":"Spielende","spielende":"Spielende"};
       const schluessel = new URLSearchParams(window.location.search).get('thema');
       const weiterleitungen = {"header-quellen":"header-quellen/index.html","kompilieren-make":"header-quellen/03-makefile-verwenden.html","arrays-zeichenketten":"datenstrukturen/index.html","pointer":"pointer/index.html"};
       if (Object.hasOwn(weiterleitungen, schluessel)) {

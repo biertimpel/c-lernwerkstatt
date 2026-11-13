@@ -45,11 +45,11 @@ Makefiles werden im Kapitel „Header und Quelldateien“ eingeführt.
 | II | `header-quellen/` | Header und Quelldateien einschließlich Makefile-Grundlagen |
 | II | `datenstrukturen/` | Arrays, Zeichenketten und Strukturen |
 | II | `pointer/` | Pointer und Datenaustausch |
-| II | `dynamischer-speicher/` | Dynamischer Speicher und Listen, in Vorbereitung |
-| II | `in-vorbereitung.html?thema=datei-ein-ausgabe` | Datei-Ein- und -Ausgabe |
-| II | `in-vorbereitung.html?thema=config` | Config |
-| II | `in-vorbereitung.html?thema=objektorientierung` | Objektorientierung in C |
-| II | `in-vorbereitung.html?thema=spielbausteine` | Die Spielbausteine zusammenführen & Refactoring |
+| II | `dynamischer-speicher/` | Dynamischer Speicher und Listen |
+| II | `datei-ein-ausgabe/` | Datei-Ein- und -Ausgabe |
+| II | `config/` | Config |
+| II | `objektorientierung/` | Objektorientierung in C |
+| II | `spielende/` | Spielende |
 | II | `lernstand-2/` | Lernstandscheck II – Licht aus |
 | III | `projektplanung/` | Projekt planen |
 | III | `projekt-grundumfang/` | Technischen Projektgrundumfang umsetzen |

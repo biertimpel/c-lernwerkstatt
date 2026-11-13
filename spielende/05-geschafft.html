@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Geschafft!</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header class="feier">
+      <div class="konfetti" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <p class="eyebrow">Ende von Block 2</p>
+      <h1>Geschafft!</h1>
+      <p class="feier-satz">Sie haben ein richtiges, funktionierendes Spiel in C programmiert.</p>
+    </header>
+
+    <section class="content-section" aria-labelledby="abschnitt-1">
+      <h2 id="abschnitt-1">1. Ihr Tresorraub</h2>
+      <p>Am Anfang von Block 2 stand ein Text: ein Raum, ein Tresor, ein paar Wächter, 60 Züge. Jetzt läuft daraus ein Programm, das Sie selbst geschrieben haben. Eine Figur schleicht durch den Raum, nimmt den Schlüssel, öffnet die Tür, bricht den Tresor auf und entkommt mit der Beute, oder sie wird entdeckt, und quer über das Spielfeld steht WASTED. Das Spiel merkt sich seinen Stand in einer Datei, liest seine Regeln aus einer anderen, verwaltet sein Inventar selbst und gibt jeden Speicher wieder frei.</p>
+      <ul class="zahlen">
+        <li><strong>rund 1200</strong> Zeilen C</li>
+        <li><strong>6</strong> Module mit eigenen Schnittstellen</li>
+        <li><strong>7</strong> Objektarten mit Methoden</li>
+        <li><strong>79</strong> bestandene Prüfungen</li>
+      </ul>
+      <p>Spielen Sie eine Runde. Zeigen Sie das Spiel jemandem, der nicht programmiert, und erklären Sie, was hinter einem einzigen Tastendruck passiert. Sie werden merken, wie viel Sie inzwischen wissen.</p>
+    </section>
+
+    <section class="content-section" aria-labelledby="abschnitt-2">
+      <h2 id="abschnitt-2">2. Was Sie in Block 2 gelernt haben</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th scope="col">Kapitel</th><th scope="col">Was Sie gelernt haben</th><th scope="col">Was es dem Spiel gebracht hat</th></tr></thead>
+        <tbody>
+          <tr><td><a href="../vom-problem-zum-programm-2/index.html">Vom Problem zum Programm II</a></td><td>Eine Aufgabe in Anforderungen, Sonderfälle und einen Plan zerlegen.</td><td>Das Zielbild und Ihr erster Plan.</td></tr>
+          <tr><td><a href="../manpages/index.html">Manpages und Bibliotheksdokumentation</a></td><td>Dokumentation lesen, Rückgabewerte prüfen, eine fremde Bibliothek benutzen.</td><td>Das erste Fenster mit SDL2.</td></tr>
+          <tr><td><a href="../header-quellen/index.html">Header und Quelldateien</a></td><td>Schnittstellen, Übersetzen und Linken, Makefiles.</td><td>Ein Gerüst aus mehreren Dateien, das mit <code>make</code> baut.</td></tr>
+          <tr><td><a href="../datenstrukturen/index.html">Datenstrukturen</a></td><td>Arrays, Zeichenketten, Strukturen.</td><td>Spielfeld, Wächter, Statuszeile und ein Spielstand.</td></tr>
+          <tr><td><a href="../pointer/index.html">Pointer und Datenaustausch</a></td><td>Adressen, Kopie und Original, <code>-&gt;</code>.</td><td>Eine Figur, die sich bewegt.</td></tr>
+          <tr><td><a href="../dynamischer-speicher/index.html">Dynamischer Speicher und Listen</a></td><td><code>malloc</code>, <code>free</code>, verkettete Listen, Besitz.</td><td>Ein Inventar: aufnehmen, Tür öffnen, ablegen.</td></tr>
+          <tr><td><a href="../datei-ein-ausgabe/index.html">Datei-Ein- und -Ausgabe</a></td><td>Dateien schreiben und lesen, ein eigenes Format, Fehler behandeln.</td><td>Speichern mit F5, Laden mit F9.</td></tr>
+          <tr><td><a href="../config/index.html">Config</a></td><td>Zeilen lesen, Name und Wert auswerten, Tabellen aus Strukturen.</td><td>Spielregeln aus <code>regeln.txt</code>.</td></tr>
+          <tr><td><a href="../objektorientierung/index.html">Objektorientierung in C</a></td><td><code>enum</code>, Funktionspointer, Objektarten mit Methoden, Umbauen mit Vergleichslauf.</td><td>Objekte statt verstreuter Sonderfälle, Geheimtür und zweite Münze.</td></tr>
+          <tr><td><a href="index.html">Spielende</a></td><td>Zustände, Module mit Schnittstellen, Unit Tests, Rückblick.</td><td>Sieg, WASTED und ein Spiel in sechs Modulen.</td></tr>
+        </tbody>
+      </table></div>
+      <p>Dazu kommt, was in keiner Überschrift steht: Sie lesen Compilermeldungen, statt vor ihnen zu erschrecken. Sie finden Speicherfehler mit Werkzeugen. Sie bauen ein Programm um, ohne es kaputtzumachen, und können das belegen. Und Sie wissen, dass ein Plan ein Anfang ist und kein Versprechen.</p>
+    </section>
+
+    <section class="content-section" aria-labelledby="abschnitt-3">
+      <h2 id="abschnitt-3">3. Wie es weitergeht</h2>
+      <p>Im <a href="../in-vorbereitung.html?thema=lernstand-2">Lernstandscheck II</a> erweitern Sie Ihren Tresorraub selbstständig um etwas Neues. Danach beginnt Block 3: ein eigenes Projekt, von der Idee über den Plan bis zur Präsentation. Ihren Rückblick von <a href="04-rueckblick.html">Seite 4</a> nehmen Sie dorthin mit.</p>
+    </section>
+
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="04-rueckblick.html">← Zurück: Rückblick auf Block 2</a></li>
+      <li><a href="../in-vorbereitung.html?thema=lernstand-2">Weiter: Lernstandscheck II →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>
