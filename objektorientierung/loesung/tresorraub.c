@@ -1,5 +1,5 @@
 /* MUSTERLOESUNG fuer das Kapitel Objektorientierung in C - nur fuer Lehrende.
-   Grundlage ist der Stand am Ende von "Config".
+   Grundlage ist der Stand am Ende von "Config" (mit Speichern und Laden).
 
    Entwurfsentscheidungen:
    - Jede Objektart (Schluessel, Muenze, Beute, Tuer, Tresor, Ausgang,
@@ -15,9 +15,15 @@
    - Das Inventar speichert Pointer auf Gegenstaende statt Namen. Es besitzt
      seine Eintraege, nicht die Gegenstaende.
    - Ergebniscodes als enum (Aufnahme, Benutzung) statt #define.
+   - Speichern und Laden (Format Version 2, FORMAT.md): je Objekt eine
+     Zeile mit Art, Position, auf_feld, offen und der Nummer des Inhalts;
+     das Inventar als Objektnummern. Nummern statt Pointer, weil Adressen
+     nach einem Neustart nichts bedeuten. Laden liest zuerst in Daten ohne
+     Pointer (Gelesen), prueft sie an einem frischen Startzustand und
+     uebertraegt sie erst dann auf den laufenden Spielstand.
    - Seite 5: Geheimtuer auf (6, 6) (im Grundriss jetzt Boden) und eine
      zweite Muenze auf (12, 7). Beide kommen ohne Aenderung am uebrigen
-     Code aus. */
+     Code aus, auch Speichern und Laden. */
 #include "tresorraub.h"
 #include "piktogramme/piktogramme.h"
 #include <stdbool.h>
@@ -230,7 +236,7 @@ bool begehbar(Punkt p) {
     return innerhalb(p) && GRUNDRISS[p.y][p.x] != '#';
 }
 
-/* ---------- Objekte und Objektarten ---------- */
+/* ---------- Objekte, Objektarten und Spielstand ---------- */
 
 typedef struct Spielstand Spielstand;
 typedef struct Objekt Objekt;
@@ -271,8 +277,6 @@ struct Objekt {
     Objekt *inhalt;    /* Tresor: enthaltener Gegenstand, sonst NULL */
 };
 
-/* ---------- Inventar: Liste von Pointern auf Gegenstaende ---------- */
-
 /* Das Inventar besitzt seine Eintraege, aber nicht die Gegenstaende:
    Die Objekte gehoeren dem Spielstand. */
 typedef struct Eintrag {
@@ -283,6 +287,64 @@ typedef struct Eintrag {
 typedef struct {
     Eintrag *erster;   /* NULL: Inventar ist leer */
 } Inventar;
+
+#define MAX_OBJEKTE 10
+
+/* Achtung: Objekte zeigen aufeinander (Tresor -> Beute) und das Inventar
+   zeigt auf Objekte. Ein kopierter Spielstand wuerde auf die Objekte des
+   Originals zeigen. Deshalb wird er nie als Wert kopiert, sondern ueber
+   einen Pointer gefuellt und benutzt. */
+struct Spielstand {
+    Punkt figur;
+    int zuege;
+    Inventar inventar;
+    Regeln regeln;
+    Objekt objekte[MAX_OBJEKTE];
+    size_t anzahl_objekte;
+    Waechter waechter[ANZAHL_WAECHTER];
+};
+
+/* ---------- Hilfsfunktionen fuer Objekte ---------- */
+
+/* Haengt ein Objekt an und liefert einen Pointer darauf. */
+static Objekt *objekt_hinzufuegen(Spielstand *s, const Objektart *art,
+                                  int x, int y, bool auf_feld) {
+    Objekt *o = &s->objekte[s->anzahl_objekte++];
+    *o = (Objekt){art, {x, y}, auf_feld, false, NULL};
+    return o;
+}
+
+/* Erstes Objekt auf dem Feld p, sonst NULL. */
+static const Objekt *objekt_auf(const Spielstand *s, Punkt p) {
+    for (size_t i = 0; i < s->anzahl_objekte; i++) {
+        const Objekt *o = &s->objekte[i];
+        if (o->auf_feld && punkt_gleich(o->position, p)) {
+            return o;
+        }
+    }
+    return NULL;
+}
+
+/* Steht auf p ein Waechter? */
+static bool waechter_auf(const Spielstand *s, Punkt p) {
+    for (size_t i = 0; i < ANZAHL_WAECHTER; i++) {
+        if (punkt_gleich(p, s->waechter[i].position)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/* Zeichen und Piktogramm eines Objekts, je nach Zustand. */
+static char objekt_zeichen(const Objekt *o) {
+    return o->offen ? o->art->zeichen_offen : o->art->zeichen;
+}
+
+static Piktogramm objekt_bild(const Objekt *o) {
+    return o->offen ? o->art->bild_offen : o->art->bild;
+}
+
+/* ---------- Inventar: Liste von Pointern auf Gegenstaende ---------- */
 
 /* Ergebnisse von inventar_aufnehmen */
 typedef enum {
@@ -366,24 +428,6 @@ void inventar_leeren(Inventar *inventar) {
     }
     inventar->erster = NULL;
 }
-
-/* ---------- Der Spielstand ---------- */
-
-#define MAX_OBJEKTE 10
-
-/* Achtung: Objekte zeigen aufeinander (Tresor -> Beute) und das Inventar
-   zeigt auf Objekte. Ein kopierter Spielstand wuerde auf die Objekte des
-   Originals zeigen. Deshalb wird er nie als Wert kopiert, sondern ueber
-   einen Pointer gefuellt und benutzt. */
-struct Spielstand {
-    Punkt figur;
-    int zuege;
-    Inventar inventar;
-    Regeln regeln;
-    Objekt objekte[MAX_OBJEKTE];
-    size_t anzahl_objekte;
-    Waechter waechter[ANZAHL_WAECHTER];
-};
 
 void zug_zaehlen_original(Spielstand *p) {
     p->zuege++;
@@ -499,14 +543,6 @@ static const Objektart ART_GEHEIMTUER = {
 
 /* ---------- Spielstand anlegen und befragen ---------- */
 
-/* Haengt ein Objekt an und liefert einen Pointer darauf. */
-static Objekt *objekt_hinzufuegen(Spielstand *s, const Objektart *art,
-                                  int x, int y, bool auf_feld) {
-    Objekt *o = &s->objekte[s->anzahl_objekte++];
-    *o = (Objekt){art, {x, y}, auf_feld, false, NULL};
-    return o;
-}
-
 /* Fuellt *s mit dem Startzustand. Die Reihenfolge der Objekte legt fest,
    welches Zeichen gewinnt, wenn mehrere auf einem Feld stehen. */
 void startzustand(Spielstand *s, const Regeln *regeln) {
@@ -525,17 +561,6 @@ void startzustand(Spielstand *s, const Regeln *regeln) {
     objekt_hinzufuegen(s, &ART_MUENZE, 12, 7, true);
 }
 
-/* Erstes Objekt auf dem Feld p, sonst NULL. */
-static const Objekt *objekt_auf(const Spielstand *s, Punkt p) {
-    for (size_t i = 0; i < s->anzahl_objekte; i++) {
-        const Objekt *o = &s->objekte[i];
-        if (o->auf_feld && punkt_gleich(o->position, p)) {
-            return o;
-        }
-    }
-    return NULL;
-}
-
 /* Gegenstand, den die Figur auf p aufnehmen koennte, sonst NULL. Der
    Inhalt eines Tresors zaehlt dazu. */
 static const Objekt *gegenstand_auf(const Spielstand *s, Punkt p) {
@@ -549,14 +574,6 @@ static const Objekt *gegenstand_auf(const Spielstand *s, Punkt p) {
     return o->inhalt;
 }
 
-static char objekt_zeichen(const Objekt *o) {
-    return o->offen ? o->art->zeichen_offen : o->art->zeichen;
-}
-
-static Piktogramm objekt_bild(const Objekt *o) {
-    return o->offen ? o->art->bild_offen : o->art->bild;
-}
-
 /* Formatiert die Position und die Zahl der ausgefuehrten Zuege. */
 static int statuszeile(char ziel[], size_t groesse, Punkt position, int zuege,
                        int zuglimit, const char *hier) {
@@ -566,15 +583,6 @@ static int statuszeile(char ziel[], size_t groesse, Punkt position, int zuege,
         : snprintf(ziel, groesse, "Position (%d, %d) | Zuege %d/%d | Hier liegt: %s",
                    position.x, position.y, zuege, zuglimit, hier);
     return laenge < 0 || (size_t)laenge >= groesse ? -1 : 0;
-}
-
-static bool waechter_auf(const Spielstand *s, Punkt p) {
-    for (size_t i = 0; i < ANZAHL_WAECHTER; i++) {
-        if (punkt_gleich(p, s->waechter[i].position)) {
-            return true;
-        }
-    }
-    return false;
 }
 
 char feldzeichen(const Spielstand *s, Punkt p) {
@@ -727,6 +735,278 @@ int ablegen(Spielstand *s) {
     return abgelegt;
 }
 
+/* ---------- Spielstand speichern und laden (Format Version 2) ---------- */
+
+#include <errno.h>
+#include <limits.h>
+
+#define SPIELSTANDDATEI "spielstand.txt"
+#define WORT_MAX 63            /* laengstes gelesenes Wort, ohne '\0' */
+#define KEIN_OBJEKT (-1)
+
+/* Nummer eines Objekts im Spielstand: Abstand zum Anfang des Arrays. Statt
+   Pointern speichert die Datei diese Nummern. */
+static int objekt_nummer(const Spielstand *s, const Objekt *o) {
+    return o == NULL ? KEIN_OBJEKT : (int)(o - s->objekte);
+}
+
+/* Schreibt Figur, Zuege, den Zustand jedes Objekts und das Inventar als
+   Objektnummern. Der Spielstand wird nur gelesen.
+   Ergebnis: 0 bei Erfolg, -1 bei einem Dateifehler. */
+int spielstand_speichern(const Spielstand *s, const char *pfad) {
+    FILE *datei = fopen(pfad, "w");
+    if (datei == NULL) {
+        perror(pfad);
+        return -1;
+    }
+    int ergebnis = 0;
+    if (fprintf(datei, "TRESORRAUB 2\nFIGUR %d %d\nZUEGE %d\nOBJEKTE %zu\n",
+                s->figur.x, s->figur.y, s->zuege, s->anzahl_objekte) < 0) {
+        ergebnis = -1;
+    }
+    for (size_t i = 0; ergebnis == 0 && i < s->anzahl_objekte; i++) {
+        const Objekt *o = &s->objekte[i];
+        if (fprintf(datei, "%s %d %d %d %d %d\n", o->art->name, o->position.x,
+                    o->position.y, (int)o->auf_feld, (int)o->offen,
+                    objekt_nummer(s, o->inhalt)) < 0) {
+            ergebnis = -1;
+        }
+    }
+    if (ergebnis == 0 && fprintf(datei, "INVENTAR %zu\n", inventar_anzahl(&s->inventar)) < 0) {
+        ergebnis = -1;
+    }
+    for (const Eintrag *e = s->inventar.erster; ergebnis == 0 && e != NULL; e = e->naechster) {
+        if (fprintf(datei, "%d\n", objekt_nummer(s, e->gegenstand)) < 0) {
+            ergebnis = -1;
+        }
+    }
+    if (ergebnis == 0 && fprintf(datei, "ENDE\n") < 0) {
+        ergebnis = -1;
+    }
+    if (fclose(datei) != 0) {
+        ergebnis = -1;
+    }
+    return ergebnis;
+}
+
+/* Was die Datei ueber den Spielstand sagt, ohne Pointer. */
+typedef struct {
+    Punkt position;
+    bool auf_feld;
+    bool offen;
+    int inhalt;               /* Objektnummer oder KEIN_OBJEKT */
+} Objektzustand;
+
+typedef struct {
+    Punkt figur;
+    int zuege;
+    Objektzustand objekt[MAX_OBJEKTE];
+    int anzahl_inventar;
+    int inventar[MAX_OBJEKTE];   /* Objektnummern vom Listenkopf an */
+} Gelesen;
+
+static bool wort_lesen(FILE *datei, char wort[WORT_MAX + 1]) {
+    return fscanf(datei, "%63s", wort) == 1;
+}
+
+static bool kennwort_lesen(FILE *datei, const char *kennwort) {
+    char wort[WORT_MAX + 1];
+    return wort_lesen(datei, wort) && strcmp(wort, kennwort) == 0;
+}
+
+static bool zahl_lesen(FILE *datei, int *ziel) {
+    char wort[WORT_MAX + 1];
+    if (!wort_lesen(datei, wort)) {
+        return false;
+    }
+    char *ende;
+    errno = 0;
+    long wert = strtol(wort, &ende, 10);
+    if (ende == wort || *ende != '\0' || errno == ERANGE
+        || wert < INT_MIN || wert > INT_MAX) {
+        return false;
+    }
+    *ziel = (int)wert;
+    return true;
+}
+
+static bool flag_lesen(FILE *datei, bool *ziel) {
+    int wert;
+    if (!zahl_lesen(datei, &wert) || (wert != 0 && wert != 1)) {
+        return false;
+    }
+    *ziel = wert == 1;
+    return true;
+}
+
+/* Liest die Datei bis ENDE. vorlage liefert die erwarteten Objektarten in
+   ihrer Reihenfolge. Ergebnis: false bei einem Formatfehler. */
+static bool datei_lesen(FILE *datei, const Spielstand *vorlage, Gelesen *g) {
+    int version;
+    int anzahl;
+    if (!kennwort_lesen(datei, "TRESORRAUB") || !zahl_lesen(datei, &version) || version != 2
+        || !kennwort_lesen(datei, "FIGUR") || !zahl_lesen(datei, &g->figur.x)
+        || !zahl_lesen(datei, &g->figur.y)
+        || !kennwort_lesen(datei, "ZUEGE") || !zahl_lesen(datei, &g->zuege)
+        || !kennwort_lesen(datei, "OBJEKTE") || !zahl_lesen(datei, &anzahl)
+        || anzahl != (int)vorlage->anzahl_objekte) {
+        return false;
+    }
+    for (int i = 0; i < anzahl; i++) {
+        Objektzustand *z = &g->objekt[i];
+        if (!kennwort_lesen(datei, vorlage->objekte[i].art->name)
+            || !zahl_lesen(datei, &z->position.x) || !zahl_lesen(datei, &z->position.y)
+            || !flag_lesen(datei, &z->auf_feld) || !flag_lesen(datei, &z->offen)
+            || !zahl_lesen(datei, &z->inhalt)) {
+            return false;
+        }
+    }
+    if (!kennwort_lesen(datei, "INVENTAR") || !zahl_lesen(datei, &g->anzahl_inventar)
+        || g->anzahl_inventar < 0 || g->anzahl_inventar > anzahl) {
+        return false;
+    }
+    for (int i = 0; i < g->anzahl_inventar; i++) {
+        if (!zahl_lesen(datei, &g->inventar[i])) {
+            return false;
+        }
+    }
+    if (!kennwort_lesen(datei, "ENDE")) {
+        return false;
+    }
+    char rest[WORT_MAX + 1];
+    return fscanf(datei, "%63s", rest) == EOF && !ferror(datei);
+}
+
+/* Uebertraegt Figur, Zuege und Objektzustaende auf s (ohne Inventar). Die
+   Objektnummern sind vorher geprueft. */
+static void zustand_uebertragen(Spielstand *s, const Gelesen *g) {
+    s->figur = g->figur;
+    s->zuege = g->zuege;
+    for (size_t i = 0; i < s->anzahl_objekte; i++) {
+        Objekt *o = &s->objekte[i];
+        const Objektzustand *z = &g->objekt[i];
+        o->position = z->position;
+        o->auf_feld = z->auf_feld;
+        o->offen = z->offen;
+        o->inhalt = z->inhalt == KEIN_OBJEKT ? NULL : &s->objekte[z->inhalt];
+    }
+}
+
+/* Prueft die Regeln aus FORMAT.md. vorlage ist ein frischer Startzustand
+   mit den geltenden Regeln; er wird dabei veraendert. */
+static bool gelesen_gueltig(Spielstand *vorlage, const Gelesen *g) {
+    int n = (int)vorlage->anzahl_objekte;
+    if (g->zuege < 0 || g->anzahl_inventar > vorlage->regeln.inventar_groesse) {
+        return false;
+    }
+    /* Wo ist jeder Gegenstand? Hoechstens an einer Stelle. */
+    int stellen[MAX_OBJEKTE] = {0};
+    for (int i = 0; i < n; i++) {
+        const Objektzustand *z = &g->objekt[i];
+        const Objekt *start = &vorlage->objekte[i];
+        if (!begehbar(z->position)) {
+            return false;
+        }
+        if (!start->art->aufnehmbar
+            && (!z->auf_feld || !punkt_gleich(z->position, start->position))) {
+            return false;   /* Tueren, Tresor, Ausgang bleiben, wo sie sind */
+        }
+        if (z->inhalt != KEIN_OBJEKT) {
+            if (z->inhalt < 0 || z->inhalt >= n || z->inhalt == i
+                || !vorlage->objekte[z->inhalt].art->aufnehmbar
+                || g->objekt[z->inhalt].auf_feld) {
+                return false;
+            }
+            stellen[z->inhalt]++;
+        }
+        if (z->auf_feld) {
+            stellen[i]++;
+        }
+    }
+    for (int i = 0; i < g->anzahl_inventar; i++) {
+        int nr = g->inventar[i];
+        if (nr < 0 || nr >= n || !vorlage->objekte[nr].art->aufnehmbar) {
+            return false;
+        }
+        stellen[nr]++;
+    }
+    for (int i = 0; i < n; i++) {
+        if (stellen[i] > 1) {
+            return false;
+        }
+    }
+    /* Auf jedem Feld hoechstens ein Objekt, keines auf einem Waechter. */
+    for (int i = 0; i < n; i++) {
+        if (!g->objekt[i].auf_feld) {
+            continue;
+        }
+        if (waechter_auf(vorlage, g->objekt[i].position)) {
+            return false;
+        }
+        for (int j = 0; j < i; j++) {
+            if (g->objekt[j].auf_feld
+                && punkt_gleich(g->objekt[i].position, g->objekt[j].position)) {
+                return false;
+            }
+        }
+    }
+    /* Die Figur steht auf einem Feld, das sie betreten darf. */
+    zustand_uebertragen(vorlage, g);
+    if (!begehbar(g->figur)) {
+        return false;
+    }
+    const Objekt *o = objekt_auf(vorlage, g->figur);
+    return o == NULL || o->art->betretbar == NULL || o->art->betretbar(o);
+}
+
+/* Laedt einen Spielstand. Alles oder nichts: Bei einem Fehler bleibt *ziel
+   samt Inventar unveraendert. Gelesen wird in Daten ohne Pointer; erst
+   nach allen Pruefungen werden sie auf *ziel uebertragen.
+   Ergebnis: 0 bei Erfolg; -1 Dateifehler; -2 Format oder Regeln verletzt;
+   -3 kein Speicher. */
+int spielstand_laden(Spielstand *ziel, const char *pfad) {
+    FILE *datei = fopen(pfad, "r");
+    if (datei == NULL) {
+        perror(pfad);
+        return -1;
+    }
+    Spielstand vorlage;
+    startzustand(&vorlage, &ziel->regeln);
+    Gelesen g;
+    int ergebnis = datei_lesen(datei, &vorlage, &g) ? 0 : -2;
+    if (ferror(datei)) {
+        ergebnis = -1;
+    }
+    if (fclose(datei) != 0) {
+        ergebnis = -1;
+    }
+    if (ergebnis == 0 && g.anzahl_inventar > ziel->regeln.inventar_groesse) {
+        fprintf(stderr, "%s: %d Gegenstaende im Inventar, laut %s sind hoechstens %d erlaubt.\n",
+                pfad, g.anzahl_inventar, REGELDATEI, ziel->regeln.inventar_groesse);
+        ergebnis = -2;
+    }
+    if (ergebnis == 0 && !gelesen_gueltig(&vorlage, &g)) {
+        ergebnis = -2;
+    }
+    /* Neues Inventar zuerst vollstaendig aufbauen; es zeigt auf die Objekte
+       von *ziel, die ihre Adressen behalten. */
+    Inventar neu = {NULL};
+    for (int i = g.anzahl_inventar - 1; ergebnis == 0 && i >= 0; i--) {
+        if (inventar_aufnehmen(&neu, &ziel->objekte[g.inventar[i]],
+                               (size_t)ziel->regeln.inventar_groesse) != AUFGENOMMEN) {
+            ergebnis = -3;
+        }
+    }
+    if (ergebnis != 0) {
+        inventar_leeren(&neu);
+        return ergebnis;
+    }
+    zustand_uebertragen(ziel, &g);
+    inventar_leeren(&ziel->inventar);
+    ziel->inventar = neu;
+    return 0;
+}
+
 int text_ausgeben(void) {
     /* Hier entstehen Ihre Versuche und Textausgaben.
        Starten mit: ./programm --text */
@@ -780,6 +1060,14 @@ int taste_gedrueckt(SDL_Keycode taste) {
         case SDLK_l:
             ablegen(&spielstand);
             inventar_ausgeben(&spielstand.inventar);
+            break;
+        case SDLK_F5:
+            printf(spielstand_speichern(&spielstand, SPIELSTANDDATEI) == 0
+                   ? "Spielstand gespeichert.\n" : "Speichern fehlgeschlagen.\n");
+            break;
+        case SDLK_F9:
+            printf(spielstand_laden(&spielstand, SPIELSTANDDATEI) == 0
+                   ? "Spielstand geladen.\n" : "Laden fehlgeschlagen, bisheriger Stand bleibt erhalten.\n");
             break;
         default: break;   /* andere Tasten veraendern nichts */
     }

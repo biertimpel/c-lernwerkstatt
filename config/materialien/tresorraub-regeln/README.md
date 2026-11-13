@@ -3,12 +3,16 @@
 Dieses Material gehört zum Kapitel „Config“. Es enthält:
 
 - `tresorraub.c`: **Ihre Datei.** Sie enthält den Stand am Ende des Kapitels
-  „Dynamischer Speicher und Listen“: Bewegung, Inventar als verkettete Liste
-  im Spielstand, Aufnehmen und Tür mit der Leertaste, Ablegen mit L.
+  „Datei-Ein- und -Ausgabe“: Bewegung, Inventar als verkettete Liste im
+  Spielstand, Aufnehmen und Tür mit der Leertaste, Ablegen mit L, Speichern
+  mit F5 und Laden mit F9.
 - `regeln.txt`: die Spielregeln mit ihren Standardwerten. Diese Datei liest
   Ihr Programm in diesem Kapitel ein.
 - `REGELN.md`: Bedeutung der Regeln, Format von `regeln.txt` und erwartetes
-  Verhalten bei fehlender oder fehlerhafter Datei.
+  Verhalten bei fehlender oder fehlerhafter Datei und beim Laden eines
+  Spielstands.
+- `FORMAT.md`: das Spielstandformat aus dem vorigen Kapitel, ergänzt um die
+  Regel zur Inventargröße.
 - `wecker.txt`: eine kleine Beispieldatei für die Versuche auf den Seiten 1
   und 2.
 - `programm.c`, `tresorraub.h`: dasselbe SDL2-Programmgerüst wie in den
@@ -16,8 +20,8 @@ Dieses Material gehört zum Kapitel „Config“. Es enthält:
 - `piktogramme/`, `SPIELFELD.md`, `INVENTAR.md`, `Makefile`: wie bisher.
 
 Sie können auch mit Ihrer eigenen `tresorraub.c` aus dem vorigen Kapitel
-weiterarbeiten. Kopieren Sie dann `regeln.txt`, `REGELN.md` und `wecker.txt`
-in Ihren Ordner.
+weiterarbeiten. Kopieren Sie dann `regeln.txt`, `REGELN.md`, `FORMAT.md`,
+`INVENTAR.md` und `wecker.txt` in Ihren Ordner.
 
 ## Bauen und starten
 
@@ -34,7 +38,8 @@ Unter Windows (MSYS2) heißt das Programm `programm.exe`.
 
 ## Speicherfehler finden
 
-Wie im Kapitel „Dynamischer Speicher und Listen“:
+Wie in den Kapiteln „Dynamischer Speicher und Listen“ und „Datei-Ein- und
+-Ausgabe“:
 
 ```sh
 make clean

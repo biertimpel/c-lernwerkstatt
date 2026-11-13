@@ -1,7 +1,8 @@
 # Musterlösung „Config“ – nur für Lehrende
 
 Eine mögliche Lösung der Aufgabe auf Seite 3. Grundlage ist der Stand am
-Ende des Kapitels „Dynamischer Speicher und Listen“ (Startmaterial). Andere
+Ende des Kapitels „Datei-Ein- und -Ausgabe“ mit Speichern (F5) und Laden (F9)
+(Startmaterial). Andere
 Funktionszuschnitte, Fehlertexte und Darstellungen der Regeln sind ebenso
 vertretbar, solange Verhalten und Format aus `REGELN.md` eingehalten
 werden. Die Entwurfsentscheidungen stehen am Anfang von `tresorraub.c`.
@@ -13,15 +14,17 @@ Pages abrufbar.
 ## Inhalt
 
 - `tresorraub.c`: Lösung, ersetzt `tresorraub.c` aus dem Startmaterial.
-  Die Versuche und die Weckzeit-Aufgabe der Seiten 1 und 2 sind nicht
-  enthalten.
+  Die Versuche der Seiten 1 und 2 sind nicht enthalten.
 - `tests.c`: prüft das Laden der Regeln mit eigenen Testdateien: fehlende,
   vollständige, teilweise und leere Datei, Grenzwerte, eine Zeile mit genau
   80 Zeichen, Windows-Zeilenenden, letzte Zeile ohne Zeilenende, alle
   Fehlerfälle mit Zeilennummer und „alles oder nichts“. Prüft außerdem die
   Wirkung im Spiel (Reichweite, Zuglimit in der Statuszeile, Inventargröße)
-  sowie `spiel_starten` und `text_ausgeben`. Eine vorhandene `regeln.txt`
-  wird vorher gesichert und danach wiederhergestellt.
+  sowie `spiel_starten` und `text_ausgeben`. Laden eines Spielstands mit
+  den geltenden Regeln: zu großes Inventar wird mit Meldung abgelehnt,
+  Zuglimit und Reichweiten kommen aus den Regeln, Rundlauf und F5/F9 über
+  `taste_gedrueckt`. Vorhandene `regeln.txt` und `spielstand.txt` werden
+  vorher gesichert und danach wiederhergestellt.
 - `Makefile`: verwendet Gerüst und Piktogramme aus
   `../materialien/tresorraub-regeln`
 
@@ -54,10 +57,8 @@ Geprüft mit SDL 2.30 unter Linux mit GCC und Clang, übersetzt mit
 
 **Seite 1**
 
-- Notizen: `<stdio.h>`; Array, Größe, `FILE *`; höchstens Größe − 1
-  Zeichen plus `'\0'`; `'\n'` steht mit im Array, wenn die Zeile passt;
-  Rest einer langen Zeile kommt beim nächsten Aufruf; `NULL` bei Dateiende
-  oder Fehler, Unterscheidung mit `feof`/`ferror`.
+- Notizen: `'\n'` steht mit im Array, wenn die Zeile passt; Rest einer
+  langen Zeile kommt beim nächsten Aufruf.
 - Kein `\n` im `printf`, weil es schon in der Zeile steht; letzte Zeile
   ohne Zeilenende endet ohne Umbruch.
 - Leerzeilen und Kommentare: führenden Leerraum überspringen (`isspace`),
@@ -66,7 +67,6 @@ Geprüft mit SDL 2.30 unter Linux mit GCC und Clang, übersetzt mit
 - Array mit 8 Zeichen: Zeilen kommen in Stücken zu 7 Zeichen, jedes Stück
   bekommt eine eigene Nummer. Erkennbar an fehlendem `'\n'`, obwohl
   `feof` noch nicht gilt.
-- Fehlende Datei: `fopen` liefert `NULL`, Meldung, nichts gelesen.
 
 **Seite 2**
 
@@ -76,10 +76,9 @@ Geprüft mit SDL 2.30 unter Linux mit GCC und Clang, übersetzt mit
   `"st unde "` → 2. Genau ein Name heißt Rückgabe 1.
 - `strtol`-Tabelle: siehe Selbstkontrolle auf der Seite. Ein Wert ist
   gültig, wenn `ende` nicht am Anfang steht, danach nur Leerraum folgt und
-  der Bereich stimmt. Überlauf (`LONG_MAX`) fällt bei der Bereichsprüfung
-  auf; `errno` ist dafür nicht nötig.
-- Weckzeit: Standardwerte vor dem Lesen setzen; erster Fehler mit
-  Zeilennummer nach `stderr`; Datei auf jedem Weg schließen.
+  der Bereich stimmt. Anders als im Datei-Kapitel darf nach der Zahl
+  Leerraum folgen. Überlauf (`LONG_MAX`) fällt bei der Bereichsprüfung auf;
+  `errno` zusätzlich zu prüfen ist ebenso richtig.
 
 **Seite 3**
 
@@ -97,4 +96,9 @@ Geprüft mit SDL 2.30 unter Linux mit GCC und Clang, übersetzt mit
   der Seite (`./programm --text` mit der jeweiligen `regeln.txt`).
 - Fenster: Reichweite 3 macht (12, 5) überwacht; Inventargröße 1 lässt
   jeden weiteren Gegenstand liegen; Zuglimit erscheint in der Statuszeile.
+- Laden (Schritt 5): Ladeversuch mit `startzustand(&regeln)`; Prüfung der
+  Inventaranzahl gegen `inventar_groesse` vor dem Aufbau der Liste;
+  Meldung `spielstand.txt: 2 Gegenstaende im Inventar, laut regeln.txt sind
+  hoechstens 1 erlaubt.` Die Formatgrenze von drei Namen bleibt als eigene
+  Konstante (`INVENTAR_MAX`).
 - Ausblick „Level“: bewusst ohne Lösung; Grundlage für Projektideen.

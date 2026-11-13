@@ -20,7 +20,7 @@
       <p>Stellen Sie sich vor, Sie sollen dem Tresorraub eine neue Art von Gegenstand hinzufügen. Dazu müssen Sie wissen, an welchen Stellen das Programm die vorhandenen Arten behandelt. Suchen Sie in <code>tresorraub.c</code> alle Stellen, an denen der Schlüssel vorkommt. Ihr Editor kann nach <code>chluessel</code> suchen; damit finden Sie <code>Schluessel</code> und <code>schluessel</code>.</p>
       <p>Notieren Sie für jede Stelle die Funktion oder Struktur und was dort mit dem Schlüssel geschieht. Machen Sie dasselbe für die Tür.</p>
       <details><summary>Selbstkontrolle: Die Stellen im Startmaterial</summary>
-        <p>Der Schlüssel steckt an zehn Stellen: in den Feldern <code>schluessel</code> und <code>schluessel_liegt</code> der Struktur <code>Spielstand</code> und in neun Funktionen:</p>
+        <p>Der Schlüssel steckt an 14 Stellen: in den Feldern <code>schluessel</code> und <code>schluessel_liegt</code> der Struktur <code>Spielstand</code> und in 13 Funktionen:</p>
         <ul>
           <li><code>startzustand</code> legt fest, wo der Schlüssel zu Beginn liegt.</li>
           <li><code>gegenstand_auf</code> liefert den Namen <code>"Schluessel"</code>, wenn die Figur auf seinem Feld steht. Daraus entsteht in der Statuszeile „Hier liegt: Schluessel“.</li>
@@ -28,23 +28,24 @@
           <li><code>vom_feld_nehmen</code> merkt sich beim Aufnehmen, dass der Schlüssel nicht mehr auf dem Feld liegt; <code>auf_feld_legen</code> legt ihn beim Ablegen wieder hin.</li>
           <li><code>handeln</code> sucht ihn im Inventar, um die Tür zu öffnen.</li>
           <li><code>feld_zeichnen</code> zeichnet sein Piktogramm auf dem Spielfeld, <code>zeichne</code> im Inventar unter dem Spielfeld.</li>
+          <li><code>spielstand_speichern</code> schreibt seine Zeile <code>SCHLUESSEL</code>, <code>werte_lesen</code> liest sie wieder. <code>bekannter_name</code> und <code>speicherstand_gueltig</code> prüfen beim Laden, ob er ein erlaubter Inventarname ist und an genau einer Stelle steckt.</li>
         </ul>
-        <p>Die Tür steckt im <code>Spielstand</code>, in <code>startzustand</code>, <code>feldzeichen</code>, <code>spielfeld_ausgeben</code>, <code>figur_bewegen</code>, <code>handeln</code>, <code>feld_frei</code> und <code>feld_zeichnen</code>. Haben Sie mit Ihrer eigenen Datei gearbeitet, sehen die Namen anders aus, das Bild aber vermutlich ähnlich.</p>
+        <p>Die Tür steckt im <code>Spielstand</code>, in <code>startzustand</code>, <code>feldzeichen</code>, <code>spielfeld_ausgeben</code>, <code>figur_bewegen</code>, <code>handeln</code>, <code>feld_frei</code>, <code>feld_zeichnen</code> und beim Speichern und Laden in <code>spielstand_speichern</code>, <code>werte_lesen</code>, <code>ablage_gueltig</code> und <code>speicherstand_gueltig</code>. Haben Sie mit Ihrer eigenen Datei gearbeitet, sehen die Namen anders aus, das Bild aber vermutlich ähnlich.</p>
       </details>
       <p>Überlegen Sie nun: Eine zweite Münze soll ins Spiel. Sie verhält sich genau wie die erste. Was müssten Sie im bisherigen Programm alles ändern? Und was, wenn stattdessen eine Geheimtür dazukommt, die ohne Schlüssel aufgeht?</p>
-      <details><summary>Selbstkontrolle: Gedankenexperiment</summary><p>Für die zweite Münze bräuchte der Spielstand zwei weitere Felder, und jede der Stellen von oben bräuchte einen weiteren Fall. Das Inventar speichert Namen; zwei Münzen hätten denselben Namen, und die Regel „jeder Gegenstand höchstens einmal“ würde die zweite ablehnen. Für die Geheimtür wären es fast dieselben Stellen wie für die Tür. Jede neue Art und jedes weitere Objekt verlangt Änderungen quer durch das Programm, und jede vergessene Stelle ist ein Fehler. Genau das soll sich in diesem Kapitel ändern.</p></details>
+      <details><summary>Selbstkontrolle: Gedankenexperiment</summary><p>Für die zweite Münze bräuchte der Spielstand zwei weitere Felder, und jede der Stellen von oben bräuchte einen weiteren Fall. Das Inventar speichert Namen; zwei Münzen hätten denselben Namen, und die Regel „jeder Gegenstand höchstens einmal“ würde die zweite ablehnen. Auch das Spielstandformat hat für jeden Gegenstand eine feste Zeile; eine zweite Münze ließe sich gar nicht speichern. Für die Geheimtür wären es fast dieselben Stellen wie für die Tür. Jede neue Art und jedes weitere Objekt verlangt Änderungen quer durch das Programm, und jede vergessene Stelle ist ein Fehler. Genau das soll sich in diesem Kapitel ändern.</p></details>
     </section>
 
     <section class="content-section" aria-labelledby="abschnitt-2">
       <h2 id="abschnitt-2">2. Das Verhalten festhalten</h2>
       <p>Sie werden Ihr Spiel in diesem Kapitel stark umbauen. Danach soll es sich genauso verhalten wie vorher. Wie können Sie das prüfen, ohne jedes Mal das ganze Spiel durchzuspielen?</p>
-      <p>Dafür liegt im Startmaterial der Vergleichslauf <code>ablauf.c</code>. Er startet Ihr Spiel über dieselben Funktionen wie das Gerüst, drückt eine feste Folge von 54 Tasten und gibt nach jeder Taste die Meldungen, die Statuszeile und eine Prüfsumme des gezeichneten Bildes aus. Ändert sich auch nur ein Pixel, ändert sich die Prüfsumme.</p>
+      <p>Dafür liegt im Startmaterial der Vergleichslauf <code>ablauf.c</code>. Er startet Ihr Spiel über dieselben Funktionen wie das Gerüst, drückt eine feste Folge von 60 Tasten und gibt nach jeder Taste die Meldungen, die Statuszeile und eine Prüfsumme des gezeichneten Bildes aus. Ändert sich auch nur ein Pixel, ändert sich die Prüfsumme.</p>
       <ol>
         <li>Bauen Sie den Vergleichslauf mit <code>make ablauf</code> und speichern Sie seine Ausgabe: <code>./ablauf &gt; vorher.txt</code>. Diese Datei bewahren Sie bis zum Ende des Kapitels auf.</li>
         <li>Lesen Sie <code>vorher.txt</code>. Welche Spielsituationen kommen vor?</li>
         <li>Ändern Sie probeweise eine Meldung in <code>tresorraub.c</code>, etwa „Hier gibt es nichts zu tun.“, bauen Sie neu und vergleichen Sie mit <code>./ablauf &gt; nachher.txt</code> und <code>diff vorher.txt nachher.txt</code>. Machen Sie die Änderung danach rückgängig.</li>
       </ol>
-      <details><summary>Selbstkontrolle: Der Vergleichslauf</summary><p>Die Folge enthält eine Wand und eine verschlossene Tür als Hindernis, die Tür ohne Schlüssel, Aufnehmen, Ablegen und Wiederaufnehmen des Schlüssels, das Öffnen der Tür, Münze und Beute, Ablegen von zwei Gegenständen, ein leeres Inventar und eine Taste ohne Bedeutung. Nach der geänderten Meldung zeigt <code>diff</code> genau die Zeilen mit dieser Meldung. Nach dem Zurücksetzen ist die Ausgabe von <code>diff</code> leer.</p></details>
+      <details><summary>Selbstkontrolle: Der Vergleichslauf</summary><p>Die Folge enthält eine Wand und eine verschlossene Tür als Hindernis, die Tür ohne Schlüssel, Aufnehmen, Ablegen und Wiederaufnehmen des Schlüssels, das Öffnen der Tür, Münze und Beute, Ablegen von zwei Gegenständen, ein leeres Inventar, zweimal Speichern mit F5 und späteres Laden mit F9 und eine Taste ohne Bedeutung. Der Lauf schreibt dabei <code>spielstand.txt</code>. Nach der geänderten Meldung zeigt <code>diff</code> genau die Zeilen mit dieser Meldung. Nach dem Zurücksetzen ist die Ausgabe von <code>diff</code> leer.</p></details>
       <p>Ein solcher Test beschreibt nicht, wie das Spiel sein <em>soll</em>, sondern wie es <em>ist</em>. Er ersetzt keine Tests, die Regeln prüfen. Für einen Umbau ist er trotzdem sehr nützlich: Jede Abweichung ist entweder ein Fehler oder eine Änderung, die Sie erklären können.</p>
     </section>
 

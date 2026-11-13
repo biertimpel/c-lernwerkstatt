@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Den aktuellen Spielstand speichern</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+  <script src="selbstkontrollen.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header><h1>Den aktuellen Spielstand speichern</h1><p>Die aktuellen Spieldaten auslesen und mit F5 in <code>spielstand.txt</code> schreiben.</p></header>
+    <noscript><p>Ohne JavaScript können Sie die Fragen anhand der aufklappbaren Erklärungen selbst prüfen.</p></noscript>
+
+    <section class="content-section" aria-labelledby="abschnitt-1">
+      <h2 id="abschnitt-1">1. Speichern liest den laufenden Spielstand</h2>
+      <p>Die Speicherfunktion bekommt den Spielstand und einen Dateinamen. Sie liest die Werte aus dem Spielstand und schreibt sie mit <code>fprintf</code> in die Datei. Dabei verändert sie weder die Position der Figur noch die Zugzahl oder das Inventar.</p>
+      <p>Aus dem Kapitel <a href="../pointer/03-spielzustand-veraendern.html">„Pointer und Datenaustausch“</a> kennen Sie einen Pointerparameter für den Zugriff auf eine vorhandene Struktur. Mit <code>const Spielstand *s</code> legen Sie fest, dass die Felder der Struktur über <code>s</code> nur gelesen werden sollen. Beispielsweise lässt sich <code>s-&gt;zuege</code> auslesen; eine Zuweisung an <code>s-&gt;zuege</code> erlaubt der Compiler nicht. Dafür ist keine Kopie des gesamten Spielstands nötig.</p>
+      <p>Auch beim Durchlaufen der Liste sollen die vorhandenen Einträge unverändert bleiben. Verwenden Sie dafür einen Pointer auf <code>const Eintrag</code>. <code>const</code> an der äußeren Struktur schützt allerdings nicht automatisch alle Einträge, auf die deren Pointer zeigen. Die Speicherfunktion muss auch diese Einträge ausschließlich lesen.</p>
+    </section>
+
+    <section class="content-section" aria-labelledby="abschnitt-2">
+      <h2 id="abschnitt-2">2. Die Inventarliste als Text ausgeben</h2>
+      <p>Schreiben Sie zunächst die Anzahl der Einträge. Danach gehen Sie vom ersten Eintrag über <code>naechster</code> bis zum Listenende und geben jeden Namen aus. Am Listenende steht <code>NULL</code>. Die Datei enthält die Namen in genau derselben Reihenfolge, in der Sie die Liste durchlaufen haben.</p>
+      <p>Die feste Reihenfolge der Datenzeilen aus <a href="materialien/tresorraub-dateien/FORMAT.md">FORMAT.md</a> ist die gemeinsame Vereinbarung mit der Ladefunktion. Die Ausgabe auf dem Bildschirm und der Inhalt der Speicherdatei sind unterschiedliche Ausgaben. Eine Meldung wie „Spielstand gespeichert“ gehört ins Terminal. In die Datei gehören die vereinbarten Datenzeilen.</p>
+    </section>
+
+    <section class="content-section" aria-labelledby="abschnitt-3">
+      <h2 id="abschnitt-3">3. Fehler melden und die Dateiverbindung schließen</h2>
+      <p>Ihre Speicherfunktion gibt einen Wert zurück, an dem der Aufrufer Erfolg und Fehlschlag erkennt. Legen Sie diesen Vertrag vor der Implementierung fest. Erfolg dürfen Sie erst melden, wenn sowohl die Ausgaben als auch <code>fclose</code> erfolgreich waren.</p>
+      <p>Scheitert bereits <code>fopen</code>, gibt es keine geöffnete Verbindung. Scheitert dagegen eine spätere Ausgabe, ist die Verbindung weiterhin offen. Merken Sie sich den Fehler, schließen Sie die Verbindung und melden Sie anschließend den Fehlschlag. Würden Sie vorher mit <code>return</code> abbrechen, bliebe die geöffnete Verbindung in Ihrem laufenden Spiel bestehen.</p>
+      <p>Ein fehlgeschlagener Speicherversuch kann eine unvollständige Datei hinterlassen. Im Modus <code>"w"</code> wurde ein alter Dateiinhalt bereits beim Öffnen entfernt. Der laufende Spielstand im Arbeitsspeicher bleibt beim Speichern unverändert.</p>
+      <details><summary>Vertiefung: Einen alten Spielstand beim Speichern nicht verlieren</summary>
+        <p>Weil <code>"w"</code> die alte Datei sofort leert, ist nach einem Fehler beim Schreiben weder der alte noch der neue Spielstand vollständig vorhanden. Programme, die das vermeiden wollen, schreiben zuerst in eine andere Datei, etwa <code>spielstand.tmp</code>. Erst wenn Schreiben und <code>fclose</code> erfolgreich waren, ersetzen sie mit <code>rename("spielstand.tmp", "spielstand.txt")</code> die alte Datei. Unter Linux und macOS ersetzt <code>rename</code> eine vorhandene Zieldatei in einem Schritt. Unter Windows schlägt <code>rename</code> fehl, wenn die Zieldatei schon existiert; dort muss man sie vorher mit <code>remove</code> löschen, und der Vorteil geht teilweise verloren. Für den Tresorraub ist das nicht nötig, für Ihr Projekt kann es nützlich sein.</p>
+      </details>
+    </section>
+
+    <section class="content-section" aria-labelledby="abschnitt-4">
+      <h2 id="abschnitt-4">4. F5 mit Ihrer Funktion verbinden</h2>
+      <p>Die Funktion <code>taste_gedrueckt</code> verarbeitet bereits die Pfeiltasten, die Leertaste und L. Ergänzen Sie dort F5. Der entsprechende Tastenwert heißt <code>SDLK_F5</code>. In diesem Fall rufen Sie Ihre Speicherfunktion mit dem laufenden Spielstand auf. Verwenden Sie dafür denselben Spielstand, den Bewegung und Anzeige verwenden.</p>
+      <p>Unterscheiden Sie die Rückgaben der beiden Funktionen. Ihre Speicherfunktion meldet, ob das Speichern gelang. <code>taste_gedrueckt</code> meldet dem vorbereiteten Programmgerüst, ob das Spiel weiterlaufen kann. Gibt <code>taste_gedrueckt</code> einen negativen Wert zurück, beendet das Gerüst das Programm. Eine nicht beschreibbare Datei soll hier aber nur eine Meldung auslösen. Nach dieser Meldung kann <code>taste_gedrueckt</code> weiterhin <code>0</code> zurückgeben.</p>
+      <form class="self-check" data-hint="Unterscheiden Sie den Erfolg des Speicherns davon, ob das Spiel weiterlaufen kann.">
+        <fieldset><legend>F5 konnte die Datei nicht öffnen. Der laufende Spielstand ist weiterhin gültig. Welche Aussagen stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Das Programm kann den Fehler melden und das Spielen fortsetzen.</label>
+          <label><input type="checkbox"> Für die fehlgeschlagene Öffnung muss <code>fclose</code> aufgerufen werden.</label>
+          <label><input type="checkbox" data-correct="true"> Ein negativer Rückgabewert aus <code>taste_gedrueckt</code> würde das vorbereitete Gerüst zum Abbruch veranlassen.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die Speicherfunktion meldet den Dateifehler an <code>taste_gedrueckt</code>. Diese Funktion kann ihn im Terminal anzeigen und mit 0 zurückkehren, damit das Spiel weiterläuft.</p></details>
+      </form>
+    </section>
+
+    <section class="content-section" aria-labelledby="aufgabe-speichern">
+      <h2 id="aufgabe-speichern">5. Aufgabe: Den aktuellen Spielstand speichern</h2>
+      <ol>
+        <li>Entwerfen Sie eine Funktion zum Speichern. Legen Sie ihre Parameter und den Rückgabewert für Erfolg und Fehlschlag fest. Die übergebenen Spieldaten sollen unverändert bleiben.</li>
+        <li>Implementieren Sie die Ausgabe im vereinbarten Format. Berücksichtigen Sie alle Inventareinträge und die Positionen und Zustände der Gegenstände. Prüfen Sie Öffnen, jede Ausgabe und Schließen.</li>
+        <li>Legen Sie für einen ersten Versuch in <code>text_ausgeben</code> einen lokalen Spielstand mit <code>startzustand</code> an. Rufen Sie damit Ihre Speicherfunktion auf. Übersetzen und starten Sie mit <code>./programm --text</code>. Öffnen Sie anschließend die erzeugte Datei im Texteditor und vergleichen Sie sie mit <code>beispiele/start.txt</code>.</li>
+        <li>Ergänzen Sie in <code>taste_gedrueckt</code> den Fall <code>SDLK_F5</code>. Er soll den laufenden Spielstand in <code>spielstand.txt</code> speichern und im Terminal Erfolg oder Fehlschlag melden.</li>
+        <li>Starten Sie das Spielfenster. Bewegen Sie die Figur, nehmen Sie einen Gegenstand auf und speichern Sie mit F5. Vergleichen Sie die gespeicherten Werte mit dem Spiel. Kontrollieren Sie auch, dass F5 keinen Zug verbraucht.</li>
+      </ol>
+      <details><summary>Hinweis: Funktionsaufruf bei F5</summary><p>Der laufende Spielstand ist als <code>static</code>-Variable in <code>tresorraub.c</code> vorhanden. Übergeben Sie Ihrer Speicherfunktion dessen Adresse. Der Tastendruck soll keinen neuen Startzustand erzeugen.</p></details>
+      <details><summary>Selbstkontrolle: Ihr Rückgabevertrag</summary><p>Die Funktion erhält den Spielstand als <code>const Spielstand *</code> und den Dateinamen als <code>const char *</code>. Sie liefert zum Beispiel 0 bei Erfolg und einen negativen Wert bei einem Fehler. Ein Kommentar über der Funktion sagt, was in welchem Fall gilt: Bei einem Fehler kann die Datei unvollständig sein, der Spielstand ist unverändert. Erfolg meldet sie erst, wenn auch <code>fclose</code> 0 geliefert hat. Ob Sie verschiedene Fehler unterscheiden, etwa „Öffnen gescheitert“ und „Schreiben gescheitert“, entscheiden Sie; dann gehört das ebenfalls in den Kommentar.</p></details>
+      <details><summary>Selbstkontrolle: Gespeicherter Zustand</summary><p>Mit dem Startzustand ist Ihre Datei Zeichen für Zeichen gleich <code>beispiele/start.txt</code>. Im Spiel stimmen Position, Zugzahl, Türzustand und Gegenstände mit dem Zeitpunkt des Tastendrucks überein. Das Inventar steht in Listenreihenfolge in der Datei. Eine weitere Betätigung von F5 ohne Zustandsänderung schreibt dieselben Daten.</p></details>
+      <p class="work-result"><strong>Ihr Ergebnis:</strong> Eine Speicherfunktion mit klarem Rückgabevertrag und F5 im Spiel, das den Spielstand ohne Zugverbrauch in <code>spielstand.txt</code> schreibt.</p>
+    </section>
+
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="02-spielstandformat.html">← Zurück: Ein Spielstandformat festlegen</a></li>
+      <li><a href="04-werte-lesen.html">Weiter: Werte aus einer Datei lesen →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>

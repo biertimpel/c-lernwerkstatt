@@ -34,3 +34,8 @@ Diese Datei beschreibt zwei Ergänzungen des Tresorraubs für die Aufgabe
 Sie verhält sich genau wie die erste Münze und heißt im Programm ebenfalls
 `Muenze`. Beide Münzen können gleichzeitig im Inventar sein; die Anzeige
 lautet dann zum Beispiel `Inventar (2): Muenze Muenze`.
+
+## Speichern und Laden
+
+Beide neuen Objekte werden in Format Version 2 (`FORMAT.md`) wie alle
+anderen gespeichert. Die Zeile `OBJEKTE` nennt dann 8 Objekte.

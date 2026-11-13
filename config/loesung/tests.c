@@ -1,5 +1,6 @@
 /* Tests zur Musterloesung "Config". Prueft das Einlesen von regeln.txt
-   mit gueltigen und fehlerhaften Dateien und die Wirkung im Spiel.
+   mit gueltigen und fehlerhaften Dateien, die Wirkung im Spiel und das Laden
+   eines Spielstands mit den geltenden Regeln.
    Legt im aktuellen Ordner Testdateien an und loescht sie wieder. */
 #include "tresorraub.c"
 
@@ -64,8 +65,9 @@ static void pruefe_fehler(int zeile_im_test, const char *inhalt, const char *tei
 #define SICHERUNG "regeln.txt.testsicherung"
 
 int main(void) {
-    /* Eine vorhandene regeln.txt sichern; die Tests legen eigene an. */
+    /* Vorhandene regeln.txt und spielstand.txt sichern; die Tests legen eigene an. */
     bool gesichert = rename(REGELDATEI, SICHERUNG) == 0;
+    bool stand_gesichert = rename(SPIELSTANDDATEI, SPIELSTANDDATEI ".testsicherung") == 0;
     char meldung[160];
     Regeln r = regeln_standard();
     PRUEFE(r.zuglimit == 60 && r.reichweite[0] == 1 && r.reichweite[1] == 2
@@ -161,10 +163,66 @@ int main(void) {
     remove(REGELDATEI);
     aufraeumen();
 
+    /* Laden eines Spielstands mit den geltenden Regeln (F9) */
+    {
+        const char *zwei = "TRESORRAUB 1\nFIGUR 5 3\nZUEGE 23\nTUER 1\n"
+                           "SCHLUESSEL 3 5 0\nMUENZE 11 7 0\nBEUTE 13 1 0 0\n"
+                           "INVENTAR 2\nBeute\nMuenze\nENDE\n";
+        schreibe(TESTDATEI, zwei);
+        Regeln eng = regeln_standard();
+        eng.inventar_groesse = 1;
+        Spielstand t = startzustand(&eng);
+        fflush(stderr);
+        if (freopen(MELDUNGEN, "w", stderr) == NULL) {
+            exit(1);
+        }
+        PRUEFE(spielstand_laden(&t, TESTDATEI) == -2);
+        fflush(stderr);
+        FILE *f = fopen(MELDUNGEN, "r");
+        meldung[0] = '\0';
+        if (f != NULL) {
+            if (fgets(meldung, (int)sizeof(meldung), f) == NULL) {
+                meldung[0] = '\0';
+            }
+            fclose(f);
+        }
+        PRUEFE(strcmp(meldung, "test_regeln.txt: 2 Gegenstaende im Inventar, "
+                               "laut regeln.txt sind hoechstens 1 erlaubt.\n") == 0);
+        PRUEFE(punkt_gleich(t.figur, (Punkt){3, 7}) && t.zuege == 0 && t.inventar.erster == NULL);
+
+        Regeln weit = regeln_standard();
+        weit.zuglimit = 40;
+        weit.reichweite[1] = 3;
+        Spielstand u = startzustand(&weit);
+        PRUEFE(spielstand_laden(&u, TESTDATEI) == 0);
+        PRUEFE(u.zuege == 23 && u.regeln.zuglimit == 40 && u.waechter[1].reichweite == 3);
+        PRUEFE(inventar_anzahl(&u.inventar) == 2 && strcmp(u.inventar.erster->name, "Beute") == 0);
+        PRUEFE(spielstand_speichern(&u, TESTDATEI) == 0);   /* Rundlauf */
+        Spielstand v = startzustand(&weit);
+        PRUEFE(spielstand_laden(&v, TESTDATEI) == 0 && v.zuege == 23);
+        inventar_leeren(&t.inventar);
+        inventar_leeren(&u.inventar);
+        inventar_leeren(&v.inventar);
+    }
+
+    /* F5 und F9 ueber taste_gedrueckt */
+    remove(REGELDATEI);
+    PRUEFE(spiel_starten() == 0);
+    remove(SPIELSTANDDATEI);
+    PRUEFE(taste_gedrueckt(SDLK_F9) == 0);   /* fehlt: Meldung, Spiel laeuft */
+    PRUEFE(taste_gedrueckt(SDLK_UP) == 0 && taste_gedrueckt(SDLK_F5) == 0);
+    PRUEFE(taste_gedrueckt(SDLK_UP) == 0 && spielstand.zuege == 2);
+    PRUEFE(taste_gedrueckt(SDLK_F9) == 0 && spielstand.zuege == 1);
+    remove(SPIELSTANDDATEI);
+    aufraeumen();
+
     remove(TESTDATEI);
     remove(MELDUNGEN);
     if (gesichert) {
         rename(SICHERUNG, REGELDATEI);
+    }
+    if (stand_gesichert) {
+        rename(SPIELSTANDDATEI ".testsicherung", SPIELSTANDDATEI);
     }
     if (fehler == 0) {
         printf("Alle Tests bestanden.\n");

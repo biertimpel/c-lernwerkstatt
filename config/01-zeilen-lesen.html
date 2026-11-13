@@ -16,15 +16,13 @@
     <noscript><p>Ohne JavaScript können Sie die Fragen anhand der aufklappbaren Erklärungen selbst prüfen.</p></noscript>
 
     <section class="content-section" aria-labelledby="abschnitt-1">
-      <h2 id="abschnitt-1">1. <code>fgets</code> nachschlagen</h2>
-      <p>Eine Config besteht aus Zeilen, und jede Zeile ist eine eigene Angabe. Deshalb liest Ihr Programm die Datei Zeile für Zeile. Dafür gibt es die Funktion <code>fgets</code>. Schlagen Sie sie nach, wie im Kapitel <a href="../manpages/01-dokumentation-nachschlagen.html">„Manpages und Bibliotheksdokumentation“</a>, und notieren Sie:</p>
+      <h2 id="abschnitt-1">1. <code>fgets</code> genauer ansehen</h2>
+      <p>Eine Config besteht aus Zeilen, und jede Zeile ist eine eigene Angabe. Deshalb liest Ihr Programm die Datei Zeile für Zeile mit <code>fgets</code>. Die Funktion kennen Sie aus der Übersicht im Kapitel <a href="../datei-ein-ausgabe/04-werte-lesen.html#abschnitt-4">„Datei-Ein- und -Ausgabe“</a>: Sie liest höchstens Größe minus 1 Zeichen in ein Array und liefert am Dateiende oder bei einem Fehler <code>NULL</code>. Für eine Config sind zwei Einzelheiten wichtig. Schlagen Sie sie in der Manpage nach, wie im Kapitel <a href="../manpages/01-dokumentation-nachschlagen.html">„Manpages und Bibliotheksdokumentation“</a>:</p>
       <ol>
-        <li>In welcher Header-Datei steht die Funktion?</li>
-        <li>Welche drei Parameter erhält sie?</li>
-        <li>Wie viele Zeichen schreibt sie höchstens in das Array? Steht das Zeilenende <code>'\n'</code> mit darin?</li>
-        <li>Was liefert sie, wenn das Dateiende erreicht ist oder ein Fehler auftritt?</li>
+        <li>Steht das Zeilenende <code>'\n'</code> nach dem Aufruf mit im Array?</li>
+        <li>Was geschieht mit einer Zeile, die länger ist, als das Array fasst?</li>
       </ol>
-      <details><summary>Selbstkontrolle: Ihre Notizen</summary><p><code>fgets</code> steht in <code>&lt;stdio.h&gt;</code>. Sie erhält das Zeichen-Array, seine Größe in Bytes und die geöffnete Datei als <code>FILE *</code>. Sie liest höchstens Größe minus 1 Zeichen und hängt immer <code>'\0'</code> an. Sie hört am Zeilenende auf; das <code>'\n'</code> steht dann mit im Array. Ist die Zeile länger, liest sie nur den Anfang, und der Rest kommt beim nächsten Aufruf. Am Dateiende oder bei einem Fehler liefert sie <code>NULL</code>; welcher der beiden Fälle vorliegt, verraten <code>feof</code> und <code>ferror</code>.</p></details>
+      <details><summary>Selbstkontrolle: Ihre Notizen</summary><p>Passt die Zeile in das Array, steht ihr <code>'\n'</code> mit darin, gefolgt von <code>'\0'</code>. Ist die Zeile länger, liest <code>fgets</code> nur den Anfang, und der Rest kommt beim nächsten Aufruf. Ob <code>NULL</code> das Dateiende oder einen Fehler bedeutet, verraten <code>feof</code> und <code>ferror</code>, wie im Kapitel <a href="../datei-ein-ausgabe/04-werte-lesen.html#abschnitt-2">„Datei-Ein- und -Ausgabe“</a>.</p></details>
     </section>
 
     <section class="content-section" aria-labelledby="abschnitt-2">
@@ -52,7 +50,6 @@ fclose(datei);</code></pre>
         <li>Warum steht im <code>printf</code> kein <code>\n</code>? Was passiert mit der letzten Zeile, wenn die Datei nicht mit einem Zeilenende aufhört?</li>
         <li>Ändern Sie die Schleife so, dass Leerzeilen und Kommentarzeilen nicht ausgegeben werden. Ein Kommentar beginnt mit <code>#</code>, davor dürfen Leerzeichen stehen. Die Zeilennummern sollen trotzdem zur Datei passen.</li>
         <li>Verkleinern Sie das Array auf 8 Zeichen. Was ändert sich an der Ausgabe und an den Zeilennummern? Woran könnte Ihr Programm erkennen, dass eine Zeile nicht ganz in das Array gepasst hat?</li>
-        <li>Benennen Sie <code>wecker.txt</code> vorübergehend um. Was passiert?</li>
       </ol>
       <details><summary>Hinweis: Leerzeilen und Kommentare erkennen</summary><p>Überspringen Sie am Anfang der Zeile zuerst alle Leerzeichen und Tabulatoren. Welches Zeichen steht dann an der ersten Stelle, wenn die Zeile leer ist? Für Leerraum gibt es in <code>&lt;ctype.h&gt;</code> die Funktion <code>isspace</code>; sie zählt auch <code>'\n'</code> dazu.</p></details>
       <details><summary>Selbstkontrolle: Ihre Beobachtungen</summary>
@@ -60,7 +57,6 @@ fclose(datei);</code></pre>
           <li>Das <code>'\n'</code> steht schon in <code>zeile</code>. Fehlt es in der letzten Zeile, endet die Ausgabe ohne Zeilenumbruch.</li>
           <li>Ausgegeben werden nur noch <code>2: stunde = 6</code> und <code>4: minute = 45</code>. Die Nummer zählt jede gelesene Zeile, auch übersprungene.</li>
           <li>Mit 8 Zeichen liest <code>fgets</code> höchstens 7 Zeichen auf einmal. Längere Zeilen kommen in mehreren Stücken, und jedes Stück bekommt eine eigene Nummer. Die Nummern passen dann nicht mehr zur Datei. Erkennen lässt sich das daran, dass im Array kein <code>'\n'</code> steht, obwohl das Dateiende noch nicht erreicht ist.</li>
-          <li><code>fopen</code> liefert <code>NULL</code>, das Programm meldet „wecker.txt nicht gefunden.“ und liest nichts.</li>
         </ol>
       </details>
       <form class="self-check" data-hint="Lesen Sie Ihre Notizen zu fgets noch einmal: Was steht nach dem Aufruf im Array?">

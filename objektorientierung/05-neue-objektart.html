@@ -42,9 +42,10 @@
           <tr><td>Leertaste auf (7, 6)</td><td><code>Hier gibt es nichts zu tun.</code></td></tr>
           <tr><td>Beide Münzen aufnehmen</td><td><code>Inventar (2): Muenze Muenze</code></td></tr>
           <tr><td>L neben (6, 6)</td><td>Auf das Feld der Geheimtür wird nichts abgelegt</td></tr>
+          <tr><td>Geheimtür offen, beide Münzen im Inventar: F5, Programm neu starten, F9</td><td>Geheimtür offen, <code>Inventar (2): Muenze Muenze</code>; in <code>spielstand.txt</code> stehen 8 Objekte</td></tr>
         </tbody>
       </table></div>
-      <details><summary>Selbstkontrolle: Was Sie ändern mussten</summary><p>Für die zweite Münze genügt eine Zeile im Startzustand: ein weiteres Objekt der vorhandenen Art. Für die Geheimtür kommen eine neue Art, eine neue Methode für die Leertaste, eine Zeile im Startzustand und das Feld im Grundriss dazu. Die Methode für das Betreten kann sie mit der Tür teilen. Leertaste, Bewegung, Ablegen, Textausgabe und Zeichnen bleiben unverändert. Mussten Sie dort etwas ändern, steckt in diesen Funktionen noch Wissen über einzelne Arten.</p></details>
+      <details><summary>Selbstkontrolle: Was Sie ändern mussten</summary><p>Für die zweite Münze genügt eine Zeile im Startzustand: ein weiteres Objekt der vorhandenen Art. Für die Geheimtür kommen eine neue Art, eine neue Methode für die Leertaste, eine Zeile im Startzustand und das Feld im Grundriss dazu. Die Methode für das Betreten kann sie mit der Tür teilen. Leertaste, Bewegung, Ablegen, Textausgabe, Zeichnen, Speichern und Laden bleiben unverändert. Mussten Sie dort etwas ändern, steckt in diesen Funktionen noch Wissen über einzelne Arten.</p></details>
       <form class="self-check" data-hint="Unterscheiden Sie zwischen einem weiteren Objekt einer vorhandenen Art und einer Art mit neuem Verhalten.">
         <fieldset><legend>Welche Aussagen stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
           <label><input type="checkbox" data-correct="true"> Ein weiteres Objekt einer vorhandenen Art braucht keinen neuen Code, nur neue Daten.</label>

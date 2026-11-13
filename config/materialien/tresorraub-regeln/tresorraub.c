@@ -1,8 +1,9 @@
 /* Ihr Code fuer das Kapitel Config.
-   Ausgangspunkt ist der Stand am Ende des Kapitels Dynamischer Speicher und
-   Listen: Bewegung, Inventar als verkettete Liste im Spielstand, Leertaste
-   (aufnehmen, Tuer) und L (ablegen).
+   Ausgangspunkt ist der Stand am Ende des Kapitels Datei-Ein- und -Ausgabe:
+   Bewegung, Inventar als verkettete Liste im Spielstand, Leertaste
+   (aufnehmen, Tuer), L (ablegen), F5 (speichern) und F9 (laden).
    Grundriss: SPIELFELD.md. Inventar und Tasten: INVENTAR.md.
+   Spielstandformat: FORMAT.md.
    Spielregeln und Format der Datei regeln.txt: REGELN.md. */
 #include "tresorraub.h"
 #include "piktogramme/piktogramme.h"
@@ -508,6 +509,243 @@ int ablegen(Spielstand *s) {
     return abgelegt;
 }
 
+/* ---------- Spielstand speichern und laden ---------- */
+
+#include <errno.h>
+#include <limits.h>
+
+#define SPIELSTANDDATEI "spielstand.txt"
+#define WORT_MAX 63            /* laengstes gelesenes Wort, ohne '\0' */
+
+static bool bekannter_name(const char *name) {
+    return strcmp(name, "Schluessel") == 0 || strcmp(name, "Beute") == 0
+        || strcmp(name, "Muenze") == 0;
+}
+
+/* Darf ein Gegenstand auf p liegen? Begehbar und nicht auf Tuer, Tresor,
+   Ausgang oder einem Waechter. */
+static bool ablage_gueltig(const Spielstand *s, Punkt p) {
+    if (!begehbar(p) || punkt_gleich(p, s->tuer) || punkt_gleich(p, s->tresor)
+        || punkt_gleich(p, s->ausgang)) {
+        return false;
+    }
+    for (size_t i = 0; i < ANZAHL_WAECHTER; i++) {
+        if (punkt_gleich(p, s->waechter[i].position)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+/* Prueft die Spielregeln aus FORMAT.md fuer einen vollstaendigen Spielstand. */
+static bool speicherstand_gueltig(const Spielstand *s) {
+    if (s == NULL || !begehbar(s->figur) || s->zuege < 0
+        || (!s->tuer_offen && punkt_gleich(s->figur, s->tuer))) {
+        return false;
+    }
+    /* Inventar: hoechstens INVENTAR_GROESSE bekannte Namen, keiner doppelt */
+    size_t anzahl = 0;
+    for (const Eintrag *e = s->inventar.erster; e != NULL; e = e->naechster) {
+        anzahl++;
+        if (anzahl > INVENTAR_GROESSE || !bekannter_name(e->name)) {
+            return false;
+        }
+        for (const Eintrag *vorher = s->inventar.erster; vorher != e; vorher = vorher->naechster) {
+            if (strcmp(vorher->name, e->name) == 0) {
+                return false;
+            }
+        }
+    }
+    /* Jeder Gegenstand ist an genau einer Stelle. */
+    int schluessel = (int)inventar_enthaelt(&s->inventar, "Schluessel")
+                   + (int)s->schluessel_liegt + (int)s->tuer_offen;
+    int muenze = (int)inventar_enthaelt(&s->inventar, "Muenze") + (int)s->muenze_liegt;
+    int beute = (int)inventar_enthaelt(&s->inventar, "Beute")
+              + (int)s->beute_liegt + (int)s->beute_im_tresor;
+    if (schluessel != 1 || muenze != 1 || beute != 1) {
+        return false;
+    }
+    /* Ausgelegte Gegenstaende: gueltiges Feld, keine zwei auf einem Feld */
+    Punkt position[3] = {s->schluessel, s->muenze, s->beute};
+    bool liegt[3] = {s->schluessel_liegt, s->muenze_liegt, s->beute_liegt};
+    for (size_t i = 0; i < 3; i++) {
+        if (!begehbar(position[i]) || (liegt[i] && !ablage_gueltig(s, position[i]))) {
+            return false;
+        }
+        for (size_t j = 0; j < i; j++) {
+            if (liegt[i] && liegt[j] && punkt_gleich(position[i], position[j])) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+/* Schreibt den Spielstand im Format aus FORMAT.md. Der Spielstand wird nur
+   gelesen. Die Datei wird auch nach einem Schreibfehler geschlossen.
+   Ergebnis: 0 bei Erfolg; -1 bei einem Dateifehler (die Datei kann dann
+   unvollstaendig sein, Modus "w"); -2, wenn der Spielstand selbst
+   ungueltig ist (dann wird nichts geschrieben). */
+int spielstand_speichern(const Spielstand *s, const char *pfad) {
+    if (pfad == NULL || !speicherstand_gueltig(s)) {
+        return -2;
+    }
+    FILE *datei = fopen(pfad, "w");
+    if (datei == NULL) {
+        perror(pfad);
+        return -1;
+    }
+    int ergebnis = 0;
+    if (fprintf(datei, "TRESORRAUB 1\nFIGUR %d %d\nZUEGE %d\nTUER %d\n",
+                s->figur.x, s->figur.y, s->zuege, (int)s->tuer_offen) < 0
+        || fprintf(datei, "SCHLUESSEL %d %d %d\nMUENZE %d %d %d\nBEUTE %d %d %d %d\n",
+                   s->schluessel.x, s->schluessel.y, (int)s->schluessel_liegt,
+                   s->muenze.x, s->muenze.y, (int)s->muenze_liegt,
+                   s->beute.x, s->beute.y, (int)s->beute_liegt,
+                   (int)s->beute_im_tresor) < 0
+        || fprintf(datei, "INVENTAR %zu\n", inventar_anzahl(&s->inventar)) < 0) {
+        ergebnis = -1;
+    }
+    for (const Eintrag *e = s->inventar.erster; ergebnis == 0 && e != NULL; e = e->naechster) {
+        if (fprintf(datei, "%s\n", e->name) < 0) {
+            ergebnis = -1;
+        }
+    }
+    if (ergebnis == 0 && fprintf(datei, "ENDE\n") < 0) {
+        ergebnis = -1;
+    }
+    if (fclose(datei) != 0) {   /* schreibt den Puffer: kann noch scheitern */
+        ergebnis = -1;
+    }
+    return ergebnis;
+}
+
+/* Liest ein Wort mit hoechstens WORT_MAX Zeichen. */
+static bool wort_lesen(FILE *datei, char wort[WORT_MAX + 1]) {
+    return fscanf(datei, "%63s", wort) == 1;
+}
+
+/* Liest ein Wort und prueft, ob es das erwartete Kennwort ist. */
+static bool kennwort_lesen(FILE *datei, const char *kennwort) {
+    char wort[WORT_MAX + 1];
+    return wort_lesen(datei, wort) && strcmp(wort, kennwort) == 0;
+}
+
+/* Liest eine ganze Zahl im Bereich von int. Die Zahl wird zuerst als Wort
+   gelesen, damit strtol Ueberlaeufe und angehaengte Zeichen erkennt. */
+static bool zahl_lesen(FILE *datei, int *ziel) {
+    char wort[WORT_MAX + 1];
+    if (!wort_lesen(datei, wort)) {
+        return false;
+    }
+    char *ende;
+    errno = 0;
+    long wert = strtol(wort, &ende, 10);
+    if (ende == wort || *ende != '\0' || errno == ERANGE
+        || wert < INT_MIN || wert > INT_MAX) {
+        return false;
+    }
+    *ziel = (int)wert;
+    return true;
+}
+
+static bool punkt_lesen(FILE *datei, Punkt *ziel) {
+    return zahl_lesen(datei, &ziel->x) && zahl_lesen(datei, &ziel->y);
+}
+
+/* Liest einen Ja/Nein-Wert: 0 oder 1. */
+static bool flag_lesen(FILE *datei, bool *ziel) {
+    int wert;
+    if (!zahl_lesen(datei, &wert) || (wert != 0 && wert != 1)) {
+        return false;
+    }
+    *ziel = wert == 1;
+    return true;
+}
+
+/* Liest Kennzeichnung und alle Werte bis einschliesslich ENDE in *neu und
+   die Inventarnamen in namen. Ergebnis: false bei einem Formatfehler. */
+static bool werte_lesen(FILE *datei, Spielstand *neu,
+                        char namen[INVENTAR_GROESSE][NAME_LAENGE], int *anzahl) {
+    int version;
+    if (!kennwort_lesen(datei, "TRESORRAUB") || !zahl_lesen(datei, &version) || version != 1
+        || !kennwort_lesen(datei, "FIGUR") || !punkt_lesen(datei, &neu->figur)
+        || !kennwort_lesen(datei, "ZUEGE") || !zahl_lesen(datei, &neu->zuege)
+        || !kennwort_lesen(datei, "TUER") || !flag_lesen(datei, &neu->tuer_offen)
+        || !kennwort_lesen(datei, "SCHLUESSEL") || !punkt_lesen(datei, &neu->schluessel)
+        || !flag_lesen(datei, &neu->schluessel_liegt)
+        || !kennwort_lesen(datei, "MUENZE") || !punkt_lesen(datei, &neu->muenze)
+        || !flag_lesen(datei, &neu->muenze_liegt)
+        || !kennwort_lesen(datei, "BEUTE") || !punkt_lesen(datei, &neu->beute)
+        || !flag_lesen(datei, &neu->beute_liegt) || !flag_lesen(datei, &neu->beute_im_tresor)
+        || !kennwort_lesen(datei, "INVENTAR") || !zahl_lesen(datei, anzahl)
+        || *anzahl < 0 || *anzahl > INVENTAR_GROESSE) {
+        return false;
+    }
+    for (int i = 0; i < *anzahl; i++) {
+        char wort[WORT_MAX + 1];
+        if (!wort_lesen(datei, wort) || !bekannter_name(wort)) {
+            return false;
+        }
+        int laenge = snprintf(namen[i], NAME_LAENGE, "%s", wort);
+        if (laenge < 0 || laenge >= NAME_LAENGE) {   /* kann bei bekannten Namen nicht passieren */
+            return false;
+        }
+    }
+    if (!kennwort_lesen(datei, "ENDE")) {
+        return false;
+    }
+    char rest[WORT_MAX + 1];
+    return fscanf(datei, "%63s", rest) == EOF && !ferror(datei);   /* nur Leerraum */
+}
+
+/* Laedt einen Spielstand. Alles oder nichts: Bei einem Fehler bleibt *ziel
+   samt Inventar unveraendert, und alle fuer den Versuch angelegten Eintraege
+   sind wieder frei. Bei Erfolg gibt die Funktion das alte Inventar frei, und
+   *ziel besitzt die neuen Eintraege.
+   Ergebnis: 0 bei Erfolg; -1 Dateifehler; -2 Format oder Spielregeln
+   verletzt; -3 kein Speicher. */
+int spielstand_laden(Spielstand *ziel, const char *pfad) {
+    if (ziel == NULL || pfad == NULL) {
+        return -2;
+    }
+    FILE *datei = fopen(pfad, "r");
+    if (datei == NULL) {
+        perror(pfad);
+        return -1;
+    }
+    Spielstand neu = startzustand();   /* Ladeversuch: eigener Spielstand */
+    char namen[INVENTAR_GROESSE][NAME_LAENGE];
+    int anzahl = 0;
+    int ergebnis = werte_lesen(datei, &neu, namen, &anzahl) ? 0 : -2;
+    if (ferror(datei)) {
+        ergebnis = -1;
+    }
+    if (fclose(datei) != 0) {
+        ergebnis = -1;
+    }
+    /* Inventar rueckwaerts aufbauen: Aufnehmen fuegt vorne ein. Doppelte
+       Namen meldet inventar_aufnehmen als SCHON_VORHANDEN. */
+    for (int i = anzahl; ergebnis == 0 && i > 0; i--) {
+        int aufnahme = inventar_aufnehmen(&neu.inventar, namen[i - 1]);
+        if (aufnahme < 0) {
+            ergebnis = -3;
+        } else if (aufnahme != AUFGENOMMEN) {
+            ergebnis = -2;
+        }
+    }
+    if (ergebnis == 0 && !speicherstand_gueltig(&neu)) {
+        ergebnis = -2;
+    }
+    if (ergebnis == 0) {
+        inventar_leeren(&ziel->inventar);
+        *ziel = neu;                  /* Besitz der neuen Eintraege geht an ziel */
+        neu.inventar.erster = NULL;
+    }
+    inventar_leeren(&neu.inventar);   /* bei einem Fehler: nur die neuen Eintraege */
+    return ergebnis;
+}
+
 int text_ausgeben(void) {
     /* Hier entstehen Ihre Versuche und Textausgaben.
        Starten mit: ./programm --text */
@@ -548,6 +786,14 @@ int taste_gedrueckt(SDL_Keycode taste) {
         case SDLK_l:
             ablegen(&spielstand);
             inventar_ausgeben(&spielstand.inventar);
+            break;
+        case SDLK_F5:
+            printf(spielstand_speichern(&spielstand, SPIELSTANDDATEI) == 0
+                   ? "Spielstand gespeichert.\n" : "Speichern fehlgeschlagen.\n");
+            break;
+        case SDLK_F9:
+            printf(spielstand_laden(&spielstand, SPIELSTANDDATEI) == 0
+                   ? "Spielstand geladen.\n" : "Laden fehlgeschlagen, bisheriger Stand bleibt erhalten.\n");
             break;
         default: break;   /* andere Tasten veraendern nichts */
     }

@@ -1,6 +1,7 @@
 /* Tests zur Musterloesung "Objektorientierung in C". Prueft Objektarten,
    Startzustand, alle Methoden ueber taste_gedrueckt, Geheimtuer und zweite
-   Muenze, Speicherfehler und Zeichnen. Den Vergleich mit dem Stand vor dem
+   Muenze, Speichern und Laden (Format Version 2), Speicherfehler und
+   Zeichnen. Den Vergleich mit dem Stand vor dem
    Umbau leistet ./ablauf (siehe README.md). */
 #include <SDL.h>   /* vor dem Ersetzen von malloc einbinden */
 #include <stdio.h>
@@ -70,10 +71,35 @@ static void starte_mit_regeln(const char *inhalt) {
     PRUEFE(spiel_starten() == 0);
 }
 
+#define TESTSTAND "test_spielstand.txt"
+
+/* Gueltiger Spielstand Version 2 nach dem Start. */
+static const char *START_V2[] = {
+    "TRESORRAUB 2", "FIGUR 3 7", "ZUEGE 0", "OBJEKTE 8",
+    "Tuer 6 3 1 0 -1", "Tresor 13 1 1 0 4", "Schluessel 3 5 1 0 -1",
+    "Muenze 11 7 1 0 -1", "Beute 13 1 0 0 -1", "Ausgang 1 1 1 0 -1",
+    "Geheimtuer 6 6 1 0 -1", "Muenze 12 7 1 0 -1", "INVENTAR 0", "ENDE"
+};
+
+/* Schreibt START_V2, Zeile nr durch ersatz ersetzt (nr < 0: unveraendert),
+   und laedt die Datei in spielstand. */
+static int lade_variante(int nr, const char *ersatz) {
+    FILE *f = fopen(TESTSTAND, "w");
+    if (f == NULL) {
+        exit(1);
+    }
+    for (int i = 0; i < 14; i++) {
+        fprintf(f, "%s\n", i == nr ? ersatz : START_V2[i]);
+    }
+    fclose(f);
+    return spielstand_laden(&spielstand, TESTSTAND);
+}
+
 #define SICHERUNG "regeln.txt.testsicherung"
 
 int main(void) {
     bool gesichert = rename(REGELDATEI, SICHERUNG) == 0;
+    bool stand_gesichert = rename(SPIELSTANDDATEI, SPIELSTANDDATEI ".testsicherung") == 0;
     char text[160];
 
     /* Objektarten: vollstaendig beschrieben */
@@ -183,6 +209,114 @@ int main(void) {
     PRUEFE(tresor->inhalt != NULL && !tresor->offen);
     remove(REGELDATEI);
 
+    /* Speichern und Laden, Format Version 2 */
+    PRUEFE(spiel_starten() == 0);
+    PRUEFE(lade_variante(-1, "") == 0 && spielstand.zuege == 0);
+    PRUEFE(spielstand_speichern(&spielstand, TESTSTAND) == 0);
+    {
+        FILE *f = fopen(TESTSTAND, "r");
+        char zeile[64];
+        bool gleich = f != NULL;
+        for (int i = 0; gleich && i < 14; i++) {
+            gleich = fgets(zeile, sizeof(zeile), f) != NULL
+                && strncmp(zeile, START_V2[i], strlen(START_V2[i])) == 0;
+        }
+        if (f != NULL) {
+            fclose(f);
+        }
+        PRUEFE(gleich);   /* Startzustand gespeichert = START_V2 */
+    }
+    /* Rundlauf mit zwei Muenzen, offener Geheimtuer und Beute im Inventar */
+    spielstand.figur = (Punkt){5, 6};
+    druecke(" ");                                    /* Geheimtuer auf */
+    spielstand.figur = (Punkt){11, 7};
+    druecke(" ");
+    spielstand.figur = (Punkt){12, 7};
+    druecke(" ");
+    spielstand.figur = (Punkt){13, 1};
+    druecke(" ");
+    als_text(&spielstand.inventar, text, sizeof(text));
+    PRUEFE(strcmp(text, "Beute Muenze Muenze") == 0);
+    int zuege_vorher = spielstand.zuege;
+    PRUEFE(spielstand_speichern(&spielstand, TESTSTAND) == 0);
+    PRUEFE(spiel_starten() == 0 && spielstand.zuege == 0);
+    PRUEFE(spielstand_laden(&spielstand, TESTSTAND) == 0);
+    als_text(&spielstand.inventar, text, sizeof(text));
+    PRUEFE(strcmp(text, "Beute Muenze Muenze") == 0 && spielstand.zuege == zuege_vorher);
+    PRUEFE(spielstand.inventar.erster->naechster->gegenstand == &spielstand.objekte[3]
+           || spielstand.inventar.erster->naechster->gegenstand == &spielstand.objekte[7]);
+    PRUEFE(spielstand.objekte[6].offen && feldzeichen(&spielstand, (Punkt){6, 6}) == '/');
+    PRUEFE(tresor->inhalt == NULL && tresor->offen);
+    /* Inhalt des Tresors wird als Objekt wiederhergestellt */
+    PRUEFE(lade_variante(-1, "") == 0 && tresor->inhalt == &spielstand.objekte[4]);
+
+    /* Abgelehnte Dateien: Spielstand bleibt */
+    spielstand.figur = (Punkt){4, 7};
+    struct { int nr; const char *zeile; } falsch[] = {
+        {0, "TRESORRAUB 1"},            /* Version 1 */
+        {3, "OBJEKTE 7"},               /* falsche Anzahl */
+        {4, "Tresor 6 3 1 0 -1"},       /* falsche Art an dieser Stelle */
+        {4, "Tuer 7 3 1 0 -1"},         /* Tuer nicht an ihrer Stelle */
+        {6, "Schluessel 0 0 1 0 -1"},   /* in der Wand */
+        {6, "Schluessel 1 5 1 0 -1"},   /* auf einem Waechter */
+        {6, "Schluessel 11 7 1 0 -1"},  /* Feld schon belegt */
+        {6, "Schluessel 3 5 2 0 -1"},   /* Flag */
+        {5, "Tresor 13 1 1 0 8"},       /* Inhalt ausserhalb */
+        {5, "Tresor 13 1 1 0 0"},       /* Inhalt nicht aufnehmbar */
+        {5, "Tresor 13 1 1 0 3"},       /* Inhalt liegt auf dem Feld */
+        {1, "FIGUR 6 3"},               /* in der verschlossenen Tuer */
+        {2, "ZUEGE -1"},
+        {2, "ZUEGE 99999999999999999999"},
+        {12, "INVENTAR 1\n3"},          /* Muenze im Inventar und auf dem Feld */
+        {12, "INVENTAR 2\n2\n2"},       /* doppelt (Schluessel liegt ausserdem) */
+        {12, "INVENTAR 1\n0"},          /* Tuer ins Inventar */
+        {13, "ENDE\nRest"},
+        {13, "SCHLUSS"},
+    };
+    for (size_t i = 0; i < sizeof(falsch) / sizeof(falsch[0]); i++) {
+        if (lade_variante(falsch[i].nr, falsch[i].zeile) != -2
+            || !punkt_gleich(spielstand.figur, (Punkt){4, 7})) {
+            printf("FEHLGESCHLAGEN: Variante %zu (%s) angenommen\n", i, falsch[i].zeile);
+            fehler++;
+        }
+    }
+    /* Inventar groesser als inventar_groesse: Abbruch mit Meldung */
+    starte_mit_regeln("inventar_groesse = 1\n");
+    PRUEFE(lade_variante(6, "Schluessel 3 5 0 0 -1\nMuenze 11 7 0 0 -1") == -2);   /* Format kaputt */
+    {
+        FILE *f = fopen(TESTSTAND, "w");
+        for (int i = 0; f != NULL && i < 14; i++) {
+            const char *z = START_V2[i];
+            if (i == 6) z = "Schluessel 3 5 0 0 -1";
+            if (i == 7) z = "Muenze 11 7 0 0 -1";
+            if (i == 12) z = "INVENTAR 2\n2\n3";
+            fprintf(f, "%s\n", z);
+        }
+        if (f != NULL) {
+            fclose(f);
+        }
+        PRUEFE(spielstand_laden(&spielstand, TESTSTAND) == -2 && spielstand.inventar.erster == NULL);
+        remove(REGELDATEI);
+        PRUEFE(spiel_starten() == 0 && spielstand_laden(&spielstand, TESTSTAND) == 0);
+        als_text(&spielstand.inventar, text, sizeof(text));
+        PRUEFE(strcmp(text, "Schluessel Muenze") == 0);
+    }
+    /* Speicherfehler beim Aufbau des Inventars: nichts uebernommen */
+    PRUEFE(spiel_starten() == 0);
+    fehlschlag_ab = 1;
+    PRUEFE(spielstand_laden(&spielstand, TESTSTAND) == -3);
+    PRUEFE(spielstand.inventar.erster == NULL && spielstand.objekte[2].auf_feld);
+    fehlschlag_ab = -1;
+    /* Fehlende Datei */
+    remove(TESTSTAND);
+    PRUEFE(spielstand_laden(&spielstand, TESTSTAND) == -1);
+    /* F5 und F9 ueber die Taste, ohne Zug */
+    druecke("hh");
+    PRUEFE(taste_gedrueckt(SDLK_F5) == 0 && spielstand.zuege == 2);
+    druecke("h");
+    PRUEFE(taste_gedrueckt(SDLK_F9) == 0 && spielstand.zuege == 2);
+    remove(SPIELSTANDDATEI);
+
     /* Speicherfehler: Spielstand unveraendert, Fehler wird gemeldet */
     PRUEFE(spiel_starten() == 0);
     spielstand.figur = (Punkt){13, 1};
@@ -210,8 +344,13 @@ int main(void) {
     PRUEFE(spielstand.inventar.erster == NULL);
     aufraeumen();
 
+    remove(TESTSTAND);
+    remove(SPIELSTANDDATEI);
     if (gesichert) {
         rename(SICHERUNG, REGELDATEI);
+    }
+    if (stand_gesichert) {
+        rename(SPIELSTANDDATEI ".testsicherung", SPIELSTANDDATEI);
     }
     if (fehler == 0) {
         printf("Alle Tests bestanden.\n");

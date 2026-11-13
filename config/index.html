@@ -24,12 +24,13 @@
         <li>Unbekannte Namen, fehlende und ungültige Werte erkennen und mit Zeilennummer melden.</li>
         <li>Festlegen, was gilt, wenn die Datei fehlt oder eine Angabe fehlt.</li>
       </ul>
-      <p>Sie brauchen dafür das Öffnen, Lesen und Schließen von Dateien aus dem Kapitel <a href="../in-vorbereitung.html?thema=datei-ein-ausgabe">„Datei-Ein- und -Ausgabe“</a> und Zeichenketten aus dem Kapitel <a href="../datenstrukturen/02-zeichenketten.html">„Datenstrukturen“</a>. Neue Bibliotheksfunktionen schlagen Sie nach, wie im Kapitel <a href="../manpages/index.html">„Manpages und Bibliotheksdokumentation“</a>.</p>
+      <p>Sie brauchen dafür das Öffnen, Lesen und Schließen von Dateien, <code>stderr</code> und <code>strtol</code> aus dem Kapitel <a href="../datei-ein-ausgabe/index.html">„Datei-Ein- und -Ausgabe“</a> und Zeichenketten aus dem Kapitel <a href="../datenstrukturen/02-zeichenketten.html">„Datenstrukturen“</a>. Neue Bibliotheksfunktionen schlagen Sie nach, wie im Kapitel <a href="../manpages/index.html">„Manpages und Bibliotheksdokumentation“</a>.</p>
     </section>
     <section class="content-section" aria-labelledby="abgrenzung">
       <h2 id="abgrenzung">Spielstand und Config</h2>
-      <p>Im Kapitel <a href="../in-vorbereitung.html?thema=datei-ein-ausgabe">„Datei-Ein- und -Ausgabe“</a> speichert Ihr Programm den Spielstand, also den aktuellen Fortschritt, und liest ihn später wieder. Das Programm schreibt diese Datei selbst und kennt ihr Format genau.</p>
-      <p>Eine Config legt dagegen fest, unter welchen Bedingungen ein Spiel beginnt. Sie wird von einem Menschen geschrieben und bearbeitet, und Menschen machen Tippfehler. Ihr Programm muss deshalb jede Zeile prüfen und bei einem Fehler genau sagen, wo und warum er auftritt.</p>
+      <p>Im Kapitel <a href="../datei-ein-ausgabe/index.html">„Datei-Ein- und -Ausgabe“</a> speichert Ihr Programm den Spielstand, also den aktuellen Fortschritt, und liest ihn später wieder. Diese Datei schreibt normalerweise das Programm selbst; weil jemand sie im Editor verändert haben kann, prüft Ihre Ladefunktion sie trotzdem.</p>
+      <p>Eine Config legt dagegen fest, unter welchen Bedingungen ein Spiel beginnt. Sie wird von vornherein von einem Menschen geschrieben und bearbeitet, und Menschen machen Tippfehler. Ihr Format soll deshalb bequem zu schreiben sein: Kommentare, Leerzeilen, beliebige Reihenfolge, fehlende Angaben mit Standardwerten. Ihr Programm muss jede Zeile prüfen und bei einem Fehler genau sagen, in welcher Zeile und warum.</p>
+      <p>Beides hängt zusammen: Ein gespeicherter Spielstand enthält keine Regeln. Lädt Ihr Programm ihn, gelten die Regeln aus der Config. Passt der Spielstand nicht zu diesen Regeln, etwa weil er mehr Gegenstände im Inventar hat, als die Config erlaubt, lehnt das Programm ihn ab.</p>
     </section>
     <section class="content-section" aria-labelledby="unterseiten">
       <h2 id="unterseiten">Unterseiten</h2>

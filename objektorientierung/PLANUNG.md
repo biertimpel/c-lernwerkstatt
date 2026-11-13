@@ -5,7 +5,7 @@ Stellung im Kurs: Block 2, Kapitel 9, nach „Config“, vor „Die Spielbaustei
 Grundlage ist der Endstand von „Config“ (`config/loesung/tresorraub.c`).
 Stil wie in den vorigen Kapiteln: keine vorgegebenen Funktionsnamen und
 Signaturen, Auswahlfragen dort, wo der Inhalt vermittelt wird, Hinweise und
-Selbstkontrollen direkt bei der Aufgabe. Umfang: etwa zwei Termine.
+Selbstkontrollen direkt bei der Aufgabe. Umfang: etwa anderthalb Termine.
 
 ## Voraussetzungen
 
@@ -22,9 +22,9 @@ Selbstkontrollen direkt bei der Aufgabe. Umfang: etwa zwei Termine.
 Im Endstand von Config ist jede Objektart über die ganze Datei verstreut.
 Wer wissen will, was ein Schlüssel ist, findet ihn in `gegenstand_auf`,
 `feldzeichen`, `spielfeld_ausgeben`, `vom_feld_nehmen`, `auf_feld_legen`,
-`handeln`, beim Zeichnen von Feld und Inventar, in `startzustand` und in
-eigenen Feldern des Spielstands (`schluessel`, `schluessel_liegt`),
-zusammen zehn Stellen.
+`handeln`, beim Zeichnen von Feld und Inventar, in `startzustand`, beim
+Speichern und Laden und in eigenen Feldern des Spielstands, zusammen
+14 Stellen.
 Für Tür, Tresor, Beute und Münze gilt dasselbe. Eine neue Objektart hieße:
 alle diese Stellen ändern und keine vergessen.
 
@@ -42,10 +42,10 @@ verlangt später Lernstandscheck II (Lichtschalter als neue Objektart).
 
 | Seite | Inhalt | Ergebnis | Auswahlfragen |
 |---|---|---|---|
-| 1 Wo steckt der Schlüssel? | Stellen suchen; Gedankenexperiment; Vergleichslauf `ablauf.c` (54 Tasten, Statuszeile, Bild-Prüfsumme); `enum` mit Versuchen (Werte, `-Wswitch`, keine Typsicherheit); Aufgabe: Ergebnisse von `inventar_aufnehmen` als `enum` | Stellenliste, `vorher.txt`, Aufzählungstyp | `enum` |
+| 1 Wo steckt der Schlüssel? | Stellen suchen; Gedankenexperiment; Vergleichslauf `ablauf.c` (60 Tasten mit F5/F9, Statuszeile, Bild-Prüfsumme); `enum` mit Versuchen (Werte, `-Wswitch`, keine Typsicherheit); Aufgabe: Ergebnisse von `inventar_aufnehmen` als `enum` | Stellenliste, `vorher.txt`, Aufzählungstyp | `enum` |
 | 2 Funktionen als Werte | Funktionspointer: Deklaration, `typedef`, Zuweisung, Aufruf, Tabelle, Fehlerfälle; Piktogramme als gemeinsamer Typ; Versuch Reihe zeichnen | Typ für Zeichenfunktionen | richtige Zeilen mit `Piktogramm` |
 | 3 Objektarten mit Methoden | Art, Objekt, Instanz, Methode, `selbst`, `static const`, Kapselung; Beispiel Geräte; Aufteilung Art/Objekt im Spiel; Vertiefung Einbettung | Aufteilungstabelle, Methodenliste | Art und Objekt |
-| 4 Gegenstände als Objekte | Aufgabe Umbau in sechs Schritten; Hinweise Reihenfolge, Schlüssel erkennen, Tresor/Beute, Besitz, Kopie, Fehlersuche mit `diff` | Spiel unverändert laut Vergleichslauf | Besitz und Kopie |
+| 4 Gegenstände als Objekte | Aufgabe Umbau in sieben Schritten mit Vorlagen für Typen sowie Speichern und Laden (Format Version 2); Hinweise Reihenfolge, Schlüssel erkennen, Tresor/Beute, Besitz, Kopie, Fehlersuche mit `diff` | Spiel unverändert laut Vergleichslauf | Besitz und Kopie |
 | 5 Eine neue Objektart | Aufgabe Geheimtür und zweite Münze (`OBJEKTE.md`); erwarteter `diff`; Prüftabelle; Ausblick | Erweiterung mit wenigen Stellen | neue Art vs. Instanz |
 
 ## Entwurfsentscheidungen
@@ -72,21 +72,25 @@ verlangt später Lernstandscheck II (Lichtschalter als neue Objektart).
   einen Pointer, weil Objekte und Inventar auf Objekte im Spielstand zeigen.
 - **Vergleichslauf `ablauf.c`** im Startmaterial (eigenes `main`, Target
   `make ablauf`): Charakterisierungstest für den Umbau.
+- **Vorlagen zur direkten Übernahme (13.11., für weniger Zeitbedarf):**
+  `vorlagen/objekte.c` (Typen Objektart, Objekt, Eintrag, Inventar,
+  Spielstand, Benutzung, Piktogramm; Hilfsfunktionen) und
+  `vorlagen/speichern.c` (Format Version 2). Selbst geschrieben werden Arten,
+  Methoden, Startzustand, Inventar und die Umstellung der Spielfunktionen.
+  Seite 4 führt mit den Compilermeldungen durch den Umbau.
 - **Arten sind konstant, Objekte veränderlich.** Methodentabellen als
   `static const`; ein Objekt verändert nur seine eigenen Daten und den
   übergebenen Spielstand.
 
 ## Abhängigkeiten und offene Punkte
 
-- **Datei-Ein- und -Ausgabe (Kapitel 7):** Wird dort der Spielstand
-  gespeichert, ändert sich nach dem Umbau seine Struktur. Gespeichert werden
-  müssten Art (als Name) und Zustand je Objekt, weil sich Funktionspointer
-  nicht in eine Datei schreiben lassen. Beim Anschluss des Datei-Kapitels
-  klären, welches Kapitel das Speichern anpasst.
-- **Startmaterial:** vorläufig der Endstand von Config; später der Endstand
-  nach Datei-I/O und Config. `ablauf.c` drückt keine Taste zum Speichern;
-  bei neuen Tasten im Datei-Kapitel die Folge prüfen.
+- **Speichern und Laden (13.11.):** Startmaterial ist das Config-Ende mit F5/F9
+  (Format Version 1). Seite 4 stellt auf Format Version 2 um (eine Zeile je
+  Objekt, Objektnummern statt Pointer, `FORMAT.md` im Startmaterial);
+  dadurch kommen Geheimtür und zweite Münze auf Seite 5 ohne Änderung am
+  Speichern aus. Der Vergleichslauf drückt F5 und F9.
 - **Lernstandscheck II:** Eine neue Objektart (z. B. Lichtschalter) passt
   direkt auf diese Struktur; beim Planen von Kapitel 11 festlegen.
-- **Umfang:** Seite 4 ist groß. Falls die Zeit knapp wird: Typen für Art
-  und Objekt im Startmaterial vorgeben.
+- **Umfang:** Typen sowie Speichern und Laden sind als Vorlagen vorgegeben.
+  Weitere Kürzung wäre möglich, indem auch die Inventarfunktionen
+  vorgegeben werden.

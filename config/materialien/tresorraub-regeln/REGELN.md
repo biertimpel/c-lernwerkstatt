@@ -50,3 +50,15 @@ reichweite_waechter_2 = 3
   keine ganze Zahl ist oder nach dem noch etwas folgt, ein Wert außerhalb
   des erlaubten Bereichs, kein oder mehr als ein Wort vor dem `=`, eine
   doppelte Regel und eine zu lange Zeile.
+
+## Regeln und gespeicherte Spielstände
+
+Ein Spielstand (F5, `FORMAT.md`) enthält keine Regeln. Beim Laden mit F9
+gelten die Regeln, mit denen das laufende Spiel gestartet wurde:
+
+- Zuglimit und Reichweiten der Wächter kommen aus diesen Regeln.
+- Enthält der Spielstand mehr Gegenstände im Inventar, als
+  `inventar_groesse` erlaubt, bricht das Laden mit einer Meldung ab, zum
+  Beispiel
+  `spielstand.txt: 2 Gegenstaende im Inventar, laut regeln.txt sind hoechstens 1 erlaubt.`
+  Der laufende Spielstand bleibt dann unverändert.

@@ -5,6 +5,8 @@
        ./ablauf > vorher.txt     (vor dem Umbau)
        ./ablauf > nachher.txt    (nach dem Umbau)
        diff vorher.txt nachher.txt
+   Die Tastenfolge enthaelt F5 und F9; der Vergleichslauf schreibt deshalb
+   spielstand.txt im aktuellen Ordner.
    Diese Datei muessen Sie nicht veraendern. */
 #include "tresorraub.h"
 #include <stdint.h>
@@ -57,11 +59,13 @@ int main(int argc, char *argv[]) {
     static const struct { const char *name; SDL_Keycode taste; } FOLGE[] = {
         {"Start", SDLK_UNKNOWN}, {"Leertaste", SDLK_SPACE}, {"runter", SDLK_DOWN}, {"rechts", SDLK_RIGHT}, {"rechts", SDLK_RIGHT}, {"hoch", SDLK_UP}, {"hoch", SDLK_UP}, {"hoch", SDLK_UP}, {"hoch", SDLK_UP},
         {"rechts", SDLK_RIGHT}, {"Leertaste", SDLK_SPACE}, {"runter", SDLK_DOWN}, {"runter", SDLK_DOWN}, {"links", SDLK_LEFT}, {"links", SDLK_LEFT}, {"Leertaste", SDLK_SPACE},
+        {"F5", SDLK_F5}, {"rechts", SDLK_RIGHT}, {"hoch", SDLK_UP}, {"F9", SDLK_F9},
         {"Leertaste", SDLK_SPACE}, {"L", SDLK_l}, {"hoch", SDLK_UP}, {"rechts", SDLK_RIGHT}, {"hoch", SDLK_UP}, {"Leertaste", SDLK_SPACE}, {"rechts", SDLK_RIGHT}, {"hoch", SDLK_UP},
         {"Leertaste", SDLK_SPACE}, {"rechts", SDLK_RIGHT}, {"Leertaste", SDLK_SPACE}, {"rechts", SDLK_RIGHT}, {"rechts", SDLK_RIGHT}, {"rechts", SDLK_RIGHT},
         {"rechts", SDLK_RIGHT}, {"rechts", SDLK_RIGHT}, {"runter", SDLK_DOWN}, {"runter", SDLK_DOWN}, {"runter", SDLK_DOWN}, {"runter", SDLK_DOWN}, {"Leertaste", SDLK_SPACE},
         {"hoch", SDLK_UP}, {"hoch", SDLK_UP}, {"hoch", SDLK_UP}, {"hoch", SDLK_UP}, {"rechts", SDLK_RIGHT}, {"rechts", SDLK_RIGHT}, {"hoch", SDLK_UP}, {"hoch", SDLK_UP}, {"Leertaste", SDLK_SPACE},
-        {"Leertaste", SDLK_SPACE}, {"L", SDLK_l}, {"L", SDLK_l}, {"runter", SDLK_DOWN}, {"Leertaste", SDLK_SPACE}, {"links", SDLK_LEFT}, {"Leertaste", SDLK_SPACE}, {"links", SDLK_LEFT}, {"x", SDLK_x}
+        {"F5", SDLK_F5}, {"Leertaste", SDLK_SPACE}, {"L", SDLK_l}, {"L", SDLK_l}, {"runter", SDLK_DOWN}, {"Leertaste", SDLK_SPACE}, {"links", SDLK_LEFT}, {"Leertaste", SDLK_SPACE}, {"links", SDLK_LEFT},
+        {"F9", SDLK_F9}, {"x", SDLK_x}
     };
     SDL_Surface *bild = SDL_CreateRGBSurfaceWithFormat(0, BILD_BREITE, BILD_HOEHE, 32,
                                                        SDL_PIXELFORMAT_ARGB8888);

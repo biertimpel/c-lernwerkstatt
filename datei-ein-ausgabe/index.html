@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Datei-Ein- und -Ausgabe</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="../uebersicht.html#block-2">← Zur Kursübersicht</a></p>
+    <header>
+      <h1>Datei-Ein- und -Ausgabe</h1>
+      <p>Spielstände in einer Textdatei speichern, später wieder laden und fehlerhafte Dateien zuverlässig erkennen.</p>
+    </header>
+    <section class="content-section" aria-labelledby="ziele">
+      <h2 id="ziele">Lernziele und Arbeitsweise</h2>
+      <p>Bisher befindet sich der aktuelle Spielstand nur im Arbeitsspeicher. Wenn Sie das Programm beenden, gehen diese Daten verloren. In einer Datei bleiben sie erhalten. Damit können Sie das Spiel später an derselben Stelle fortsetzen.</p>
+      <ul>
+        <li>Dateien zum Lesen, Schreiben und Anhängen öffnen und wieder schließen.</li>
+        <li>Parameter und Rückgabewerte der Dateifunktionen erklären und prüfen; Fehler mit ihrem Grund auf <code>stderr</code> melden.</li>
+        <li>Die veränderlichen Daten eines Spielstands in einem Textformat speichern.</li>
+        <li>Wörter und Zahlen sicher aus einer Datei lesen und das Dateiende richtig erkennen.</li>
+        <li>Beim Laden eine Inventarliste mit neuen Listeneinträgen aufbauen.</li>
+        <li>Fehlerhafte Dateien erkennen und den bisherigen Spielstand bei einem Ladefehler erhalten.</li>
+      </ul>
+      <p>Sie brauchen dafür Pointer und <code>const</code> aus dem Kapitel <a href="../pointer/index.html">„Pointer und Datenaustausch“</a>, Zeichenketten aus dem Kapitel <a href="../datenstrukturen/02-zeichenketten.html">„Datenstrukturen“</a> und das Inventar mit seinen Besitzregeln aus dem Kapitel <a href="../dynamischer-speicher/index.html">„Dynamischer Speicher und Listen“</a>. Neue Bibliotheksfunktionen schlagen Sie nach wie im Kapitel <a href="../manpages/index.html">„Manpages und Bibliotheksdokumentation“</a>.</p>
+    </section>
+    <section class="content-section" aria-labelledby="unterseiten">
+      <h2 id="unterseiten">Unterseiten</h2>
+      <ol>
+        <li><a href="01-erste-datei.html">Eine erste Datei schreiben</a></li>
+        <li><a href="02-spielstandformat.html">Ein Spielstandformat festlegen</a></li>
+        <li><a href="03-spielstand-speichern.html">Den aktuellen Spielstand speichern</a></li>
+        <li><a href="04-werte-lesen.html">Werte aus einer Datei lesen</a></li>
+        <li><a href="05-spielstand-laden.html">Einen Spielstand wiederherstellen</a></li>
+        <li><a href="06-fehler-behandeln.html">Fehlende und ungültige Dateien behandeln</a></li>
+      </ol>
+    </section>
+    <section class="content-section" aria-labelledby="tresorraub">
+      <h2 id="tresorraub">Ihr durchgehendes Programm: Speichern und Laden im Tresorraub</h2>
+      <p>Auf Seite 1 lernen Sie die Dateifunktionen an einer kleinen Datei kennen. Danach entwerfen Sie ein Format für den Spielstand. Mit <strong>F5</strong> speichert Ihr Spiel den aktuellen Stand in <code>spielstand.txt</code>, mit <strong>F9</strong> lädt es ihn wieder. Speichern und Laden verbrauchen keinen Zug.</p>
+      <p>Das <a href="materialien/tresorraub-dateien.zip" download>Startmaterial (ZIP)</a> enthält eine <code>tresorraub.c</code> mit dem Stand am Ende des Kapitels „Dynamischer Speicher und Listen“, das gemeinsame Format in <a href="materialien/tresorraub-dateien/FORMAT.md">FORMAT.md</a> und gültige und ungültige Beispieldateien im Ordner <code>beispiele/</code>. Sie können auch mit Ihrer eigenen <code>tresorraub.c</code> weiterarbeiten. Wie, steht in der <a href="materialien/tresorraub-dateien/README.md">README</a>.</p>
+    </section>
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="01-erste-datei.html">Weiter: Eine erste Datei schreiben →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>
