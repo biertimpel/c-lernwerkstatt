@@ -1,0 +1,8 @@
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+th, td { border: 1px solid var(--line); padding: 10px 12px; text-align: left; vertical-align: top; }
+th { background: #f1f3f8; }
+code { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
+.work-result { border-left: 3px solid var(--blue); padding-left: 16px; margin-top: 20px; }
+h3 { margin-top: 26px; }
+@media print { nav, footer, .skip { display: none; } body { max-width: none; margin: 0; background: white; } .content-section { break-inside: avoid; } }

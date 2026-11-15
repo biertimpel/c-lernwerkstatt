@@ -106,3 +106,9 @@ Der eingegebene Code bleibt im aktuellen Browserfenster. Er wird nicht
 Änderungen an der Website können gemeinsam im Repository bearbeitet und
 über Issues oder Pull Requests besprochen werden.
 
+
+## Block 3 – Projekt und Präsentation
+
+- `projekt/`: Projektidee, Lastenheft, Meilensteine, Umsetzung und das optionale Beispielprojekt mit mehreren Räumen und Beuteabwurfschacht.
+- `praesentation/`: Vortrag, Demonstration, Kriterien und Reflexion.
+- Beide Kapitel enthalten bearbeitbare Vorlagen in `materialien/`. Die älteren Einstiege zur Projektplanung, Umsetzung und zum Abschluss leiten auf diese Kapitel weiter.
