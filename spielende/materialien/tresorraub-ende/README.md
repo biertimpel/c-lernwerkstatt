@@ -56,7 +56,7 @@ diff vorher.txt nachher.txt            # keine Ausgabe: Verhalten unverändert
 Die Test-Suite gibt zwischendurch Fehlermeldungen aus, zum Beispiel
 `unbekannte Regel "zuglimt"`. Sie gehören zu Tests, die prüfen, ob Ihr
 Programm Fehler richtig meldet. Entscheidend ist die letzte Zeile, etwa
-`79 Pruefungen, 0 fehlgeschlagen.` Jeder fehlgeschlagene Test nennt eine
+`100 Pruefungen, 0 fehlgeschlagen.` Jeder fehlgeschlagene Test nennt eine
 Zeile in `module/tests.c`; dort steht, was erwartet wird.
 
 ## Speicherfehler finden

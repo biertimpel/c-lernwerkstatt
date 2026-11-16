@@ -220,6 +220,42 @@ static void teste_speicherstand(void) {
     PRUEFE(inventar_anzahl(&t.inventar) == 1
            && strcmp(t.inventar.erster->gegenstand->art->name, "Schluessel") == 0);
     PRUEFE(t.inventar.erster->gegenstand == objekt_namens(&t, "Schluessel"));   /* eigene Objekte */
+    /* Fehler vor dem Inventaraufbau duerfen den bisherigen Stand
+       einschliesslich seiner Liste nicht veraendern. */
+    char gespeichert[8192];
+    FILE *datei = fopen("test_spielstand.txt", "r");
+    if (datei == NULL) {
+        exit(1);
+    }
+    size_t laenge = fread(gespeichert, 1, sizeof(gespeichert) - 1, datei);
+    gespeichert[laenge] = '\0';
+    PRUEFE(!ferror(datei) && feof(datei));
+    PRUEFE(fclose(datei) == 0);
+    char *inventarzeile = strstr(gespeichert, "\nINVENTAR ");
+    PRUEFE(inventarzeile != NULL);
+    if (inventarzeile != NULL) {
+        inventarzeile[1] = '\0';    /* nur den gueltigen Dateianfang behalten */
+        const char *varianten[] = {
+            "INVENTAR",                         /* Dateiende vor der Anzahl */
+            "INVENTAR -1\nENDE\n",
+            "INVENTAR -2147483648\nENDE\n"
+        };
+        const Eintrag *erster = t.inventar.erster;
+        for (size_t i = 0; i < sizeof(varianten) / sizeof(varianten[0]); i++) {
+            datei = fopen("test_spielstand.txt", "w");
+            if (datei == NULL) {
+                exit(1);
+            }
+            PRUEFE(fputs(gespeichert, datei) >= 0);
+            PRUEFE(fputs(varianten[i], datei) >= 0);
+            PRUEFE(fclose(datei) == 0);
+            PRUEFE(spielstand_laden(&t, "test_spielstand.txt") == -2);
+            PRUEFE(punkt_gleich(t.figur, (Punkt){3, 5}) && t.zuege == 3
+                   && t.zustand == LAEUFT && t.inventar.erster == erster);
+            PRUEFE(inventar_anzahl(&t.inventar) == 1
+                   && t.inventar.erster->gegenstand == objekt_namens(&t, "Schluessel"));
+        }
+    }
     /* Spielstaende, in denen das Spiel schon zu Ende waere, werden abgelehnt */
     inventar_leeren(&s.inventar);
     neuer_stand(&s);

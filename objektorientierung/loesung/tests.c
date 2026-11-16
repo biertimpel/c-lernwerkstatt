@@ -267,6 +267,9 @@ int main(void) {
         {1, "FIGUR 6 3"},               /* in der verschlossenen Tuer */
         {2, "ZUEGE -1"},
         {2, "ZUEGE 99999999999999999999"},
+        {12, "INVENTAR"},               /* fehlende Anzahl */
+        {12, "INVENTAR -1"},            /* negative Anzahl */
+        {12, "INVENTAR -2147483648"},   /* INT_MIN auf den Kursrechnern */
         {12, "INVENTAR 1\n3"},          /* Muenze im Inventar und auf dem Feld */
         {12, "INVENTAR 2\n2\n2"},       /* doppelt (Schluessel liegt ausserdem) */
         {12, "INVENTAR 1\n0"},          /* Tuer ins Inventar */

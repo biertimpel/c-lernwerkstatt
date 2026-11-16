@@ -34,7 +34,7 @@ Pages abrufbar.
 
 ```sh
 make
-make test       # tests.c: 79 Pruefungen; tests_licht.c: 46 Pruefungen
+make test       # tests.c: 100 Pruefungen; tests_licht.c: 46 Pruefungen
 ./programm      # mit regeln.txt aus diesem Ordner
 ```
 

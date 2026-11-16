@@ -971,6 +971,9 @@ int spielstand_laden(Spielstand *ziel, const char *pfad) {
     if (ergebnis == 0 && !gelesen_gueltig(&vorlage, &g)) {
         ergebnis = -2;
     }
+    if (ergebnis != 0) {
+        return ergebnis;
+    }
     /* Neues Inventar zuerst vollstaendig aufbauen; es zeigt auf die Objekte
        von *ziel, die ihre Adressen behalten. */
     Inventar neu = {NULL};

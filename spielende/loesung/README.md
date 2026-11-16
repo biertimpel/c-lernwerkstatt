@@ -22,7 +22,7 @@ Pages abrufbar.
 
 ```sh
 make            # programm-teil1, ablauf-teil1, programm, ablauf, tests
-make test       # Test-Suite gegen die Module: 79 Pruefungen, 0 fehlgeschlagen
+make test       # Test-Suite gegen die Module: 100 Pruefungen, 0 fehlgeschlagen
 make vergleich  # Vergleichslauf Teil 1 gegen Module: gleich
 ```
 

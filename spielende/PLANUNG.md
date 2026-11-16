@@ -41,7 +41,7 @@ Termin).
   Teil 2 sie verwenden. Wie die Methode heißt, entscheiden die
   Studierenden in Teil 1; der Header in Teil 2 nennt sie `betreten`.
 - **Header und Test-Suite vorgegeben (Teil 2).** Die Studierenden schreiben
-  die Quelldateien selbst. Die Suite (79 Prüfungen) setzt den Vermerk um:
+  die Quelldateien selbst. Die Suite (100 Prüfungen) setzt den Vermerk um:
   Unit Tests zeigen beim Umbau, dass die Funktionalität erhalten bleibt;
   Abgrenzung zum Vergleichslauf auf Seite 3.
 - **Nach dem Ende** ist der Schutz doppelt: in `taste_gedrueckt` (Meldung,
