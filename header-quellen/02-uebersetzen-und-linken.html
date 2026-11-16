@@ -1,0 +1,128 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Programmierung in C · Vom Quelltext zum ausführbaren Programm</title><link rel="stylesheet" href="../kurs.css"><link rel="stylesheet" href="lektion.css"><script src="selbstkontrollen.js" defer></script></head><body><a class="skip" href="#inhalt">Zum Inhalt</a><main id="inhalt"><p><a href="index.html">← Zur Kapitelübersicht</a></p><header><h1>Vom Quelltext zum ausführbaren Programm</h1><p class="intro">Objektdateien erzeugen, die Arbeit des Linkers verfolgen, sie vom späteren Funktionsaufruf unterscheiden und Variablen über Dateigrenzen hinweg teilen.</p></header><section class="content-section" aria-labelledby="abschnitt-1"><h2 id="abschnitt-1">1. Vom Quelltext zum Programm</h2><p>Der <strong>Präprozessor</strong> verarbeitet die eingebundenen Header. Anschließend wird jede Quelldatei übersetzt. Dabei erzeugen Compiler und Assembler eine <strong>Objektdatei</strong> mit der Endung <code>.o</code>. Sie enthält bereits Maschinencode, Daten und Informationen für das spätere Verbinden.</p><p>Der <strong>Linker</strong> verbindet danach die Objektdateien und die benötigten Bibliotheken zum ausführbaren Programm <code>rechner</code>. Zu den Bibliotheken gehört immer die <strong>C-Standardbibliothek</strong>. Sie enthält zum Beispiel <code>printf</code> und liegt bereits übersetzt auf Ihrem System. Ein einzelner Aufruf wie <code>gcc main.c calc.c -o rechner</code> stößt alle diese Schritte nacheinander an.</p><figure class="diagram statisch">
+<svg viewBox="0 0 770 350" role="img" aria-labelledby="bau-titel bau-text">
+<title id="bau-titel">Vom Quelltext über Objektdateien zum Programm</title>
+<desc id="bau-text">Beim Übersetzen entsteht aus main.c die Objektdatei main.o und aus calc.c die Objektdatei calc.o; calc.h wird in beide Quelldateien eingebunden. Beim Linken verbindet der Linker main.o, calc.o und die fertig mitgelieferte C-Standardbibliothek zum ausführbaren Programm rechner.</desc>
+<defs><marker id="pfeil-bau" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#244bcc"/></marker></defs>
+<text x="155" y="18" class="stufe" text-anchor="middle">1. Übersetzen (gcc -c)</text>
+<text x="620" y="18" class="stufe" text-anchor="middle">2. Linken</text>
+<rect class="quelle" x="20" y="40" width="120" height="56" rx="6"/><text x="80" y="73" text-anchor="middle" class="name">main.c</text>
+<rect class="quelle" x="20" y="152" width="120" height="56" rx="6"/><text x="80" y="185" text-anchor="middle" class="name">calc.h</text>
+<rect class="quelle" x="20" y="264" width="120" height="56" rx="6"/><text x="80" y="297" text-anchor="middle" class="name">calc.c</text>
+<rect class="objekt" x="290" y="30" width="190" height="76" rx="6"/><text x="305" y="52" class="name">main.o</text><text x="305" y="73" class="small">ruft addiere, multipliziere</text><text x="305" y="91" class="small">und printf auf: Ziele offen</text>
+<rect class="bibliothek" x="290" y="142" width="190" height="76" rx="6"/><text x="305" y="164" class="name">C-Standardbibliothek</text><text x="305" y="185" class="small">fertig mitgeliefert,</text><text x="305" y="203" class="small">enthält printf</text>
+<rect class="objekt" x="290" y="254" width="190" height="76" rx="6"/><text x="305" y="276" class="name">calc.o</text><text x="305" y="297" class="small">enthält addiere</text><text x="305" y="315" class="small">und multipliziere</text>
+<rect class="werkzeug" x="530" y="130" width="90" height="100" rx="6"/><text x="575" y="185" text-anchor="middle" class="name">Linker</text>
+<rect class="programm" x="650" y="130" width="105" height="100" rx="6"/><text x="702" y="162" text-anchor="middle" class="name">rechner</text><text x="702" y="186" text-anchor="middle" class="small">ausführbares</text><text x="702" y="204" text-anchor="middle" class="small">Programm</text>
+<path class="pfeil" d="M 140 68 L 286 68" marker-end="url(#pfeil-bau)"/>
+<path class="pfeil" d="M 140 292 L 286 292" marker-end="url(#pfeil-bau)"/>
+<path class="pfeil eingebunden" d="M 140 172 L 286 94" marker-end="url(#pfeil-bau)"/>
+<path class="pfeil eingebunden" d="M 140 188 L 286 266" marker-end="url(#pfeil-bau)"/>
+<text x="200" y="126" text-anchor="end" class="small hinweis">#include</text>
+<text x="200" y="248" text-anchor="end" class="small hinweis">#include</text>
+<path class="pfeil" d="M 480 68 C 510 68, 500 158, 526 158" marker-end="url(#pfeil-bau)"/>
+<path class="pfeil" d="M 480 180 L 526 180" marker-end="url(#pfeil-bau)"/>
+<path class="pfeil" d="M 480 292 C 510 292, 500 202, 526 202" marker-end="url(#pfeil-bau)"/>
+<path class="pfeil" d="M 620 180 L 646 180" marker-end="url(#pfeil-bau)"/>
+</svg>
+<figcaption>Beim Übersetzen wird jede Quelldatei für sich zu einer Objektdatei; der Header wird dabei in beide eingebunden. Die C-Standardbibliothek liegt bereits übersetzt auf dem System (gestrichelt). Erst der Linker fügt alles zu einem Programm zusammen.</figcaption>
+</figure></section><section class="content-section" aria-labelledby="abschnitt-2"><h2 id="abschnitt-2">2. Was der Linker verbindet</h2><p><code>main.o</code> enthält bereits übersetzten Code für den Aufruf von <code>addiere</code>. Wo der Code von <code>addiere</code> liegt, weiß <code>main.o</code> aber noch nicht, denn die Funktion steht in <code>calc.o</code>. Der Linker legt den Code aller Objektdateien zu einem Programm zusammen und trägt bei jedem Aufruf ein, wo die aufgerufene Funktion im fertigen Programm liegt.</p><p>Beim Ausführen springt der Ablauf bei einem Aufruf an diese Stelle und nach dem <code>return</code> zurück hinter den Aufruf. Die Aufteilung in Quelldateien spielt dann keine Rolle mehr: Das laufende Programm öffnet weder <code>calc.c</code> noch <code>calc.o</code>. Die Quelldateien dienen nur dazu, das Programm übersichtlich zu schreiben und zu bauen.</p><p>Die folgende Grafik zeigt, welche Verweise der Linker beim Rechner verbindet.</p><figure class="diagram statisch">
+<svg viewBox="0 0 770 290" role="img" aria-labelledby="verweis-titel verweis-text">
+<title id="verweis-titel">Welche Verweise der Linker verbindet</title>
+<desc id="verweis-text">main.o enthält drei Aufrufe mit offenem Ziel: addiere, multipliziere und printf. Der Linker verbindet addiere und multipliziere mit dem Code in calc.o und printf mit dem Code in der C-Standardbibliothek.</desc>
+<defs><marker id="pfeil-verweis" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#244bcc"/></marker></defs>
+<rect class="objekt" x="20" y="20" width="290" height="250" rx="6"/><text x="38" y="48" class="name">main.o</text><text x="38" y="68" class="small">Aufrufe, Ziel noch offen:</text>
+<rect class="quelle" x="38" y="80" width="254" height="40" rx="5"/><text x="52" y="105" class="code">addiere(a, b)</text><text x="278" y="105" text-anchor="end" class="hinweis">Ziel ?</text>
+<rect class="quelle" x="38" y="140" width="254" height="40" rx="5"/><text x="52" y="165" class="code">multipliziere(a, b)</text><text x="278" y="165" text-anchor="end" class="hinweis">Ziel ?</text>
+<rect class="quelle" x="38" y="200" width="254" height="40" rx="5"/><text x="52" y="225" class="code">printf(…)</text><text x="278" y="225" text-anchor="end" class="hinweis">Ziel ?</text>
+<text x="390" y="40" text-anchor="middle" class="stufe">Linker verbindet</text>
+<rect class="objekt" x="470" y="20" width="280" height="140" rx="6"/><text x="488" y="48" class="name">calc.o</text>
+<rect class="quelle" x="488" y="62" width="244" height="36" rx="5"/><text x="502" y="85" class="code">Code von addiere</text>
+<rect class="quelle" x="488" y="108" width="244" height="36" rx="5"/><text x="502" y="131" class="code">Code von multipliziere</text>
+<rect class="bibliothek" x="470" y="178" width="280" height="92" rx="6"/><text x="488" y="204" class="name">C-Standardbibliothek</text>
+<rect class="quelle" x="488" y="216" width="244" height="36" rx="5"/><text x="502" y="239" class="code">Code von printf</text>
+<path class="pfeil" d="M 292 100 C 390 100, 390 80, 484 80" marker-end="url(#pfeil-verweis)"/>
+<path class="pfeil" d="M 292 160 C 390 160, 390 126, 484 126" marker-end="url(#pfeil-verweis)"/>
+<path class="pfeil" d="M 292 220 C 390 220, 390 234, 484 234" marker-end="url(#pfeil-verweis)"/>
+</svg>
+<figcaption>Für jeden offenen Aufruf sucht der Linker die passende Funktion in den Objektdateien und Bibliotheken. Findet er eine nicht, bricht er mit <code>undefined reference</code> ab.</figcaption>
+</figure><p>Die C-Standardbibliothek wird meist nicht ins Programm kopiert, sondern beim Programmstart vom Betriebssystem dazugeladen. Der Linker vermerkt dann im Programm, dass <code>printf</code> aus ihr stammt. Für Ihre eigenen Objektdateien gilt das nicht: Ihr Code steht vollständig in <code>rechner</code>.</p><noscript><p>Ohne JavaScript können Sie Ihre Antworten mit der aufklappbaren Erklärung selbst prüfen.</p></noscript>
+<form class="self-check" data-hint="Trennen Sie: Was geschieht beim Übersetzen, was beim Linken, was erst beim Ausführen?">
+  <fieldset><legend>Welche Aussagen stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+    <label><input type="checkbox" data-correct="true"> Der Linker verbindet den Aufruf in <code>main.o</code> mit der Funktion <code>addiere</code> aus <code>calc.o</code>.</label>
+    <label><input type="checkbox"> Beim Aufruf von <code>addiere</code> öffnet das laufende Programm die Datei <code>calc.c</code>.</label>
+    <label><input type="checkbox"> <code>calc.h</code> wird erst beim Linken gebraucht.</label>
+    <label><input type="checkbox" data-correct="true"> Fehlt <code>calc.o</code> beim Linken, kann der Linker den Aufruf von <code>addiere</code> nicht verbinden.</label>
+  </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+  <details><summary>Erklärung anzeigen</summary><p>Die erste und die vierte Aussage stimmen. Der Header wird schon beim Übersetzen gebraucht: Er macht die Signaturen bekannt. Zum Linken braucht es die Objektdateien mit dem übersetzten Code. Fehlt eine davon, meldet der Linker <code>undefined reference to `addiere'</code> (unter macOS <code>Undefined symbols</code>). Beim Ausführen werden keine Quelldateien mehr geöffnet.</p></details>
+</form></section><section class="content-section" aria-labelledby="aufgabe-bauen">
+<h2 id="aufgabe-bauen">3. Aufgabe: Übersetzen und Linken einzeln ausführen</h2>
+<p>Verwenden Sie Ihren aufgeteilten Rechner von Seite 1. Arbeiten Sie im Terminal in dessen Ordner.</p>
+<ol>
+<li>Übersetzen Sie die beiden Quelldateien einzeln. Prüfen Sie mit <code>ls</code>, welche Dateien neu entstanden sind.
+<pre><code>gcc -std=c17 -Wall -Wextra -c main.c -o main.o
+gcc -std=c17 -Wall -Wextra -c calc.c -o calc.o</code></pre>
+Mit <code>-c</code> endet der Aufruf, sobald die Objektdatei erzeugt ist. Es wird noch kein Programm gelinkt. <code>-o</code> benennt die jeweilige Ausgabedatei.</li>
+<li>Linken Sie die Objektdateien zum Programm und starten Sie es:
+<pre><code>gcc main.o calc.o -o rechner
+./rechner</code></pre></li>
+<li>Versuchen Sie, nur mit <code>main.o</code> zu linken: <code>gcc main.o -o rechner</code>. Was meldet der Linker, und warum?</li>
+<li>Lassen Sie sich anzeigen, welche Art von Datei Sie vor sich haben. Unter Windows (MSYS2) heißt das Programm <code>rechner.exe</code>.
+<pre><code>file main.c calc.h main.o rechner</code></pre></li>
+<li>Sehen Sie sich die beiden Grafiken in Abschnitt 1 und 2 noch einmal an und ordnen Sie Ihre Befehle den Schritten zu. Erklären Sie, welche Schritte vor dem Programmstart stattfinden und was erst während der Ausführung passiert. Welche Aufgabe hatte <code>calc.h</code>, obwohl die Datei im Link-Befehl nicht vorkommt?</li>
+</ol>
+<details><summary>Hinweis: Der Befehl <code>file</code> fehlt</summary><p>Unter Linux und macOS ist <code>file</code> vorhanden. Meldet MSYS2 unter Windows <code>command not found</code>, installieren Sie es einmal mit <code>pacman -S file</code>.</p></details>
+<details><summary>Hinweis: Beim Linken fehlt eine Funktion</summary><p>Prüfen Sie, ob Sie beide Objektdateien angegeben haben. Der Header hat beim Übersetzen die Deklarationen bereitgestellt. Den übersetzten Code der Funktionen enthält aber nur <code>calc.o</code>.</p></details>
+<details><summary>Selbstkontrolle: Dateien und Schritte</summary>
+<div class="table-wrap"><table>
+<thead><tr><th scope="col">Datei</th><th scope="col">Art</th><th scope="col">Ausgabe von <code>file</code> (Beispiel Linux)</th></tr></thead>
+<tbody>
+<tr><td><code>main.c</code>, <code>calc.h</code></td><td>Quelltext</td><td><code>C source, ASCII text</code></td></tr>
+<tr><td><code>main.o</code>, <code>calc.o</code></td><td>Objektdateien, Zwischenprodukt</td><td><code>ELF 64-bit LSB relocatable</code></td></tr>
+<tr><td><code>rechner</code></td><td>ausführbares Programm</td><td><code>ELF 64-bit LSB pie executable</code></td></tr>
+</tbody>
+</table></div>
+<p>Unter macOS steht bei Objektdatei und Programm <code>Mach-O 64-bit object</code> bzw. <code>Mach-O 64-bit executable</code>, unter Windows beim Programm <code>PE32+ executable</code>. Der genaue Text kann je nach System abweichen.</p>
+<p>Nur mit <code>main.o</code> meldet der Linker <code>undefined reference to `addiere'</code> (macOS: <code>Undefined symbols</code>): Der Aufruf kann mit keiner Funktion verbunden werden. Der Header wurde schon beim Übersetzen verarbeitet. Er hat die Signaturen bereitgestellt, mit denen der Compiler Aufrufe und Definitionen prüfen konnte. Zum Linken braucht es ihn nicht mehr. Erst beim Ausführen wird die Funktion tatsächlich aufgerufen.</p>
+</details>
+<p><strong>Ihr Ergebnis:</strong> Sie können Quelltext, Objektdateien und Programm unterscheiden und erklären, welche Schritte zwischen ihnen liegen.</p>
+</section>
+<section class="content-section" aria-labelledby="abschnitt-4">
+<h2 id="abschnitt-4">4. Text und Maschinencode</h2>
+<p>Alle Dateien bestehen aus Bytes. In einer Quelldatei stellen diese Bytes lesbaren Text dar. Eine Objektdatei und ein Programm enthalten dagegen Maschinenbefehle, Daten und Verwaltungsinformationen für Linker und Betriebssystem. <code>file</code> erkennt das an typischen Bytes am Dateianfang.</p>
+<p>Öffnen Sie <code>rechner</code> testweise in einem Texteditor, versucht der Editor, diese Bytes als Text zu deuten. Es erscheinen ungewöhnliche Zeichen, nur einzelne Stücke wie Ihre Ausgabetexte bleiben lesbar. Wenn Sie das ausprobieren, schließen Sie die Datei ohne zu speichern, sonst ist das Programm danach beschädigt.</p>
+</section>
+<section class="content-section" aria-labelledby="variablen"><h2 id="variablen">5. Variablen über Dateigrenzen: <code>extern</code> und <code>static</code></h2>
+<p>Bisher teilen sich Ihre Quelldateien nur Funktionen. Auch eine globale Variable, also eine Variable außerhalb aller Funktionen, kann von mehreren Quelldateien verwendet werden. Dafür gilt dieselbe Unterscheidung wie bei Funktionen:</p>
+<ul>
+<li>Die <strong>Definition</strong> legt die Variable an. Sie steht in <strong>genau einer</strong> Quelldatei, zum Beispiel in <code>calc.c</code>: <code>int anzahl_rechnungen = 0;</code></li>
+<li>Die <strong>Deklaration</strong> sagt nur: Diese Variable gibt es irgendwo im Programm. Dafür steht das Wort <code>extern</code> davor. Die Deklaration gehört in den Header, zum Beispiel in <code>calc.h</code>: <code>extern int anzahl_rechnungen;</code></li>
+</ul>
+<p>Jede Quelldatei, die <code>calc.h</code> einbindet, kann die Variable dann verwenden. Beim Übersetzen von <code>main.c</code> kennt der Compiler nur die Deklaration. Erst der Linker verbindet den Namen mit der einen Definition aus <code>calc.o</code>, genau wie bei einem Funktionsaufruf.</p>
+<h3>Ausprobieren</h3>
+<p>Arbeiten Sie in einer Kopie Ihres Rechner-Ordners, damit Ihre Lösung für die Aufgabe auf Seite 3 unverändert bleibt.</p>
+<ol>
+<li>Der Rechner soll zählen, wie viele Rechnungen er ausgeführt hat. Definieren Sie dafür in <code>calc.c</code> die Variable <code>anzahl_rechnungen</code> mit dem Anfangswert <code>0</code> und erhöhen Sie sie in <code>addiere</code> und <code>multipliziere</code> um eins. Deklarieren Sie die Variable mit <code>extern</code> in <code>calc.h</code>. Geben Sie ihren Wert am Ende von <code>main</code> aus.</li>
+<li>Verschieben Sie die Definition <code>int anzahl_rechnungen = 0;</code> aus <code>calc.c</code> in <code>calc.h</code> und ersetzen Sie damit die <code>extern</code>-Deklaration. Übersetzen Sie erneut. Welcher Schritt meldet einen Fehler, der Compiler oder der Linker? Warum hilft der Include-Schutz hier nicht?</li>
+<li>Stellen Sie den Zustand aus Schritt 1 wieder her und löschen Sie nur die Definition in <code>calc.c</code>. Was meldet der Linker jetzt?</li>
+</ol>
+<details><summary>Selbstkontrolle: Was Sie beobachten</summary>
+<p>Schritt 1 gibt zusätzlich <code>Rechnungen: 2</code> aus.</p>
+<p>In Schritt 2 übersetzt der Compiler beide Quelldateien ohne Fehler. Der Linker bricht ab, unter Linux mit <code>multiple definition of `anzahl_rechnungen'</code>, unter macOS mit <code>duplicate symbol</code>. Beide Quelldateien binden den Header ein, also enthalten <code>main.o</code> und <code>calc.o</code> jeweils eine eigene Definition. Der Include-Schutz verhindert das nicht, denn er wirkt nur innerhalb der Übersetzung einer einzelnen Quelldatei.</p>
+<p>In Schritt 3 meldet der Linker <code>undefined reference to `anzahl_rechnungen'</code> (macOS: <code>Undefined symbols</code>). Die Deklaration verspricht eine Variable, aber keine Objektdatei enthält ihre Definition. Das entspricht einer Funktion, die zwar im Header deklariert, aber nirgends definiert ist.</p>
+<p>Merken Sie sich: In einen Header gehören Deklarationen, also <code>extern</code>-Variablen und Funktionsköpfe. Definitionen gehören in eine <code>.c</code>-Datei.</p>
+</details>
+<h3>Das Gegenstück: <code>static</code></h3>
+<p>Steht <code>static</code> vor einer globalen Variablen, ist sie <strong>nur in ihrer eigenen Quelldatei</strong> sichtbar. Der Linker verbindet sie mit keiner anderen Datei. Eine andere Quelldatei kann sie nicht verwenden, auch nicht mit einer <code>extern</code>-Deklaration. Zwei Quelldateien dürfen sogar jeweils eine eigene <code>static</code>-Variable mit demselben Namen haben, ohne dass sie sich stören. Dasselbe gilt für Funktionen: Eine <code>static</code>-Funktion ist eine Hilfsfunktion, die nur ihre eigene Datei verwendet. Ihre Deklaration gehört deshalb nicht in den Header.</p>
+<p>Globale Variablen, die alle Quelldateien verändern können, machen Fehler schwer auffindbar: Ändert sich ein Wert unerwartet, kommt jede Datei als Ursache infrage. Verwenden Sie deshalb möglichst Parameter und Rückgabewerte. Braucht ein Programmteil einen Zustand, der während des ganzen Programmlaufs erhalten bleibt, legen Sie ihn als <code>static</code>-Variable in der Datei an, die für ihn zuständig ist. Andere Dateien erreichen ihn dann nur über die Funktionen dieser Datei. Im Kapitel <a href="../pointer/04-eingaben-und-bewegung.html#static">„Pointer und Datenaustausch“</a> legen Sie so den Spielstand des Tresorraub-Spiels an. Mit <code>extern</code> teilen Sie eine Variable nur, wenn mehrere Dateien sie wirklich direkt brauchen.</p>
+<noscript><p>Ohne JavaScript können Sie Ihre Antworten mit der aufklappbaren Erklärung selbst prüfen.</p></noscript>
+<form class="self-check" data-hint="Überlegen Sie für jede Zeile: Legt sie Speicher an, oder macht sie nur einen Namen bekannt? Und wo wirkt der Include-Schutz?">
+  <fieldset><legend>Welche Aussagen stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+    <label><input type="checkbox"> <code>extern int anzahl_rechnungen;</code> im Header legt die Variable an.</label>
+    <label><input type="checkbox" data-correct="true"> Die Definition einer gemeinsamen Variablen steht in genau einer <code>.c</code>-Datei.</label>
+    <label><input type="checkbox" data-correct="true"> Eine <code>static</code>-Variable in <code>calc.c</code> kann <code>main.c</code> nicht verwenden.</label>
+    <label><input type="checkbox"> Der Include-Schutz verhindert <code>multiple definition</code>, wenn die Definition im Header steht.</label>
+  </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+  <details><summary>Erklärung anzeigen</summary><p>Die zweite und die dritte Aussage stimmen. <code>extern</code> macht die Variable nur bekannt, angelegt wird sie durch die Definition in einer <code>.c</code>-Datei. Mit <code>static</code> ist sie nur in ihrer eigenen Datei sichtbar. Der Include-Schutz wirkt nur innerhalb der Übersetzung einer Quelldatei; bei einer Definition im Header enthält trotzdem jede Objektdatei eine eigene Definition, und der Linker bricht ab.</p></details>
+</form>
+</section>
+<section class="content-section" aria-labelledby="dokumentation"><h2 id="dokumentation">Dokumentation</h2><p class="sources"><a href="https://gcc.gnu.org/onlinedocs/gcc/Overall-Options.html">GCC: Übersetzungsschritte</a> · <a href="https://www.sourceware.org/binutils/docs/ld/Overview.html">GNU ld: Aufgaben des Linkers</a> · <a href="https://gcc.gnu.org/onlinedocs/gcc/Inline.html">GCC: Inlining</a></p></section><nav aria-label="Seitennavigation"><ul class="navlinks"><li><a href="01-header-und-quellen.html">← Zurück: Ein Programm auf Header und Quelldateien verteilen</a></li><li><a href="03-makefile-verwenden.html">Weiter: Den Build mit einem Makefile ausführen →</a></li></ul></nav><footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer></main></body></html>

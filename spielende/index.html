@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Spielende</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="../uebersicht.html#block-2">← Zur Kursübersicht</a></p>
+    <header>
+      <h1>Spielende</h1>
+      <p>Den Tresorraub vollenden: gewinnen, entdeckt werden, die Zeit verlieren. Danach das Spiel in Module aufteilen, mit einer Test-Suite absichern und auf Block 2 zurückblicken.</p>
+    </header>
+    <section class="content-section" aria-labelledby="ziele">
+      <h2 id="ziele">Lernziele und Arbeitsweise</h2>
+      <p>Ihr Tresorraub kann fast alles, was im Zielbild aus dem Kapitel <a href="../vom-problem-zum-programm-2/index.html#zielbild">„Vom Problem zum Programm II“</a> steht. Nur enden kann er noch nicht: Die Figur läuft an den Wächtern vorbei, als wären sie nicht da, und mit der Beute am Ausgang passiert nichts. In diesem Kapitel bauen Sie das Spielende ein. Danach räumen Sie auf: Aus einer langen Datei werden Module mit klaren Schnittstellen, und eine mitgelieferte Test-Suite zeigt Ihnen, ob dabei alles erhalten geblieben ist. Zum Schluss blicken Sie auf Ihren Plan vom Anfang des Blocks zurück.</p>
+      <ul>
+        <li>Den Zustand eines Programms mit einem Aufzählungstyp beschreiben, statt mehrere Wahrheitswerte zu kombinieren.</li>
+        <li>Entscheiden, wo eine Regel im Programm hingehört: als Methode einer Objektart oder als zentrale Prüfung.</li>
+        <li>Sicherstellen, dass ein beendetes Spiel sich nicht mehr verändern lässt, auch nicht über Speichern und Laden.</li>
+        <li>Ein Programm entlang vorgegebener Header in Module aufteilen und dabei Sichtbarkeit mit <code>static</code> bewusst einsetzen.</li>
+        <li>Erklären, was Unit Tests und ein Vergleichslauf jeweils prüfen, und beide beim Umbauen nutzen.</li>
+        <li>Die eigene Planung mit dem fertigen Programm vergleichen und daraus Schlüsse für das Projekt ziehen.</li>
+      </ul>
+      <p>Sie brauchen Aufzählungstypen und Methoden aus dem Kapitel <a href="../objektorientierung/03-objektarten.html">„Objektorientierung in C“</a>, Header, <code>static</code> und Makefiles aus dem Kapitel <a href="../header-quellen/index.html">„Header und Quelldateien“</a> und Speichern und Laden aus dem Kapitel <a href="../datei-ein-ausgabe/05-spielstand-laden.html">„Datei-Ein- und -Ausgabe“</a>. Halten Sie außerdem Ihre Notizen aus dem Kapitel <a href="../vom-problem-zum-programm-2/index.html#plan-aufbewahren">„Vom Problem zum Programm II“</a> bereit; Sie brauchen sie auf Seite 4.</p>
+    </section>
+    <section class="content-section" aria-labelledby="unterseiten">
+      <h2 id="unterseiten">Unterseiten</h2>
+      <ol>
+        <li><a href="01-spielende.html">Wann ist das Spiel zu Ende?</a></li>
+        <li><a href="02-wasted.html">WASTED: das Spielende zeigen</a></li>
+        <li><a href="03-module.html">Module und Unit Tests</a></li>
+        <li><a href="04-rueckblick.html">Rückblick auf Block 2</a></li>
+        <li><a href="05-geschafft.html">Geschafft!</a></li>
+      </ol>
+    </section>
+    <section class="content-section" aria-labelledby="tresorraub">
+      <h2 id="tresorraub">Ihr durchgehendes Programm: Das Spielende des Tresorraubs</h2>
+      <p>Das Kapitel hat zwei Teile. In <strong>Teil 1</strong> (Seiten 1 und 2) bauen Sie das Spielende in Ihre <code>tresorraub.c</code> ein und zeigen es im Fenster. In <strong>Teil 2</strong> (Seite 3) verteilen Sie denselben Code auf Module; das Verhalten ändert sich dabei nicht. Die Seiten 4 und 5 schließen Block 2 ab.</p>
+      <p>Das <a href="materialien/tresorraub-ende.zip" download>Startmaterial (ZIP)</a> enthält eine <code>tresorraub.c</code> mit dem Stand am Ende des Kapitels „Objektorientierung in C“, die Regeln für das Spielende in <a href="materialien/tresorraub-ende/ENDE.md">ENDE.md</a>, die Piktogramme mit dem neuen Stempel WASTED und im Ordner <code>module/</code> die Header und die Test-Suite für Teil 2. Sie können auch mit Ihrer eigenen <code>tresorraub.c</code> weiterarbeiten. Wie, steht in der <a href="materialien/tresorraub-ende/README.md">README</a>.</p>
+    </section>
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="01-spielende.html">Weiter: Wann ist das Spiel zu Ende? →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>

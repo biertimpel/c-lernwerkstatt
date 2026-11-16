@@ -3,40 +3,53 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>C-Lernwerkstatt · Dynamischer Speicher</title>
+  <title>Programmierung in C · Dynamischer Speicher und Listen</title>
   <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
 </head>
 <body>
   <a class="skip" href="#inhalt">Zum Inhalt</a>
   <main id="inhalt">
-    <p><a href="../uebersicht.html#woche-6">← Zur Kursübersicht</a></p>
+    <p><a href="../uebersicht.html#block-2">← Zur Kursübersicht</a></p>
     <header>
-      <p class="eyebrow">Termin 6.1</p>
-      <h1>Dynamischer Speicher</h1>
-      <span class="status">Material in Vorbereitung</span>
+      <h1>Dynamischer Speicher und Listen</h1>
+      <p>Speicher zur Laufzeit anfordern, wieder freigeben und daraus eine verkettete Liste bauen.</p>
     </header>
     <section class="content-section" aria-labelledby="ziele">
-      <h2 id="ziele">Lernziele</h2>
+      <h2 id="ziele">Lernziele und Arbeitsweise</h2>
+      <p>Im Kapitel <a href="../datenstrukturen/index.html">„Datenstrukturen“</a> stand die Größe jedes Arrays schon beim Übersetzen fest. Das Inventar des Tresorraubs verändert sich aber während des Spiels: Gegenstände kommen hinzu und verschwinden wieder. In diesem Kapitel lernen Sie, Speicher genau dann anzufordern, wenn Sie ihn brauchen, und ihn wieder freizugeben, wenn Sie ihn nicht mehr brauchen. Damit bauen Sie das Inventar als verkettete Liste.</p>
       <ul>
-      <li>Daten mit Strukturen modellieren.</li>
-      <li>Dynamischen Speicher anfordern, initialisieren und wieder freigeben.</li>
-      <li>Dynamische Datenstrukturen umsetzen und Fehlerfälle behandeln.</li>
+        <li>Lebensdauer von automatischen, statischen und dynamischen Daten unterscheiden.</li>
+        <li>Speicher mit <code>malloc</code> anfordern, den Erfolg prüfen und ihn mit <code>free</code> genau einmal freigeben.</li>
+        <li>Typische Speicherfehler erkennen und mit Werkzeugen sichtbar machen.</li>
+        <li>Eine einfach verkettete Liste durchlaufen, erweitern und kürzen.</li>
+        <li>Für jeden Speicherbereich angeben, wer ihn besitzt und wer ihn nur liest.</li>
       </ul>
+      <p>Sie brauchen dafür Pointer, den Operator <code>-&gt;</code> und <code>NULL</code> aus dem Kapitel <a href="../pointer/index.html">„Pointer und Datenaustausch“</a>. Die Seiten erklären neue Sprachmittel an kleinen Beispielen, die nichts mit dem Spiel zu tun haben. Wie Sie damit das Inventar umsetzen, entscheiden Sie selbst.</p>
     </section>
-    <section class="content-section" aria-labelledby="einfuehrung">
-      <h2 id="einfuehrung">Einführung und Materialien</h2>
-      <p>Die Einführung und die zugehörigen Materialien werden hier ergänzt.</p>
+    <section class="content-section" aria-labelledby="unterseiten">
+      <h2 id="unterseiten">Unterseiten</h2>
+      <ol>
+        <li><a href="01-lebensdauer.html">Lebensdauer und Speicherbereiche</a></li>
+        <li><a href="02-speicher-anfordern.html">Speicher anfordern und freigeben</a></li>
+        <li><a href="03-verkettete-liste.html">Eine verkettete Liste</a></li>
+        <li><a href="04-entfernen-aufraeumen.html">Entfernen, aufräumen und Besitz</a></li>
+        <li><a href="05-inventar-im-spiel.html">Das Inventar im Spiel</a></li>
+        <li><a href="06-ablegen.html">Gegenstände ablegen</a></li>
+      </ol>
     </section>
-    <section class="content-section" aria-labelledby="aufgaben">
-      <h2 id="aufgaben">Aufgaben</h2>
-      <p>Aufgabenstellung, Voraussetzungen und erwartetes Ergebnis werden hier ergänzt.</p>
+    <section class="content-section" aria-labelledby="tresorraub">
+      <h2 id="tresorraub">Ihr durchgehendes Programm: Das Inventar des Tresorraubs</h2>
+      <p>Sie arbeiten mit Ihrem Spiel vom Ende des Kapitels <a href="../pointer/04-eingaben-und-bewegung.html">„Pointer und Datenaustausch“</a> weiter: Die Figur läuft über das Spielfeld, Bild und Fenstertitel zeigen den laufenden Spielstand. Auf den Seiten 2 bis 4 entsteht ein Inventar als verkettete Liste. Auf Seite 5 übernimmt der Spielstand dieses Inventar: Mit der Leertaste nimmt die Figur Gegenstände auf und öffnet die Tür mit dem Schlüssel. Auf Seite 6 legt sie die Gegenstände wieder auf dem Spielfeld ab. Beim Beenden gibt Ihr Programm allen Speicher wieder frei.</p>
+      <p>Die Regeln für das Inventar und die Tastenbelegung stehen in <a href="materialien/tresorraub-inventar/INVENTAR.md">INVENTAR.md</a>. Das <a href="materialien/tresorraub-inventar.zip" download>Startmaterial (ZIP)</a> enthält diese Datei, das bekannte Programmgerüst, die Piktogramme, ein Makefile und eine <code>tresorraub.c</code> mit dem Stand am Ende des Kapitels <a href="../pointer/04-eingaben-und-bewegung.html">„Pointer und Datenaustausch“</a>. Sie können auch mit Ihrer eigenen <code>tresorraub.c</code> weiterarbeiten. Wie das zusammenspielt, steht in der <a href="materialien/tresorraub-inventar/README.md">README</a>.</p>
     </section>
-    <section class="content-section" aria-labelledby="hinweise">
-      <h2 id="hinweise">Hinweise und Selbstcheck</h2>
-      <p>Hier folgen abgestufte Hinweise und Fragen zur Überprüfung Ihres Verständnisses.</p>
+    <section class="content-section" aria-labelledby="arbeitsweise">
+      <h2 id="arbeitsweise">So arbeiten Sie mit dem Kapitel</h2>
+      <p>Speicherfehler sind tückisch: Ein Programm kann damit lange scheinbar richtig laufen. Prüfen Sie Ihr Programm deshalb regelmäßig mit den Werkzeugen aus der README, nicht erst am Ende.</p>
+      <p>Ab Seite 3 bauen Sie eine verkettete Liste. Dort lernen Sie auch, eine Liste als Bild aus Kästchen und Pfeilen zu zeichnen. Nutzen Sie solche Zeichnungen auf Papier, bevor Sie Code für eine Liste schreiben: Fast jeder Fehler in einer Liste wird auf einer solchen Skizze sichtbar.</p>
+      <p>Führen Sie Ihre Projektnotiz weiter: Funktionsverträge mit Angaben zum Besitz, Testfälle mit erwarteten Ergebnissen und offene Fragen. Direkt in den Abschnitten prüfen Sie Ihr Verständnis mit Multiple-Choice-Fragen. Die aufklappbaren Hilfen enthalten Denkfragen und erwartete Ergebnisse, aber keinen fertigen Code.</p>
     </section>
-
-    <footer><a href="../uebersicht.html#woche-6">Zur Kursübersicht</a></footer>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
   </main>
 </body>
 </html>

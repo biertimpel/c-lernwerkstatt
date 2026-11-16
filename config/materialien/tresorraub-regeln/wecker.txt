@@ -1,0 +1,4 @@
+# Weckzeit für die Versuche auf den Seiten 1 und 2
+stunde = 6
+
+minute = 45

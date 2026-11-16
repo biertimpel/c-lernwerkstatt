@@ -3,40 +3,129 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>C-Lernwerkstatt · Umfassender Lernstandscheck</title>
+  <title>Programmierung in C · Lernstandscheck II – Licht aus</title>
   <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
 </head>
 <body>
   <a class="skip" href="#inhalt">Zum Inhalt</a>
   <main id="inhalt">
-    <p><a href="../uebersicht.html#woche-8">← Zur Kursübersicht</a></p>
+    <p><a href="../uebersicht.html#block-2">← Zur Kursübersicht</a></p>
     <header>
-      <p class="eyebrow">Termin 8.2</p>
-      <h1>Umfassender Lernstandscheck</h1>
-      <span class="status">Material in Vorbereitung</span>
+      <h1>Lernstandscheck II – Licht aus</h1>
+      <p>Erweitern Sie Ihren Tresorraub um einen Lichtschalter. Damit kann die Spielfigur das Licht für einige Sekunden ausschalten und an den Wächtern vorbeikommen. Danach geht das Licht von selbst wieder an.</p>
     </header>
+
     <section class="content-section" aria-labelledby="ziele">
-      <h2 id="ziele">Lernziele</h2>
+      <h2 id="ziele">Worum es geht</h2>
+      <p>Der Lernstandscheck ist eine freiwillige Selbstkontrolle. Es gibt keine Abgabe und keine Bewertung. Sie arbeiten selbstständig an Ihrem fertigen Spiel weiter; es gibt keine Schritt-für-Schritt-Anleitung. Die Regeln stehen unten, wie Sie sie umsetzen, entscheiden Sie. So finden Sie für sich heraus, ob Sie</p>
       <ul>
-      <li>Die bis dahin benötigten C-Kompetenzen in einer größeren Aufgabe verbinden.</li>
-      <li>Eine vorbereitete Aufgabenstellung innerhalb von 90 Minuten selbstständig bearbeiten.</li>
-      <li>Verbleibende Schwierigkeiten und nächste Lernschritte festhalten.</li>
+        <li>eine neue Objektart mit eigenem Verhalten in das vorhandene Objektmodell einfügen können (Kapitel <a href="../objektorientierung/05-neue-objektart.html">„Objektorientierung in C“</a>),</li>
+        <li>die Config um neue Einträge erweitern und die gelesenen Werte prüfen können (Kapitel <a href="../config/03-spielregeln.html">„Config“</a>),</li>
+        <li>Spiellogik schreiben können, die von der Zeit abhängt, ohne das Spiel anzuhalten,</li>
+        <li>neue Regeln mit den vorhandenen verträglich machen, etwa mit Spielende, Speichern und Laden (Kapitel <a href="../spielende/01-spielende.html">„Spielende“</a> und <a href="../datei-ein-ausgabe/06-fehler-behandeln.html">„Datei-Ein- und -Ausgabe“</a>),</li>
+        <li>Ihre Änderungen den passenden Modulen zuordnen und mit Tests und eigenen Prüfsituationen absichern können (Kapitel <a href="../spielende/03-module.html">„Spielende“, Seite 3</a>).</li>
       </ul>
     </section>
-    <section class="content-section" aria-labelledby="einfuehrung">
-      <h2 id="einfuehrung">Einführung und Materialien</h2>
-      <p>Die Einführung und die zugehörigen Materialien werden hier ergänzt.</p>
+
+    <section class="content-section" aria-labelledby="material">
+      <h2 id="material">Materialien</h2>
+      <p>Sie können mit Ihrem eigenen Spiel vom Ende des Kapitels „Spielende“ weiterarbeiten, also mit Ihren Modulen aus Teil 2. Alternativ verwenden Sie das <a href="materialien/tresorraub-licht.zip" download>Startmaterial (ZIP)</a>: eine funktionierende Fassung aller Module in einem Ordner. Wie Sie Ihren eigenen Stand vorbereiten, steht in der <a href="materialien/tresorraub-licht/README.md">README</a>.</p>
+      <p>Gegenüber dem Kapitel „Spielende“ hat das Startmaterial drei Neuerungen:</p>
+      <ul>
+        <li><strong>Ein neuer Anschluss im Gerüst.</strong> <code>programm.c</code> ruft bei jedem Durchlauf der Spielschleife, etwa 60-mal pro Sekunde, die Funktion <code>spiel_aktualisieren(Uint64 jetzt_ms)</code> auf, auch wenn keine Taste gedrückt wird. <code>jetzt_ms</code> ist die Zeit seit dem Start von SDL in Millisekunden. Meldet die Funktion eine Änderung, erneuert das Gerüst den Fenstertitel. Lesen Sie die Beschreibung in <code>tresorraub.h</code>. In <code>tresorraub.c</code> steht ein Platzhalter, der nichts tut.</li>
+        <li><strong>Ein Piktogramm</strong> <code>zeichne_lichtschalter</code> in <code>piktogramme/</code>.</li>
+        <li><strong>Die Test-Suite</strong> <code>tests.c</code> aus dem Kapitel „Spielende“. Sie prüft das bisherige Verhalten und muss auch nach Ihren Änderungen bestehen.</li>
+      </ul>
+      <p>Der neue Anschluss braucht SDL 2.0.18 oder neuer, wie der Stempel WASTED.</p>
     </section>
+
+    <section class="content-section" aria-labelledby="regeln">
+      <h2 id="regeln">Spielregeln für das Licht</h2>
+      <p>Alle bisherigen Regeln aus <code>SPIELFELD.md</code>, <code>INVENTAR.md</code>, <code>OBJEKTE.md</code>, <code>ENDE.md</code>, <code>REGELN.md</code> und <code>FORMAT.md</code> gelten weiter, soweit hier nichts anderes steht.</p>
+      <h3>Der Lichtschalter</h3>
+      <ul>
+        <li>Der Lichtschalter ist ein Objekt. Er steht auf einem Bodenfeld, ohne Angabe in <code>regeln.txt</code> auf (5, 7). Die Figur kann sein Feld nicht betreten, und es kann nichts dorthin abgelegt werden.</li>
+        <li>Textausgabe: <code>S</code>. Piktogramm: <code>zeichne_lichtschalter</code>.</li>
+        <li>Leertaste auf einem direkten Nachbarfeld des Schalters: Das Licht geht aus. Meldung <code>Licht aus.</code> Das zählt als ein Zug. Ist das Licht schon aus, beginnt die Dauer von vorn, mit derselben Meldung und ebenfalls als Zug.</li>
+        <li>Liegt auf dem Feld der Figur ein Gegenstand, wird wie bisher zuerst er aufgenommen.</li>
+      </ul>
+      <h3>Licht und Wächter</h3>
+      <ul>
+        <li>Zu Beginn, nach N und nach dem Laden eines Spielstands ist das Licht an.</li>
+        <li>Solange das Licht aus ist, entdecken die Wächter niemanden. Die Figur darf überwachte Felder betreten. Das Zuglimit gilt weiter.</li>
+        <li><code>licht_dauer</code> Sekunden nach der letzten Betätigung des Schalters geht das Licht von selbst wieder an, auch wenn keine Taste gedrückt wird. Meldung <code>Licht an.</code> Steht die Figur dann auf einem überwachten Feld, ist sie entdeckt (<code>Entdeckt!</code>).</li>
+        <li>Nach dem Spielende ändert sich am Licht nichts mehr.</li>
+      </ul>
+      <h3>Anzeige</h3>
+      <ul>
+        <li>Im Fenster ist zu erkennen, ob das Licht an oder aus ist. Wie, gestalten Sie selbst. Die Figur bleibt auch im Dunkeln zu sehen.</li>
+        <li>Solange das Spiel läuft und das Licht aus ist, endet die Statuszeile mit <code>| Licht aus</code>. Sie wird auch dann erneuert, wenn das Licht ohne Tastendruck wieder angeht.</li>
+      </ul>
+      <h3>Speichern und Laden</h3>
+      <ul>
+        <li>Im Dunkeln speichert F5 nicht. Meldung <code>Im Dunkeln kann nicht gespeichert werden.</code></li>
+        <li>Der Lichtschalter wird im Format Version 2 wie jedes andere Objekt in einer eigenen Zeile gespeichert. Spielstände ohne diese Zeile werden deshalb abgelehnt.</li>
+      </ul>
+      <h3>Neue Einträge in <code>regeln.txt</code></h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th scope="col">Name</th><th scope="col">Bedeutung</th><th scope="col">erlaubt</th><th scope="col">Standard</th></tr></thead>
+        <tbody>
+          <tr><td><code>waechter_1_x</code>, <code>waechter_1_y</code></td><td>Position des ersten Wächters</td><td>x 0 bis 14, y 0 bis 8</td><td>1, 5</td></tr>
+          <tr><td><code>waechter_2_x</code>, <code>waechter_2_y</code></td><td>Position des zweiten Wächters</td><td>x 0 bis 14, y 0 bis 8</td><td>9, 5</td></tr>
+          <tr><td><code>schluessel_x</code>, <code>schluessel_y</code></td><td>Startposition des Schlüssels</td><td>x 0 bis 14, y 0 bis 8</td><td>3, 5</td></tr>
+          <tr><td><code>lichtschalter_x</code>, <code>lichtschalter_y</code></td><td>Position des Lichtschalters</td><td>x 0 bis 14, y 0 bis 8</td><td>5, 7</td></tr>
+          <tr><td><code>licht_dauer</code></td><td>Sekunden, die das Licht aus bleibt</td><td>1 bis 60</td><td>5</td></tr>
+        </tbody>
+      </table></div>
+      <p>Jeder Wert wird wie die bisherigen Regeln geprüft und bei einem Fehler mit Zeilennummer gemeldet. Zusätzlich müssen die Positionen zusammenpassen, sonst startet das Spiel nicht und eine Meldung nennt den Grund:</p>
+      <ul>
+        <li>Jedes Objekt, jeder Wächter und die Figur stehen auf einem eigenen Bodenfeld. Keine zwei teilen sich ein Feld.</li>
+        <li>Das Startfeld der Figur, (3, 7), ist nicht überwacht.</li>
+      </ul>
+      <p>Alle anderen Positionen bleiben fest. Ohne neue Einträge sieht das Spielfeld aus wie bisher, nur mit dem Lichtschalter.</p>
+    </section>
+
     <section class="content-section" aria-labelledby="aufgaben">
       <h2 id="aufgaben">Aufgaben</h2>
-      <p>Aufgabenstellung, Voraussetzungen und erwartetes Ergebnis werden hier ergänzt.</p>
+
+      <h3 id="aufgabe-planen">Aufgabe 1: Die Erweiterung planen</h3>
+      <p>Bevor Sie Code schreiben: Halten Sie in Stichpunkten fest, welche Module, Typen und Funktionen Sie für die Regeln oben ergänzen oder verändern werden, und warum dort. Notieren Sie auch, welche bisherigen Regeln vom Licht betroffen sind. Vergleichen Sie Ihren Plan am Ende mit dem, was Sie tatsächlich geändert haben.</p>
+
+      <h3 id="aufgabe-schalter">Aufgabe 2: Einen Lichtschalter einbauen</h3>
+      <p>Ergänzen Sie den Lichtschalter als neue Objektart und setzen Sie die Regeln aus „Der Lichtschalter“, „Licht und Wächter“, „Anzeige“ und „Speichern und Laden“ um. Für diesen ersten Zwischenstand darf das Licht nach dem Ausschalten dauerhaft aus bleiben.</p>
+
+      <h3 id="aufgabe-config">Aufgabe 3: Die Lichtmechanik im Spiel notwendig machen</h3>
+      <p>Ergänzen Sie die neuen Einträge in <code>regeln.txt</code> einschließlich der Prüfungen. Ergänzen Sie auch <code>REGELN.md</code> um die neuen Einträge.</p>
+      <p>Entwerfen Sie dann mit Ihrer <code>regeln.txt</code> eine eigene Anordnung: Schlüssel und gegebenenfalls ein Wächter stehen so, dass die Figur das Licht ausschalten muss, um den Schlüssel zu erreichen, ohne entdeckt zu werden. Der Schalter muss vorher erreichbar sein, und das Spiel muss lösbar bleiben. Spielen Sie Ihren Entwurf durch und notieren Sie den Weg und die Zahl der Züge.</p>
+
+      <h3 id="aufgabe-zeit">Aufgabe 4: Das Licht automatisch wieder einschalten</h3>
+      <p>Setzen Sie die Regel mit <code>licht_dauer</code> um. Probieren Sie verschiedene Dauern aus und wählen Sie für Ihre Anordnung eine, mit der das Spiel lösbar bleibt und die begrenzte Dunkelheit eine Rolle bei der Planung des Weges spielt.</p>
+      <details><summary>Hinweis zur Zeitsteuerung</summary>
+        <p>Stellen Sie sich eine Stoppuhr vor. Beim Start merken Sie sich einen Zeitpunkt. Während das Spiel weiterläuft, prüfen Sie regelmäßig, wie viel Zeit seitdem vergangen ist. Sobald die eingestellte Dauer erreicht ist, führen Sie die gewünschte Aktion aus.</p>
+        <p>Die aktuelle Zeit bekommen Sie über <code>spiel_aktualisieren</code> als Parameter. Dahinter steht <a href="https://wiki.libsdl.org/SDL2/SDL_GetTicks64"><code>SDL_GetTicks64()</code></a>: die seit dem Start von SDL vergangenen Millisekunden als <code>Uint64</code>, ein von SDL bereitgestellter Typ für nicht negative ganze Zahlen. Sie brauchen dafür weder einen eigenen Thread noch eine zusätzliche Bibliothek.</p>
+        <p>Für die Stoppuhr brauchen Sie den Startzeitpunkt und die Information, ob das Licht gerade aus ist. Diese Werte müssen zwischen den Aufrufen erhalten bleiben. Abgelaufen ist die Dauer, wenn <code>jetzt_ms - start_ms &gt;= dauer_ms</code> gilt. Verwenden Sie <code>&gt;=</code>, weil die Schleife nicht genau in der Millisekunde des Ablaufs prüft. Sekunden rechnen Sie mit <code>(Uint64)sekunden * 1000</code> in Millisekunden um; die Umwandlung vor der Multiplikation lässt die Rechnung im größeren Typ stattfinden.</p>
+        <p>Der Schalter wird über <code>taste_gedrueckt</code> betätigt, die Zeit kommt aber über <code>spiel_aktualisieren</code>. Überlegen Sie, woher die Funktion für den Schalter den Startzeitpunkt bekommt. Warten Sie die Dauer nicht mit einer Schleife oder einem langen <code>SDL_Delay</code> ab: Das würde Eingaben und Zeichnen anhalten.</p>
+        <p>Übergeben Sie die Zeit an Ihre Spiellogik, statt dort selbst <code>SDL_GetTicks64()</code> aufzurufen. Dann können Sie die Lichtlogik in einem Test mit erfundenen Zeiten prüfen, ohne wirklich zu warten.</p>
+      </details>
+
+      <h3 id="aufgabe-pruefen">Aufgabe 5: Die Erweiterung prüfen und beschreiben</h3>
+      <p><code>make test</code> meldet weiterhin <code>0 fehlgeschlagen</code>. Prüfen Sie außerdem selbst: Legen Sie eine Tabelle mit Prüfsituationen an, jeweils mit erwartetem und beobachtetem Verhalten. Berücksichtigen Sie mindestens</p>
+      <ul>
+        <li>den Schalter: Nachbarfeld, weiter entfernt, Feld betreten, erneutes Betätigen,</li>
+        <li>die Wächter im Dunkeln und beim Wiedereinschalten, auch ohne Tastendruck,</li>
+        <li>Zuglimit, Spielende und N bei ausgeschaltetem Licht,</li>
+        <li>F5 und F9 im Dunkeln und danach,</li>
+        <li>gültige und ungültige Einträge in <code>regeln.txt</code>, darunter Positionen auf einer Wand und zwei Objekte auf einem Feld,</li>
+        <li>einen vollständigen Spielablauf mit Ihrer Anordnung vom Start bis zur Flucht.</li>
+      </ul>
+      <p>Beschreiben Sie zum Schluss in wenigen Sätzen, welche Module Sie verändert haben und wie die Teile für Schalter, Licht und Zeit zusammenarbeiten.</p>
     </section>
-    <section class="content-section" aria-labelledby="hinweise">
-      <h2 id="hinweise">Hinweise und Selbstcheck</h2>
-      <p>Hier folgen abgestufte Hinweise und Fragen zur Überprüfung Ihres Verständnisses.</p>
-    </section>
-    <aside class="notice"><p>Dieser 90-Minuten-Check dient der Lernstandsbestimmung. Die konkrete Aufgabenstellung wird vor dem Termin festgelegt. Der Kursabschluss ist unbenotet.</p></aside>
-    <footer><a href="../uebersicht.html#woche-8">Zur Kursübersicht</a></footer>
+
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="../spielende/05-geschafft.html">← Zurück: Spielende</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
   </main>
 </body>
 </html>

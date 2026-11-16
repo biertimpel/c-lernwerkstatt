@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Spielregeln aus einer Datei lesen</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+  <script src="selbstkontrollen.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header><h1>Spielregeln aus einer Datei lesen</h1><p>Zuglimit, Reichweiten der Wächter und Größe des Inventars stehen nicht mehr im Quelltext, sondern in <code>regeln.txt</code>.</p></header>
+    <noscript><p>Ohne JavaScript können Sie die Fragen anhand der aufklappbaren Erklärungen selbst prüfen.</p></noscript>
+
+    <section class="content-section" aria-labelledby="aufgabe-regeln">
+      <h2 id="aufgabe-regeln">1. Aufgabe: Spielregeln aus <code>regeln.txt</code> lesen</h2>
+      <p>Bisher stehen die Spielregeln als Konstanten in <code>tresorraub.c</code>: <code>ZUGLIMIT</code>, <code>INVENTAR_GROESSE</code> und die Reichweiten der Wächter in <code>startzustand</code>. Wer mit anderen Regeln spielen will, muss den Quelltext ändern und neu übersetzen. Nach dieser Aufgabe genügt es, <code>regeln.txt</code> zu bearbeiten und das Programm neu zu starten.</p>
+      <p>Lesen Sie zuerst <code>REGELN.md</code> im Startmaterial. Dort stehen die vier Regeln, ihre Standardwerte und erlaubten Bereiche, das Format der Datei und das erwartete Verhalten. Gehen Sie dann in diesen Schritten vor:</p>
+      <ol>
+        <li><strong>Die Regeln zusammenfassen.</strong> Legen Sie einen Typ an, der alle vier Regeln enthält, und eine Möglichkeit, ihn mit den Standardwerten zu füllen.</li>
+        <li><strong>Die Datei laden.</strong> Schreiben Sie eine Funktion, die <code>regeln.txt</code> Zeile für Zeile liest wie auf <a href="01-zeilen-lesen.html#abschnitt-2">Seite 1</a> und jede Regelzeile zerlegt und prüft wie auf <a href="02-name-und-wert.html#abschnitt-1">Seite 2</a>. Beim ersten Fehler meldet sie Dateiname, Zeilennummer und Grund auf <code>stderr</code> und hört auf. Sie soll nur dann etwas ändern, wenn die ganze Datei fehlerfrei ist: Steht in Zeile 5 ein Fehler, darf auch der Wert aus Zeile 2 nicht übernommen werden.</li>
+        <li><strong>Die Regeln anwenden.</strong> Ersetzen Sie die Konstanten durch die geladenen Werte: das Zuglimit in der Statuszeile, die Reichweiten im Startzustand und die Größe des Inventars beim Aufnehmen. Danach sollte <code>ZUGLIMIT</code> nirgends mehr gebraucht werden. <code>INVENTAR_GROESSE</code> steckt auch im Laden eines Spielstands; dort bleibt das Dateiformat mit höchstens drei Inventarnamen bestehen, aber die Regel aus der Config kommt hinzu (Schritt 5).</li>
+        <li><strong>Die Regeln beim Start laden.</strong> Laden Sie die Datei in <code>spiel_starten</code> und zu Beginn von <code>text_ausgeben</code>. Bei einer fehlerhaften Datei liefern beide einen negativen Wert; das Programm endet dann, im Fenstermodus mit der Meldung <code>Abbruch: spiel_starten hat einen Fehler gemeldet.</code> Geben Sie in <code>text_ausgeben</code> die geltenden Regeln aus.</li>
+        <li><strong>Spielstände mit den Regeln laden.</strong> Ein Spielstand aus dem Kapitel <a href="../datei-ein-ausgabe/05-spielstand-laden.html">„Datei-Ein- und -Ausgabe“</a> enthält keine Regeln. Beim Laden mit F9 gelten die Regeln des laufenden Spiels: Der Ladeversuch beginnt mit einem Startzustand nach diesen Regeln. Hat der Spielstand mehr Gegenstände im Inventar, als <code>inventar_groesse</code> erlaubt, bricht das Laden mit einer Meldung auf <code>stderr</code> ab, und der laufende Spielstand bleibt unverändert. So steht es in <code>REGELN.md</code> und <code>FORMAT.md</code>.</li>
+      </ol>
+      <details><summary>Hinweis: Alles oder nichts</summary><p>Das Muster kennen Sie vom Laden eines Spielstands auf <a href="../datei-ein-ausgabe/05-spielstand-laden.html#abschnitt-1">Seite 5 des Datei-Kapitels</a>: erst in eine Kopie lesen, erst nach dem fehlerfreien Ende übernehmen. Die Regeln enthalten keine Pointer, deshalb genügt hier eine einfache Strukturzuweisung.</p></details>
+      <details><summary>Hinweis: Wie kommen die Regeln an die Stellen, die sie brauchen?</summary><p>Überlegen Sie, wer die Regeln während des Spiels kennen muss. Die Statuszeile und das Aufnehmen arbeiten mit dem Spielstand. Wenn der Spielstand seine Regeln selbst mitträgt, braucht keine Funktion eine zusätzliche globale Variable. <code>startzustand</code> kann die Regeln als Parameter bekommen.</p></details>
+      <details><summary>Hinweis: Den gelesenen Namen einer Regel zuordnen</summary><p>Für jede Regel braucht Ihr Programm ihren Namen, den kleinsten und den größten erlaubten Wert und das Feld, in das der Wert gehört. Zwei Wege führen zu übersichtlichem Code:</p>
+        <ul>
+          <li>Ein <code>if</code>-Block mit <code>strcmp</code> je Regel. Damit sich die Prüfung des Werts nicht viermal wiederholt, steckt sie in einer gemeinsamen Hilfsfunktion, die die Grenzen als Parameter erhält.</li>
+          <li>Eine Tabelle: ein Array von Strukturen mit einem Eintrag je Regel, der alle Angaben zu dieser Regel bündelt. Eine Schleife sucht den Eintrag mit dem gelesenen Namen; findet sie keinen, ist die Regel unbekannt. Eine neue Regel braucht dann nur einen neuen Eintrag.</li>
+        </ul>
+        <p>Vermeiden Sie mehrere Arrays, die nur über denselben Index zusammengehören: Nichts im Code stellt sicher, dass ihre Einträge zueinander passen. Bei der Tabelle bleibt die Frage, wie Ihr Code erfährt, in welches Feld der Wert gehört. Auch dass eine Regel schon einmal in der Datei stand, muss Ihr Programm sich je Regel merken, um „Regel steht doppelt“ zu erkennen.</p></details>
+      <details><summary>Hinweis: Zwei Obergrenzen für das Inventar</summary><p>Das Spielstandformat erlaubt höchstens drei Inventarnamen; daran ändert die Config nichts, und Ihre Ladefunktion braucht diese feste Grenze weiterhin, etwa für die Größe eines Arrays. Die Regel <code>inventar_groesse</code> kann kleiner sein. Geben Sie den beiden Grenzen verschiedene Namen, damit niemand sie verwechselt, und prüfen Sie beim Laden beide.</p></details>
+      <details><summary>Hinweis: Zu lange Zeilen</summary><p>Auf <a href="01-zeilen-lesen.html#abschnitt-2">Seite 1</a> haben Sie gesehen, woran Sie eine Zeile erkennen, die nicht ganz in das Array gepasst hat. Planen Sie das Array so, dass eine Zeile mit 80 Zeichen samt <code>'\n'</code> und <code>'\0'</code> hineinpasst.</p></details>
+    </section>
+
+    <section class="content-section" aria-labelledby="abschnitt-pruefen">
+      <h2 id="abschnitt-pruefen">2. Ihre Lösung prüfen</h2>
+      <p>Starten Sie <code>./programm --text</code> mit den folgenden Inhalten von <code>regeln.txt</code>. Ihre Meldungen dürfen anders formuliert sein, sollen aber dieselbe Zeile und denselben Grund nennen. Legen Sie sich die ursprüngliche Datei vorher als Kopie zur Seite.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th scope="col">Inhalt von <code>regeln.txt</code></th><th scope="col">Erwartetes Verhalten</th></tr></thead>
+        <tbody>
+          <tr><td>unverändert</td><td>Regeln 60, 1, 2, 3; das Spielfeld wie bisher</td></tr>
+          <tr><td>Datei umbenannt</td><td><code>regeln.txt nicht gefunden, es gelten die Standardregeln.</code>; Spiel läuft</td></tr>
+          <tr><td>nur <code>zuglimit = 40</code></td><td>Regeln 40, 1, 2, 3; Statuszeile <code>Zuege 0/40</code></td></tr>
+          <tr><td>Zeile 5 lautet <code>zuglimt = 40</code></td><td><code>regeln.txt, Zeile 5: unbekannte Regel "zuglimt"</code>; Abbruch</td></tr>
+          <tr><td>Zeile 8 lautet <code>inventar_groesse = 4</code></td><td><code>regeln.txt, Zeile 8: Wert von "inventar_groesse" muss zwischen 1 und 3 liegen</code></td></tr>
+          <tr><td>Zeile 6 lautet <code>reichweite_waechter_1 = eins</code></td><td><code>regeln.txt, Zeile 6: Wert von "reichweite_waechter_1" ist keine ganze Zahl</code></td></tr>
+          <tr><td>Zeile 5 lautet <code>zuglimit = 40</code>, eine neue letzte Zeile <code>zuglimit = 50</code></td><td><code>regeln.txt, Zeile 9: Regel "zuglimit" steht doppelt</code></td></tr>
+          <tr><td>Zeile 5 lautet <code>zuglimit 40</code></td><td><code>regeln.txt, Zeile 5: kein "=" gefunden</code></td></tr>
+          <tr><td>Zeile 5 lautet <code>zug limit = 40</code></td><td><code>regeln.txt, Zeile 5: vor "=" muss genau ein Name stehen</code></td></tr>
+          <tr><td>Zeile 5 lautet <code>zuglimit = 40</code>, Zeile 8 enthält einen Fehler</td><td>Fehler in Zeile 8; Regeln bleiben unverändert, auch das Zuglimit</td></tr>
+        </tbody>
+      </table></div>
+      <p>Prüfen Sie das Laden mit einem Spielstand, der zwei Gegenstände im Inventar hat, zum Beispiel einer Kopie von <a href="../datei-ein-ausgabe/materialien/tresorraub-dateien/beispiele/inventar.txt"><code>beispiele/inventar.txt</code></a> aus dem Kapitel „Datei-Ein- und -Ausgabe“ unter dem Namen <code>spielstand.txt</code>. Sie können auch im Spiel zwei Gegenstände aufnehmen und mit F5 speichern.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th scope="col">Inhalt von <code>regeln.txt</code></th><th scope="col">Erwartetes Verhalten bei F9</th></tr></thead>
+        <tbody>
+          <tr><td>unverändert</td><td>Spielstand geladen; Inventar Beute vor Muenze</td></tr>
+          <tr><td><code>inventar_groesse = 1</code></td><td><code>spielstand.txt: 2 Gegenstaende im Inventar, laut regeln.txt sind hoechstens 1 erlaubt.</code>; laufender Spielstand unverändert</td></tr>
+          <tr><td><code>zuglimit = 40</code></td><td>Spielstand geladen; Statuszeile <code>Zuege 23/40</code></td></tr>
+        </tbody>
+      </table></div>
+      <p>Prüfen Sie die Wirkung dann im Fenster:</p>
+      <ul>
+        <li>Mit <code>reichweite_waechter_2 = 3</code> ist der Wächter auf (9, 5) auch auf (12, 5) wachsam; im Bild sehen Sie mehr überwachte Felder.</li>
+        <li>Mit <code>inventar_groesse = 1</code> bleibt jeder weitere Gegenstand liegen, solange einer im Inventar ist; das Spiel meldet, dass das Inventar voll ist.</li>
+        <li>Mit <code>zuglimit = 5</code> zeigt die Statuszeile nach fünf Schritten <code>Zuege 5/5</code>.</li>
+      </ul>
+      <p>Zum Schluss prüfen Sie wie im Kapitel <a href="../dynamischer-speicher/02-speicher-anfordern.html#abschnitt-3">„Dynamischer Speicher und Listen“</a> mit den Prüfwerkzeugen (Befehle in der <code>README.md</code>), dass auch nach einer fehlerhaften Datei kein Speicher verloren geht. Prüfen Sie außerdem im Code, dass die Datei auf jedem Weg wieder geschlossen wird, auch nach einem Fehler mitten in der Schleife.</p>
+      <form class="self-check" data-hint="Denken Sie an den Ablauf beim Start: Wann liest das Programm regeln.txt, und was geschieht mit den Werten bei einem Fehler?">
+        <fieldset><legend>Welche Aussagen treffen auf Ihre fertige Lösung zu?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Nach einer Änderung an <code>regeln.txt</code> genügt ein Neustart des Programms; neu übersetzen ist nicht nötig.</label>
+          <label><input type="checkbox"> Ändert man <code>regeln.txt</code> während des Spiels, gilt die Änderung sofort.</label>
+          <label><input type="checkbox" data-correct="true"> Steht nur <code>zuglimit = 40</code> in der Datei, gelten für die anderen Regeln die Standardwerte.</label>
+          <label><input type="checkbox"> Enthält Zeile 8 einen Fehler, gelten die Werte aus den Zeilen davor trotzdem.</label>
+          <label><input type="checkbox"> Ein Spielstand mit drei Gegenständen im Inventar lässt sich auch laden, wenn <code>regeln.txt</code> inzwischen <code>inventar_groesse = 2</code> festlegt.</label>
+          <label><input type="checkbox" data-correct="true"> Wird das Programm in einem anderen Ordner gestartet, findet es <code>regeln.txt</code> unter Umständen nicht und spielt mit den Standardregeln.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die Regeln werden beim Start gelesen, in <code>spiel_starten</code> bzw. <code>text_ausgeben</code>. Spätere Änderungen wirken erst beim nächsten Start. Fehlende Regeln behalten ihren Standardwert. Bei einem Fehler gilt „alles oder nichts“: kein einziger Wert aus der Datei wird übernommen. Ein Spielstand, der mehr Gegenstände enthält, als die geltenden Regeln erlauben, wird beim Laden abgelehnt. Der Dateiname <code>regeln.txt</code> ist relativ; gesucht wird im Ordner, in dem das Programm gestartet wurde.</p></details>
+      </form>
+      <p class="work-result"><strong>Ihr Ergebnis:</strong> Ein Spiel, dessen Regeln in <code>regeln.txt</code> stehen. Fehlende Angaben haben Standardwerte, fehlerhafte Dateien werden mit Zeile und Grund gemeldet, und gespeicherte Spielstände werden nur geladen, wenn sie zu den Regeln passen.</p>
+    </section>
+
+    <section class="content-section" aria-labelledby="ausblick">
+      <h2 id="ausblick">3. Ausblick</h2>
+      <details>
+        <summary>Ausblick: Eigene Level für Ihr Projekt</summary>
+        <p>Am Ende des Kurses entwickeln Sie ein eigenes Projekt. Das kann auch eine Weiterentwicklung dieses Spiels sein. Eine lohnende Erweiterung sind verschiedene Level: Grundriss, Startposition und die Lage von Tür, Tresor, Gegenständen und Wächtern stehen dann nicht mehr im Quelltext, sondern werden aus Dateien gelesen, und das Spiel bietet mehrere Maps an.</p>
+        <p>Überlegen Sie dabei zum Beispiel: Wie lässt sich eine Map so in einer Textdatei beschreiben, dass ein Mensch sie lesen und bearbeiten kann? Woran erkennt Ihr Programm, dass eine Map nicht spielbar ist? Wie wechselt das Spiel zum nächsten Level, und was geschieht dabei mit Inventar und Zugzahl? Was muss ein gespeicherter Spielstand zusätzlich festhalten, damit er zur richtigen Map passt?</p>
+      </details>
+    </section>
+
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="02-name-und-wert.html">← Zurück: Name und Wert auswerten</a></li>
+      <li><a href="../objektorientierung/index.html">Weiter: Objektorientierung in C →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>

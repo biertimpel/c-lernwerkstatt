@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Den Build mit einem Makefile ausführen</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+  <script src="selbstkontrollen.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header>
+      <h1>Den Build mit einem Makefile ausführen</h1>
+      <p class="intro">Bekannte Übersetzungsbefehle mit <code>make</code> ausführen und die Aufteilung im Spielgerüst wiedererkennen.</p>
+    </header>
+
+    <section class="content-section" aria-labelledby="abschnitt-1">
+      <h2 id="abschnitt-1">1. Befehle und Abhängigkeiten festhalten</h2>
+      <p>Mit mehreren Quelldateien gehören mehrere Befehle zum Bauen. Ein <strong>Makefile</strong> hält fest, welche Dateien voneinander abhängen und mit welchen Befehlen sie erzeugt werden. Makefiles haben Sie seit Block 1 verwendet; jetzt sehen Sie, wie sie aufgebaut sind.</p>
+      <p>Eine <strong>Regel</strong> besteht aus einem <strong>Ziel</strong>, seinen <strong>Voraussetzungen</strong> und einem <strong>Befehl</strong>:</p>
+      <pre><code>main.o: main.c calc.h
+	gcc -c main.c -o main.o</code></pre>
+      <p>Links vom Doppelpunkt steht das Ziel, rechts davon die Voraussetzungen. Die Befehlszeile darunter muss mit einem <strong>Tabulator</strong> beginnen, nicht mit Leerzeichen.</p>
+      <p><code>make</code> vergleicht die Änderungszeiten der Dateien. Fehlt die Zieldatei oder ist eine Voraussetzung neuer als das Ziel, führt <code>make</code> den Befehl aus. Sonst verwendet es das vorhandene Ziel weiter. Übersetzen und linken müssen weiterhin <code>gcc</code> und der Linker; <code>make</code> entscheidet nur, welche Befehle nötig sind.</p>
+    </section>
+
+    <section class="content-section" aria-labelledby="aufgabe-make">
+      <h2 id="aufgabe-make">2. Aufgabe: Den Rechner mit <code>make</code> bauen</h2>
+      <p>Laden Sie das <a href="materialien/Makefile" download>vorbereitete Makefile</a> in den Ordner Ihres Rechners. Die Datei heißt <code>Makefile</code>, ohne Endung. Ihr Inhalt:</p>
+      <pre><code>rechner: main.o calc.o
+	gcc main.o calc.o -o rechner
+
+main.o: main.c calc.h
+	gcc -c main.c -o main.o
+
+calc.o: calc.c calc.h
+	gcc -c calc.c -o calc.o</code></pre>
+      <p>Rufen Sie nur <code>make</code> auf, bearbeitet es das erste Ziel im Makefile, hier <code>rechner</code>. Dafür prüft es zuerst dessen Voraussetzungen, die Objektdateien, und deren Voraussetzungen. Ein anderes Ziel nennen Sie beim Aufruf dahinter: <code>make calc.o</code> erzeugt nur <code>calc.o</code>, falls nötig, und linkt nicht. Nach diesem Muster funktioniert auch <code>make clean</code>, das Ihnen in den Makefiles der Spielkapitel begegnet: <code>clean</code> ist dort ein eigenes Ziel, dessen Befehl die erzeugten Dateien löscht. Das Makefile ist bewusst schlicht gehalten. Die Makefiles der Spielkapitel ergänzen die Warnoptionen über eine Variable <code>CFLAGS</code>.</p>
+      <ol>
+        <li>Ordnen Sie in der Regel für <code>main.o</code> Ziel, Voraussetzungen und Befehl zu.</li>
+        <li>Entfernen Sie die erzeugten Dateien mit <code>rm main.o calc.o rechner</code> (unter Windows <code>rechner.exe</code>). Führen Sie <code>make</code> und danach <code>./rechner</code> aus.</li>
+        <li>Rufen Sie gleich danach erneut <code>make</code> auf. Wird noch einmal übersetzt oder gelinkt?</li>
+        <li>Ändern Sie in <code>calc.c</code> die Funktion <code>addiere</code> wie unten gezeigt. Die Berechnung bleibt gleich. Rufen Sie <code>make</code> auf und vergleichen Sie die ausgeführten Befehle.
+          <pre><code>int addiere(int a, int b) {
+    int ergebnis = a + b;
+    return ergebnis;
+}</code></pre></li>
+        <li>Fügen Sie innerhalb des Include-Schutzes von <code>calc.h</code> einen kurzen Kommentar hinzu, speichern Sie und rufen Sie erneut <code>make</code> auf. Erklären Sie den Unterschied zum vorherigen Durchlauf anhand der Voraussetzungen.</li>
+      </ol>
+      <details><summary>Hinweis: <code>make</code> meldet <code>missing separator</code></summary><p>Eine Befehlszeile beginnt mit Leerzeichen statt mit einem Tabulator. Das heruntergeladene Makefile enthält die Tabulatoren bereits. Manche Editoren ersetzen Tabulatoren beim Speichern durch Leerzeichen; prüfen Sie dann die Einstellungen Ihres Editors.</p></details>
+      <details><summary>Hinweis: Änderungen verfolgen</summary><p>Suchen Sie den Namen der geänderten Datei rechts von einem Doppelpunkt. Welche Ziele hängen direkt von ihr ab? Welche weiteren Ziele brauchen wiederum diese Ziele?</p></details>
+      <details><summary>Selbstkontrolle: Beobachtungen beim Bauen</summary>
+        <div class="table-wrap"><table>
+          <thead><tr><th scope="col">Ausgangslage oder Änderung</th><th scope="col">Erwartete Schritte</th></tr></thead>
+          <tbody>
+            <tr><td>Objektdateien und Programm fehlen</td><td>beide Quelldateien übersetzen, danach linken</td></tr>
+            <tr><td>seit dem letzten Bauen keine Änderung</td><td>nichts tun; <code>make</code> meldet, dass <code>rechner</code> aktuell ist (<code>is up to date</code>)</td></tr>
+            <tr><td>nur <code>calc.c</code> geändert</td><td><code>calc.o</code> neu erzeugen, danach linken</td></tr>
+            <tr><td><code>calc.h</code> geändert</td><td>beide Objektdateien neu erzeugen, danach linken</td></tr>
+          </tbody>
+        </table></div>
+        <p>Auch ein geänderter Kommentar löst hier einen Build aus. <code>make</code> vergleicht nur Änderungszeiten und eingetragene Abhängigkeiten. Ob sich das Verhalten des Programms geändert hat, beurteilt es nicht.</p>
+      </details>
+      <details><summary>Selbstkontrolle: Vollständige Lösung des Rechners</summary><p><a href="materialien/loesung.zip" download>Mögliche Lösung herunterladen</a>: Header, beide Quelldateien und Makefile. Vergleichen Sie erst, nachdem Sie die Aufgaben selbst bearbeitet haben.</p></details>
+      <noscript><p>Ohne JavaScript können Sie Ihre Antworten mit der aufklappbaren Erklärung selbst prüfen.</p></noscript>
+      <form class="self-check" data-hint="Gehen Sie vom geänderten main.c aus: Welche Regel nennt main.c als Voraussetzung, und welche Regel braucht deren Ziel?">
+        <fieldset><legend>Sie ändern nur <code>main.c</code> und rufen <code>make</code> auf. Welche Befehle führt <code>make</code> aus?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> <code>gcc -c main.c -o main.o</code></label>
+          <label><input type="checkbox"> <code>gcc -c calc.c -o calc.o</code></label>
+          <label><input type="checkbox" data-correct="true"> <code>gcc main.o calc.o -o rechner</code></label>
+          <label><input type="checkbox"> keinen, weil <code>calc.h</code> unverändert ist</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die erste und die dritte Aussage stimmen. <code>main.c</code> ist Voraussetzung von <code>main.o</code>, also wird <code>main.o</code> neu übersetzt. Weil <code>main.o</code> danach neuer ist als <code>rechner</code>, wird neu gelinkt. <code>calc.o</code> hängt nicht von <code>main.c</code> ab und bleibt, wie es ist.</p></details>
+      </form>
+      <p><strong>Ihr Ergebnis:</strong> Sie bauen den Rechner mit <code>make</code> und erklären, welche Schritte nach einer Änderung nötig sind.</p>
+    </section>
+
+    <section class="content-section" aria-labelledby="spielgeruest">
+      <h2 id="spielgeruest">3. Abschluss: Die Aufteilung im Spielgerüst wiedererkennen</h2>
+      <p>Laden Sie das <a href="materialien/spielgeruest.zip" download>Spielgerüst</a> herunter und entpacken Sie es. Es ist das Startmaterial des nächsten Kapitels <a href="../datenstrukturen/index.html">„Datenstrukturen“</a>. Mit demselben Gerüst arbeiten Sie im ganzen Tresorraub-Spiel von Block 2. Für diese Aufgabe genügt das Lesen; orientieren Sie sich an Dateinamen, Include-Anweisungen und Funktionsnamen.</p>
+      <ol>
+        <li>In welcher Datei steht <code>main</code>?</li>
+        <li>In welcher Datei entwickeln Sie Ihren eigenen Code?</li>
+        <li>Öffnen Sie <code>tresorraub.h</code>. Welche Funktionen deklariert der Header? Wer ruft sie auf, und wer definiert sie?</li>
+        <li>Welche Aufgabe hat der Include-Schutz in <code>tresorraub.h</code>, und welche Header bindet <code>tresorraub.h</code> selbst ein?</li>
+        <li>Woran erkennen Sie im Makefile, welche Quelldateien zum Programm gehören?</li>
+      </ol>
+      <p>Vergleichen Sie die Aufgaben von <code>main.c</code>, <code>calc.c</code> und <code>calc.h</code> mit den entsprechenden Dateien des Spielgerüsts.</p>
+      <details><summary>Hinweis: Im Spielgerüst orientieren</summary><p>Suchen Sie nach <code>main</code>, <code>text_ausgeben</code> und <code>zeichne</code>. Im Makefile stehen die Quelldateien in der Variablen <code>QUELLEN</code>. Das Makefile folgt derselben Grundidee wie Ihres, verwendet aber Variablen wie <code>CC</code> und <code>CFLAGS</code> und bindet zusätzlich die SDL2-Bibliothek ein.</p></details>
+      <details><summary>Selbstkontrolle: Zuordnung zum Spielgerüst</summary>
+        <div class="table-wrap"><table>
+          <thead><tr><th scope="col">Datei</th><th scope="col">Aufgabe</th><th scope="col">Entspricht beim Rechner</th></tr></thead>
+          <tbody>
+            <tr><td><code>programm.c</code></td><td>enthält <code>main</code> und das vorbereitete SDL2-Gerüst; ruft Ihre Funktionen auf</td><td><code>main.c</code></td></tr>
+            <tr><td><code>tresorraub.c</code></td><td>Ihr Code; definiert die Funktionen aus <code>tresorraub.h</code></td><td><code>calc.c</code></td></tr>
+            <tr><td><code>tresorraub.h</code></td><td>Schnittstelle zwischen Gerüst und Ihrem Code</td><td><code>calc.h</code></td></tr>
+            <tr><td><code>Makefile</code></td><td>Quelldateien und Befehle zum Bauen</td><td><code>Makefile</code></td></tr>
+          </tbody>
+        </table></div>
+        <p><code>tresorraub.h</code> deklariert sechs Funktionen: <code>text_ausgeben</code>, <code>spiel_starten</code>, <code>taste_gedrueckt</code>, <code>zeichne</code>, <code>spiel_status</code> und <code>aufraeumen</code>. Das Gerüst in <code>programm.c</code> ruft sie auf, definiert werden sie in <code>tresorraub.c</code>. Der Header bindet <code>SDL.h</code> und <code>stddef.h</code> ein, weil die Signaturen Typen aus diesen Headern verwenden. Der Include-Schutz <code>TRESORRAUB_H</code> verhindert, dass der Inhalt in einer Quelldatei doppelt verarbeitet wird.</p>
+        <p><code>tresorraub.h</code> bleibt in allen folgenden Kapiteln gleich. In <a href="../datenstrukturen/index.html">„Datenstrukturen“</a> schreiben Sie <code>text_ausgeben</code> und <code>zeichne</code>; die übrigen Funktionen stehen in <code>tresorraub.c</code> zunächst als Platzhalter und kommen in späteren Kapiteln dazu. Die Piktogramme sind eine weitere Quelldatei mit eigenem Header: <code>piktogramme/piktogramme.c</code> und <code>piktogramme/piktogramme.h</code>.</p>
+      </details>
+    </section>
+
+    <section class="content-section" aria-labelledby="dokumentation">
+      <h2 id="dokumentation">Dokumentation</h2>
+      <p class="sources"><a href="https://www.gnu.org/software/make/manual/html_node/Rule-Syntax.html">GNU make: Regeln</a> · <a href="https://www.gnu.org/software/make/manual/html_node/How-Make-Works.html">GNU make: Abhängigkeiten</a></p>
+    </section>
+
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="02-uebersetzen-und-linken.html">← Zurück: Vom Quelltext zum ausführbaren Programm</a></li>
+      <li><a href="../datenstrukturen/index.html">Weiter: Datenstrukturen →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>

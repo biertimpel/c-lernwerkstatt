@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Das Spielfeld als zweidimensionales Array</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+  <script src="selbstkontrollen.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header><h1>Das Spielfeld als zweidimensionales Array</h1><p>Ein Raster aus Zeilen und Spalten speichern, ausgeben und sicher abfragen.</p></header>
+    <noscript><p>Ohne JavaScript können Sie die Fragen anhand der aufklappbaren Erklärungen selbst prüfen.</p></noscript>
+    <section class="content-section" aria-labelledby="abschnitt-1">
+      <h2 id="abschnitt-1">1. Ein Raster aus Zeilen</h2>
+      <p>Das Spielfeld des Tresorraubs ist 15 Felder breit und 9 Felder hoch. Der Grundriss aus <a href="materialien/tresorraub-daten/SPIELFELD.md">SPIELFELD.md</a> zeigt nur Wände (<code>#</code>) und freie Felder (<code>.</code>):</p>
+      <pre><code>###############
+#.....#.......#
+#.##..#..###..#
+#.............#
+#.##..#.......#
+#.....#.......#
+#.....#.......#
+#.....#.......#
+###############</code></pre>
+      <p>Ein <strong>zweidimensionales Array</strong> ist ein Array, dessen Elemente selbst Arrays sind. Bei <code>int tabelle[3][4];</code> gibt es 3 Zeilen mit je 4 Elementen. Mit <code>tabelle[1][2]</code> greifen Sie auf Zeile 1, Spalte 2 zu. Auch hier beginnen beide Indizes bei 0.</p>
+      <h3>Den Grundriss im Programm anlegen</h3>
+      <p>Speichern Sie den Grundriss in einem zweidimensionalen <code>char</code>-Array. Jede Zeile des Grundrisses ist eine Zeichenkette, mit der Sie eine Zeile des Arrays initialisieren. Bestimmen Sie beide Größen selbst und begründen Sie sie in Ihrer Projektnotiz. Verwenden Sie für Breite und Höhe benannte Konstanten, wie unten unter „Benannte Konstanten für Breite und Höhe“ beschrieben.</p>
+      <details><summary>Denkhilfe: Die zweite Dimension</summary><p>Wie viele sichtbare Zeichen hat eine Zeile? Was steht nach Seite 2 am Ende jeder Zeichenkette zusätzlich? Wie viel Platz braucht eine Zeile also mindestens?</p></details>
+      <h3>Benannte Konstanten für Breite und Höhe</h3>
+      <p>Die Zahlen 15 und 9 brauchen Sie an vielen Stellen: bei der Deklaration des Arrays, in Schleifen und bei Bereichsprüfungen. Geben Sie ihnen deshalb Namen. Für Arraygrößen verwenden Sie dafür <code>#define</code>. Ein Beispiel, das nichts mit dem Spiel zu tun hat:</p>
+      <pre><code>#define ANZAHL 3
+
+int werte[ANZAHL] = {4, 8, 15};
+for (int i = 0; i &lt; ANZAHL; i++) {
+    printf("%d\n", werte[i]);
+}</code></pre>
+      <p><code>#define</code> ist wie <code>#include</code> eine Anweisung an den Präprozessor. Er bearbeitet den Quelltext, bevor der Compiler ihn übersetzt, und ersetzt dabei jedes Vorkommen von <code>ANZAHL</code> durch den Text <code>3</code>. Der Compiler sieht also <code>int werte[3]</code>. Ändern Sie später die Größe, ändern Sie nur die eine Zeile mit <code>#define</code>.</p>
+      <p>Beachten Sie die Schreibweise: Zwischen Name und Wert steht kein Gleichheitszeichen, und am Ende steht kein Semikolon. Ein Semikolon würde an jeder Stelle mit eingesetzt und führt zu schwer verständlichen Fehlermeldungen. Namen für solche Konstanten schreibt man üblicherweise in Großbuchstaben.</p>
+      <details><summary>Warum nicht <code>const int</code>?</summary>
+        <p>Auf der Seite <a href="../funktionen-debugging/02-funktionen.html">Funktionen</a> haben Sie <code>const</code> kennengelernt: Eine so deklarierte Variable lässt sich nach dem Anlegen nicht mehr verändern. Für eine Arraygröße reicht das in C aber nicht. Damit ein Array mit Werten in geschweiften Klammern initialisiert werden kann, muss seine Größe schon beim Übersetzen feststehen. Eine <code>const</code>-Variable ist in C trotzdem eine Variable. Ihr Wert gilt beim Übersetzen nicht als feststehend.</p>
+        <p>Was dann passiert, hängt vom Compiler ab. GCC bricht mit einem Fehler ab, etwa „variable-sized object may not be initialized“. Clang, der Standardcompiler unter macOS, übersetzt das Programm und gibt nur eine Warnung aus, weil er hier eine eigene Erweiterung verwendet. Ihr Programm ließe sich dann nicht auf jedem System übersetzen. Mit <code>#define</code> vermeiden Sie das Problem.</p>
+      </details>
+      <h3>Entwurfsfrage: Zeichen oder Zahlencodes?</h3>
+      <p>Sie speichern den Grundriss als Zeichen: <code>'#'</code> für eine Wand, <code>'.'</code> für ein freies Feld. Genauso gut könnten Sie ein <code>int</code>-Array verwenden und jeden Feldzustand als Zahl codieren, zum Beispiel 0 für frei und 1 für Wand. Vergleichen Sie beide Darstellungen und halten Sie Ihre Überlegungen in der Projektnotiz fest:</p>
+      <ul>
+        <li>Wie sieht die Initialisierung des Grundrisses jeweils im Quelltext aus? Welche ist leichter zu lesen und auf Tippfehler zu prüfen?</li>
+        <li>Was steht in den Daten, und was erscheint auf dem Bildschirm? Wo muss Ihr Programm zwischen beidem übersetzen?</li>
+        <li>Was müssten Sie ändern, wenn ein neuer Feldtyp hinzukommt, zum Beispiel Wasser?</li>
+      </ul>
+      <details><summary>Denkanstoß: Ein Zeichen ist auch ein Code</summary><p>Auf der Seite <a href="../variablen/datentypen.html#theorie">Datentypen</a> haben Sie gesehen, dass das Zeichen <code>M</code> im Speicher die Zahl 77 ist. Auch <code>'#'</code> ist also ein Zahlencode, nur einer, den man im Quelltext lesen kann. Bei Zahlen wie 0 und 1 muss man dagegen wissen, was sie bedeuten. Spätestens im Fenster brauchen Sie ohnehin eine Übersetzung: Dort zeichnen Sie für eine Wand ein Piktogramm, kein Zeichen. Es gibt hier keine allein richtige Antwort. Entscheidend ist, dass Sie Vor- und Nachteile benennen können.</p></details>
+    </section>
+    <section class="content-section" aria-labelledby="abschnitt-2">
+      <h2 id="abschnitt-2">2. Koordinaten und Zugriff</h2>
+      <p>Wie beim SDL2-Fenster aus dem Kapitel <a href="../manpages/04-fenster-gestalten.html">„Manpages und Bibliotheksdokumentation“</a> liegt (0, 0) links oben. Die x-Koordinate wächst nach rechts, die y-Koordinate nach unten. Eine Zeile des Arrays entspricht also einem festen y-Wert. Überlegen Sie, in welcher Reihenfolge Sie die beiden Indizes beim Zugriff auf das Feld (x, y) schreiben müssen. Prüfen Sie Ihre Antwort an einem Feld, bei dem Vertauschen ein anderes Zeichen liefert.</p>
+      <h3>Den Grundriss auf zwei Arten ausgeben</h3>
+      <ol>
+        <li>Geben Sie den Grundriss zeilenweise aus, also mit einer Ausgabe pro Zeile.</li>
+        <li>Geben Sie ihn Feld für Feld mit zwei verschachtelten Schleifen aus. Welche Schleife läuft außen, welche innen? Achten Sie darauf, wie weit die Schleife über die Spalten läuft: Das Array hat eine Spalte mehr, als das Spielfeld Felder hat. Was ändert sich, wenn Sie die beiden Schleifen vertauschen?</li>
+        <li>Zählen Sie die Wandfelder und die freien Felder. Notieren Sie vorher eine Schätzung.</li>
+        <li>Zeichnen Sie den Grundriss im Fenster: Ersetzen Sie das Beispiel in <code>zeichne</code> durch zwei verschachtelte Schleifen, die für jedes Feld das Piktogramm für Wand oder Boden zeichnen. Wie berechnen Sie aus (x, y) die Pixelposition? Die README des Startmaterials hilft dabei. Geben Sie einen Fehler einer Zeichenfunktion sofort zurück, wie im Kapitel <a href="../manpages/03-rueckgaben-und-fehler.html">„Manpages und Bibliotheksdokumentation“</a>.</li>
+      </ol>
+      <details><summary>Selbstkontrolle: Ausgabe und Zählung</summary><p>Beide Textausgaben müssen genau den Grundriss von oben ergeben. Im Fenster erscheint derselbe Grundriss aus Wand- und Bodenfeldern. Vertauschen Sie nur die beiden Schleifen und lassen den Zugriff unverändert, erscheint das Spielfeld gekippt: 15 Zeilen mit je 9 Zeichen. Der Grundriss hat 57 Wandfelder und 78 freie Felder, zusammen 135.</p></details>
+      <form class="self-check" data-hint="Der erste Index wählt die Zeile, der zweite die Spalte. Wofür braucht jede Zeile Platz?">
+        <fieldset><legend>Gegeben ist <code>char feld[9][16];</code> mit dem Grundriss als Inhalt. Welche Aussagen stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> <code>feld[2][5]</code> ist das Zeichen in Zeile 2, Spalte 5.</label>
+          <label><input type="checkbox"> <code>feld[2][5]</code> und <code>feld[5][2]</code> bezeichnen dasselbe Feld.</label>
+          <label><input type="checkbox" data-correct="true"> <code>strlen(feld[0])</code> ist 15.</label>
+          <label><input type="checkbox" data-correct="true"> In <code>feld[8][15]</code> steht das Nullzeichen.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die erste, dritte und vierte Aussage stimmen. Jede Zeile ist eine Zeichenkette mit 15 sichtbaren Zeichen. Das Nullzeichen steht danach in Spalte 15. Beim Vertauschen der Indizes erreichen Sie ein anderes Feld.</p></details>
+      </form>
+    </section>
+    <section class="content-section" aria-labelledby="abschnitt-3">
+      <h2 id="abschnitt-3">3. Aufgabe: Felder abfragen</h2>
+      <p>Für die spätere Bewegung muss Ihr Programm zwei Fragen beantworten können:</p>
+      <ul>
+        <li>Liegen die Koordinaten (x, y) innerhalb des Spielfelds?</li>
+        <li>Ist das Feld (x, y) begehbar? Begehbar ist ein Feld innerhalb des Spielfelds, das keine Wand ist.</li>
+      </ul>
+      <p>Entwerfen Sie für beide Fragen eigene Funktionen und notieren Sie deren Verträge. Bei der zweiten Frage muss die Bereichsprüfung vor dem Zugriff auf das Array stehen. Begründen Sie in Ihrer Notiz, warum die Reihenfolge wichtig ist.</p>
+      <p>Prüfen Sie Ihre Funktionen mindestens mit diesen Koordinaten. Ergänzen Sie die erwarteten Ergebnisse, bevor Sie das Programm ausführen:</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>(x, y)</th><th>Innerhalb?</th><th>Begehbar?</th></tr></thead>
+        <tbody>
+          <tr><td>(3, 7)</td><td></td><td></td></tr>
+          <tr><td>(0, 0)</td><td></td><td></td></tr>
+          <tr><td>(14, 8)</td><td></td><td></td></tr>
+          <tr><td>(15, 3)</td><td></td><td></td></tr>
+          <tr><td>(−1, 3)</td><td></td><td></td></tr>
+          <tr><td>(6, 3)</td><td></td><td></td></tr>
+        </tbody>
+      </table></div>
+      <p>Ergänzen Sie eigene Fälle: Für jede der vier Seiten sollte mindestens ein Feld knapp außerhalb vorkommen und eines, das gerade noch innerhalb liegt.</p>
+      <details><summary>Selbstkontrolle: Erwartete Ergebnisse</summary><p>(3, 7) liegt innerhalb und ist begehbar. (0, 0) und (14, 8) liegen innerhalb, sind aber Wände. (15, 3) und (−1, 3) liegen außerhalb und sind deshalb nicht begehbar. (6, 3) ist im Grundriss ein freies Feld. Dort steht später die Tür, aber die gehört nicht zum Grundriss. Darum kümmern Sie sich auf Seite 5.</p></details>
+      <form class="self-check" data-hint="Was passiert bei einem Zugriff mit ungültigem Index, auch wenn das Ergebnis danach nicht verwendet wird?">
+        <fieldset><legend>Ihre Funktion soll prüfen, ob (x, y) begehbar ist. Welche Aussagen stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Die Bereichsprüfung muss vor dem Arrayzugriff erfolgen.</label>
+          <label><input type="checkbox"> Man darf zuerst zugreifen und das Ergebnis danach verwerfen, wenn die Koordinaten ungültig sind.</label>
+          <label><input type="checkbox" data-correct="true"> Ein Feld kann innerhalb des Spielfelds liegen und trotzdem nicht begehbar sein.</label>
+          <label><input type="checkbox"> Negative Koordinaten muss man nicht prüfen, weil das Array bei 0 beginnt.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die erste und dritte Aussage stimmen. Schon der Zugriff mit einem ungültigen Index ist undefiniertes Verhalten, auch wenn Sie das Ergebnis nicht verwenden. Negative Koordinaten entstehen zum Beispiel, wenn die Figur am linken Rand nach links gehen will. Sie müssen deshalb genauso geprüft werden.</p></details>
+      </form>
+      <p class="work-result"><strong>Ihr Ergebnis:</strong> Der Grundriss im Programm, Ihr Vergleich von Zeichen und Zahlencodes, zwei Textausgaben, die Zählung, der Grundriss im Fenster und zwei getestete Abfragefunktionen mit Testtabelle.</p>
+    </section>
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="02-zeichenketten.html">← Zurück: Zeichenketten</a></li>
+      <li><a href="04-strukturen.html">Weiter: Strukturen →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>

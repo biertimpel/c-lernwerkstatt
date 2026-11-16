@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Eine verkettete Liste</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+  <script src="selbstkontrollen.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header><h1>Eine verkettete Liste</h1><p>Einzeln angeforderte Einträge über Pointer zu einer Reihe verbinden.</p></header>
+    <noscript><p>Ohne JavaScript können Sie die Fragen anhand der aufklappbaren Erklärungen selbst prüfen.</p></noscript>
+    <section class="content-section" aria-labelledby="abschnitt-1">
+      <h2 id="abschnitt-1">1. Die Idee</h2>
+      <p>Ein Array liegt als ein zusammenhängender Block im Speicher. Seine Größe steht fest, sobald es angelegt ist. Eine <strong>verkettete Liste</strong> besteht dagegen aus einzelnen <strong>Knoten</strong>, die jeweils für sich mit <code>malloc</code> angefordert werden. Jeder Knoten enthält seine Daten und einen Pointer auf den nächsten Knoten. Ein Zug aus Waggons ist ein gutes Bild: Jeder Waggon ist an den nächsten gekoppelt.</p>
+      <pre><code>zug
+ │
+ ▼
+┌────┬───┐    ┌────┬───┐    ┌────┬──────┐
+│ 12 │ ●─┼──▶ │  7 │ ●─┼──▶ │ 31 │ NULL │
+└────┴───┘    └────┴───┘    └────┴──────┘</code></pre>
+      <ul>
+        <li>Die Variable <code>zug</code> zeigt auf den ersten Knoten, den <strong>Kopf</strong> der Liste.</li>
+        <li>Der Pointer des letzten Knotens ist <code>NULL</code>. Daran erkennt man das Ende.</li>
+        <li>Eine leere Liste hat keinen Knoten. Dann ist schon der Kopf <code>NULL</code>.</li>
+      </ul>
+      <p>Ein Knotentyp enthält einen Pointer auf seinen eigenen Typ. Dafür braucht die Struktur einen Namen hinter <code>struct</code>, wie im Abschnitt „Mit und ohne <code>typedef</code>“ der Seite <a href="../datenstrukturen/04-strukturen.html">Strukturen</a> angekündigt:</p>
+      <pre><code>typedef struct Waggon {
+    int nummer;
+    struct Waggon *naechster;
+} Waggon;</code></pre>
+      <p>Innerhalb der geschweiften Klammern ist der Name <code>Waggon</code> aus dem <code>typedef</code> noch nicht bekannt, denn er entsteht erst in der letzten Zeile. Deshalb steht dort <code>struct Waggon *</code>.</p>
+      <h3>Auf Papier</h3>
+      <p>Zeichnen Sie wie oben eine leere Liste, eine Liste mit einem Waggon und eine mit zwei Waggons. Zeichnen Sie dann, wie ein neuer Waggon <em>vorne</em> angehängt wird. Welche Pointer ändern sich? In welcher Reihenfolge müssen sie geändert werden, damit kein Waggon verloren geht?</p>
+      <details><summary>Selbstkontrolle: Vorne anhängen</summary><p>Zwei Pointer ändern sich: der Pointer des neuen Knotens und der Kopf. Zuerst muss der neue Knoten auf den bisherigen Kopf zeigen. Erst danach darf der Kopf auf den neuen Knoten zeigen. In umgekehrter Reihenfolge ist der Zugang zur bisherigen Liste verloren, sobald der Kopf umgesetzt ist. Bei einer leeren Liste zeigt der neue Knoten auf <code>NULL</code>, und das gleiche Vorgehen funktioniert ohne Sonderfall.</p></details>
+      <form class="self-check" data-hint="Sehen Sie sich die Zeichnung und die Typdefinition noch einmal an.">
+        <fieldset><legend>Welche Aussagen zu verketteten Listen stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Bei einer leeren Liste ist der Kopf <code>NULL</code>.</label>
+          <label><input type="checkbox" data-correct="true"> Der Pointer des letzten Knotens ist <code>NULL</code>.</label>
+          <label><input type="checkbox"> Die Knoten liegen wie Arrayelemente direkt hintereinander im Speicher.</label>
+          <label><input type="checkbox"> Innerhalb der Struktur kann man statt <code>struct Waggon *</code> auch <code>Waggon *</code> schreiben.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die ersten beiden Aussagen stimmen. Jeder Knoten wird einzeln angefordert und kann irgendwo auf dem Heap liegen. Nur die Pointer verbinden sie. Der Name aus dem <code>typedef</code> ist erst nach der schließenden Klammer bekannt.</p></details>
+      </form>
+    </section>
+    <section class="content-section" aria-labelledby="abschnitt-2">
+      <h2 id="abschnitt-2">2. Eine Liste durchlaufen</h2>
+      <p>Um alle Knoten zu besuchen, folgen Sie den Pointern vom Kopf bis <code>NULL</code>. Für den Zug sieht das so aus:</p>
+      <pre><code>for (const Waggon *w = zug; w != NULL; w = w-&gt;naechster) {
+    printf("Waggon %d\n", w-&gt;nummer);
+}</code></pre>
+      <ul>
+        <li><code>w</code> beginnt beim Kopf.</li>
+        <li>Die Schleife läuft, solange <code>w</code> auf einen Knoten zeigt. Bei einer leeren Liste läuft sie gar nicht.</li>
+        <li>Nach jedem Durchgang rückt <code>w</code> zum nächsten Knoten vor.</li>
+        <li>Das <code>const</code> zeigt wie im Kapitel <a href="../pointer/03-spielzustand-veraendern.html">„Pointer und Datenaustausch“</a> an, dass die Schleife die Knoten nur liest.</li>
+      </ul>
+      <p>Überlegen Sie, bevor Sie weiterlesen: Wie würden Sie mit diesem Muster die Waggons zählen? Wie würden Sie prüfen, ob ein Waggon mit einer bestimmten Nummer dabei ist, und wann können Sie die Suche abbrechen?</p>
+      <form class="self-check" data-hint="Gehen Sie die Schleife für eine leere Liste und für eine Liste mit einem Knoten Schritt für Schritt durch.">
+        <fieldset><legend>Welche Aussagen zum Durchlaufen stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Für eine leere Liste wird der Schleifenrumpf kein einziges Mal ausgeführt.</label>
+          <label><input type="checkbox"> Die Bedingung <code>w-&gt;naechster != NULL</code> würde ebenfalls alle Knoten besuchen.</label>
+          <label><input type="checkbox" data-correct="true"> Eine Suche kann die Schleife verlassen, sobald sie den gesuchten Knoten gefunden hat.</label>
+          <label><input type="checkbox"> Um die Länge einer Liste zu kennen, kann man <code>sizeof</code> verwenden.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die erste und dritte Aussage stimmen. Mit <code>w-&gt;naechster != NULL</code> würde der letzte Knoten übersprungen, und bei einer leeren Liste würde schon die erste Prüfung über <code>NULL</code> zugreifen. <code>sizeof</code> kennt nur die Größe eines Pointers oder eines Knotens, nicht die Zahl der Knoten. Die Länge einer Liste muss man zählen.</p></details>
+      </form>
+    </section>
+    <section class="content-section" aria-labelledby="abschnitt-3">
+      <h2 id="abschnitt-3">3. Aufgabe: Gegenstände aufnehmen</h2>
+      <p>Bauen Sie Ihr Inventar als verkettete Liste. Die Regeln stehen in <a href="materialien/tresorraub-inventar/INVENTAR.md">INVENTAR.md</a>.</p>
+      <ol>
+        <li>Erweitern Sie Ihren Eintragstyp von Seite 2 um einen Pointer auf den nächsten Eintrag.</li>
+        <li>Legen Sie fest, wo der Kopf der Liste gespeichert wird. Eine Möglichkeit ist eine eigene Struktur für das Inventar, die den Kopf enthält.</li>
+        <li>Entwerfen Sie Funktionen, die die Anzahl der Einträge liefern, prüfen, ob ein Gegenstand im Inventar ist, und das Inventar als Text ausgeben.</li>
+        <li>Entwerfen Sie eine Funktion, die einen Gegenstand vorne aufnimmt. Sie verwendet Ihre Funktion von Seite 2 und beachtet alle Regeln: kein Gegenstand doppelt, höchstens drei Einträge. Bei Ablehnung und auch dann, wenn kein Speicher zu bekommen ist, bleibt das Inventar unverändert. Ihr Rückgabewert muss diese Fälle unterscheiden. Wie, legen Sie im Vertrag fest.</li>
+      </ol>
+      <p>Die Funktion zum Aufnehmen ändert den Kopf. Sie braucht deshalb Zugriff auf die Variable des Aufrufers, nicht auf eine Kopie. Wie das geht, wissen Sie aus dem Kapitel <a href="../pointer/02-kopie-und-original.html">„Pointer und Datenaustausch“</a>.</p>
+      <p>Prüfen Sie Ihre Funktionen mindestens mit dieser Folge. Ergänzen Sie die erwarteten Ergebnisse, bevor Sie das Programm ausführen. Für die Regel „höchstens drei Einträge“ brauchen Sie einen vierten Namen. Zum Testen dürfen Sie einen erfundenen verwenden, zum Beispiel <code>Kompass</code>.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Schritt</th><th>Erwartetes Ergebnis</th><th>Inventar danach, von vorne</th></tr></thead>
+        <tbody>
+          <tr><td>Start</td><td>–</td><td></td></tr>
+          <tr><td>Schluessel aufnehmen</td><td></td><td></td></tr>
+          <tr><td>Beute aufnehmen</td><td></td><td></td></tr>
+          <tr><td>Schluessel aufnehmen</td><td></td><td></td></tr>
+          <tr><td>Muenze aufnehmen</td><td></td><td></td></tr>
+          <tr><td>Kompass aufnehmen</td><td></td><td></td></tr>
+        </tbody>
+      </table></div>
+      <details><summary>Denkhilfe: In welcher Reihenfolge prüfen?</summary><p>Lohnt es sich, Speicher anzufordern, bevor feststeht, dass der Gegenstand überhaupt aufgenommen werden darf? Was müssten Sie sonst bei einer Ablehnung zusätzlich tun?</p></details>
+      <details><summary>Selbstkontrolle: Erwartete Ergebnisse</summary><p>Zu Beginn ist das Inventar leer. Schlüssel und Beute werden aufgenommen, das Inventar ist dann „Beute, Schluessel“. Der zweite Schlüssel wird abgelehnt, das Inventar bleibt unverändert. Nach der Münze lautet es „Muenze, Beute, Schluessel“. Der Kompass wird abgelehnt, weil das Inventar voll ist. Am Ende enthält es drei Einträge. Das Prüfwerkzeug darf nach dem Programmende noch nicht verbrauchten Speicher melden, solange Sie das Aufräumen von Seite 4 noch nicht geschrieben haben.</p></details>
+      <form class="self-check" data-hint="Spielen Sie beide Reihenfolgen auf Ihrer Papierzeichnung durch.">
+        <fieldset><legend>Ein neuer Eintrag <code>neu</code> soll vorne in die Liste. Welche Aussagen stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Zuerst bekommt <code>neu</code> den bisherigen Kopf als Nachfolger, danach wird der Kopf auf <code>neu</code> gesetzt.</label>
+          <label><input type="checkbox"> Setzt man zuerst den Kopf auf <code>neu</code> und danach den Nachfolger von <code>neu</code> auf den Kopf, entsteht dieselbe Liste.</label>
+          <label><input type="checkbox" data-correct="true"> Liefert <code>malloc</code> <code>NULL</code>, darf sich die Liste nicht verändern.</label>
+          <label><input type="checkbox"> Beim Einfügen in eine leere Liste ist ein eigener Sonderfall nötig.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die erste und dritte Aussage stimmen. In der falschen Reihenfolge zeigt <code>neu</code> am Ende auf sich selbst, und die bisherige Liste ist nicht mehr erreichbar. Bei einer leeren Liste ist der bisherige Kopf <code>NULL</code>, der neue Eintrag wird damit automatisch zum letzten Knoten.</p></details>
+      </form>
+      <details><summary>Zum Nachdenken: Liste oder drei <code>bool</code>-Werte?</summary><p>Ihr Spielstand stellt das Inventar bisher mit drei <code>bool</code>-Werten dar, einen je Gegenstand. Für genau drei feste Gegenstände ist das einfacher. Auf Seite 5 ersetzen Sie die drei Werte trotzdem durch Ihre Liste. Überlegen Sie: Was müssten Sie bei beiden Darstellungen ändern, wenn es zwanzig Gegenstandsarten gäbe, ein Gegenstand mehrfach vorkommen dürfte oder die Reihenfolge des Aufnehmens wichtig wäre?</p></details>
+      <p class="work-result"><strong>Ihr Ergebnis:</strong> Ein Eintragstyp mit Nachfolger, eine Darstellung für den Listenkopf und vier getestete Funktionen mit Verträgen, dazu die ausgefüllte Testtabelle.</p>
+    </section>
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="02-speicher-anfordern.html">← Zurück: Speicher anfordern und freigeben</a></li>
+      <li><a href="04-entfernen-aufraeumen.html">Weiter: Entfernen, aufräumen und Besitz →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>

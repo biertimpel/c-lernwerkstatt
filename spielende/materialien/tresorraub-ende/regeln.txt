@@ -1,0 +1,8 @@
+# Spielregeln für den Tresorraub
+# Format und erlaubte Werte: REGELN.md
+# Fehlt eine Regel, gilt ihr Standardwert.
+
+zuglimit = 60
+reichweite_waechter_1 = 1
+reichweite_waechter_2 = 2
+inventar_groesse = 3
