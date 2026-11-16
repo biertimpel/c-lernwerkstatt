@@ -109,6 +109,6 @@ Der eingegebene Code bleibt im aktuellen Browserfenster. Er wird nicht
 
 ## Block 3 – Projekt und Präsentation
 
-- `projekt/`: Projektidee, Lastenheft, Meilensteine, Umsetzung und das optionale Beispielprojekt mit mehreren Räumen und Beuteabwurfschacht.
-- `praesentation/`: Vortrag, Demonstration, Kriterien und Reflexion.
+- `projekt/`: Gruppen zu zweit oder zu dritt, Projektidee, Lastenheft, Meilensteinplan, Umsetzung und das optionale Beispielprojekt mit mehreren Räumen und Beuteabwurfschacht.
+- `praesentation/`: Reflexion, Vortrag, Demonstration, Kriterien und Abgabe des finalen Projekts. Die Präsentation ist die Grundlage für das Bestehen.
 - Beide Kapitel enthalten bearbeitbare Vorlagen in `materialien/`. Die älteren Einstiege zur Projektplanung, Umsetzung und zum Abschluss leiten auf diese Kapitel weiter.
