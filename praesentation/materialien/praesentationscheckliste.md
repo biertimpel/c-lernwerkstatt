@@ -10,7 +10,7 @@ Im Kurs vereinbarter Termin und Rahmen:
 - [ ] Vereinbarten Kern und tatsächliches Ergebnis gegenübergestellt
 - [ ] Aufbau und wichtigste Module gezeigt
 - [ ] Ausgewählte technische Entscheidungen am eigenen Code erklärt und begründet
-- [ ] Lastenheft mit der Zuordnung aller Kursinhalte für Rückfragen bereit
+- [ ] Lastenheft mit der Zuordnung der vereinbarten Kursinhalte für Rückfragen bereit
 
 ## Verlauf und Zusammenarbeit
 
