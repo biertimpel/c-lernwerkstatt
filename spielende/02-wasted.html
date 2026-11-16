@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · WASTED: das Spielende zeigen</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+  <script src="selbstkontrollen.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header><h1>WASTED: das Spielende zeigen</h1><p>Niederlage und Sieg im Fenster sichtbar machen und verstehen, wie der Stempel entsteht.</p></header>
+    <noscript><p>Ohne JavaScript können Sie die Fragen anhand der aufklappbaren Erklärungen selbst prüfen.</p></noscript>
+
+    <section class="content-section" aria-labelledby="abschnitt-1">
+      <h2 id="abschnitt-1">1. Ein Stempel über dem Spielfeld</h2>
+      <p>Bisher zeigt nur die Statuszeile, dass das Spiel vorbei ist. Wer auf das Spielfeld schaut, soll es auf einen Blick sehen. Bei einer Niederlage wird deshalb ein Stempel quer über das Spielfeld gesetzt:</p>
+      <figure class="bild">
+        <img src="bilder/wasted-im-spiel.png" width="512" height="352" alt="Spielfeld des Tresorraubs, leicht abgedunkelt. Quer darüber ein schräger, roter, gerahmter Schriftzug WASTED auf dunklem Band. Links daneben die entdeckte Spielfigur neben dem Wächter.">
+        <figcaption>Entdeckt auf (2, 5): der Stempel aus <code>zeichne_wasted</code></figcaption>
+      </figure>
+      <p>Die Piktogramme im Startmaterial enthalten dafür eine neue Funktion. Lesen Sie ihre Beschreibung in <code>piktogramme/piktogramme.h</code>:</p>
+      <pre><code>int zeichne_wasted(SDL_Renderer *renderer, int x, int y, int breite, int hoehe);</code></pre>
+      <p>Anders als die übrigen Piktogramme zeichnet sie kein einzelnes Feld, sondern bekommt ein ganzes Rechteck: Das ist bei Ihnen das Spielfeld, also <code>RAND_LINKS</code>, <code>RAND_OBEN</code> und die Breite und Höhe des Spielfelds in Pixeln.</p>
+      <p>Damit der Stempel über dem Spielfeld liegt, muss er <strong>zuletzt</strong> gezeichnet werden. Der Renderer malt jedes neue Bild über das, was schon da ist, wie Farbe auf Papier. Was Ihre Funktion <code>zeichne</code> später zeichnet, verdeckt, was sie früher gezeichnet hat.</p>
+      <p>Die Funktion braucht SDL 2.0.18 oder neuer. Prüfen Sie Ihre Version mit <code>sdl2-config --version</code>. Ist sie älter, aktualisieren Sie das SDL2-Paket wie bei der Einrichtung im Kapitel <a href="../manpages/01-dokumentation-nachschlagen.html#abschnitt-3">„Manpages und Bibliotheksdokumentation“</a>.</p>
+    </section>
+
+    <section class="content-section" aria-labelledby="abschnitt-2">
+      <h2 id="abschnitt-2">2. Wie der Stempel entsteht</h2>
+      <p>Sie müssen <code>zeichne_wasted</code> nicht verändern. Ein Blick in <code>piktogramme/piktogramme.c</code> lohnt sich trotzdem, denn die Funktion verwendet drei Techniken, die Sie für eigene Darstellungen brauchen können.</p>
+      <h3>Halbdurchsichtig zeichnen</h3>
+      <p>Jede Farbe in SDL hat einen vierten Wert neben Rot, Grün und Blau: Alpha, die Deckkraft von 0 (unsichtbar) bis 255 (deckend). Der Renderer berücksichtigt Alpha nur, wenn der Mischmodus <code>SDL_BLENDMODE_BLEND</code> eingestellt ist. <code>zeichne_wasted</code> stellt ihn ein, legt ein schwarzes Rechteck mit Alpha 110 über das Spielfeld und stellt am Ende den vorherigen Modus wieder her. So verändert die Funktion nichts, was Ihr übriger Code vom Renderer erwartet, genau wie eine Funktion eine geöffnete Datei wieder schließt.</p>
+      <h3>Schrift aus einem Raster</h3>
+      <p>SDL2 selbst kann keine Schrift zeichnen. Die Buchstaben stehen deshalb als kleine Raster im Quelltext, fünf Kästchen breit und sieben hoch. Ein <code>X</code> bedeutet: Hier wird ein Kästchen gezeichnet.</p>
+      <pre><code>{"X...X", "X...X", "X...X", "X.X.X", "X.X.X", "XX.XX", "X...X"},   /* W */</code></pre>
+      <h3>Gedrehte Rechtecke</h3>
+      <p><code>SDL_RenderFillRect</code> zeichnet nur achsenparallele Rechtecke. Für den schrägen Stempel verwendet die Funktion <code>SDL_RenderGeometry</code>: Sie zeichnet Dreiecke aus beliebigen Eckpunkten. Ein Rechteck besteht aus zwei Dreiecken mit den Ecken 0, 1, 2 und 0, 2, 3. Jede Ecke (x, y) wird vorher um die Mitte des Spielfelds gedreht:</p>
+      <pre><code>gedreht_x = mitte_x + x * cos(w) - y * sin(w);
+gedreht_y = mitte_y + x * sin(w) + y * cos(w);</code></pre>
+      <p>Der Winkel <code>w</code> ist <code>STEMPEL_WINKEL</code>, etwa −12 Grad im Bogenmaß. Rahmen, Band und jedes Kästchen jedes Buchstabens sind solche gedrehten Rechtecke. Wie <code>SDL_RenderGeometry</code> seine Parameter erwartet, steht in der <a href="https://wiki.libsdl.org/SDL2/SDL_RenderGeometry">SDL-Dokumentation</a>.</p>
+      <form class="self-check" data-hint="Gehen Sie die Funktion in piktogramme.c noch einmal von oben nach unten durch.">
+        <fieldset><legend>Welche Aussagen über <code>zeichne_wasted</code> stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Wird sie vor dem Spielfeld aufgerufen, ist vom Stempel nichts mehr zu sehen.</label>
+          <label><input type="checkbox" data-correct="true"> Ohne <code>SDL_BLENDMODE_BLEND</code> wäre das abdunkelnde Rechteck deckend schwarz.</label>
+          <label><input type="checkbox"> Für jeden Buchstaben wird ein gedrehtes Rechteck gezeichnet.</label>
+          <label><input type="checkbox"> Sie stellt den vorherigen Mischmodus wieder her, damit der Stempel sichtbar bleibt.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Richtig sind die ersten beiden Aussagen. Jedes Kästchen eines Buchstabens ist ein eigenes gedrehtes Rechteck, ein W besteht aus 18 davon. Der Mischmodus wird zurückgesetzt, damit das, was <em>danach</em> gezeichnet wird, nicht unerwartet durchscheint; auf den schon gezeichneten Stempel hat das keinen Einfluss.</p></details>
+      </form>
+    </section>
+
+    <section class="content-section" aria-labelledby="aufgabe-zeigen">
+      <h2 id="aufgabe-zeigen">3. Aufgabe: Das Spielende zeigen</h2>
+      <p>Ergänzen Sie Ihre Funktion <code>zeichne</code> laut Abschnitt „Anzeige“ in <code>ENDE.md</code>:</p>
+      <ul>
+        <li><strong>Entdeckt:</strong> Die Figur erscheint mit <code>zeichne_spielfigur_entdeckt</code>. Zuletzt stempelt <code>zeichne_wasted</code> über das ganze Spielfeld.</li>
+        <li><strong>Zeit abgelaufen:</strong> Die Figur bleibt, wie sie ist. Zuletzt stempelt <code>zeichne_wasted</code> über das ganze Spielfeld.</li>
+        <li><strong>Gewonnen:</strong> Gestalten Sie selbst, woran man den Sieg erkennt. Er soll sich deutlich vom laufenden Spiel und von einer Niederlage unterscheiden.</li>
+      </ul>
+      <p>Geben Sie wie bei jedem Piktogramm einen negativen Rückgabewert sofort weiter.</p>
+      <details><summary>Hinweis: Wo die Figur gezeichnet wird</summary><p>Suchen Sie in Ihrer Datei den Aufruf von <code>zeichne_spielfigur_froh</code>. Dort entscheidet jetzt der Zustand, welches der beiden Piktogramme verwendet wird. Beide haben denselben Typ <code>Piktogramm</code>; Sie können also auch erst den passenden Funktionspointer wählen und ihn dann aufrufen, wie auf <a href="../objektorientierung/02-funktionspointer.html#abschnitt-2">Seite 2 des Kapitels „Objektorientierung in C“</a>.</p></details>
+      <details><summary>Hinweis: Ideen für den Sieg</summary><p>Ein farbiger Rahmen um das Spielfeld mit <code>SDL_RenderDrawRect</code>, eine halbdurchsichtige grüne Fläche wie beim Abdunkeln, die Beute groß neben dem Spielfeld oder ein eigener Stempel. Für einen eigenen Schriftzug brauchen Sie weitere Buchstaben im Raster; kopieren Sie dafür <code>zeichne_wasted</code> in eine eigene Funktion, statt die Piktogramme zu verändern.</p></details>
+      <p>Prüfen Sie im Fenster mit denselben Tasten wie auf <a href="01-spielende.html#abschnitt-pruefen">Seite 1</a>: Entdeckt, Zeit abgelaufen, Sieg, N. Nach N verschwinden Stempel und Siegesanzeige wieder.</p>
+      <details><summary>Selbstkontrolle: Der Vergleichslauf</summary><p>Vergleichen Sie mit der <code>nachher.txt</code> von Seite 1. Meldungen und Statuszeilen sind gleich. Ab Zug 22 hat jede Zeile eine neue Prüfsumme, weil Stempel und entdeckte Figur zu sehen sind. Nach dem abschließenden F9 sind die Prüfsummen wieder gleich: Das geladene Spiel läuft. Ändern sich auch Prüfsummen vor Zug 22, zeichnet Ihr Programm den Stempel oder die Siegesanzeige zu früh.</p></details>
+      <p>Speichern Sie danach den Vergleichslauf als neues <code>vorher.txt</code> für Teil 2:</p>
+      <pre><code>make ablauf
+./ablauf &gt; vorher.txt</code></pre>
+      <p class="work-result"><strong>Ihr Ergebnis:</strong> Sieg und Niederlage sind im Fenster auf einen Blick zu erkennen. Damit erfüllt Ihr Tresorraub das Zielbild vom Anfang des Blocks.</p>
+    </section>
+
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="01-spielende.html">← Zurück: Wann ist das Spiel zu Ende?</a></li>
+      <li><a href="03-module.html">Weiter: Module und Unit Tests →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>

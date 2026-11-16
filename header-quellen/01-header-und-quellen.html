@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Ein Programm auf Header und Quelldateien verteilen</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+  <script src="selbstkontrollen.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header>
+      <h1>Ein Programm auf Header und Quelldateien verteilen</h1>
+      <p class="intro">Einen fertigen Rechner in zwei Quelldateien und einen gemeinsamen Header aufteilen.</p>
+    </header>
+
+    <section class="content-section" aria-labelledby="abschnitt-1">
+      <h2 id="abschnitt-1">1. Eine gemeinsame Schnittstelle</h2>
+      <p>Im Kapitel <a href="../manpages/04-fenster-gestalten.html">„Manpages und Bibliotheksdokumentation“</a> haben Sie bereits mit mehreren Dateien gearbeitet: Ihre Funktion <code>zeichne</code> stand in <code>zeichnung.c</code>, aufgerufen wurde sie aber von <code>main</code> in <code>programm.c</code>. Damit das klappt, bindet <code>programm.c</code> die Datei <code>zeichnung.h</code> ein. Auf dieser Seite lernen Sie, wie dieses Zusammenspiel funktioniert, und bauen es selbst.</p>
+      <p>Eine <strong>Funktionsdeklaration</strong> macht eine Funktion bekannt. Sie nennt den Rückgabetyp, den Namen und die Parameter und endet mit einem Semikolon:</p>
+      <pre><code>int addiere(int a, int b);</code></pre>
+      <p>Die <strong>Funktionsdefinition</strong> enthält zusätzlich den Funktionskörper, also den Code, der beim Aufruf ausgeführt wird:</p>
+      <pre><code>int addiere(int a, int b) {
+    return a + b;
+}</code></pre>
+      <p>Rückgabetyp, Name und Parametertypen zusammen nennt man die <strong>Signatur</strong> einer Funktion. Die Signatur von <code>addiere</code> lautet: Rückgabetyp <code>int</code>, Name <code>addiere</code>, zwei Parameter vom Typ <code>int</code>. Wer eine Funktion aufrufen will, muss nur ihre Signatur kennen, nicht ihren Funktionskörper.</p>
+      <p>Mehrere Quelldateien können dieselbe Funktion verwenden. Damit die Deklaration nur an einer Stelle gepflegt werden muss, steht sie in einer gemeinsamen <strong>Header-Datei</strong>. C-Header haben üblicherweise die Endung <code>.h</code>.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th scope="col">Datei</th><th scope="col">Inhalt</th></tr></thead>
+        <tbody>
+          <tr><td><code>calc.h</code></td><td>Deklarationen der Rechenfunktionen</td></tr>
+          <tr><td><code>calc.c</code></td><td>Definitionen der Rechenfunktionen</td></tr>
+          <tr><td><code>main.c</code></td><td><code>main</code>, ruft die Funktionen auf und gibt die Ergebnisse aus</td></tr>
+        </tbody>
+      </table></div>
+      <p>Der Header beschreibt die <strong>Schnittstelle</strong>: Welche Funktionen stehen zur Verfügung, und wie werden sie aufgerufen? Solange die Signatur gleich bleibt, können Sie die Berechnung in <code>calc.c</code> verändern, ohne die Aufrufe in <code>main.c</code> anzupassen. An diese Arbeit mit Schnittstellen knüpft später das Kapitel <a href="../objektorientierung/index.html">„Objektorientierung in C“</a> an.</p>
+      <noscript><p>Ohne JavaScript können Sie Ihre Antworten mit der aufklappbaren Erklärung selbst prüfen.</p></noscript>
+      <form class="self-check" data-hint="Unterscheiden Sie, was eine Deklaration bekannt macht und was nur in der Definition steht.">
+        <fieldset><legend>Welche Aussagen über <code>int addiere(int a, int b);</code> stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Die Zeile ist eine Deklaration.</label>
+          <label><input type="checkbox"> Die Zeile legt fest, wie <code>addiere</code> rechnet.</label>
+          <label><input type="checkbox" data-correct="true"> Die Zeile enthält die Signatur: Rückgabetyp, Name und Parametertypen.</label>
+          <label><input type="checkbox"> In <code>calc.h</code> gehören die Definitionen der Rechenfunktionen.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die erste und die dritte Aussage stimmen. Die Zeile endet mit einem Semikolon und hat keinen Funktionskörper. Sie macht nur die Signatur bekannt, wie gerechnet wird, steht erst in der Definition. Die Definitionen gehören in <code>calc.c</code>, in den Header gehören die Deklarationen.</p></details>
+      </form>
+    </section>
+
+    <section class="content-section" aria-labelledby="abschnitt-2">
+      <h2 id="abschnitt-2">2. Einen Header einbinden</h2>
+      <p>Mit der folgenden Anweisung binden Sie Ihren eigenen Header ein:</p>
+      <pre><code>#include "calc.h"</code></pre>
+      <p>Vor der eigentlichen Übersetzung verarbeitet der <strong>Präprozessor</strong> solche Anweisungen. Vereinfacht gesagt fügt er den Inhalt des Headers an dieser Stelle ein. Die Deklarationen sind damit in der Quelldatei bekannt.</p>
+      <p>Sowohl <code>main.c</code> als auch <code>calc.c</code> binden den Header ein. In <code>main.c</code> prüft der Compiler damit jeden Aufruf gegen die Signatur. In <code>calc.c</code> prüft er, ob die Definitionen zu den Deklarationen passen. Weicht zum Beispiel ein Parametertyp ab, meldet er einen Fehler.</p>
+      <p>Für eigene Header verwenden Sie Anführungszeichen. Dann sucht der Präprozessor zuerst im Ordner der Quelldatei. Bibliotheksheader kennen Sie mit spitzen Klammern; sie werden in den Verzeichnissen des Systems gesucht:</p>
+      <pre><code>#include &lt;stdio.h&gt;</code></pre>
+      <p><code>stdio.h</code> stellt unter anderem die Deklaration von <code>printf</code> bereit. Die Definition stammt aus der C-Bibliothek, die beim Bauen automatisch dazukommt.</p>
+    </section>
+
+    <section class="content-section" aria-labelledby="abschnitt-3">
+      <h2 id="abschnitt-3">3. Mehrfaches Einbinden verhindern</h2>
+      <p>Ein Header kann während der Übersetzung einer Quelldatei mehrfach eingebunden werden, ohne dass Sie das direkt sehen. Das passiert, wenn ein Header selbst einen anderen Header einbindet. Bindet zum Beispiel <code>statistik.h</code> den Header <code>calc.h</code> ein und <code>main.c</code> beide, dann landet der Inhalt von <code>calc.h</code> zweimal in <code>main.c</code>.</p>
+      <p>Ein <strong>Include-Schutz</strong> sorgt dafür, dass der Inhalt eines Headers während der Übersetzung einer Quelldatei nur einmal verarbeitet wird:</p>
+      <pre><code>#ifndef CALC_H
+#define CALC_H
+
+/* Hier stehen die Deklarationen. */
+
+#endif</code></pre>
+      <ul>
+        <li><code>#ifndef CALC_H</code> prüft, ob die Kennzeichnung <code>CALC_H</code> noch nicht definiert ist.</li>
+        <li><code>#define CALC_H</code> setzt diese Kennzeichnung.</li>
+        <li><code>#endif</code> beendet den geschützten Abschnitt.</li>
+      </ul>
+      <p>Beim ersten Einbinden ist <code>CALC_H</code> noch unbekannt, der Inhalt wird verarbeitet und die Kennzeichnung gesetzt. Bei jedem weiteren Einbinden in dieselbe Quelldatei wird der Abschnitt übersprungen. Die Kennzeichnung ist keine Variable des laufenden Programms; sie existiert nur, während der Präprozessor eine Quelldatei verarbeitet. Die nächste Quelldatei beginnt deshalb wieder ohne sie und kann den Header ebenfalls einbinden.</p>
+      <p>Ob doppeltes Einbinden schadet, hängt vom Inhalt ab. Was das bedeutet, probieren Sie nach der Aufgabe aus.</p>
+    </section>
+
+    <section class="content-section" aria-labelledby="aufgabe-aufteilen">
+      <h2 id="aufgabe-aufteilen">4. Aufgabe: Den Rechner aufteilen</h2>
+      <p>Der kleine Rechner ist bereits vollständig programmiert. Laden Sie das <a href="materialien/rechner-start.zip" download>Startmaterial</a> herunter und entpacken Sie es in einen eigenen Arbeitsordner. Es enthält diese <code>main.c</code>:</p>
+      <pre><code>#include &lt;stdio.h&gt;
+
+int addiere(int a, int b) {
+    return a + b;
+}
+
+int multipliziere(int a, int b) {
+    return a * b;
+}
+
+int main(void) {
+    int a = 4;
+    int b = 7;
+    int summe = addiere(a, b);
+    int produkt = multipliziere(a, b);
+
+    printf("Summe: %d\n", summe);
+    printf("Produkt: %d\n", produkt);
+
+    return 0;
+}</code></pre>
+      <ol>
+        <li>Legen Sie im selben Ordner <code>calc.h</code> und <code>calc.c</code> an.</li>
+        <li>Verschieben Sie die Definitionen von <code>addiere</code> und <code>multipliziere</code> nach <code>calc.c</code>.</li>
+        <li>Schreiben Sie die passenden Deklarationen in <code>calc.h</code> und ergänzen Sie den Include-Schutz.</li>
+        <li>Binden Sie <code>calc.h</code> in beiden Quelldateien ein.</li>
+        <li>Übersetzen und starten Sie das aufgeteilte Programm. Prüfen Sie, ob weiterhin dieselben Ergebnisse ausgegeben werden.</li>
+      </ol>
+      <pre><code>gcc -std=c17 -Wall -Wextra main.c calc.c -o rechner
+./rechner</code></pre>
+      <p>Beide Quelldateien stehen im selben Befehl. <code>-o rechner</code> benennt die erzeugte Programmdatei; unter Windows (MSYS2) heißt sie <code>rechner.exe</code>, Sie starten sie trotzdem mit <code>./rechner</code>. <code>-std=c17 -Wall -Wextra</code> kennen Sie aus den Makefiles der vorigen Kapitel: Sie legen den C-Standard fest und schalten die wichtigen Warnungen ein. Was beim Bauen genau geschieht, verfolgen Sie auf der nächsten Seite.</p>
+      <details><summary>Hinweis: Deklaration und Definition zuordnen</summary><p>Die Deklaration endet nach der Parameterliste mit einem Semikolon. Die Definition enthält zusätzlich den Funktionskörper. Die Berechnungen selbst müssen Sie nicht verändern.</p></details>
+      <details><summary>Hinweis: Die Dateien verbinden</summary><p>Beide Quelldateien verwenden <code>#include "calc.h"</code>. Die Definitionen stehen in <code>calc.c</code>, und diese Datei geben Sie im Übersetzungsbefehl an. Binden Sie keine <code>.c</code>-Datei mit <code>#include</code> ein.</p></details>
+      <details><summary>Hinweis: Der Compiler kennt eine Funktion nicht</summary><p>Meldet GCC <code>implicit declaration of function 'addiere'</code> oder Clang <code>call to undeclared function 'addiere'</code>, fehlt in dieser Quelldatei die Zeile <code>#include "calc.h"</code>. Prüfen Sie auch, ob sie vor dem ersten Aufruf steht.</p></details>
+      <details><summary>Selbstkontrolle: Eine mögliche Aufteilung</summary>
+        <h3>calc.h</h3>
+        <pre><code>#ifndef CALC_H
+#define CALC_H
+
+int addiere(int a, int b);
+int multipliziere(int a, int b);
+
+#endif</code></pre>
+        <h3>calc.c</h3>
+        <pre><code>#include "calc.h"
+
+int addiere(int a, int b) {
+    return a + b;
+}
+
+int multipliziere(int a, int b) {
+    return a * b;
+}</code></pre>
+        <h3>main.c</h3>
+        <pre><code>#include &lt;stdio.h&gt;
+#include "calc.h"
+
+int main(void) {
+    int a = 4;
+    int b = 7;
+    int summe = addiere(a, b);
+    int produkt = multipliziere(a, b);
+
+    printf("Summe: %d\n", summe);
+    printf("Produkt: %d\n", produkt);
+
+    return 0;
+}</code></pre>
+        <p>Erwartete Ausgabe, wie vor der Aufteilung:</p>
+        <pre><code>Summe: 11
+Produkt: 28</code></pre>
+      </details>
+      <p><strong>Ihr Ergebnis:</strong> Der Rechner besteht aus zwei Quelldateien und einem gemeinsamen Header und liefert dieselben Ergebnisse wie vorher.</p>
+    </section>
+
+    <section class="content-section" aria-labelledby="versuch-schutz">
+      <h2 id="versuch-schutz">5. Versuch: Wann der Include-Schutz nötig ist</h2>
+      <p>Arbeiten Sie mit Ihrer Lösung der Aufgabe. Notieren Sie vor jedem Schritt, was Sie erwarten.</p>
+      <ol>
+        <li>Entfernen Sie in <code>calc.h</code> vorübergehend die drei Zeilen des Include-Schutzes. Schreiben Sie in <code>main.c</code> die Zeile <code>#include "calc.h"</code> ein zweites Mal und übersetzen Sie. Was meldet der Compiler?</li>
+        <li>Kopieren Sie die folgenden Zeilen in <code>calc.h</code> und übersetzen Sie erneut. Sie legen einen neuen Datentyp <code>Punkt</code> an, der zwei Zahlen zusammenfasst. Solche <strong>Strukturen</strong> lernen Sie erst im nächsten Kapitel <a href="../datenstrukturen/04-strukturen.html">„Datenstrukturen“</a> kennen. Wie sie funktionieren, müssen Sie hier noch nicht verstehen. Für den Versuch genügt: Diese Zeilen definieren einen Typ, und Typen stehen später oft in Headern.
+          <pre><code>typedef struct {
+    int x;
+    int y;
+} Punkt;</code></pre></li>
+        <li>Stellen Sie den Include-Schutz wieder her und übersetzen Sie noch einmal. Entfernen Sie danach die zweite Include-Zeile und die Struktur.</li>
+      </ol>
+      <noscript><p>Ohne JavaScript können Sie Ihre Antworten mit der aufklappbaren Erklärung selbst prüfen.</p></noscript>
+      <form class="self-check" data-hint="Vergleichen Sie, was bei doppelten Deklarationen und bei einer doppelten Struktur passiert ist.">
+        <fieldset><legend>Welche Beobachtungen treffen zu?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Ohne Schutz und nur mit Funktionsdeklarationen übersetzt der Compiler ohne Fehler.</label>
+          <label><input type="checkbox" data-correct="true"> Mit der Struktur meldet der Compiler einen Fehler, weil der Typ <code>Punkt</code> doppelt definiert wird.</label>
+          <label><input type="checkbox"> Der Include-Schutz verhindert, dass <code>calc.c</code> den Header einbinden kann, wenn <code>main.c</code> ihn schon eingebunden hat.</label>
+          <label><input type="checkbox" data-correct="true"> Mit Schutz verarbeitet der Präprozessor den Inhalt in <code>main.c</code> nur einmal, auch bei zwei Include-Zeilen.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die erste, zweite und vierte Aussage stimmen. Dieselbe Funktion darf mehrfach deklariert werden, solange die Signatur gleich ist. Ein Typ darf in einer Quelldatei aber nur einmal definiert werden. GCC meldet <code>conflicting types for 'Punkt'</code>, Clang <code>typedef redefinition with different types</code>. Der Include-Schutz wirkt nur innerhalb der Übersetzung einer Quelldatei. <code>calc.c</code> wird getrennt übersetzt und bindet den Header deshalb ganz normal ein.</p></details>
+      </form>
+      <p>Verwenden Sie den Include-Schutz deshalb in jedem eigenen Header, auch wenn er zunächst nur Funktionsdeklarationen enthält.</p>
+    </section>
+
+    <section class="content-section" aria-labelledby="dokumentation">
+      <h2 id="dokumentation">Dokumentation</h2>
+      <p class="sources"><a href="https://gcc.gnu.org/onlinedocs/cpp/Include-Operation.html">GCC: Verarbeitung von #include</a> · <a href="https://gcc.gnu.org/onlinedocs/cpp/Once-Only-Headers.html">GCC: Include-Schutz</a></p>
+    </section>
+
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="index.html">← Zurück: Kapitelübersicht</a></li>
+      <li><a href="02-uebersetzen-und-linken.html">Weiter: Vom Quelltext zum ausführbaren Programm →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>

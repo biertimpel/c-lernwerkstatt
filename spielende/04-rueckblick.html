@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Rückblick auf Block 2</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header><h1>Rückblick auf Block 2</h1><p>Ihren Plan vom Anfang mit dem fertigen Spiel vergleichen und festhalten, was Sie daraus mitnehmen.</p></header>
+
+    <section class="content-section" aria-labelledby="abschnitt-1">
+      <h2 id="abschnitt-1">1. Ihr Plan von damals</h2>
+      <p>Zu Beginn von Block 2 haben Sie im Kapitel <a href="../vom-problem-zum-programm-2/index.html">„Vom Problem zum Programm II“</a> das Zielbild gelesen und Ihre Vorstellungen festgehalten, bevor Sie wussten, wie das Spiel gebaut wird. Holen Sie diese Notizen jetzt hervor:</p>
+      <ul>
+        <li>Ihre <a href="../vom-problem-zum-programm-2/index.html#anforderungen">Anforderungen und Sonderfälle</a>,</li>
+        <li>Ihren <a href="../vom-problem-zum-programm-2/index.html#programmplan">ersten Programmplan</a>,</li>
+        <li>Ihre <a href="../vom-problem-zum-programm-2/index.html#kapitel-einordnen">Vermutungen zu den Kapiteln</a> und die offenen Fragen dazu.</li>
+      </ul>
+      <p>Legen Sie die Notizen neben Ihr fertiges Programm: die Module, die Header und <code>ENDE.md</code>, <code>INVENTAR.md</code> und <code>FORMAT.md</code>. Es geht in diesem Abschnitt nicht darum, ob Ihr Plan „richtig“ war. Niemand kann zu Beginn ein Programm planen, dessen Werkzeuge er noch nicht kennt. Es geht darum, was Sie aus dem Unterschied lernen.</p>
+    </section>
+
+    <section class="content-section" aria-labelledby="aufgabe-vergleichen">
+      <h2 id="aufgabe-vergleichen">2. Aufgabe: Plan und Programm vergleichen</h2>
+      <p>Beantworten Sie die folgenden Fragen schriftlich, in Stichpunkten oder kurzen Absätzen. Nehmen Sie sich dafür Zeit; diese Notizen brauchen Sie wieder, wenn Sie in Block 3 Ihr eigenes Projekt planen.</p>
+      <h3>a) Anforderungen und Sonderfälle</h3>
+      <ul>
+        <li>Welche Anforderungen hatten Sie damals gefunden? Welche sind im Programm genau so umgesetzt?</li>
+        <li>Welche Sonderfälle sind im Programm hinzugekommen, an die Sie nicht gedacht hatten? Sehen Sie dafür auch die Kommentare in <code>module/tests.c</code> durch: Jeder Test steht für einen Fall, der geregelt sein muss.</li>
+        <li>Welcher Sonderfall hat Sie beim Programmieren am meisten Zeit gekostet?</li>
+      </ul>
+      <h3>b) Programmplan und Module</h3>
+      <ul>
+        <li>Vergleichen Sie Ihre damalige Aufteilung in Aufgaben mit den sechs Modulen. Wo liegen Sie nah an der Aufteilung des fertigen Spiels, wo weit entfernt?</li>
+        <li>Welche Bestandteile des fertigen Programms kamen in Ihrem Plan gar nicht vor? Denken Sie an Objektarten mit Methoden, an die Liste im Inventar, an Speichern und Laden, an Regeln aus einer Datei.</li>
+        <li>Ihr Weg „vom Tastendruck bis zur sichtbaren Veränderung“: Wie läuft er im fertigen Programm? Verfolgen Sie ihn von <code>programm.c</code> über <code>taste_gedrueckt</code> bis <code>zeichne</code> und notieren Sie die Funktionen unterwegs.</li>
+      </ul>
+      <h3>c) Ihre Vermutungen zu den Kapiteln</h3>
+      <ul>
+        <li>Welche Vermutungen haben sich bestätigt, welche nicht? Wo hätten Sie ein Kapitel ganz anders eingeordnet?</li>
+        <li>Welche Ihrer offenen Fragen sind jetzt beantwortet? Welche sind offen geblieben? Notieren Sie die offenen; Sie können sie im Kurs stellen.</li>
+      </ul>
+      <h3>d) Zielbild und Spiel</h3>
+      <p>Lesen Sie das <a href="../vom-problem-zum-programm-2/index.html#zielbild">Zielbild</a> noch einmal. An einigen Stellen weicht Ihr Spiel davon ab: Gegenstände werden mit der Leertaste aufgenommen statt beim Betreten, die Tür öffnet sich mit der Leertaste, es gibt Ablegen, Speichern und Laden, Regeln aus einer Datei, eine Geheimtür und eine zweite Münze.</p>
+      <ul>
+        <li>Finden Sie weitere Abweichungen.</li>
+        <li>Wählen Sie zwei Abweichungen und überlegen Sie, warum sie für das Lernen oder für das Spiel sinnvoll gewesen sein könnten.</li>
+        <li>Was heißt das für Ihr eigenes Projekt, wenn sich mitten in der Arbeit eine Anforderung ändert?</li>
+      </ul>
+      <details><summary>Hinweis: Beispiele für Beobachtungen</summary><p>Diese Beispiele sollen Ihnen den Einstieg erleichtern, nicht Ihre eigenen Antworten ersetzen. „Ich hatte das Inventar als festes Array geplant; als Liste kann es wachsen, dafür muss ich den Speicher selbst verwalten.“ „Sieg im 60. Zug stand im Zielbild, aber ich hatte nicht bedacht, dass die Reihenfolge der Prüfungen darüber entscheidet.“ „Ich hatte geplant, dass die Bewegung alles prüft. Jetzt prüft jedes Objekt selbst, ob die Figur auf sein Feld darf.“ „Speichern stand gar nicht im Zielbild und hat die meiste Zeit gekostet, weil eine Datei alles enthalten kann.“</p></details>
+    </section>
+
+    <section class="content-section" aria-labelledby="aufgabe-arbeitsweise">
+      <h2 id="aufgabe-arbeitsweise">3. Aufgabe: Ihre Arbeitsweise</h2>
+      <p>Blicken Sie zum Schluss nicht auf das Programm, sondern auf Ihre Arbeit daran.</p>
+      <ul>
+        <li>Was hat Ihnen bei größeren Änderungen am meisten geholfen: Compilermeldungen, der Vergleichslauf, die Test-Suite, <code>-fsanitize=address</code>, <code>gdb</code>, die Beschreibungen in den Markdown-Dateien, Gespräche mit anderen?</li>
+        <li>Wo haben Sie am längsten festgesteckt? Was hat Sie schließlich weitergebracht?</li>
+        <li>Welche Gewohnheit wollen Sie in Block 3 beibehalten, und welche wollen Sie ändern?</li>
+        <li>Wenn Sie heute noch einmal mit dem Tresorraub anfingen: Was würden Sie anders machen?</li>
+      </ul>
+      <p class="work-result"><strong>Ihr Ergebnis:</strong> Ein kurzer schriftlicher Rückblick, etwa eine Seite, mit Ihren Antworten aus den Abschnitten 2 und 3. Bewahren Sie ihn zusammen mit Ihrem Plan von damals auf; beide sind ein guter Ausgangspunkt für die Projektplanung in Block 3.</p>
+    </section>
+
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="03-module.html">← Zurück: Module und Unit Tests</a></li>
+      <li><a href="05-geschafft.html">Weiter: Geschafft! →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>

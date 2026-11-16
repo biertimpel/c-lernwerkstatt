@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Config</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="../uebersicht.html#block-2">← Zur Kursübersicht</a></p>
+    <header>
+      <h1>Config</h1>
+      <p>Spielregeln aus einer Datei lesen, die ein Mensch geschrieben hat, und fehlerhafte Angaben zuverlässig erkennen.</p>
+    </header>
+    <section class="content-section" aria-labelledby="ziele">
+      <h2 id="ziele">Lernziele und Arbeitsweise</h2>
+      <p>Bisher stehen Spielregeln wie das Zuglimit fest im Quelltext. Wer sie ändern will, muss das Programm neu übersetzen. In diesem Kapitel legen Sie die Regeln in eine Textdatei, die Ihr Programm beim Start liest. Eine solche Datei mit Einstellungen nennt man <strong>Config</strong>.</p>
+      <ul>
+        <li>Eine Textdatei Zeile für Zeile lesen und Leerzeilen und Kommentare überspringen.</li>
+        <li>Name und Wert einer Zeile trennen und Zahlen sicher umwandeln.</li>
+        <li>Unbekannte Namen, fehlende und ungültige Werte erkennen und mit Zeilennummer melden.</li>
+        <li>Festlegen, was gilt, wenn die Datei fehlt oder eine Angabe fehlt.</li>
+      </ul>
+      <p>Sie brauchen dafür das Öffnen, Lesen und Schließen von Dateien, <code>stderr</code> und <code>strtol</code> aus dem Kapitel <a href="../datei-ein-ausgabe/index.html">„Datei-Ein- und -Ausgabe“</a> und Zeichenketten aus dem Kapitel <a href="../datenstrukturen/02-zeichenketten.html">„Datenstrukturen“</a>. Neue Bibliotheksfunktionen schlagen Sie nach, wie im Kapitel <a href="../manpages/index.html">„Manpages und Bibliotheksdokumentation“</a>.</p>
+    </section>
+    <section class="content-section" aria-labelledby="abgrenzung">
+      <h2 id="abgrenzung">Spielstand und Config</h2>
+      <p>Im Kapitel <a href="../datei-ein-ausgabe/index.html">„Datei-Ein- und -Ausgabe“</a> speichert Ihr Programm den Spielstand, also den aktuellen Fortschritt, und liest ihn später wieder. Diese Datei schreibt normalerweise das Programm selbst; weil jemand sie im Editor verändert haben kann, prüft Ihre Ladefunktion sie trotzdem.</p>
+      <p>Eine Config legt dagegen fest, unter welchen Bedingungen ein Spiel beginnt. Sie wird von vornherein von einem Menschen geschrieben und bearbeitet, und Menschen machen Tippfehler. Ihr Format soll deshalb bequem zu schreiben sein: Kommentare, Leerzeilen, beliebige Reihenfolge, fehlende Angaben mit Standardwerten. Ihr Programm muss jede Zeile prüfen und bei einem Fehler genau sagen, in welcher Zeile und warum.</p>
+      <p>Beides hängt zusammen: Ein gespeicherter Spielstand enthält keine Regeln. Lädt Ihr Programm ihn, gelten die Regeln aus der Config. Passt der Spielstand nicht zu diesen Regeln, etwa weil er mehr Gegenstände im Inventar hat, als die Config erlaubt, lehnt das Programm ihn ab.</p>
+    </section>
+    <section class="content-section" aria-labelledby="unterseiten">
+      <h2 id="unterseiten">Unterseiten</h2>
+      <ol>
+        <li><a href="01-zeilen-lesen.html">Eine Textdatei Zeile für Zeile lesen</a></li>
+        <li><a href="02-name-und-wert.html">Name und Wert auswerten</a></li>
+        <li><a href="03-spielregeln.html">Spielregeln aus einer Datei lesen</a></li>
+      </ol>
+    </section>
+    <section class="content-section" aria-labelledby="tresorraub">
+      <h2 id="tresorraub">Ihr durchgehendes Programm: Die Spielregeln des Tresorraubs</h2>
+      <p>Sie arbeiten mit Ihrem Spiel weiter. Auf den Seiten 1 und 2 lernen Sie die Werkzeuge an einer kleinen Beispieldatei kennen. Auf Seite 3 liest Ihr Spiel Zuglimit, Reichweiten der Wächter und Größe des Inventars aus der Datei <code>regeln.txt</code>.</p>
+      <p>Die Regeln, das Format der Datei und das erwartete Verhalten stehen in <a href="materialien/tresorraub-regeln/REGELN.md">REGELN.md</a>. Das <a href="materialien/tresorraub-regeln.zip" download>Startmaterial (ZIP)</a> enthält diese Datei, eine <code>regeln.txt</code> mit den Standardwerten, die Beispieldatei <code>wecker.txt</code> und eine <code>tresorraub.c</code> mit dem bisherigen Stand des Spiels. Sie können auch mit Ihrer eigenen <code>tresorraub.c</code> weiterarbeiten. Wie, steht in der <a href="materialien/tresorraub-regeln/README.md">README</a>.</p>
+    </section>
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="01-zeilen-lesen.html">Weiter: Eine Textdatei Zeile für Zeile lesen →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>

@@ -1,0 +1,29 @@
+pre{overflow-x:auto;padding:16px;background:#f5f6f9;border:1px solid var(--line);border-radius:6px;line-height:1.55}code{font-family:ui-monospace,monospace;font-size:.92em}p code,li code,td code{overflow-wrap:anywhere}details{margin:14px 0;padding:12px 0;border-top:1px solid var(--line)}summary{cursor:pointer;font-weight:600}details[open] summary{margin-bottom:14px}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse}th,td{padding:10px;text-align:left;border:1px solid var(--line);vertical-align:top}th{background:#f5f6f9}.sources{font-size:.9rem}.diagram{border:1px solid var(--line);border-radius:8px;padding:18px}.diagram svg{width:100%;height:auto;max-height:480px}.diagram text{font:15px system-ui,sans-serif;fill:#17253b}.diagram .small{font-size:13px}.diagram rect{fill:#f5f6f9;stroke:#9aa9c1;stroke-width:1.5}.diagram .active{fill:#fff0cd;stroke:#805500;stroke-width:3}.diagram .trace{fill:none;stroke:#244bcc;stroke-width:3;marker-end:url(#arrow)}.diagram .return{stroke-dasharray:7 5}.controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:16px}button{font:inherit;padding:8px 14px;background:white;color:var(--ink);border:1px solid var(--blue);border-radius:6px;cursor:pointer}button:disabled{opacity:.45;cursor:default}.step-copy{min-height:5em;margin-top:16px}.active-code{font-weight:bold;background:#fff0cd}.code-line{display:block}.phase{font-weight:700}noscript p{border:1px solid var(--line);padding:12px}
+@media(max-width:680px){.diagram{overflow-x:auto}.diagram svg{min-width:620px;max-height:none}}
+
+/* Selbstkontrollen mit Auswahlfragen, wie in Datenstrukturen und Pointer */
+.self-check { margin: 24px 0; padding: 18px; border: 1px solid var(--line); border-radius: 6px; }
+.self-check fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+.self-check legend { font-weight: 700; margin-bottom: 12px; }
+.self-check label { display: block; padding: 8px 0; cursor: pointer; }
+.self-check input { margin-right: 8px; }
+.self-check button { padding: 9px 16px; margin-top: 12px; background: var(--blue); color: white; border: 0; border-radius: 5px; cursor: pointer; font: inherit; }
+.feedback { margin: 14px 0 0; border-left: 3px solid var(--blue); padding-left: 12px; }
+.feedback:empty { display: none; }
+.feedback[data-state="success"] { border-color: #19713d; }
+@media print { .self-check button { display: none; } }
+
+/* Statische Grafiken zum Bauen und Linken */
+.diagram.statisch { margin: 20px 0; }
+.diagram.statisch rect.quelle { fill: white; stroke: #9aa9c1; }
+.diagram.statisch rect.objekt { fill: #f5f6f9; stroke: #9aa9c1; }
+.diagram.statisch rect.bibliothek { fill: #f5f6f9; stroke: #9aa9c1; stroke-dasharray: 6 4; }
+.diagram.statisch rect.werkzeug { fill: #fff0cd; stroke: #805500; }
+.diagram.statisch rect.programm { fill: #dfe7fb; stroke: #244bcc; stroke-width: 2; }
+.diagram.statisch .name { font-weight: 700; }
+.diagram.statisch .code { font: 14px ui-monospace, monospace; fill: #17253b; }
+.diagram.statisch .stufe { font-weight: 700; fill: #244bcc; }
+.diagram.statisch .hinweis { fill: #546279; font-size: 13px; }
+.diagram.statisch .pfeil { fill: none; stroke: #244bcc; stroke-width: 2; }
+.diagram.statisch .pfeil.eingebunden { stroke-dasharray: 5 4; }
+.diagram.statisch figcaption { margin-top: 12px; color: var(--muted); font-size: .95rem; }

@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Ein Spielstandformat festlegen</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+  <script src="selbstkontrollen.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header><h1>Ein Spielstandformat festlegen</h1><p>Überlegen, welche Daten zum Fortsetzen nötig sind, und dafür ein eigenes Textformat entwerfen.</p></header>
+    <noscript><p>Ohne JavaScript können Sie die Fragen anhand der aufklappbaren Erklärungen selbst prüfen.</p></noscript>
+
+    <section class="content-section" aria-labelledby="abschnitt-1">
+      <h2 id="abschnitt-1">1. Den Fortschritt wiederherstellen</h2>
+      <p>Ein gespeicherter Spielstand soll ermöglichen, nach einem Neustart an derselben Stelle weiterzuspielen. Die Datei muss dafür genügend Informationen enthalten. Welche das für Ihren Tresorraub sind, überlegen Sie in dieser Aufgabe selbst.</p>
+      <p>Unterscheiden Sie Daten, die sich während des Spielens ändern, von festen Vorgaben, die das Programm bereits kennt. Gehen Sie dazu die Felder Ihrer Struktur <code>Spielstand</code> durch, die Sie im Kapitel <a href="../datenstrukturen/05-spielstand.html">„Datenstrukturen“</a> angelegt haben. Überlegen Sie jeweils, ob sich der gespeicherte Fortschritt auch ohne diesen Wert eindeutig wiederherstellen lässt.</p>
+    </section>
+
+    <section class="content-section" aria-labelledby="abschnitt-2">
+      <h2 id="abschnitt-2">2. Werte statt Adressen speichern</h2>
+      <p>Für eine verkettete Liste genügt es nicht, die Adresse des ersten Eintrags zu speichern. Diese Adresse bezeichnet einen Speicherbereich des laufenden Programms. Nach dessen Ende steht der Bereich nicht mehr als Ihr Listeneintrag zur Verfügung.</p>
+      <p>Damit eine Liste später wieder entsteht, benötigen Sie die Daten ihrer Einträge und deren Reihenfolge. Beim Laden fordert Ihr Programm mit <code>malloc</code> neue Einträge an, trägt die gespeicherten Werte ein und verbindet die Einträge miteinander, wie im Kapitel <a href="../dynamischer-speicher/03-verkettete-liste.html">„Dynamischer Speicher und Listen“</a>. Die neuen Adressen können sich von den ursprünglichen unterscheiden.</p>
+      <p>Auch eine unveränderte Kopie des Speicherinhalts von <code>Spielstand</code> würde dieses Problem nicht lösen. Sie enthielte zwar den Pointer auf den ersten Inventareintrag. Die separat angelegten Einträge würden aber nicht mitkopiert.</p>
+    </section>
+
+    <section class="content-section" aria-labelledby="abschnitt-3">
+      <h2 id="abschnitt-3">3. Text oder Binärdaten?</h2>
+      <p>C kann Speicherinhalte auch unverändert als Bytes in eine Datei schreiben, mit <code>fwrite</code> und einer im Modus <code>"wb"</code> geöffneten Datei, und mit <code>fread</code> wieder lesen. Solche <strong>Binärdateien</strong> sind kompakt und schnell. Für den Spielstand wählen wir trotzdem Text:</p>
+      <ul>
+        <li>Ein Mensch kann die Datei lesen, prüfen und im Editor verändern. Das hilft beim Testen und bei der Fehlersuche.</li>
+        <li>Eine Textdatei lässt sich auf jedem Rechner gleich lesen. In einer Binärdatei stehen Zahlen so, wie sie im Speicher liegen. Wie viele Bytes ein <code>int</code> hat und in welcher Reihenfolge die Bytes stehen, kann sich aber zwischen Rechnern und Compilern unterscheiden.</li>
+      </ul>
+      <p>Unabhängig vom Format gilt Abschnitt 2: Adressen gehören nicht in die Datei. Vorsicht bei der bequemen Abkürzung <code>fwrite(&amp;s, sizeof(s), 1, datei)</code>, die die ganze Struktur auf einmal schreibt: Sie schreibt den Pointer auf den ersten Inventareintrag mit, aber nicht die Einträge selbst. Auch in einer Binärdatei müssten Sie die Einträge einzeln schreiben.</p>
+      <p>Textdateien haben eine Eigenheit: Unter Windows endet eine Zeile mit zwei Zeichen, <code>\r\n</code>. Im Textmodus ohne <code>b</code> gleicht die Bibliothek das aus. Liest Ihr Programm eine Datei, die auf einem anderen System entstanden ist, kann trotzdem ein <code>\r</code> vor dem Zeilenende stehen. <code>fscanf</code> mit <code>%s</code> und <code>%d</code> behandelt es wie ein Leerzeichen.</p>
+    </section>
+
+    <section class="content-section" aria-labelledby="abschnitt-4">
+      <h2 id="abschnitt-4">4. Eine Vereinbarung für Schreiben und Lesen</h2>
+      <p>Ein <strong>Dateiformat</strong> legt fest, welche Daten in welcher Reihenfolge stehen und was sie bedeuten. Ihre Speicherfunktion und Ihre Ladefunktion müssen dieselben Regeln verwenden.</p>
+      <p>Ein lesbarer Entwurf kann beispielsweise aus benannten Datenzeilen bestehen. Entscheiden Sie, wie einzelne Werte voneinander getrennt werden, wie eine unterschiedliche Anzahl an Einträgen dargestellt wird und woran das Programm erkennt, dass alle Daten vollständig gelesen wurden.</p>
+    </section>
+
+    <section class="content-section" aria-labelledby="aufgabe-format">
+      <h2 id="aufgabe-format">5. Aufgabe: Ein Spielstandformat festlegen</h2>
+      <p>Bearbeiten Sie die folgenden Punkte zunächst in Ihren Notizen. Entwickeln Sie Ihren Entwurf, bevor Sie das gemeinsame Format am Ende der Aufgabe öffnen. Eine Speicher- oder Ladefunktion schreiben Sie hier noch nicht.</p>
+      <ol>
+        <li>Gehen Sie die Felder Ihrer Struktur <code>Spielstand</code> durch. Notieren Sie, welche Werte während des Spielens verändert werden und welche fest vorgegeben bleiben.</li>
+        <li>Entscheiden Sie, welche Daten Sie zum Fortsetzen speichern müssen. Begründen Sie auch, welche Daten nicht in der Datei stehen müssen.</li>
+        <li>Entwerfen Sie ein lesbares Textformat für diese Daten. Beschreiben Sie zu jeder Zeile oder jedem Abschnitt, welche Werte dort stehen und in welcher Reihenfolge sie gelesen werden sollen.</li>
+        <li>Legen Sie fest, wie Ihre Datei eine unterschiedlich lange Inventarliste darstellt und wie das Programm erkennt, ob die Datei vollständig ist.</li>
+        <li>Stellen Sie zwei selbst gewählte Spielzustände in Ihrem Format dar. Berücksichtigen Sie dabei auch eingesammelte oder wieder abgelegte Gegenstände. Prüfen Sie, ob sich aus Ihren Daten jeweils derselbe Zustand wiederherstellen lässt.</li>
+      </ol>
+      <form class="self-check" data-hint="Überlegen Sie, welche Daten für denselben Spielfortschritt benötigt werden.">
+        <fieldset><legend>Welche Informationen muss die Speicherdatei enthalten?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Die Reihenfolge der Gegenstände im Inventar.</label>
+          <label><input type="checkbox"> Die aktuellen Speicheradressen der Listeneinträge.</label>
+          <label><input type="checkbox" data-correct="true"> Die Position eines abgelegten Gegenstands.</label>
+          <label><input type="checkbox" data-correct="true"> Ob die Tür bereits geöffnet ist.</label>
+          <label><input type="checkbox"> Der Grundriss des Spielfelds.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Gespeichert werden die veränderlichen Spielwerte und die Inventarnamen in ihrer Reihenfolge. Adressen haben im nächsten Programmlauf keine Bedeutung. Der Grundriss ändert sich nie; das Programm kennt ihn bereits.</p></details>
+      </form>
+      <details><summary>Gemeinsames Format: Vergleich mit Ihrem Entwurf</summary>
+<p>Die folgende Darstellung ist eine mögliche Lösung. Vergleichen Sie sie mit Ihrem Entwurf. Andere Aufteilungen können ebenfalls sinnvoll sein, wenn sie alle nötigen Daten eindeutig beschreiben.</p>
+<pre><code>TRESORRAUB 1
+FIGUR 3 7
+ZUEGE 0
+TUER 0
+SCHLUESSEL 3 5 1
+MUENZE 11 7 1
+BEUTE 13 1 0 1
+INVENTAR 0
+ENDE</code></pre>
+<div class="table-wrap"><table><thead><tr><th scope="col">Zeile</th><th scope="col">Bedeutung</th></tr></thead><tbody><tr><td><code>TRESORRAUB 1</code></td><td>Kennzeichnung der Datei und Versionsnummer des Formats. Hier verwenden wir Version 1.</td></tr><tr><td><code>FIGUR 3 7</code></td><td>Die Figur steht bei x = 3 und y = 7.</td></tr><tr><td><code>ZUEGE 0</code></td><td>Bisher verbrauchte Züge.</td></tr><tr><td><code>TUER 0</code></td><td>0 bedeutet geschlossen, 1 bedeutet geöffnet.</td></tr><tr><td><code>SCHLUESSEL 3 5 1</code></td><td>Position x = 3, y = 5. Die letzte Zahl gibt an, ob der Schlüssel auf dem Spielfeld liegt. 1 bedeutet ja, 0 bedeutet nein.</td></tr><tr><td><code>MUENZE 11 7 1</code></td><td>Position und Zustand der Münze, wie beim Schlüssel.</td></tr><tr><td><code>BEUTE 13 1 0 1</code></td><td>Position der Beute, gefolgt von den Angaben „liegt auf dem Spielfeld“ und „ist noch im Tresor“. Hier liegt sie nicht frei auf dem Spielfeld, sondern noch im Tresor.</td></tr><tr><td><code>INVENTAR 0</code></td><td>Anzahl der Inventareinträge. Danach folgt genau diese Anzahl an Namen, jeweils in einer eigenen Zeile, vom Listenkopf bis zum Listenende. Bei 0 folgt kein Name.</td></tr><tr><td><code>ENDE</code></td><td>Abschluss des Spielstands. Danach dürfen nur noch Leerzeichen oder Zeilenumbrüche folgen.</td></tr></tbody></table></div>
+<p>Die Wörter am Zeilenanfang benennen die folgenden Werte. Beim Laden prüft Ihr Programm diese Wörter mit. So wird beispielsweise eine Zugzahl nicht versehentlich als x-Koordinate interpretiert. Auch Positionen momentan nicht auf dem Feld liegender Gegenstände werden in diesem Format mitgeschrieben. Ob sie sichtbar sind, bestimmt der zugehörige Zustandswert.</p>
+<p>Grundriss, Ausgang, Tür- und Tresorposition sowie Wächter bleiben unverändert im Programm hinterlegt. Die Adressen der Inventareinträge gehören nicht in die Datei. Gespeichert werden deren Namen in Listenreihenfolge.</p>
+<p>Für die folgenden Aufgaben verwenden wir dieses gemeinsame Format, damit Sie mit den vorbereiteten Beispieldateien arbeiten können. Die Format- und Prüfregeln stehen zusätzlich in <a href="materialien/tresorraub-dateien/FORMAT.md">FORMAT.md</a> im Startmaterial.</p>
+</details>
+      <p class="work-result"><strong>Ihr Ergebnis:</strong> Ihr eigener Formatentwurf mit zwei Beispielzuständen und der Vergleich mit dem gemeinsamen Format, das Sie ab Seite 3 verwenden.</p>
+    </section>
+
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="01-erste-datei.html">← Zurück: Eine erste Datei schreiben</a></li>
+      <li><a href="03-spielstand-speichern.html">Weiter: Den aktuellen Spielstand speichern →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Gegenstände ablegen</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+  <script src="selbstkontrollen.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header><h1>Gegenstände ablegen</h1><p>Die Liste Eintrag für Eintrag abbauen und die Gegenstände auf freie Felder neben der Figur verteilen.</p></header>
+    <noscript><p>Ohne JavaScript können Sie die Fragen anhand der aufklappbaren Erklärungen selbst prüfen.</p></noscript>
+
+    <section class="content-section" aria-labelledby="abschnitt-1">
+      <h2 id="abschnitt-1">1. Was beim Ablegen passiert</h2>
+      <p>Mit der Taste <kbd>L</kbd> legt die Figur alle Gegenstände ab. Jeder Gegenstand wandert dabei aus dem Inventar auf ein Feld neben der Figur. Die genauen Regeln stehen in <a href="materialien/tresorraub-inventar/INVENTAR.md">INVENTAR.md</a>, Abschnitt „Taste L“. Die wichtigsten:</p>
+      <ul>
+        <li>Die Gegenstände werden in der Reihenfolge des Inventars abgelegt, von vorne nach hinten.</li>
+        <li>Jeder kommt auf das erste <strong>freie</strong> der acht Nachbarfelder. Geprüft wird im Uhrzeigersinn, beginnend oben: oben, rechts oben, rechts, rechts unten, unten, links unten, links, links oben.</li>
+        <li>Frei ist ein Feld, wenn es begehbar ist und dort weder Tür, Tresor, Ausgang, Wächter, die Figur noch ein anderer Gegenstand ist.</li>
+        <li>Wer keinen Platz findet, bleibt im Inventar. Ablegen zählt als ein Zug, wenn mindestens ein Gegenstand abgelegt wurde.</li>
+      </ul>
+      <p>Für die Liste bedeutet das: Sie durchlaufen sie und entfernen dabei Einträge, aber nicht unbedingt alle. Das verbindet das Durchlaufen von Seite 3 mit dem Entfernen und Aufräumen von Seite 4.</p>
+      <h3>Auf Papier</h3>
+      <p>Das Inventar lautet „Beute, Muenze“, die Figur <code>@</code> steht auf (10, 3). So sieht der Ausschnitt um die Figur aus, die Zahlen am Rand sind die Koordinaten:</p>
+      <pre><code>      x: 9  10 11
+  y = 2:  #  #  #
+  y = 3:  .  @  .
+  y = 4:  .  .  .</code></pre>
+      <p>Nummerieren Sie die acht Nachbarfelder in der Prüfreihenfolge. Auf welches Feld kommt die Beute, auf welches die Münze? Wie sehen Inventar und Liste nach jedem der beiden Schritte aus?</p>
+      <details><summary>Selbstkontrolle: Wohin die Gegenstände kommen</summary><p>Oben (10, 2) und rechts oben (11, 2) sind Wände. Das erste freie Feld ist rechts (11, 3): Dort liegt danach die Beute. Für die Münze ist (11, 3) nicht mehr frei, weil dort jetzt die Beute liegt. Das nächste Feld, rechts unten (11, 4), ist frei. Nach dem ersten Schritt enthält das Inventar nur noch „Muenze“, danach ist es leer. Die Zugzahl steigt dabei einmal um eins, nicht zweimal.</p></details>
+      <form class="self-check" data-hint="Lesen Sie die Regeln in INVENTAR.md noch einmal: Welche Felder sind frei, und was zählt als Zug?">
+        <fieldset><legend>Welche Aussagen zum Ablegen stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Ein Feld, auf das gerade ein anderer Gegenstand abgelegt wurde, ist für den nächsten nicht mehr frei.</label>
+          <label><input type="checkbox"> Die Beute kann zurück in den Tresor gelegt werden, weil sie von dort kommt.</label>
+          <label><input type="checkbox" data-correct="true"> Werden zwei Gegenstände abgelegt, steigt die Zugzahl um eins.</label>
+          <label><input type="checkbox"> Findet ein Gegenstand kein freies Feld, wird er freigegeben, damit kein Speicher verloren geht.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die erste und die dritte Aussage stimmen. Jedes Feld fasst höchstens einen Gegenstand, und der Tresor ist nie ein freies Feld. Ablegen ist eine Handlung, also ein Zug. Ein Gegenstand ohne Platz bleibt im Inventar; das Inventar besitzt ihn weiter und gibt ihn später frei.</p></details>
+      </form>
+    </section>
+
+    <section class="content-section" aria-labelledby="aufgabe-ablegen">
+      <h2 id="aufgabe-ablegen">2. Aufgabe: Gegenstände ablegen</h2>
+      <ol>
+        <li>Bisher kann die Beute nur im Tresor liegen. Ergänzen Sie Ihren Spielstand so, dass sie auch auf einem anderen Feld liegen kann. Zeigen Sie sie in der Textausgabe mit <code>b</code> und im Fenster mit <code>zeichne_beute</code>.</li>
+        <li>Entwerfen Sie eine Funktion, die prüft, ob ein Feld frei ist, und eine, die das erste freie Nachbarfeld der Figur in der vorgegebenen Reihenfolge sucht.</li>
+        <li>Entwerfen Sie eine Funktion für das Ablegen. Sie durchläuft das Inventar von vorne nach hinten. Findet ein Gegenstand ein Feld, legt sie ihn dorthin und entfernt seinen Eintrag aus der Liste; der Eintrag wird dabei freigegeben. Sonst bleibt er im Inventar, und es gibt eine Meldung.</li>
+        <li>Abgelegte Gegenstände sollen sich mit der Leertaste wieder aufnehmen lassen, und der Fenstertitel soll „Hier liegt“ auch für sie zeigen. Passen Sie Ihre Funktionen von Seite 5 an, falls nötig.</li>
+        <li>Rufen Sie das Ablegen in <code>taste_gedrueckt</code> bei <code>SDLK_l</code> auf und geben Sie danach eine Meldung und das Inventar im Terminal aus.</li>
+      </ol>
+      <details><summary>Hinweis: Die acht Richtungen</summary><p>Statt acht fast gleicher Abfragen können Sie die Verschiebungen in einem zweidimensionalen Array ablegen, eine Zeile je Richtung mit x- und y-Änderung. Eine Schleife geht die Zeilen der Reihe nach durch. Das kennen Sie aus dem Kapitel <a href="../datenstrukturen/03-zweidimensionale-arrays.html">„Datenstrukturen“</a>.</p></details>
+      <details><summary>Hinweis: Entfernen während des Durchlaufens</summary><p>Was müssen Sie sich merken, bevor Sie einen Eintrag freigeben, damit Sie danach weiterlaufen können? Und wenn ein Eintrag im Inventar bleibt: Wer ist dann der Vorgänger des nächsten Eintrags? Alternativ können Sie Ihre Funktion zum Entfernen von Seite 4 verwenden. Überlegen Sie dann, an welcher Stelle Sie den Nachfolger lesen müssen.</p></details>
+      <h3>Testen</h3>
+      <p>Setzen Sie den Test von Seite 5 fort: Die Tür ist offen, der Tresor leer, das Inventar lautet „Beute, Muenze“, und es sind 4 Züge verbraucht. Notieren Sie Ihre Erwartungen, bevor Sie das Programm ausführen.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th scope="col">Schritt</th><th scope="col">Was passiert</th><th scope="col">Züge danach</th><th scope="col">Inventar danach</th></tr></thead>
+        <tbody>
+          <tr><td>Figur auf (10, 3), Taste L</td><td></td><td></td><td></td></tr>
+          <tr><td>noch einmal Taste L</td><td></td><td></td><td></td></tr>
+          <tr><td>Figur auf (11, 4), Statuszeile ausgeben</td><td></td><td></td><td></td></tr>
+          <tr><td>Leertaste</td><td></td><td></td><td></td></tr>
+          <tr><td>Figur auf (1, 2), Taste L</td><td></td><td></td><td></td></tr>
+        </tbody>
+      </table></div>
+      <details><summary>Selbstkontrolle: Erwartete Ergebnisse</summary>
+        <div class="table-wrap"><table>
+          <thead><tr><th scope="col">Schritt</th><th scope="col">Was passiert</th><th scope="col">Züge danach</th><th scope="col">Inventar danach</th></tr></thead>
+          <tbody>
+            <tr><td>(10, 3), L</td><td>Beute auf (11, 3), Münze auf (11, 4)</td><td>5</td><td>leer</td></tr>
+            <tr><td>noch einmal L</td><td>Meldung: Inventar ist leer</td><td>5</td><td>leer</td></tr>
+            <tr><td>(11, 4), Statuszeile</td><td><code>Position (11, 4) | Zuege 5/60 | Hier liegt: Muenze</code></td><td>5</td><td>leer</td></tr>
+            <tr><td>Leertaste</td><td>Münze aufgenommen</td><td>6</td><td>Muenze</td></tr>
+            <tr><td>(1, 2), L</td><td>Münze auf (2, 1)</td><td>7</td><td>leer</td></tr>
+          </tbody>
+        </table></div>
+        <p>Auf (1, 2) ist das obere Nachbarfeld (1, 1) der Ausgang und deshalb nicht frei. Das nächste Feld im Uhrzeigersinn, rechts oben (2, 1), ist frei. In der Textausgabe sieht der Anfang des Spielfelds danach so aus:</p>
+        <pre><code>###############
+#Ec...#......t#
+#@##..#..###..#
+#...../..!.b..#</code></pre>
+        <p>Das Prüfwerkzeug darf keine Meldung zeigen. Insbesondere darf kein freigegebener Eintrag mehr erreichbar sein.</p>
+      </details>
+      <p>Ob Ihre Funktion auch den Fall „kein freies Feld“ richtig behandelt, lässt sich im Spiel nicht ausprobieren: Mit höchstens zwei Gegenständen im Inventar ist immer genug Platz. Spielen Sie ihn auf Papier durch: Das Inventar lautet „Beute, Muenze, Schluessel“, und nur für die Beute ist ein Feld frei. Welche Einträge bleiben, und wie sind sie danach verkettet?</p>
+      <details><summary>Selbstkontrolle: Kein Platz für alle</summary><p>Die Beute wird abgelegt und ihr Eintrag freigegeben. Der Kopf zeigt danach auf „Muenze“, und „Muenze“ zeigt weiter auf „Schluessel“. Beide bleiben im Inventar, und für jeden gibt es eine Meldung. Die Zugzahl steigt um eins, weil ein Gegenstand abgelegt wurde.</p></details>
+      <form class="self-check" data-hint="Spielen Sie das Durchlaufen auf Papier mit drei Einträgen durch, von denen der mittlere bleibt.">
+        <fieldset><legend>Sie durchlaufen die Liste und entfernen dabei Einträge. Welche Aussagen stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Den Nachfolger muss man lesen, bevor man den aktuellen Eintrag freigibt.</label>
+          <label><input type="checkbox"> Bleibt ein Eintrag im Inventar, ändert sich der Vorgänger des nächsten Eintrags nicht.</label>
+          <label><input type="checkbox" data-correct="true"> Wird der erste Eintrag entfernt, ändert sich der Kopf der Liste.</label>
+          <label><input type="checkbox"> Nach dem Ablegen kann man mit einem einzigen <code>free</code> auf den Kopf alle abgelegten Einträge freigeben.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die erste und die dritte Aussage stimmen. Nach <code>free</code> darf der Eintrag nicht mehr gelesen werden, auch nicht sein Nachfolger-Pointer. Bleibt ein Eintrag stehen, wird er zum Vorgänger des nächsten. Jeder abgelegte Eintrag wird sofort beim Aushängen freigegeben; ein <code>free</code> auf den Kopf würde dagegen nur einen einzigen Eintrag freigeben, und zwar einen, der vielleicht noch im Inventar ist.</p></details>
+      </form>
+    </section>
+
+    <section class="content-section" aria-labelledby="abschluss">
+      <h2 id="abschluss">3. Abschluss</h2>
+      <p>Prüfen Sie zum Schluss das ganze Programm mit dem Prüfwerkzeug aus der README: Starten Sie das Fenster, nehmen Sie den Schlüssel auf, öffnen Sie die Tür, holen Sie Münze und Beute, legen Sie alles ab, nehmen Sie etwas wieder auf und beenden Sie mit Escape. Es dürfen keine Meldungen erscheinen. Wiederholen Sie das mit <code>./programm --text</code>.</p>
+      <p>Vergleichen Sie Ihr Inventar mit Ihrem Plan aus <a href="../vom-problem-zum-programm-2/index.html">„Vom Problem zum Programm II“</a>. Was hat sich an Ihrer Vorstellung vom Inventar geändert? Wächter, Ausgang und Zuglimit wertet Ihr Programm noch nicht aus. Das folgt im Kapitel <a href="../spielende/index.html">„Spielende“</a>.</p>
+      <p class="work-result"><strong>Ihr Ergebnis:</strong> Ein Spiel, in dem die Figur Gegenstände aufnimmt, die Tür öffnet und Gegenstände wieder ablegt, ein Lauf ohne Meldungen des Prüfwerkzeugs und Ihre getesteten Funktionen mit Verträgen.</p>
+    </section>
+
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="05-inventar-im-spiel.html">← Zurück: Das Inventar im Spiel</a></li>
+      <li><a href="../datei-ein-ausgabe/index.html">Weiter: Datei-Ein- und -Ausgabe →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>

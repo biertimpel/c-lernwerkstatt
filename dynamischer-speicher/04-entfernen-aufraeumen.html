@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Entfernen, aufräumen und Besitz</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+  <script src="selbstkontrollen.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header><h1>Entfernen, aufräumen und Besitz</h1><p>Knoten sicher aus einer Liste lösen, allen Speicher freigeben und Zuständigkeiten festhalten.</p></header>
+    <noscript><p>Ohne JavaScript können Sie die Fragen anhand der aufklappbaren Erklärungen selbst prüfen.</p></noscript>
+    <section class="content-section" aria-labelledby="abschnitt-1">
+      <h2 id="abschnitt-1">1. Einen Knoten entfernen</h2>
+      <p>Beim Öffnen der Tür wird der Schlüssel verbraucht. Er muss aus der Liste verschwinden, und sein Speicher muss freigegeben werden. Dafür gibt es eine feste Reihenfolge: erst den Knoten aus der Kette <strong>aushängen</strong>, dann ihn <strong>freigeben</strong>. Aushängen heißt, dass der Pointer, der bisher auf den Knoten zeigt, auf dessen Nachfolger umgesetzt wird.</p>
+      <h3>Auf Papier</h3>
+      <p>Zeichnen Sie die Liste „Beute, Muenze, Schluessel“. Zeichnen Sie für jeden der folgenden Fälle, welcher Pointer sich ändert:</p>
+      <ul>
+        <li>Muenze entfernen (Mitte)</li>
+        <li>Schluessel entfernen (Ende)</li>
+        <li>Beute entfernen (Kopf)</li>
+        <li>einen Gegenstand entfernen, der nicht in der Liste ist</li>
+        <li>einen Gegenstand aus einer leeren Liste entfernen</li>
+      </ul>
+      <details><summary>Selbstkontrolle: Welcher Pointer ändert sich?</summary><p>In der Mitte und am Ende ändert sich der Nachfolger-Pointer des Vorgängers. Er zeigt danach auf den Nachfolger des entfernten Knotens, am Ende also auf <code>NULL</code>. Beim Kopf gibt es keinen Vorgänger. Dort ändert sich der Kopf der Liste. Ist der Gegenstand nicht vorhanden oder die Liste leer, ändert sich nichts.</p></details>
+      <h3>Aufgabe: Entfernen</h3>
+      <p>Entwerfen Sie eine Funktion, die einen Gegenstand anhand seines Namens aus dem Inventar entfernt und seinen Speicher freigibt. Der Aufrufer soll erfahren, ob der Gegenstand vorhanden war. Testen Sie alle fünf Fälle von oben und prüfen Sie jeweils das Inventar danach.</p>
+      <details><summary>Denkhilfe: Wie finden Sie den Vorgänger?</summary><p>In einer einfach verketteten Liste kennt ein Knoten nur seinen Nachfolger, nicht seinen Vorgänger. Was müssen Sie sich beim Durchlaufen zusätzlich merken? Woran erkennen Sie, dass der gefundene Knoten der Kopf ist?</p></details>
+      <form class="self-check" data-hint="Was steht nach free noch zur Verfügung? Vergleichen Sie Mitte und Ende auf Ihrer Zeichnung.">
+        <fieldset><legend>Welche Aussagen zum Entfernen stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Wird der Kopf entfernt, ändert sich der Kopf der Liste.</label>
+          <label><input type="checkbox"> Man kann einen Knoten zuerst freigeben und danach seinen Nachfolger-Pointer lesen, um ihn auszuhängen.</label>
+          <label><input type="checkbox" data-correct="true"> Wird ein Knoten in der Mitte entfernt, ändert sich der Nachfolger-Pointer seines Vorgängers.</label>
+          <label><input type="checkbox"> Das Entfernen des letzten Knotens braucht eine eigene Behandlung, die sich von der Mitte unterscheidet.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die erste und dritte Aussage stimmen. Nach <code>free</code> ist jeder Zugriff auf den Knoten undefiniertes Verhalten, auch auf seinen Nachfolger-Pointer. Am Ende funktioniert dasselbe Vorgehen wie in der Mitte: Der Vorgänger übernimmt den Nachfolger des entfernten Knotens, und der ist dort <code>NULL</code>.</p></details>
+      </form>
+    </section>
+    <section class="content-section" aria-labelledby="abschnitt-2">
+      <h2 id="abschnitt-2">2. Alles freigeben</h2>
+      <p>Wenn das Programm endet oder die Spielerin alle Gegenstände ablegt, muss jeder Knoten freigegeben werden. Ein einziges <code>free</code> auf den Kopf reicht nicht: Es gibt nur den ersten Knoten frei, und die übrigen sind danach nicht mehr erreichbar.</p>
+      <p>Entwerfen Sie eine Funktion, die das ganze Inventar leert. Danach muss das Inventar wieder als leer erkennbar sein. Ein zweiter Aufruf hintereinander und ein Aufruf für ein leeres Inventar müssen ohne Fehler funktionieren. Prüfen Sie Ihr Programm danach mit dem Prüfwerkzeug: Es darf keinen vergessenen Speicher mehr melden.</p>
+      <details><summary>Denkhilfe: Vorrücken und freigeben</summary><p>Um zum nächsten Knoten zu kommen, brauchen Sie den Nachfolger-Pointer des aktuellen Knotens. Wann lesen Sie ihn: vor oder nach <code>free</code>? Was steht am Ende im Kopf?</p></details>
+      <form class="self-check" data-hint="Was erreicht man nach einem free noch, und was steht danach im Kopf?">
+        <fieldset><legend>Welche Aussagen zum Aufräumen stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox"> <code>free</code> auf den Kopf gibt die ganze Liste frei.</label>
+          <label><input type="checkbox" data-correct="true"> Den Nachfolger muss man sich merken, bevor man den aktuellen Knoten freigibt.</label>
+          <label><input type="checkbox" data-correct="true"> Steht nach dem Aufräumen <code>NULL</code> im Kopf, ist ein zweiter Aufruf unproblematisch.</label>
+          <label><input type="checkbox"> Nach dem Aufräumen zeigt der Kopf weiter auf den ersten Knoten, damit man die Liste wieder auffüllen kann.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die zweite und dritte Aussage stimmen. Ein Kopf, der nach dem Aufräumen noch auf freigegebenen Speicher zeigt, führt beim nächsten Zugriff oder beim nächsten Aufräumen zu einem Speicherfehler. Mit <code>NULL</code> ist das Inventar dagegen einfach leer und kann neu befüllt werden.</p></details>
+      </form>
+    </section>
+    <section class="content-section" aria-labelledby="abschnitt-3">
+      <h2 id="abschnitt-3">3. Wer besitzt was?</h2>
+      <p>Bei dynamischem Speicher muss für jeden Bereich klar sein, wer ihn freigibt. Man sagt: Diese Stelle <strong>besitzt</strong> den Speicher. Alle anderen dürfen ihn nur <strong>ausleihen</strong>, also lesen oder benutzen, aber nicht freigeben.</p>
+      <ul>
+        <li>Ihr Inventar besitzt alle seine Knoten. Wer einen Knoten entfernt, gibt ihn frei.</li>
+        <li>Funktionen, die das Inventar nur lesen, etwa zum Zählen oder Ausgeben, leihen es aus. Das drücken Sie mit <code>const</code> aus.</li>
+        <li>Besitz kann wechseln. Ihre Funktion von Seite 2 gibt den neuen Eintrag an ihren Aufrufer ab. Beim Aufnehmen geht er weiter an das Inventar.</li>
+      </ul>
+      <p>Ergänzen Sie die Verträge aller Ihrer Funktionen um eine Angabe zum Besitz: Wer besitzt den Speicher vor dem Aufruf, wer danach? Was gilt, wenn die Funktion einen Fehler meldet?</p>
+      <form class="self-check" data-hint="Gehen Sie für jede Aussage durch, wer den Knoten danach noch erreichen kann.">
+        <fieldset><legend>Welche Aussagen zum Besitz stimmen?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox" data-correct="true"> Nach erfolgreichem Aufnehmen besitzt das Inventar den neuen Eintrag.</label>
+          <label><input type="checkbox"> Eine Funktion, die nur die Einträge zählt, muss sie danach freigeben.</label>
+          <label><input type="checkbox" data-correct="true"> Hat eine Funktion schon Speicher angefordert und bricht dann mit einem Fehler ab, muss sie diesen Speicher selbst freigeben.</label>
+          <label><input type="checkbox"> Speicher, der von zwei Stellen aus erreichbar ist, sollte von beiden freigegeben werden.</label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Die erste und dritte Aussage stimmen. Wer nur liest, gibt nichts frei. Jeder Bereich hat genau einen Besitzer und wird genau einmal freigegeben. Sonst entsteht ein doppeltes Freigeben wie im Versuch auf Seite 2.</p></details>
+      </form>
+      <p class="work-result"><strong>Ihr Ergebnis:</strong> Getestete Funktionen zum Entfernen und Leeren, ein Lauf ohne Meldungen des Prüfwerkzeugs und Verträge mit Angaben zum Besitz.</p>
+    </section>
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="03-verkettete-liste.html">← Zurück: Eine verkettete Liste</a></li>
+      <li><a href="05-inventar-im-spiel.html">Weiter: Das Inventar im Spiel →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>

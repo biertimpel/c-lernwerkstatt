@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmierung in C · Name und Wert auswerten</title>
+  <link rel="stylesheet" href="../kurs.css">
+  <link rel="stylesheet" href="lektion.css">
+  <script src="selbstkontrollen.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Zum Inhalt</a>
+  <main id="inhalt">
+    <p><a href="index.html">← Zur Kapitelübersicht</a></p>
+    <header><h1>Name und Wert auswerten</h1><p>Eine Zeile der Form <code>name = wert</code> zerlegen, die Zahl sicher umwandeln und Fehler mit Zeilennummer melden.</p></header>
+    <noscript><p>Ohne JavaScript können Sie die Fragen anhand der aufklappbaren Erklärungen selbst prüfen.</p></noscript>
+
+    <section class="content-section" aria-labelledby="abschnitt-1">
+      <h2 id="abschnitt-1">1. Name und Wert trennen</h2>
+      <p>Nach <a href="01-zeilen-lesen.html">Seite 1</a> haben Sie jede Zeile als Zeichenkette in einem Array. Jetzt soll das Programm verstehen, was darin steht. Der erste Schritt ist das <code>=</code>: Davor steht der Name, dahinter der Wert.</p>
+      <p>Schlagen Sie <code>strchr</code> nach. Was liefert die Funktion, wenn das Zeichen vorkommt, und was, wenn nicht?</p>
+      <p>Mit dem Ergebnis lässt sich die Zeile in zwei Zeichenketten teilen, ohne etwas zu kopieren: Schreiben Sie an die Stelle des <code>=</code> ein <code>'\0'</code>. Dann endet die Zeichenkette ab <code>zeile</code> vor dem <code>=</code>, und eine zweite beginnt direkt dahinter. Wie Zeiger in ein Array zeigen und weitergezählt werden, kennen Sie aus dem Kapitel <a href="../pointer/01-werte-und-speicheradressen.html">„Pointer und Datenaustausch“</a>.</p>
+      <ol>
+        <li>Teilen Sie in Ihrer Schleife von Seite 1 jede Regelzeile so auf und geben Sie beide Teile in eckigen Klammern aus, etwa mit <code>printf("[%s] [%s]", …)</code>. Was sehen Sie für <code>stunde = 6</code>? Welche Zeichen stehen außer Name und Zahl noch in den Teilen?</li>
+        <li>Was soll mit einer Zeile ohne <code>=</code> geschehen?</li>
+      </ol>
+      <details><summary>Selbstkontrolle: Ihre Beobachtungen</summary><p><code>strchr</code> liefert einen Zeiger auf das erste Vorkommen des Zeichens oder <code>NULL</code>. Die Ausgabe ist <code>[stunde ] [ 6</code> und in der nächsten Zeile <code>]</code>: Im Namen steht noch das Leerzeichen, im Wert das Leerzeichen und das <code>'\n'</code>. Beides muss die weitere Auswertung vertragen. Eine Zeile ohne <code>=</code> ist ein Fehler; Ihr Programm sollte ihn melden, statt die Zeile still zu überspringen.</p></details>
+      <p>Für den Namen reicht ein Wort ohne Leerraum. Mit <code>sscanf</code> und dem Format <code>"%31s"</code> lesen Sie das erste Wort und überspringen dabei Leerraum davor. Prüfen Sie im Versuch, was <code>sscanf(zeile, "%31s %c", name, &amp;rest)</code> für diese Namensteile zurückgibt: <code>"stunde "</code>, <code>"   "</code> und <code>"st unde "</code>. Notieren Sie vorher Ihre Erwartung.</p>
+      <details><summary>Selbstkontrolle: Rückgaben von <code>sscanf</code></summary><p>Die Rückgabe ist die Zahl der erfolgreich gelesenen Angaben, oder <code>EOF</code>, wenn vor der ersten nur Leerraum stand. <code>"stunde "</code> liefert 1: ein Wort, danach kein weiteres Zeichen. <code>"   "</code> liefert <code>EOF</code> (−1): Es gibt gar keinen Namen. <code>"st unde "</code> liefert 2: Nach dem ersten Wort folgt noch ein Zeichen. Genau ein Name steht also vor dem <code>=</code>, wenn die Rückgabe 1 ist. Die 31 verhindert, dass ein langer Name über ein Array von 32 Zeichen hinausgeschrieben wird.</p></details>
+    </section>
+
+    <section class="content-section" aria-labelledby="abschnitt-2">
+      <h2 id="abschnitt-2">2. Den Wert in eine Zahl umwandeln</h2>
+      <p>Hinter dem <code>=</code> steht Text, Ihr Programm braucht aber eine Zahl. <code>strtol</code> und seinen Endzeiger kennen Sie aus dem Kapitel <a href="../datei-ein-ausgabe/04-werte-lesen.html#abschnitt-3">„Datei-Ein- und -Ausgabe“</a>. Dort war jede Zahl ein eigenes Wort, und nach der Zahl durfte nichts mehr folgen. Hier ist der Wert der Rest einer Zeile: Vor und nach der Zahl dürfen Leerzeichen stehen, und am Ende steht meist das <code>'\n'</code>. Die Bedingung „<code>*ende == '\0'</code>“ ist deshalb zu streng.</p>
+      <p>Probieren Sie <code>strtol(text, &amp;ende, 10)</code> mit den folgenden Texten aus und geben Sie jeweils den Wert und den Rest ab <code>ende</code> in eckigen Klammern aus. Füllen Sie die Tabelle zuerst mit Ihrer Erwartung.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th scope="col">Text</th><th scope="col">Ihre Erwartung: Wert</th><th scope="col">Ihre Erwartung: Rest</th></tr></thead>
+        <tbody>
+          <tr><td><code>" 45\n"</code></td><td></td><td></td></tr>
+          <tr><td><code>"45 Minuten"</code></td><td></td><td></td></tr>
+          <tr><td><code>"  \n"</code></td><td></td><td></td></tr>
+        </tbody>
+      </table></div>
+      <details><summary>Selbstkontrolle: Ergebnisse</summary>
+        <div class="table-wrap"><table>
+          <thead><tr><th scope="col">Text</th><th scope="col">Wert</th><th scope="col">Rest ab <code>ende</code></th></tr></thead>
+          <tbody>
+            <tr><td><code>" 45\n"</code></td><td>45</td><td><code>"\n"</code></td></tr>
+            <tr><td><code>"45 Minuten"</code></td><td>45</td><td><code>" Minuten"</code></td></tr>
+            <tr><td><code>"  \n"</code></td><td>0</td><td><code>ende</code> zeigt auf den Anfang von <code>text</code></td></tr>
+          </tbody>
+        </table></div>
+        <p>Führender Leerraum wird übersprungen, danach liest <code>strtol</code> so viele Ziffern wie möglich. Steht gar keine Zahl da, ist das Ergebnis 0, und <code>ende</code> bleibt am Anfang. Ob der ganze Wert eine Zahl war, verrät also erst der Endzeiger: Er darf nicht am Anfang stehen, und dahinter darf nur Leerraum folgen. Für Leerraum gibt es <code>isspace</code> aus <code>&lt;ctype.h&gt;</code>.</p>
+      </details>
+      <p>Zwei Abkürzungen sind verlockend, aber für eine Config ungeeignet: <code>atoi("4x")</code> liefert 4 und meldet nichts. <code>sscanf(text, "%d", &amp;wert)</code> liefert für <code>"45 Minuten"</code> die Rückgabe 1, der Rest fällt ebenfalls nicht auf. Ein Tippfehler in der Datei würde so still zu einem falschen Wert.</p>
+      <p>Zum Schluss prüfen Sie den Bereich: Eine Stunde liegt zwischen 0 und 23, eine Minute zwischen 0 und 59. Ein Wert wie <code>99999999999999999999</code> passt nicht einmal in ein <code>long</code>; <code>strtol</code> liefert dann den größten möglichen Wert und setzt <code>errno</code> auf <code>ERANGE</code>. Weil die erlaubten Bereiche hier klein sind, fällt auch dieser Wert schon bei der Bereichsprüfung auf; die Prüfung von <code>errno</code> schadet aber nicht.</p>
+      <form class="self-check" data-hint="Spielen Sie jede Zeile mit strtol im Kopf durch: Wo steht ende danach, und was folgt dahinter?">
+        <fieldset><legend>Welche Werte für <code>minute</code> soll Ihr Programm als Fehler melden?</legend><p>Eine oder mehrere Antworten können richtig sein.</p>
+          <label><input type="checkbox"> <code>minute = 45</code></label>
+          <label><input type="checkbox" data-correct="true"> <code>minute = 45 Minuten</code></label>
+          <label><input type="checkbox" data-correct="true"> <code>minute =</code></label>
+          <label><input type="checkbox"> <code>minute =   7   </code></label>
+          <label><input type="checkbox" data-correct="true"> <code>minute = 60</code></label>
+          <label><input type="checkbox" data-correct="true"> <code>minute = 4.5</code></label>
+        </fieldset><button type="submit" hidden>Antwort prüfen</button><p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+        <details><summary>Erklärung anzeigen</summary><p>Fehler sind „45 Minuten“ und „4.5“ (nach der Zahl folgt mehr als Leerraum), der leere Wert (<code>ende</code> bleibt am Anfang) und 60 (außerhalb von 0 bis 59). Leerzeichen vor und nach der Zahl sind erlaubt.</p></details>
+      </form>
+      <p class="work-result"><strong>Ihr Ergebnis:</strong> Versuche, die eine Zeile in Name und Wert zerlegen, den Namen prüfen und den Wert sicher in eine Zahl umwandeln. Diese Bausteine setzen Sie auf Seite 3 zusammen.</p>
+    </section>
+
+    <nav aria-label="Seitennavigation"><ul class="navlinks">
+      <li><a href="01-zeilen-lesen.html">← Zurück: Eine Textdatei Zeile für Zeile lesen</a></li>
+      <li><a href="03-spielregeln.html">Weiter: Spielregeln aus einer Datei lesen →</a></li>
+    </ul></nav>
+    <footer><a href="../uebersicht.html#block-2">Zur Kursübersicht</a></footer>
+  </main>
+</body>
+</html>
